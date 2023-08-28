@@ -1,0 +1,24 @@
+<!doctype html>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  graph-element {
+    position: absolute;
+    inset: 0;
+  }
+</style>
+
+<script type="module">
+  import './config.js';
+  import {connectXenon} from '../../../../Library/CoreReactor/Worker/xenon-web-worker.js';
+  import {initXenon} from '../graph-element.js';
+  initXenon(connectXenon);
+</script>
+
+<graph-element></graph-element>
+

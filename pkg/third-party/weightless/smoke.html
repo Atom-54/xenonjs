@@ -1,0 +1,39 @@
+<!doctype html>
+<script type="module" src="./weightless.min.js"></script>
+
+<style>
+  body, select, input {
+    font-family: sans-serif;
+  }
+  hr {
+    visibility: hidden;
+    margin: 2em 0;
+  }
+</style>
+
+<wl-button>Button</wl-button>
+
+<hr>
+
+<wl-expansion>
+  <span slot="title">Title</span>
+  <span slot="description">Description</span>
+  <p>Here's some content</p>
+</wl-expansion>
+
+<hr>
+
+<wl-select label="Select something">
+  <option value disabled selected>Select something</option>
+  <option value="1">Option 1</option>
+  <option value="2">Option 2</option>
+  <option value="3">Option 3</option>
+  <option value="4">Option 4</option>
+</wl-select>
+
+<hr>
+
+<wl-tab-group>
+  <wl-tab>Dogs</wl-tab>
+  <wl-tab>Cats</wl-tab>
+</wl-tab-group>

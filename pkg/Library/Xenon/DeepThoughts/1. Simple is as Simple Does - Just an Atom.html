@@ -1,0 +1,31 @@
+<!doctype html>
+
+<h3>Hello World! Here is a puppy.</h3> 
+<h4>Also, please view-source.</h4>
+<hr>
+<img id="pixabay"></img>
+
+<script type="module">
+  // get ultra generic component
+  import {atom as PixabayAtom} from './PixabayAtom.js';
+
+  // use the atom to make a query
+  const randomImage = async query =>  {
+    const atom = PixabayAtom();
+    const {hits} = await atom.update({query}, {}, {});
+    applyHits(hits);
+  };
+
+  // our UX 
+  const applyHits = hits => {
+    if (hits?.length) {
+      // pick one
+      const i = Math.floor(Math.random() * hits.length);
+      // install into image element
+      pixabay.src = hits[i].webformatURL;
+    }
+  };
+
+  // apply it
+  await randomImage('cute sleepy dog');
+</script>

@@ -1,0 +1,29 @@
+<!doctype html>
+
+<img id="image" src="../../../../NeonFlan/dog.jpeg">
+<canvas id="canvas" style="border: 1px solid silver;" width="480" height="320"></canvas>
+
+<script type="module">
+  import {FilesetResolver, ImageSegmenter} from "../tasks-vision/vision_bundle.mjs";
+  const vision = await FilesetResolver.forVisionTasks(
+    '../tasks-vision/wasm'
+  );
+  console.log(vision);
+  const imageSegmenter = await ImageSegmenter.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath:
+        "../deeplab_v3.tflite?generation=1661875711618421",
+    },
+    outputCategoryMask: true,
+    outputConfidenceMasks: false,
+    runningMode: 'IMAGE' // || 'video'
+  });
+  console.log(imageSegmenter);
+  const output = data => {
+    console.log(data);
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(data.categoryMask.canvas, 0, 0);
+  };
+  imageSegmenter.segment(image, output);
+  console.log('returned from `segment`');
+</script>

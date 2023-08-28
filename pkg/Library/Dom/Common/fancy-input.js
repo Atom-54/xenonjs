@@ -1,0 +1,95 @@
+/**
+ * @license
+ * Copyright 2023 NeonFlan LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+import {Xen} from '../Xen/xen-async.js';
+
+export class FancyInput extends Xen.Async {
+  static get observedAttributes() {
+    return ['autofocus', 'focus', 'disabled', 'value', 'static', 'jit'];
+  }
+  _didMount() {
+    this.input = this._dom.$('input');
+    this.addEventListener('dblclick', e => this.onDblClick(e));
+    this.addEventListener('click', e => this.fire('doclick'));
+  }
+  _setValueFromAttribute(name, value) {
+    switch (name) {
+      case 'disabled':
+      case 'static':
+      case 'focus':
+      case 'autofocus':
+      case 'jit':
+        value = Boolean(value) || (typeof value === 'string');
+        break;
+    }
+    super._setValueFromAttribute(name, value);
+  }
+  _wouldChangeProp(name, value) {
+    return (name === 'focus') || super._wouldChangeProp(name, value);
+  }
+  render({value, disabled, jit}, {userEnabled}) {
+    return {
+      value: value ?? '',
+      type: 'text',
+      disabled: disabled || (jit && !userEnabled)
+    };
+  }
+  _didRender({disabled, autofocus, focus, jit}, {userEnabled}) {
+    focus = !disabled && (focus || (jit && userEnabled) || autofocus);
+    this.doFocus(focus);
+    if (autofocus && focus) {
+      // TODO(sjmiles): super-hack for GraphList
+      this.parentElement?.parentElement?.parentElement?.scrollIntoView({behavior: 'smooth'});
+    } 
+  }
+  doFocus(focus) {
+    if (focus) {
+      this.input.select?.();
+    } else {
+      // ridiculous unselection hack
+      const v = this.input.value;
+      this.input.value = '';
+      this.input.value = v;
+    }
+    this.input[focus ? 'focus' : 'blur']?.();
+  }
+  onBlur() {
+    this.state = {userEnabled: false};
+  }
+  onChange() {
+    this.value = this.input.value;
+    this.state = {userEnabled: false};
+    this.fire('change');
+  }
+  onDblClick() {
+    if (!this.disabled && this.jit) {
+      this.state = {userEnabled: true};
+    }
+  }
+  get template() {
+    return Xen.Template.html`
+<style>
+  input {
+    box-sizing: border-box;
+    color: inherit;
+    background: inherit;
+    font: inherit;
+    border: inherit;
+    padding: 4px 6px;
+    margin: 2px;
+    height: 100%;
+    /* width: 15em; */
+    width: 94%;
+  }
+  input[disabled] {
+    color: gray;
+  }
+</style>
+<input disabled="{{disabled}}" type="{{type}}" value="{{value}}" on-blur="onBlur" on-change="onChange">
+`;
+  }
+}
+
+customElements.define('fancy-input', FancyInput);

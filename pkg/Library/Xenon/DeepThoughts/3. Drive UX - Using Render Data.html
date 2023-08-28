@@ -1,0 +1,49 @@
+<!doctype html>
+
+<h3>Hello World! Here is a puppy.</h3> 
+<h4>Also, please view-source.</h4>
+<hr>
+<div id="easel"></div>
+
+<script type="module">
+  // use dynamic industry: Atoms are loaded on demand
+  import * as industry from '../Industry/dynamic-industry.js';
+  // use vanilla isolation: Atoms utilize global scope
+  import '../Isolation/vanilla.js';
+  
+  // make host
+  const imageux = await industry.emit('imageux', '../DeepThoughts/ImageUxAtom');
+  // listen to render-channel data
+  imageux.listen('render', packet => renderPacket(packet));
+  
+  // make host
+  const pixabay = await industry.emit('pixabay', '../DeepThoughts/PixabayAtom');
+  // listen to output-channel data
+  pixabay.listen('output', ({hits}) => applyHits(hits));
+  
+  // start poking things (input data)
+  pixabay.inputs = {query: 'cute sleepy dog'};
+
+  // completely bespoke render model: rendering is generic, this is a
+  // simple way of rendering specifically to HTML, but there is no 
+  // underlying dependency on web tech.
+  const renderPacket = ({id, container, content: {template, model}}) => {
+    if (template && model) {
+      let html = template;
+      Object.entries(model).forEach(([name, value]) => {
+        const reg = new RegExp(`{{${name}}}`, 'g');
+        html = html.replace(reg, value);
+      });
+      easel.innerHTML = html;
+    }
+  };
+
+  const applyHits = hits => {
+    if (hits?.length) {
+      // pick one
+      const i = Math.floor(Math.random() * hits.length);
+      // apply src to imageux.inputs
+      imageux.inputs = {src: hits[i].webformatURL};
+    }
+  };
+</script>

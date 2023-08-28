@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<script src="./utils/camera_utils.js" crossorigin="anonymous"></script>
+<script src="./utils/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="./face_mesh/face_mesh.js"></script>
+
+<style>
+  #videoElement {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+  #videoElement.selfie {
+    transform: scale(-1, 1);
+  }
+  #canvasElement {
+    max-width: 100%;
+    display: block;
+    position: relative;
+    left: 0;
+    top: 0;
+  }
+</style>
+
+<video id="videoElement"></video>
+<canvas id="canvasElement" width="1280px" height="720px"></canvas>
+
+<script type="module">
+  const {videoElement, canvasElement} = window;
+  const canvasCtx = canvasElement.getContext('2d');
+
+  function onResults(results) {
+    canvasCtx.save();
+    //
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    //
+    const {drawConnectors: lines, drawLandmarks: marks} = window;
+    //
+    // lines(canvasCtx, results.poseLandmarks,      POSE_CONNECTIONS,     {color: '#00FF00', lineWidth: 4});
+    // marks(canvasCtx, results.poseLandmarks,      {color: '#FF0000',    lineWidth: 1});
+    //
+    //const {faceLandmarks} = results;
+    const faceLandmarks = results.multiFaceLandmarks?.[0];
+    lines(canvasCtx, faceLandmarks,      FACEMESH_TESSELATION, {color: '#C0C0C070', lineWidth: 1});
+    //
+    // lines(canvasCtx, results.leftHandLandmarks,  HAND_CONNECTIONS,     {color: '#CC0000', lineWidth: 5});
+    // lines(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,     {color: '#00CC00', lineWidth: 5});
+    //
+    // marks(canvasCtx, results.leftHandLandmarks,  {color: '#00FF00',    lineWidth: 1});
+    // marks(canvasCtx, results.rightHandLandmarks, {color: '#FF0000',    lineWidth: 1});
+    //
+    canvasCtx.restore();
+  }
+
+  const faceMesh = new FaceMesh({locateFile: (file) => `./face_mesh/${file}`});
+  faceMesh.setOptions({
+    staticImageMode: false, // optimize with frame coherence, or not
+    maxNumFaces: 1,
+    modelComplexity: 1, // 0, 1, 2
+    smoothLandmarks: true,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5
+  });
+  faceMesh.onResults(onResults);
+  //
+  const camera = new Camera(videoElement, {
+    onFrame: async () => {
+      await faceMesh.send({image: videoElement});
+    },
+    width: 1280,
+    height: 720
+  });
+  camera.start();
+</script>

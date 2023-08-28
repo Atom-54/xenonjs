@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en-US">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<link rel="stylesheet" href="./open-props.min.css">
+<link rel="stylesheet" href="./buttons.min.css"> 
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: var(--font-sans);
+    margin: 0;
+    height: 100vh;
+    background: var(--gradient-23) no-repeat;
+    background-size: cover;
+  }
+  [ux] {
+    padding: var(--size-8);
+    box-shadow: var(--shadow-3);
+    /* aspect-ratio: var(--landscape); */
+    font-size: var(--font-size-fluid-2);
+    color: var(--gray-6);
+  }
+  input {
+    vertical-align: middle;
+    font-size: var(--font-size-4);
+    border-radius: var(--radius-3);
+    padding: var(--size-2) var(--size-3);
+  }
+  [wait] {
+    color: var(--gray-8);
+    animation: var(--animation-spin);
+  }
+</style>
+
+<div ux>
+  <div>What should Prof. Einstein wear on his head?</div>
+  <div style="line-height: var(--font-lineheight-3)">
+    <input id="userInput" value="princess tiara">
+    <button id="userButton" onclick="go()">Go</button>
+  </div>
+</div>
+
+<div grid>
+  <img id="img0">
+  <img id="img1">
+  <img id="img2">
+  <img id="img3">
+</div>
+
+<script type="module">
+  const post = (url, body) => fetch(url, {method: 'POST', body});
+  const urlify = async blob => {
+    return new Promise(resolve => {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        resolve(reader.result);
+      };
+      reader.readAsDataURL(blob);
+    })
+  };
+  //
+  const prompt = "A flying-saucer on a man's head";
+  const srcImage = await fetch('./einstein.png');
+  const image = await srcImage.blob();
+  const server = 'https://openai.iamthearchitect.workers.dev';
+  //
+  const requestEdits = async prompt => {
+    const body = new FormData();
+    //
+    body.append('prompt', prompt);
+    body.append('image', image);
+    body.append('size', '256x256');
+    body.append('n', '4');
+    //
+    const response = await post(`${server}/edits`, body);
+    const data = await response.json();
+    console.log(data);
+    //
+    data?.forEach?.((r, i) => {
+      globalThis[`img${i}`].src = r.url;
+    });
+  };
+  //
+  globalThis.go = async () => {
+    const user = userInput.value;
+    const prompt = `${user} on a man's head`;
+    userButton.setAttribute('wait', true);
+    await requestEdits(prompt);
+    userButton.removeAttribute('wait');
+    console.log(prompt);
+  };
+</script>
+
+</html>

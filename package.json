@@ -1,0 +1,25 @@
+{
+  "name": "xenonjs",
+  "version": "1.0.0",
+  "author": "info@xenonjs.com",
+  "type": "module",
+  "main": "index.js",
+  "description": "",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "jsdoc": "^4.0.2",
+    "local-web-server": "^5.1.1"
+  },
+  "config": {
+    "port": "9871"
+  },
+  "scripts": {
+    "get_port": "node ./tools/get_port.js",
+    "test": "./tools/puppet.sh",
+    "serve": "./tools/serve.sh",
+    "docs": "./tools/docs.sh"
+  }
+}

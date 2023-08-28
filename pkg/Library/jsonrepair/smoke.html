@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<title>JSONEditor</title>
+
+<div>
+  <textarea id="raw" rows="10" cols="80" onchange="onTextChange(this)"></textarea>
+</div>
+
+<div>
+  <textarea id="fixed" rows="10" cols="80"></textarea>
+</div>
+
+<div id="jsoneditor"></div>
+
+<script type="module">
+  import {jsonrepair, JSONRepairError} from '../../third-party/jsonrepair/index.js';
+  window.onTextChange = ({value}) => {
+    const fixed = jsonrepair(value);
+    window.fixed.innerText = fixed;
+  };
+</script>
+
+</html>

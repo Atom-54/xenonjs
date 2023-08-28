@@ -1,0 +1,14 @@
+{
+  "name": "@mediapipe/tasks-audio",
+  "version": "0.10.2-rc2",
+  "description": "MediaPipe Audio Tasks",
+  "main": "audio_bundle.cjs",
+  "browser": "audio_bundle.mjs",
+  "module": "audio_bundle.mjs",
+  "author": "mediapipe@google.com",
+  "license": "Apache-2.0",
+  "type": "module",
+  "types": "audio.d.ts",
+  "homepage": "http://mediapipe.dev",
+  "keywords": [ "AR", "ML", "Augmented", "MediaPipe", "MediaPipe Tasks" ]
+}

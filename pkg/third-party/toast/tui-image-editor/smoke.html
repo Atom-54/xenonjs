@@ -1,0 +1,37 @@
+<!doctype html>
+<style>
+  body {
+    margin: 0;
+    height: 100dvh;
+  }
+  #tuiImageEditor {
+    height: 100%;
+  }
+</style>
+<link rel="stylesheet" href="./tui-image-editor.css">
+<link rel="stylesheet" href="../tui-color-picker.css">
+<div id="tuiImageEditor"></div>
+<script src="../tui-color-picker.min.js"></script>
+<script src="./tui-image-editor.js"></script>
+
+<script>
+tui.usageStatistics = false;
+const instance = new tui.ImageEditor(tuiImageEditor, {
+  includeUI: {
+    loadImage: {
+      path: '../../../Apps/Assets/dogs.png',
+      name: 'SampleImage',
+    },
+    //locale: locale_ru_RU,
+    //theme: blackTheme, // or whiteTheme
+    initMenu: 'filter',
+    menuBarPosition: 'bottom',
+  },
+  cssMaxWidth: 700,
+  cssMaxHeight: 500,
+  selectionStyle: {
+    cornerSize: 20,
+    rotatingPointOffset: 70,
+  }
+});
+</script>

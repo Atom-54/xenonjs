@@ -1,0 +1,43 @@
+<!doctype html>
+
+<h3>Hello World! Here is a puppy.</h3> 
+<h4>Also, please view-source.</h4>
+<hr>
+<img id="pixabay"></img>
+
+<script type="module">
+  // use dynamic industry: Atoms are loaded on demand
+  import * as industry from '../Industry/dynamic-industry.js';
+  // use vanilla isolation: Atoms utilize global scope
+  import '../Isolation/vanilla.js';
+
+  // optional: use components baked directly into source
+  // get our component
+  //import {atom as PixabayAtom} from './PixabayAtom.js';
+  // register our component for industrial usage
+  //industry.industrialize({PixabayAtom});
+  // now we are fully data-driven
+  // make a Host
+  //const host = await industry.emit('pixabay', 'PixabayAtom');
+  
+  // now we are fully data-driven
+
+  // make a Host (using data: {name, url})
+  // TODO(sjmiles): wtf path, groan
+  const host = await industry.emit('pixabay', '../DeepThoughts/PixabayAtom');
+  // now host is reactive (can emit data)
+  host.listen('output', ({hits}) => applyHits(hits));
+
+  // start poking things (input data)
+  host.inputs = {query: 'cute sleepy dog'};
+
+  // turn data into UX
+  const applyHits = hits => {
+    if (hits?.length) {
+      // pick one
+      const i = Math.floor(Math.random() * hits.length);
+      // install into image element
+      pixabay.src = hits[i].webformatURL;
+    }
+  };
+</script>

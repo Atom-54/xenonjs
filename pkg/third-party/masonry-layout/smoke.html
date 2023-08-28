@@ -1,0 +1,27 @@
+<!doctype html>
+<style>
+  div {
+    border: 2px solid lightblue;
+    width: 15em;
+    height: 17em;
+  }
+  masonry-layout {
+    Xmargin: 150px;
+  }
+</style>
+
+<script type="module" src="./masonry-layout.min.js"></script>
+
+<masonry-layout id="layout" cols="5" gap="6"></masonry-layout>
+
+<script type="module">
+  const irand = i => Math.floor(Math.random()*i);
+  const arand = a => a[irand(a.length)];
+  const devo = i => {
+    const id = `devo${i}`;
+    const colors = ['purple', 'red', 'orange', 'lightblue', 'green', 'yellow', 'gray', 'silver'];
+    const style = `background-color: ${arand(colors)}; Xwidth: ${irand(4)+12}em; height: ${irand(4)+12}em;`;
+    const div = layout.appendChild(Object.assign(document.createElement('div'), {style}));
+  }
+  for (var i=0; i<100; i++) devo(i);
+</script>

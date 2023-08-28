@@ -1,0 +1,69 @@
+body {
+  --icon-font: 'Material Symbols Outlined';
+  font-family: sans-serif;
+  scroll-behavior: smooth;
+  background-color: hsla(292, 6%, 95%, 1);
+  margin: 0;
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.grid-stack {
+  background: rgba(64, 224, 208, 0.278);
+}
+.grid-stack-item-content {
+  background-color: white;
+  border: 5px solid #eeeeee;
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: content-box;
+}
+.grid-stack-item-content > * {
+  border-radius: 12px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+.lm_content {
+  display: flex;
+}
+.lm_root {
+  flex: 1;
+}
+[flex] {
+  flex: 1;
+  /* border: 6px solid orange; */
+  display: flex;
+}
+a {
+  display: inline-block;
+  padding: 6px 8px;
+  font-size: 12px;
+  width: 24px;
+}
+a:target {
+  color: magenta;
+}
+[toolbar] {
+  padding: 6px;
+}
+[pagebar] {
+  display: flex;
+  flex-direction: row;
+}
+[pagebar] > * {
+  margin: 4px;
+}
+[page] {
+  width: 64px;
+  height: 64px;
+  background-color: var(--xcolor-two);
+  border: 1px solid var(--xcolor-two);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+[selected] {
+  background-color: var(--xcolor-brand);
+}

@@ -1,0 +1,16 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+
+<link rel="stylesheet" href="./index.css">
+
+<div screen id="ascreen">
+  <div image></div>
+</div>
+
+<script type="module">
+  import {SSEPubSub} from '../SSEPubSub.js';
+  const pubSub = new SSEPubSub('https://xenonjs-core.firebaseio.com');
+  pubSub.subscribe('/scroll/y', top => {
+    window.ascreen.scrollTop = top;
+  });
+</script>

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en-US">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Menuish</title>
+
+<style>
+  body {
+    font-family: sans-serif;
+    scroll-behavior: smooth;
+    background-color: hsla(292, 6%, 95%, 1);
+    margin: 0;
+    width: 100dvw;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+  }
+  [flex] {
+    flex: 1;
+    display: flex;
+  }
+  a {
+    display: inline-block;
+    padding: 6px 8px;
+    font-size: 12px;
+    width: 24px;
+  }
+  [menu] > *:target {
+    color: magenta;
+  }
+  [pages] > #do {
+    background: lightblue;
+  }
+  [pages] > #re {
+    background: lightsalmon;
+  }
+  [pages] > #mi {
+    background: lightgreen;
+  }
+  [pages] > :not(*:target) {
+    display: none;
+  }
+</style>
+
+<div menu>
+  <a href="#do">Do</a>
+  <a href="#re">Re</a>
+  <a href="#mi">Mi</a>
+</div>
+
+<div flex pages>
+  <div flex id="do"></div>
+  <div flex id="re"></div>
+  <div flex id="mi"></div>
+</div>
+
+</html>

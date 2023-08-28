@@ -1,0 +1,57 @@
+<!doctype html>
+
+<h3>Hello World! Here is a puppy.</h3> 
+<h4>Also, please view-source.</h4>
+<hr>
+<div id="easel"></div>
+
+<script type="module">
+  // be fully data-driven
+  import * as xenon from '../xenon-vanilla.js';
+
+  // make a framework
+  const reifyAtoms = async atoms => {
+    const hosts = {};
+    const promises = xenon.map(atoms, async (name, path) => hosts[name] = await xenon.emit(name, path));
+    await Promise.all(promises);
+    xenon.map(hosts, (name, host) => {
+      host.listen('output', packet => atomOutput(packet));
+      host.listen('render', packet => atomRender(packet));
+    });
+    return hosts;
+  };
+
+  // select these atoms
+  const atoms = {
+    imageux: '../DeepThoughts/ImageUxAtom',
+    pixabay: '../DeepThoughts/PixabayAtom'
+  };
+  
+  // create instances
+  const hosts = await reifyAtoms(atoms);
+
+  // start poking things (input data)
+  hosts.pixabay.inputs = {query: 'cute sleepy dog'};
+
+  // render output channel
+  const atomRender = ({id, container, content: {template, model}}) => {
+    if (template && model) {
+      let html = template;
+      Object.entries(model).forEach(([name, value]) => {
+        const reg = new RegExp(`{{${name}}}`, 'g');
+        html = html.replace(reg, value);
+      });
+      easel.innerHTML = html;
+    }
+  };
+
+  // data output channel
+  const atomOutput = ({hits}) => {
+    if (hits?.length) {
+      // pick one
+      const i = Math.floor(Math.random() * hits.length);
+      // apply src to imageux.inputs
+      hosts.imageux.inputs = {src: hits[i].webformatURL};
+    }
+  };
+</script>

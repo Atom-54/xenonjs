@@ -1,0 +1,59 @@
+<!doctype html>
+
+<button onclick="drop()">Drop!</button>
+<button onclick="index()">Index</button>
+<button onclick="mirror()">Mirror</button>
+
+<script type="module">
+  const put = (url, body) => fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body});
+  window.drop = () => put('https://xenonjs-apps.firebaseio.com/baser/shadertoy/items.json', '{}');
+  //
+  window.index = async () => {
+    const appkey = 'fdrtMz';
+    const api = 'https://www.shadertoy.com/api/v1';
+    //const camQuery = `${api}/shaders/query/${query}?filter="webcam"&sort="newest"&key=${appkey}`;
+    //const camQuery = `${api}/shaders/query/${query}?key=${appkey}`;
+    const camQuery = `${api}/shaders/?filter=webcam&sort=newest&key=${appkey}`;
+    const response = await fetch(camQuery);
+    const keys = await response.json();
+    //
+    console.log('fetched toy ids');
+    console.log(keys);
+    //
+    console.log('storing toy ids');
+    await put('https://xenonjs-apps.firebaseio.com/baser/shadertoy/keys_webcam/keys.json', JSON.stringify(keys));
+  };
+  //
+  window.mirror = async () => {
+    const appkey = 'fdrtMz';
+    const api = 'https://www.shadertoy.com/api/v1';
+    //const camQuery = `${api}/shaders/query/${query}?filter="webcam"&sort="newest"&key=${appkey}`;
+    //const camQuery = `${api}/shaders/query/${query}?key=${appkey}`;
+    const camQuery = `${api}/shaders/?filter=webcam&sort=newest&key=${appkey}`;
+    const response = await fetch(camQuery);
+    const keys = await response.json();
+    //
+    console.log('fetched toy ids');
+    console.log(keys);
+    //
+    console.log('storing toy ids');
+    await put('https://xenonjs-apps.firebaseio.com/baser/shadertoy/keys_webcam/keys.json', JSON.stringify(keys));
+    //
+    console.log('updating items');
+    //await Promise.all(keys.Results.map(async key => {
+    for (const key of keys.Results) {
+      const response = await fetch(`https://xenonjs-apps.firebaseio.com/baser/shadertoy/items/${key}/Shader/info/name.json`);
+      const text = await response.text();
+      if (text === 'null') {
+        console.log('updating', key);
+        const response = await fetch(`${api}/shaders/${key}&key=${appkey}`);
+        const text = await response.text();
+        await put(`https://xenonjs-apps.firebaseio.com/baser/shadertoy/items/${key}.json`, text);
+        console.log(`[${key}] was updated, stored ${text.length} bytes`);
+      } else {
+        console.log('skipping...');
+      }
+    }
+    console.log('done');
+  };
+</script>

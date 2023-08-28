@@ -1,0 +1,21 @@
+<!doctype html>
+
+<img id="img">
+
+<script type="module">
+  const prompt = "A photo of a goose on a skateboard in Times Square";
+  //const prompt = "Fancy Goose wearing sneakers and a toque, digital image.";
+  //
+  const server = `http://localhost:8080/`;
+  //
+  const post = (url, body) => fetch(url, {method: 'POST', body: JSON.stringify(body)});
+  const response = await post(`${server}/image`, {
+    prompt,
+    size: '256x256'
+  });
+  //
+  const url = await response.text();
+  window.img.src = url;
+  //
+  console.log(url);
+</script>

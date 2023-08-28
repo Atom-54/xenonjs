@@ -1,0 +1,3 @@
+Scripts in this folder will not function if executed directly, however it is possible to execute them from project root as `./tools/script.sh`.
+
+Scripts in this folder expect to run from project root (CWD == /), suitable for execution via `npm run` scripts in `package.json`.

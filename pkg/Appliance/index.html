@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en-US">
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+<title>Appliance</title>
+
+<script type="importmap">{
+  "imports": {
+    "xenonjs/": "../"
+  }
+}</script>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<link rel="stylesheet" href="../Library/Dom/Material/material-xen/xen.css">
+<link rel="stylesheet" href="../third-party/gridstack/gridstack.min.css">
+<link rel="stylesheet" href="./body.css">
+
+<script type="module" src="./config.js"></script>
+<script type="module" src="../Library/Graph/Dom/xenon-graph.js"></script>
+
+<div toolbar>
+  <button onclick="add(select.value)">Add</button>&nbsp;<select id="select"></select>
+</div>
+
+<div pagebar onclick="onPagebarClick(event)">
+  <div selected page key="1">A</div>
+  <div page key="2">B</div>
+  <div page key="3">C</div>
+  <div page key="4">D</div>
+</div>
+
+<div flex class="grid-stack" id="gridStack1"></div>
+<div flex class="grid-stack" id="gridStack2"></div>
+<div flex class="grid-stack" id="gridStack3"></div>
+<div flex class="grid-stack" id="gridStack4"></div>
+
+<script type="module" src="./index.js"></script>
+
+<div id="trash" style="padding: 5px; margin-bottom: 15px;" class="text-center">
+  <span>Drop here to remove!</span>
+</div>
+
+</html>

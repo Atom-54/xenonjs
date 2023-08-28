@@ -1,0 +1,73 @@
+<!doctype html>
+
+<button onclick="doEnter('Abel')">Abel Enters Venue</button>
+<button onclick="doEnter('Abel', 'chat')">Abel Enters Chat</button>
+<button onclick="doLeave('Abel')">Abel Leaves Venue</button>
+<br><br>
+
+<button onclick="doEnter('Baker')">Baker Enters Venue</button>
+<button onclick="doEnter('Baker', 'chat')">Baker Enters Chat</button>
+<button onclick="doLeave('Baker')">Baker Leaves Venue</button>
+<br><br>
+
+<button onclick="doEnter('Caine')">Caine Enters Venue</button>
+<br>
+
+<hr>
+<h2>Venue</h2>
+<div id="venue"></div>
+
+<script type="module">
+  const Venue = {
+    personas: {}
+  };
+  const enterVenue = ({personas}, persona, room='lobby') => {
+    const record = personas[persona] ??= {
+      id: persona,
+      rooms: [],
+    };
+    record.rooms = [...new Set([...record.rooms, room])];
+  };
+  const leaveVenue = ({personas}, persona, room) => {
+    if (room) {
+      const {rooms} = personas[persona];
+      rooms.splice(rooms.indexOf(room), 1);
+    } else {
+      delete personas[persona];
+    }
+  };
+  const getRooms = ({personas}) => {
+    const allRooms = {};
+    Object.values(personas).forEach(({id, rooms}) => {
+      rooms.forEach(room => {
+        const space = allRooms[room] ??= new Set();
+        space.add(id);
+      });
+    });
+    return allRooms;
+  };
+  //
+  //
+  const renderVenue = ({personas}) => {
+    const rooms = getRooms({personas});
+    const pp = [
+      Object.values(personas).map(({id, rooms}) => `${id}: ${rooms.toString()}`).join('<br>'),
+      '<hr><h2>Rooms</h2>',
+      Object.entries(rooms).map(([room, ids]) => `${room}: ${[...ids].toString()}`).join('<br>')
+    ];
+    window.venue.innerHTML = pp.join('');
+    console.log(getRooms({personas}));
+  };
+  //
+  //
+  const venue = Object.assign({}, Venue);
+  renderVenue(venue);
+  window.doEnter = (id, room) => {
+    enterVenue(venue, id, room);
+    renderVenue(venue);
+  };
+  window.doLeave = (id, room) => {
+    leaveVenue(venue, id, room);
+    renderVenue(venue);
+  };
+</script>

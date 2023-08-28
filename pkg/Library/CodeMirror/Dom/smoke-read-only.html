@@ -1,0 +1,25 @@
+<!--
+ * @license
+ * Copyright 2023 NeonFlan LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+-->
+<!doctype html>
+
+<code-mirror id="mirror" style="height: 400px;"></code-mirror>
+
+<script type="module">
+  import {CodeMirrorElement} from './code-mirror.js';
+  customElements.define(`code-mirror`, CodeMirrorElement);
+  import readOnlyRangesExtension from './codemirror-readonly-ranges';
+  const getReadOnlyRanges = targetState => ([{
+    from: 0, //same as: targetState.doc.line(0).from or 0
+    to: targetState.doc.line(3).to
+  }, {
+    from: targetState.doc.line(targetState.doc.lines).from, 
+    to: undefined // same as: targetState.doc.line(targetState.doc.lines).to
+  }]);
+  const view = mirror.mirror.view;
+  view.dispatch({
+    effects: StateEffect.appendConfig.of(readOnlyRangesExtension)
+  });
+</script>
