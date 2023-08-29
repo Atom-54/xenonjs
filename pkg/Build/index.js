@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import './config.js';
-import 'xenonjs/Apps/common/firebase.js';
+import 'xenonjs/Apps/common/configKeys.js';
 import {connectXenon} from 'xenonjs/Library/CoreReactor/Worker/xenon-web-worker.js';
 import * as App from 'xenonjs/Library/CoreFramework/App.js';
 import * as Composer from 'xenonjs/Library/CoreFramework/Composer.js';

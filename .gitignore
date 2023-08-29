@@ -4,4 +4,4 @@ node_modules
 firebase-debug.log
 **/key.js
 **/docs
-/pkg/Apps/common/firebase.js
+/pkg/Apps/common/configKeys.js
