@@ -5,7 +5,7 @@ XenonJs implements a user-sovereign, AI-powered, semantic framework, and an ecos
 Whether you are prototyping an experiment, or building a production ready customer facing product -  
 XenonJs is suitable for you.
 
-Whether you are building from scratch, or looking to expand functionality of an existing project,  
+Whether you are building from scratch, or looking to expand functionality of an existing project -   
 XenonJs is suitable for you.
 
 Whether you are a software guru, or have no coding experience at all -  
@@ -15,53 +15,85 @@ XenonJs is suitable for you.
 
 ## Getting started
 
+XenonJs features 2 applications:
+* [`Run`](https://xenon-js.web.app/0.5/Run/): an application that allows you to run any XenonJs experience (aka Graph) in a browser
+* [`Build`](https://xenon-js.web.app/0.5/Build/): an web-based IDE that lets you compose XenonJs experiences (aka Graphs)
+
 ### Run Graphs
 
-Try using XenonJs Graphs:  
+To get started, try using our demo XenonJs Graphs:  
 * [Knowledge Space](https://xenon-js.web.app/0.5/Run/?graph=KnowledgeSpace)
 * [Video effects](https://xenon-js.web.app/0.5/Run/?graph=VideoRain)
 * [Image completion](https://xenon-js.web.app/0.5/Run/?graph=ImageCompletion)
 * [Translation](https://xenon-js.web.app/0.5/Run/?graph=TranslateWithAudio)
 * [Weather forecast](https://xenon-js.web.app/0.5/Run/?graph=LocalWeather)
 
-You can find more example graphs on our website: [xenonjs.com](https://xenon-js.web.app/#demos)
+More demo Graphs can be found on our website: [xenonjs.com](https://xenon-js.web.app/#demos)
 
-### Build and run your own Graphs
 
-You can also build your very own XenonJs Graphs from the collection of XenonJs Nodes.  
-Try out our [Build/](https://xenon-js.web.app/0.5/Build) IDE.  
-Here you can find details on how to use it: [Build/ guide](./pkg/Build/README.md).
+### Build Graphs
 
-### Local
+You can also build your very own XenonJs Graphs from the collection of XenonJs Nodes:
+* Try out the [Build](https://xenon-js.web.app/0.5/Build) IDE  
+* Here is a guide on how to use it: [Build README](./pkg/Build/README.md)
+
+
+#### Access the graphs:
+The Graphs you compose in `Build` are immediately accessible in the `Run` application.
+
+To run a specific graph, pass its name as URL parameter to the `Run` app:  
+> [xenon-js.web.app/0.5/Run/?graph=GRAPH-NAME](https://xenon-js.web.app/0.5/Run/?graph=GRAPH-NAME)
+
+By default the Graphs you construct in `Build` are persisted in your browser's local storage. You can access a locally stored Graph at:  
+> [xenon-js.web.app/0.5/Run/?graph=local$GRAPH-NAME](https://xenon-js.web.app/0.5/Run/?graph=local$GRAPH-NAME)
+
+### Graphs Library
+
+Graphs are constructed from XenonJs Nodes or other Graphs. More detailed information on the components is available at the [Library README](./pkg/Library/README.md).
+
+The XenonJs Nodes and Graphs form an emerging constantly growing ecosystem of components. Today in `Build` you can only use our build-in Nodes to compose your graphs.  
+**In our next release** we'll introduce a simple way for using pluggable libraries of components in our application.
+
+Today to use custom components, you'll need to fetch our repo and run `Run` and `Build` locally. Here is how:
+
+### Run XenonJs locally
 
 Clone the repo:
 ```
-$ git clone https://github.com/NeonFlan/xenonjs.git -b 0.5
-$ cd xenonjs
+git clone https://github.com/NeonFlan/xenonjs.git -b 0.5
+
+cd xenonjs
 ```
 
-At the very first time:
+*Note: `0.5` is our stable(-ish) version. We are constantly adding cool new features, and you are welcome to try ToT at your own risk :)*
+
+At the very first time run:
 ```
-$ npm install
+npm install
 ```
 
-Run the server:
+You can use a webserver of your choice to access the local `Run` and `Build`, but for your convenience, we provide one with our repo. Run the webserver:
 ```
-$ npm run serve
+npm run serve
 ```
 
-To construct a XenonJs Graph, open the Build/ IDE in a browser: [localhost:9871/Build/](http://localhost:9871/Build/)
+To access `Build` IDE in your browser go to:  
+> [localhost:9871/Build](http://localhost:9871/Build)
 
-To run a Graph, open the `Run` app at: [localhost:9871/Run/](http://localhost:9871/Run/).
-By default, the Graph that was last open in `Build/` will be run. To choose a different graph, add a URL param:
-```
-http://localhost:9871/Run/?graph=local$[graph-name]
-```
+To access `Run` application in your browser go to:  
+> [localhost:9871/Run](http://localhost:9871/Run)
+
+By default, the Graph that was last open in `Build` will be run. To choose a different graph, add a URL param:
+
+> [localhost:9871/Run/?graph=local$GRAPH-NAME](http://localhost:9871/Run/?graph=local$GRAPH-NAME)
 
 ## Get in touch
 
 We spend most of our time writing code and, unfortunately, this means that our documentation is incomplete or lags behind. We are working on it!  
-In the meantime, if you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/NeonFlan/xenonjs/issues/new) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
+  
+In the meantime, if you have any questions, ideas or feedback, please, don't hesitate to reach out:
+* either by filing an [GitHub issue](https://github.com/NeonFlan/xenonjs/issues/new) 
+* or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
 
 
 ## Overview
