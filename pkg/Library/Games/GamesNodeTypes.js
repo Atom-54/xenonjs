@@ -7,7 +7,7 @@ const category = 'Games';
 
 export const GamesNodeTypes = {
   PixiGems: {
-    category,
+    category: 'PixiJs',
     description: 'Pixi gems gaming',
     types: {
       PixiApp$app: 'PixiAppId'

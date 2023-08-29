@@ -24,8 +24,8 @@ export class PixiObject extends Xen.Async {
     return ['app', 'x', 'y', 's', 'r'];
   }
   get template() {
-    return Xen.html`<!-- -->`;
-  }
+    return Xen.html``;
+  }  
   _didMount() {
     this.state.originHost = this.getRootNode().host;
   }
