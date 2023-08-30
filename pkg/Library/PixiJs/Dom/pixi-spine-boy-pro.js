@@ -5,6 +5,7 @@
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {PIXI} from './pixi.js';
+import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
 
 export class PixiSpineBoyPro extends Xen.Async {
   static get observedAttributes() {
@@ -51,7 +52,7 @@ customElements.define('pixi-spine-boy-pro', PixiSpineBoyPro);
 
 const SpineBoy = async (app) => {
   // load spine data
-  const spineboyAsset = await PIXI.Assets.load(`../../third-party/pixijs/assets/pixi-spine/spineboy-pro.json`);
+  const spineboyAsset = await PIXI.Assets.load(Paths.resolve(`$library/third-party/pixijs/assets/pixi-spine/spineboy-pro.json`));
   // create a spine boy
   const spineBoyPro = new PIXI.spine.Spine(spineboyAsset.spineData);
   // set the position

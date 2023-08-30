@@ -220,6 +220,7 @@ export class PixiSpriteGrid extends PixiObject {
     //app.renderer.background.color = 0xFFFFFF;
     const container = new PIXI.Container();
     app.stage.addChildAt(container, 0);
+    container.eventMode = 'auto';
     //
     // const bg = PIXI.Sprite.from(`${assets}/scene.png`)
     // container.addChild(bg);

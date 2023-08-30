@@ -8,8 +8,8 @@ export const atom = (log, resolve) => ({
 <style>
   :host {
     display: block;
-    position: absolute;
-  }
+    position: absolute !important;
+    pointer-events: none;
 </style>
 <pixi-sprite-grid app="{{app}}"></pixi-sprite-grid>
   `

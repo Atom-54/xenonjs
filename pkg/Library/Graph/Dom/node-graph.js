@@ -392,7 +392,7 @@ const template = Xen.Template.html`
   }
 </style>
 
-<div viewport tabIndex="0" on-wheel="onWheel">
+<div viewport XtabIndex="0" on-wheel="onWheel">
   <canvas layer1 width="${viewport}" height="${viewport}"></canvas>
   <div layer0 on-mousedown="onNodeUnselect">
     <container-layout

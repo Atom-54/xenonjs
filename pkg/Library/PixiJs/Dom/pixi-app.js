@@ -16,9 +16,11 @@ export class PixiApp extends Xen.Async {
   }
   get template() {
     return Xen.html`
-<!-- <style>
-  :host > *:not(canvas) { display: none; }
-</style> -->
+<style>
+  :host {
+    overflow: hidden;
+  }
+</style>
 `;
   }
   _didMount() {
@@ -95,7 +97,8 @@ export class PixiApp extends Xen.Async {
       //view: this.canvas,
       //forceCanvas: true,
       //backgroundAlpha: (demoFunc === Transparent) ? 0 : 1
-      backgroundAlpha: 0
+      backgroundAlpha: 0,
+      eventMode: 'passive'
     });
     //app.renderer.background.color = 'tran';
     // app.stage.width = 300;
