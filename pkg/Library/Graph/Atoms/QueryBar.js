@@ -8,6 +8,7 @@ render({query, icon, placeholder}, state) {
   const hideQueryButton = !(icon?.length > 0);
   return {
     query: state.query??query??'',
+    //focus: true,
     icon,
     queryStyle: `padding: 0 ${hideQueryButton ? 20 : 40}px 0 ${hideQueryButton ? 20 : 40}px;`,
     hideQueryButton,
@@ -49,7 +50,7 @@ template: html`
     justify-content: center;
     padding: 13px 20px;
   }
-  [container] input {
+  [container] [input] {
     width: 100%;
     height: 40px;
     border-radius: 5px;
@@ -71,7 +72,8 @@ template: html`
 </style>
 <div container on-click="donothing">
   <icon hide$="{{hideQueryButton}}" query>{{icon}}</icon>
-  <input placeholder="{{placeholder}}" on-input="onTextChanged" on-blur="onTextEditDone" value="{{query}}" xen:style="{{queryStyle}}"/>
+  <!-- <fancy-input input placeholder="{{placeholder}}" on-input="onTextChanged" on-blur="onTextEditDone" value="{{query}}" xen:style="{{queryStyle}}"></fancy-input> -->
+  <input input focus="{{focus}}" placeholder="{{placeholder}}" on-input="onTextChanged" on-blur="onTextEditDone" value="{{query}}" xen:style="{{queryStyle}}">
   <icon clear hide$="{{hideClearButton}}" on-click="onClearClick">close</icon>
 </div>
 `

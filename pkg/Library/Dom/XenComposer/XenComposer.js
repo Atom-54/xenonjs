@@ -75,14 +75,15 @@ export class XenComposer extends Composer {
       const data = {key: null, value: null};
       // walk up the event path to find the topmost key/value data
       const branch = e.composedPath();
-      for (let elt of branch) {
+      let elt;
+      for (elt of branch) {
         if (elt.nodeType === Node.ELEMENT_NODE) {
           if ('key' in elt) {
             data.key = elt.key;
           } else if (elt.hasAttribute('key')) {
             data.key = elt.getAttribute('key');
           }
-          if ('value' in elt && elt.value !== undefined) {
+          if (elt.value !== undefined) {
             data.value = elt.value;
           } else if ('checked' in elt && elt.checked !== undefined) {
             data.value = elt.checked;
@@ -95,6 +96,11 @@ export class XenComposer extends Composer {
         if (e.currentTarget === elt || data.key || data.value) {
           break;
         }
+      }
+      if (e.currentTarget && (e instanceof WheelEvent)) {
+        const {deltaX, deltaY, deltaZ, deltaMode} = e;
+        const {scrollTop, scrollLeft} = e.currentTarget;
+        Object.assign(data, {deltaX, deltaY, deltaZ, deltaMode, scrollTop, scrollLeft});
       }
       const eventlet = {name: type, handler, data};
       this.onevent(pid, eventlet);

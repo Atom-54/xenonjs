@@ -15,7 +15,7 @@ const assets = Paths.resolve('$xenon/Apps/Assets/gems');
 const [cols, rows] = [8, 8];
 const siz = 65, margin = 8;
 const v = 0.1;
-const scales = [1, 1.25];
+const scales = [1, 1]; //[1, 1.25];
 
 export class PixiSpriteGrid extends PixiObject {
   //   static get observedAttributes() {
@@ -127,6 +127,7 @@ export class PixiSpriteGrid extends PixiObject {
       this.dragging = gem;
       gem.manual = true;
       //gem.s.onpointermove = e => this.pointerMove(e, gems);
+      this.pointerMove(e);
     }
   }
   pointerMove(e) {
@@ -161,9 +162,10 @@ export class PixiSpriteGrid extends PixiObject {
     }
   }
   calcDragOffset({l, t}, e) {
+    const {x: sx, y: sy} = this.state.app.stage.scale;
+    const [px, py] = [e.x / sx, e.y / sy];
     const [x, y] = this.ijToXy(l, t, 0, 0);
-    const [dx, dy] = [e.x - x, e.y - y];
-    //console.log(dx, dy);
+    const [dx, dy] = [px - x, py - y];
     const clamp = v => Math.max(Math.min(v, 0.99), -0.99);
     let [ol, ot] = [clamp(dx / siz), clamp(dy / siz)];
     let [mol, mot] = [ol*ol, ot*ot];
@@ -281,8 +283,8 @@ export class PixiSpriteGrid extends PixiObject {
   ijToXy(i, j, oi, oj) {
     const xs = siz + margin;
     const ys = siz + margin;
-    const x = xs * (i + oi) + (siz+margin/2);
-    const y = ys * (j + oj) + (siz+margin/2);
+    const x = xs * (i + oi) + (siz/2);
+    const y = ys * (j + oj) + (siz/2);
     return [x, y];
   }
   scaleAndPositionGem(gem) {

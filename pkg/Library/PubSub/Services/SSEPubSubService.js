@@ -3,23 +3,29 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SSEPubSub} from '/.SSEPubSub.js';
+import {SSEPubSub} from './SSEPubSub.js';
 import {onComposerEvent} from '../../CoreFramework/App.js';
 
-const pubSub = new SSEPubSub();
+const log = logf('Services:(SSE)PubSub', 'yellow', 'black');
+//const pubSub = new SSEPubSub(`${globalThis.config?.firebaseConfig?.databaseURL}/pubsub`);
+
+// TODO(sjmiles): SSEPubSub should handle the multiplexing
+const pubsubs = [];
+const getPubSub = path => pubsubs[path] ??= new SSEPubSub(`${globalThis.config?.firebaseConfig?.databaseURL}/pubsub/${path}`);
 
 export const SSEPubSubService = {
   async Publish(layer, atom, {path, value}) {
-    console.warn('Publish', atom, path, value);
-    return pubSub.publish(path, value);
+    log('Publish', path, value);
+    return getPubSub(path).publish(path, value);
   },
   async Subscribe(layer, atom, {path}) {
-    console.warn('Subscribe', atom, path);
+    log('Subscribe', path);
     const signal = (value) => {
-      console.warn('Signal', atom, path, value);
-      onComposerEvent(layer, atom, {subscribedValue: value});
-    }
-    return pubSub.subscribe(path, signal);
+      log('Signal', path, value);
+      const event =  {handler: 'onSubscribedValue', data: {value}};
+      onComposerEvent(layer, atom.name, event);
+    };
+    return getPubSub(path).subscribe(path, signal);
   }
 };
 

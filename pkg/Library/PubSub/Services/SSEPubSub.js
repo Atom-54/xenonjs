@@ -3,41 +3,43 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const defaultUrl = 'https://xenonjs-core.firebaseio.com';
+
+const defaultUrl = globalThis.config?.firebaseConfig?.databaseURL;
 
 export const SSEPubSub = class {
   constructor(url) {
     this.subs = [];
     this.url = url || defaultUrl;
   }
-  publish(path, value) {
-    return fetch(`${this.url}${path}`, {
+  async publish(path, value) {
+    const response = await fetch(`${this.url}/${path}.json`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(value)
     });
+    return response?.status;
   }
   subscribe(path, signal) {
     if (!this.source) {
-      this.source = new EventSource(`${this.url}/.json`, {});
-      this.source.addEventListener('put', e => this.onPut(e.data));
-      this.source.addEventListener('patch', e => this.onPatch(e.data));
+      this.source = new EventSource(`${this.url}/${path}.json`, {});
+      this.source.addEventListener('put', e => this.onPut(path, e.data));
+      this.source.addEventListener('patch', e => this.onPatch(path, e.data));
     }
     this.subs.push({path, signal});
   }
-  onPut(json) {
+  onPut(path, json) {
     try {
       const put = JSON.parse(json);
       //console.log('(put)', put);
-      this.notify(put);
+      this.notify({...put, path});
     } catch(x) {
     }
   }
-  onPatch(json) {
+  onPatch(path, json) {
     try {
       const patch = JSON.parse(json);
       //console.log('(patch)', patch);
-      this.notify(patch);
+      this.notify({...patch, path});
     } catch(x) {
     }
   }

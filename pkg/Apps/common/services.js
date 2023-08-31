@@ -6,7 +6,7 @@
 import {AuthService} from 'xenonjs/Library/Firebase/Auth/FirebaseAuthService.js';
 import {ImageService} from 'xenonjs/Library/Media/ImageService.js';
 import {MediaService} from 'xenonjs/Library/Media/MediaService.js';
-import {ShaderService} from 'xenonjs/Library/Shader/ShaderService.js';
+import {ShaderService} from 'xenonjs/Library/Shader/Services/ShaderService.js';
 import {JSONataService} from 'xenonjs/Library/JSONata/JSONataService.js';
 import {SelfieSegmentationService} from 'xenonjs/Library/Mediapipe/Services/SelfieSegmentationService.js';
 import {FaceMeshService} from 'xenonjs/Library/Mediapipe/Services/FaceMeshService.js';
@@ -22,6 +22,7 @@ import {POIService} from 'xenonjs/Library/Locale/Services/POIService.js';
 import {OpenAIService} from 'xenonjs/Library/OpenAI/OpenAIService.js';
 import {GraphService} from 'xenonjs/Library/CoreDesigner/GraphService.js';
 import {jsonrepairService} from 'xenonjs/Library/jsonrepair/jsonrepairService.js';
+import {SSEPubSubService as PubSubService} from 'xenonjs/Library/PubSub/Services/SSEPubSubService.js';
 
 export const services = {
   AuthService, 
@@ -42,5 +43,6 @@ export const services = {
   GoogleApisService,
   WeatherApiService,
   POIService,
-  OpenAIService
+  OpenAIService,
+  PubSubService
 };

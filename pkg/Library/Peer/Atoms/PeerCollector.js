@@ -4,11 +4,11 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({data, datum}, state, {isDirty}) {
-  if (datum != null && isDirty("datum")) {
-    data ??= [];
-    data.push(datum);
+update({peers, peer}, state, {isDirty}) {
+  if (peer != null && isDirty("peer")) {
+    peers ??= [];
+    peers.push(peer);
   }
-  return {data};
+  return {peers};
 }
 });

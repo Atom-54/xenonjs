@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {uniformsFactory, fragmentShader} from './shader-tools.js';
-import {THREE} from '../Threejs/threejs-import.js';
-import {Resources} from '../Media/Resources.js';
+import {Resources} from '../../Media/Resources.js';
+import {THREE} from '../../Threejs/threejs-import.js';
 
 const {assign} = Object;
 

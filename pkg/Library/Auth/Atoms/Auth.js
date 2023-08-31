@@ -34,7 +34,7 @@ async update(inputs, state, {invalidate}) {
     //isLoggedIn: keys(state.user).length > 0
   };
 },
-render({user}, {}) {
+render({}, {user}) {
   return {
     loggedIn: String(keys(user).length > 0),
     displayName: user?.displayName ?? 'Guest',

@@ -26,6 +26,7 @@ globalThis.config = {
     //Binder: true,
     //BusTerminal: true,
     //Composer: true,
+    DesignApp: true,
     //DOM: true,
     Graphs: true,
     //Host: true,

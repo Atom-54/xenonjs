@@ -14,15 +14,15 @@
 
 <script type="module">
   import {SSEPubSub} from '../SSEPubSub.js';
-  const pubSub = new SSEPubSub('https://xenonjs-core.firebaseio.com');
-  //
+  const pubSub = new SSEPubSub('https://xenon-js-default-rtdb.firebaseio.com');
+  // //
   const setScrollTop = top => {
     window.ascreen.scrollTop = top;
   };
-  pubSub.subscribe('/scroll/y', setScrollTop);
+  pubSub.subscribe('scroll/y', setScrollTop);
   //
   window.bscreen.onscroll = e => {
-    const remoteScroll = value => pubSub.publish('/scroll/y.json', value);
+    const remoteScroll = value => pubSub.publish('scroll/y', value);
     pubSub.debounce(remoteScroll, window.bscreen.scrollTop, 40);
   };
 </script>
