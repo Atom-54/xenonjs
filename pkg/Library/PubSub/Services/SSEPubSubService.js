@@ -28,4 +28,3 @@ export const SSEPubSubService = {
     return getPubSub(path).subscribe(path, signal);
   }
 };
-

@@ -232,7 +232,6 @@ export class NodeGraph extends Xen.Async {
       ctx.closePath();
     }
   }
-
   onNodeSelect(event) {
     event.stopPropagation();
     this.key = event.currentTarget.key;
@@ -241,20 +240,17 @@ export class NodeGraph extends Xen.Async {
     }
     this.fire('node-selected');
   }
-
   onNodeUnselect(event) {
     this.key = null;
     delete this.state.textSelectedKey;
     this.fire('node-selected');
   }
-
   // called when user has changed a rectangle (high freq)
   onUpdateBox({currentTarget: {value: rect}}) {
     this.value = rect;
     this.rects[this.key] = rect;
     this.invalidate();
   }
-
   // called when committed a change to a rectangle (low freq)
   onUpdatePosition({currentTarget: {target, value: rect}}) {
     if (target?.key && rect) {
@@ -263,11 +259,9 @@ export class NodeGraph extends Xen.Async {
       this.fire('node-moved');
     }
   }
-
   onNodeDblClicked(event) {
     this.state.textSelectedKey = this.key;
   }
-
   onRenameNode(event){
     const text = event.target.value.trim();
     if (text?.length > 0) {
@@ -276,7 +270,6 @@ export class NodeGraph extends Xen.Async {
     }
     delete this.state.textSelectedKey;
   }
-
   onWheel(event) {
     event.preventDefault();
     let zoom = this.state.zoom ?? 1;
@@ -292,6 +285,9 @@ export class NodeGraph extends Xen.Async {
       log('Unity zoom');
     }
     this.state.zoom = this.style.zoom = zoom;
+  }
+  onPointerMove({eventlet}) {
+    log(eventlet);
   }
 }
 

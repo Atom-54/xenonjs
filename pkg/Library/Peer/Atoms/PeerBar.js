@@ -4,16 +4,25 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({peers, staticPeers, selected}, state, {}) {
+update({peers, staticPeers}, state, {}) {
   const all = [...(peers??[]), ...(staticPeers??[])];
-  all.forEach((p, i) => p.selected = (i===(selected??0)));
+  all.forEach((p, i) => {
+    p.key = i;
+  });
   state.peers = all;
-  return {peers: all};
+  return {peers: all, selectedPeer: state.peers[state.selected||0]};
 },
-render({}, {peers}) {
+render({}, {peers, selected}) {
+  peers.forEach((p, i) => {
+    p.selected = (i===(selected??0));
+  });
   return {
     peers
   };
+},
+onPeerClick({eventlet: {key}}, state) {
+  state.selected = Number(key);
+  return {selectedPeer: state.peers[state.selected]};
 },
 template: html`
 <style>
@@ -50,8 +59,8 @@ template: html`
 </style>
 <div flex column repeat="peer_t">{{peers}}</div>
 <template peer_t>
-  <div center row selected$="{{selected}}">
-    <img src="{{photoURL}}">&nbsp;
+  <div center row key$="{{key}}" selected$="{{selected}}" on-click="onPeerClick">
+    <img src="{{photoURL}}" referrerpolicy="no-referrer">&nbsp;
     <span flex>{{name}}</span>
   </div>
 </template>

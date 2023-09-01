@@ -33,7 +33,7 @@ export const HolisticService = {
         // classify!
         const raw = await MediapipeModel.classifier(realImage, realTarget);
         const {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h} = raw.results;
-        const results = {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h};
+        const results = {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h, image};
         // compute output canvas
         const bitmap = raw?.results?.segmentationMask;
         render(bitmap, realTarget, width, height);
@@ -43,15 +43,24 @@ export const HolisticService = {
     }
   },
   async marks(layer, atom, {canvas, markers, connectors, options}) {
-    const {drawConnectors: lines, drawLandmarks: marks} = window;
-    const realCanvas = Resources.get(canvas);
-    if (markers && realCanvas) {
-      const ctx = realCanvas.getContext('2d');
-      ctx.globalCompositeOperation = options?.op ?? 'source-over';
-      if (connectors) {
-        return lines?.(ctx, markers, connectors, options);
-      }
-      return marks?.(ctx, markers, options);
+    renderPose({canvas, markers, connectors, options});
+  },
+  async drawPose(layer, atom, data) {
+    renderPose({...data, options: data.connectorStyle});
+    renderPose({...data, connectors: null, options: data.markStyle});
+  }
+};
+
+const renderPose = ({canvas, markers, connectors, options}) => {
+  const {drawConnectors, drawLandmarks} = window;
+  const realCanvas = Resources.get(canvas);
+  if (markers && realCanvas) {
+    const ctx = realCanvas.getContext('2d');
+    ctx.globalCompositeOperation = options?.op ?? 'source-over';
+    if (connectors) {
+      drawConnectors?.(ctx, markers, connectors, options);
+    } else {
+      drawLandmarks?.(ctx, markers, options);
     }
   }
 };

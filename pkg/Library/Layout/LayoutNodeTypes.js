@@ -69,5 +69,10 @@ export const LayoutNodeTypes = {
     category,
     description: 'Renders a stack grid design layout',
     type: '$library/Layout/Nodes/DesignGridNode'
+  },
+  TabPages: {
+    category,
+    description: 'Set of pages with Tabs for navigation',
+    type: '$library/Layout/Nodes/TabPagesNode'
   }
 };

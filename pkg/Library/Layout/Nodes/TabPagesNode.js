@@ -14,8 +14,8 @@ export const TabPagesNode = {
   //     $type: 'String'
   //   }
   // },
-  pages: {
-    kind: "$library/Layout/Atoms/TabPages",
+  TabPages: {
+    type: "$library/Layout/Atoms/TabPages",
     inputs: ['tabs'],
   //   slots: {
   //     PagesContainer: {}

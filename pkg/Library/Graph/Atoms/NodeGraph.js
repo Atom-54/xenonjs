@@ -123,7 +123,7 @@ template: html`
 <style>
   :host {
     display: flex;
-    flex: 1;
+    flex: 1 !important;
     /* height: 100%; */
     position: relative;
     font-size: 12px;

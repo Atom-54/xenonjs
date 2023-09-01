@@ -12,7 +12,7 @@ export const SSEPubSub = class {
     this.url = url || defaultUrl;
   }
   async publish(path, value) {
-    const response = await fetch(`${this.url}/${path}.json`, {
+    const response = await fetch(`${this.url}.json`, {
       method: 'PUT',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(value)
@@ -21,7 +21,7 @@ export const SSEPubSub = class {
   }
   subscribe(path, signal) {
     if (!this.source) {
-      this.source = new EventSource(`${this.url}/${path}.json`, {});
+      this.source = new EventSource(`${this.url}.json`, {});
       this.source.addEventListener('put', e => this.onPut(path, e.data));
       this.source.addEventListener('patch', e => this.onPatch(path, e.data));
     }

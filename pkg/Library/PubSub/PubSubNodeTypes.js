@@ -15,5 +15,10 @@ export const PubSubNodeTypes = {
     category,
     description: 'Simple markup for rendering Chat messages',
     type: '$library/PubSub/Nodes/ChatMarkupNode'
+  },
+  SendButton: {
+    category,
+    description: 'Button to manage Send actions',
+    type: '$library/PubSub/Nodes/SendButtonNode'
   }
 };

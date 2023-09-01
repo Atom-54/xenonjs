@@ -108,6 +108,15 @@ export const MediaNodeTypes = {
     },
     type: `$library/Media/Nodes/StreamNode`
   },
+  VideoStream: {
+    category,
+    description: 'Display video streams',
+    types: {
+      VideoStream$src: 'String',
+      VideoStream$stream: 'Stream'
+    },
+    type: `$library/Media/Nodes/VideoStreamNode`
+  },
   FrameCapture: {
     category,
     description: 'Captures a frame image from a video stream',

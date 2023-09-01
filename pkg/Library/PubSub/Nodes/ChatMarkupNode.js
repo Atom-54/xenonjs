@@ -6,7 +6,7 @@
 export const ChatMarkupNode = {
   ChatMarkup: {
     type: '$library/PubSub/Atoms/ChatMarkup',
-    inputs: ['messages'],
+    inputs: ['messages_0', 'messages_1', 'messages_2', 'messages_3'],
     outputs: ['markup']
   }
 };
