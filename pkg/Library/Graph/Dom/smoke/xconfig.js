@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const xenonPath = new URL('../../../..', import.meta.url).href;
-const neonPath = new URL('../../../../../NeonFlan/Library', import.meta.url).href;
 
 globalThis.config = {
   // as needed
@@ -16,8 +15,7 @@ globalThis.config = {
     $library: `${xenonPath}/Library`,
     // next two paths only needed if using workers
     $xenon: xenonPath,
-    $neonLibrary: neonPath,
-    $boot: `${xenonPath}/Apps/Run/web/xenon.js`,
+    $boot: `${xenonPath}/Run/web/xenon.js`,
   },
   logFlags: {
     //App: true,
