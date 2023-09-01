@@ -76,21 +76,15 @@ initialize(inputs, state) {
   state.colors = [
     '',
     {name: 'default', value: 'default'},
+    {name: 'white', value: 'white'},
+    {name: 'black', value: 'black'},
     {name: 'Color 1', value: 'var(--xcolor-one)'},
     {name: 'Color 2', value: 'var(--xcolor-two)'},
     {name: 'Color 3', value: 'var(--xcolor-three)'},
     {name: 'Color 4', value: 'var(--xcolor-four)'},
     {name: 'Brand', value: 'violet'},
   ];
-  state.backgrounds = [
-    '',
-    {name: 'default', value: 'default'},
-    {name: 'Color 1', value: 'var(--xcolor-one)'},
-    {name: 'Color 2', value: 'var(--xcolor-two)'},
-    {name: 'Color 3', value: 'var(--xcolor-three)'},
-    {name: 'Color 4', value: 'var(--xcolor-four)'},
-    {name: 'Brand', value: 'violet'},
-  ];
+  state.backgrounds = [...state.colors];
   state.positions = ['', 'static', 'absolute', 'fixed', 'relative'];
   state.displays = ['', 'block', 'flex', 'inline-block', 'inline-flex', 'none'];
   state.justifyContents = ['', 'start', 'center', 'end'];
