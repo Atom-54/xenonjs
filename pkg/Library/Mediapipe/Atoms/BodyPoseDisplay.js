@@ -5,11 +5,13 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async initialize(inputs, state, {service}) {
-  const canvas = await service({kind: 'MediaService', msg: 'allocateCanvas', data: {width: 640, height: 480}});
+  const canvas = await service({kind: 'MediaService', msg: 'allocateCanvas', data: {width: 960, height: 540}});
   state.renderPose = markers => {
     service('ImageService', 'clearCanvas', {canvas});
-    service('HolisticService', 'marks', {canvas, markers, connectors: this.POSE_CONNECTIONS, options: {lineWidth: 0.5, color: 'lightblue'}});
-    service('HolisticService', 'marks', {canvas, markers, options: {lineWidth: 1, radius: 2, color: 'white'}});
+    service('HolisticService', 'drawPose', {canvas, markers, connectors: this.POSE_CONNECTIONS, 
+      connectorStyle: {XlineWidth: 4, color: '#EEEEEE'}, 
+      markStyle: {XlineWidth: 4, radius: 2, fillColor: 'white', color: 'orange'}}
+    );
   };
   state.canvas = canvas;
 },

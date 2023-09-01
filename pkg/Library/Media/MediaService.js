@@ -20,7 +20,10 @@ export const MediaService = class {
   }
   static async allocateCanvas(app, atom, data) {
     log('allocateCanvas');
-    const canvas = dom('canvas', {style: 'display: none; width: 240px; height: 180px;'});
+    const {width, height} = data;
+    const canvas = dom('canvas', {style: `display: none; width: ${width || 640}px; height: ${height || 480}px;`});
+    canvas.width = data.width || 640;
+    canvas.height = data.height || 480;
     return Resources.allocate(canvas);
   }
   static async captureStream(app, atom, {frame, fps}) {

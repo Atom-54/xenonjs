@@ -19,7 +19,7 @@ export const industrialize = atoms => {
 /** */
 export const emit = async (name, kind) => {
   if (!kind) {
-    log.error('emit: required "kind" argument is null');
+    log.error('emit: required "kind/type" argument is null');
     return;
   }
   let factory = Reactor.getFactory(kind);
