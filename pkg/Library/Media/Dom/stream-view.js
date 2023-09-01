@@ -25,14 +25,14 @@ export class StreamView extends Xen.Async {
     this.canvas = Object.assign(this._dom.$('canvas'), {width: 640, height: 480});
     this.video = this._dom.$('video');
   }
-  // _wouldChangeProp(name, value) {
-  //   return name === 'stream' || super._wouldChangeProp(name, value);
-  // }
+  _wouldChangeProp(name, value) {
+    return name === 'stream' || super._wouldChangeProp(name, value);
+  }
   update({frequency, stream, src}, state) {
-    // for use in dom operations
-    this.value = state.id;
     // make output canvas available as a resource id
     Resources.set(state.id, this.canvas);
+    // for use in dom operations
+    this.value = state.id;
     let realStream;
     if (stream && src) {
       this.video.src = src;
@@ -40,30 +40,32 @@ export class StreamView extends Xen.Async {
       Resources.set(stream, realStream)
     } else if (stream) {
       realStream = Resources.get(stream);
-      if (realStream && state.realStream !== realStream) {
-        state.realStream = realStream;
+      if (realStream && this.video.srcObject !== realStream) {
+        //state.realStream = realStream;
         this.video.srcObject = realStream;
       }
     }
-    if (realStream/*?.active()*/ && frequency) {
-      this.doCanvasCadence(Number(frequency), stream);
+    if (realStream && frequency) {
+      this.doCanvasCadence(Number(frequency));
     } else {
       //log(frequency, stream, src);
     }
   }
-  doCanvasCadence(frequency, id) {
+  doCanvasCadence(frequency) {
     if (!this.cadencing) {
       this.cadencing = true;
-      const {videoWidth: w, videoHeight: h} = this.video;
-      const {width: cw, height: ch} = this.canvas;
-      if (w && h) {
-        //console.warn(id, 'cadence: ', w, h, cw, ch);
-        if (cw !== w || ch !== h) {
-          log(id, 'size: ', w, h, cw, ch);
-          Object.assign(this.canvas, {width: w, height: h});
+      if (this.video.srcObject.active) {
+        const {videoWidth: w, videoHeight: h} = this.video;
+        const {width: cw, height: ch} = this.canvas;
+        if (w && h) {
+          //console.warn(id, 'cadence: ', w, h, cw, ch);
+          if (cw !== w || ch !== h) {
+            //log(id, 'size: ', w, h, cw, ch);
+            Object.assign(this.canvas, {width: w, height: h});
+          }
+          this.canvas.getContext('2d').drawImage(this.video, 0, 0, w, h);
+          this.fire('canvas');
         }
-        this.canvas.getContext('2d').drawImage(this.video, 0, 0, w, h);
-        this.fire('canvas', id);
       }
       const msPerFrame = Math.max(1000 * (1 / frequency) ?? 0, 33);
       setTimeout(() => {

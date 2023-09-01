@@ -29,7 +29,7 @@ async update({data}, state, {service}) {
 render({data}, {outputImage}) {
   return {
     image: outputImage,
-    stream: data?.image?.stream.id
+    stream: data?.image?.stream?.id
   };
 },
 template: html`
