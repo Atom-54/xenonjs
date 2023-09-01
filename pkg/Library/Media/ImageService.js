@@ -24,6 +24,14 @@ export const ImageService = {
     image.url = resizeCanvas.toDataURL();
     return image;
   },
+  async clearCanvas(layer, atom, {canvas, op, fillStyle, alpha}) {
+    const realCanvas = Resources.get(canvas);
+    const ctx = realCanvas.getContext('2d');
+    ctx.globalAlpha = alpha || 1;
+    ctx.globalCompositeOperation = op || 'copy';
+    ctx.fillStyle = fillStyle || 'transparent';
+    ctx.fillRect(0, 0, realCanvas.width, realCanvas.height);
+  },
   async requireImageCanvas(app, atom, {image}) {
     image.canvas = await ImageService.canvasFromImage(app, atom, image);    
     return image;

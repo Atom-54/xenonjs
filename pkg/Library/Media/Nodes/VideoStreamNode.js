@@ -3,10 +3,10 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-export const StreamNode = {
-  Stream: {
+export const VideoStreamNode = {
+  VideoStream: {
     type: '$library/Media/Atoms/VideoStream',
-    inputs: ['stream'],
+    inputs: ['src', 'stream'],
     outputs: ['stream']
   }
 };

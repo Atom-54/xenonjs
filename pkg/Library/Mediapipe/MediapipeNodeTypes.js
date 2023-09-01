@@ -51,6 +51,15 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/HolisticNode`
   },
+  BodyPoseDisplayNode: {
+    category,
+    description: 'Renders face',
+    types: {
+      BodyPoseDisplay$image: 'Image',
+      BodyPoseDisplay$data: 'HolisticResults'
+    },
+    type: `$library/Mediapipe/Nodes/BodyPoseDisplayNode`
+  },
   FingerPaintNode: {
     category,
     description: 'Paints and/or erases painting following fingers motion.',

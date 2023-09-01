@@ -7,7 +7,7 @@ export const PeerBarNode = {
   PeerBar: {
     type: '$library/Peer/Atoms/PeerBar',
     inputs: ['staticPeers'],
-    outputs: ['peers'],
+    outputs: ['peers', 'selectedPeer'],
     bindings: {
       peers: 'PeerCollector$peers'
     }

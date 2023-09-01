@@ -6,7 +6,9 @@ export const atom = (log, resolve) => ({
  */
 update({data, datum}, state, {isDirty}) {
   if (datum != null && isDirty("datum")) {
-    data ??= [];
+    if (!Array.isArray(data)) {
+      data = [];
+    }
     data.push(datum);
   }
   return {data};

@@ -12,7 +12,7 @@ const template = Xen.Template.html`
     overflow: hidden;
     font-size: 10px;
     color: black;
-    background-color: black;
+    background-color: transparent;
   }
   * {
     box-sizing: border-box;

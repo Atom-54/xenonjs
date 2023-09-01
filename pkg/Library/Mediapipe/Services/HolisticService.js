@@ -33,7 +33,7 @@ export const HolisticService = {
         // classify!
         const raw = await MediapipeModel.classifier(realImage, realTarget);
         const {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h} = raw.results;
-        const results = {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h};
+        const results = {leftHandLandmarks, rightHandLandmarks, faceLandmarks, poseLandmarks, multiFaceGeometry, width: w, height: h, image};
         // compute output canvas
         const bitmap = raw?.results?.segmentationMask;
         render(bitmap, realTarget, width, height);

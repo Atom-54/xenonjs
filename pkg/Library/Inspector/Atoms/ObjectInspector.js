@@ -414,7 +414,7 @@ template: html`
   }
   [prop-container] {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     padding-bottom: 16px;
   }
@@ -696,7 +696,7 @@ template: html`
 </template>
 
 <template custom_t>
-  <div flex prop-container>
+  <div flex prop-container vertical>
     <slot name="{{container}}"></slot>
   </div>
 </template>
