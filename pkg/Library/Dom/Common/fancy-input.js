@@ -55,13 +55,19 @@ export class FancyInput extends Xen.Async {
     }
     this.input[focus ? 'focus' : 'blur']?.();
   }
-  onBlur() {
-    this.state = {userEnabled: false};
+  onInput() {
+    this.value = this.input.value;
+    this.fire('input');
   }
   onChange() {
     this.value = this.input.value;
     this.state = {userEnabled: false};
     this.fire('change');
+  }
+  onBlur() {
+    this.value = this.input.value;
+    this.state = {userEnabled: false};
+    this.fire('blur');
   }
   onDblClick() {
     if (!this.disabled && this.jit) {
@@ -82,12 +88,13 @@ export class FancyInput extends Xen.Async {
     height: 100%;
     /* width: 15em; */
     width: 94%;
+    border: none;
   }
   input[disabled] {
     color: gray;
   }
 </style>
-<input disabled="{{disabled}}" type="{{type}}" value="{{value}}" on-blur="onBlur" on-change="onChange">
+<input disabled="{{disabled}}" type="{{type}}" value="{{value}}" on-blur="onBlur" on-change="onChange" on-input="onInput">
 `;
   }
 }

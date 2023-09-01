@@ -4,20 +4,20 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-initialization(inputs, state, {service}) {
-  state.publish = async value => service('PubSubService', 'Publish', {path, value});
-  state.subscribe = async value => service('PubSubService', 'Subscribe', {path});
+initialize(inputs, state, {service}) {
+  state.publish = async (path, value) => service('PubSubService', 'Publish', {path, value});
+  state.subscribe = async path => service('PubSubService', 'Subscribe', {path});
 },
 update({path, publishValue}, state, {isDirty}) {
-  if (isDirty(path)) {
+  if (path && isDirty('path')) {
     state.subscribe(path);
   }
-  if (isDirty(publishValue)) {
+  if (publishValue && publishValue !== "couldn't evaluate JSON" && isDirty('publishValue')) {
     state.publish(path, publishValue);
   }
 },
-onSubscribedValue({eventlet: {subscribedValue}}) {
-  return {subscribedValue};
+onSubscribedValue({eventlet: {value}}) {
+  return {subscribedValue: value};
 }
 });
     

@@ -13,7 +13,7 @@ import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('DesignApp', 'orange', 'black');
-log.flags.DesignApp = true;
+//log.flags.DesignApp = true;
 
 // be pithy
 const {assign, create, entries, keys, values, nob} = SafeObject;
@@ -127,44 +127,6 @@ export const applyStyleToObject = (layer, style, objectId) => {
     App.set(layer, layerLayoutKey, mod);
   }
 };
-
-// export const addObject = async (owner, layer, node, style) => {
-//   node ??= {type: '$library/EchoNode'};
-//   style ??= {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-2)', borderStyle: 'solid'};
-//   // mutable graph
-//   const graph = deepCopy(layer.graph);
-//   // indicated container
-//   const containerKey = defaultDesignerContainer;
-//   // make the new object
-//   const objectId = await addGraphObject(node, graph, containerKey);
-//   // install modified graph
-//   layer.graph = graph;
-//   // make sure new object is visible
-//   applyStyleToObject(layer, style, objectId);
-//   // create layer objects from graph object
-//   await reifyObject(layer, objectId);
-//   // save the graph with the new object in it
-//   return save(layer);
-// };
-
-// const addGraphObject = async (descriptor, graph, container) => {
-//   // make an object
-//   const object = {
-//     type: descriptor.type,
-//     container
-//   };
-//   // identify object 
-//   let kind = object.type.split('/').pop() ?? 'Object';
-//   if (kind.endsWith('Node')) {
-//     kind = kind.slice(0, -4);
-//   }
-//   //const objectId = app.uniqueGraphId(qualifyId(layerId, kind));
-//   const id = Graphs.uniqueGraphId(graph, kind);
-//   // insert object into graph
-//   graph.nodes[id] = object;
-//   // here's the object id
-//   return id;
-// };
 
 export const reifyObject = async (layer, id) => {
   // this graph
@@ -363,7 +325,7 @@ const replaceObject = async (layer, objectId, newId, object) => {
 
 const addObject = async (layer, newId, object) => {
   layer.graph.nodes[newId] = object;
-  applyStyleToObject(layer, {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-2)', borderStyle: 'solid'}, newId);
+  applyStyleToObject(layer, {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-1)', borderStyle: 'solid'}, newId);
 };
 
 export const cloneObject = async (owner, layer) => {

@@ -30,6 +30,8 @@ import {LocalStorageNodeTypes} from 'xenonjs/Library/LocalStorage/LocalStorageNo
 import {LocaleNodeTypes} from 'xenonjs/Library/Locale/LocaleNodeTypes.js';
 import {NeonFlanNodeTypes} from 'xenonjs/Library/NeonFlan/NeonFlanNodeTypes.js';
 import {MailNodeTypes} from 'xenonjs/Library/Mail/MailNodeTypes.js';
+import {PubSubNodeTypes} from 'xenonjs/Library/PubSub/PubSubNodeTypes.js';
+import {PeerNodeTypes} from 'xenonjs/Library/Peer/PeerNodeTypes.js';
 
 const nodeTypes = {
   Echo: {
@@ -66,7 +68,9 @@ const nodeTypes = {
   ...GamesNodeTypes,
   ...LocalStorageNodeTypes,
   ...LocaleNodeTypes,
-  ...MailNodeTypes
+  ...MailNodeTypes,
+  ...PubSubNodeTypes,
+  ...PeerNodeTypes
 };
 
 globalThis.nodeTypes = nodeTypes;

@@ -10,7 +10,7 @@
 <script type="module">
   import {SSEPubSub} from '../SSEPubSub.js';
   const pubSub = new SSEPubSub('https://xenonjs-core.firebaseio.com');
-  pubSub.subscribe('/scroll/y', top => {
+  pubSub.subscribe('scroll/y', top => {
     window.ascreen.scrollTop = top;
   });
 </script>

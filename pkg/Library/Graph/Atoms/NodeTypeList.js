@@ -76,7 +76,7 @@ colorByCategory(category, categories) {
 bgColorByCategory(category, categories) {
   return categories?.[category]?.bgColor || 'var(--xcolor-brand)';
 },
-render({}, {groups, showInfoPanel, infoPanelPos}) {
+render({}, {groups, showInfoPanel, infoPanelPos, scrollLeft}) {
   const {top, right} = infoPanelPos || {top: 0, right: 0};
   const flat = groups.flatMap(group => {
     return [
@@ -86,6 +86,7 @@ render({}, {groups, showInfoPanel, infoPanelPos}) {
   });
   //log.warn(flat);
   return {
+    scrollLeft,
     flat,
     //groups,
     hideNoMatchedNodesLabel: groups?.length !== 0,
@@ -163,6 +164,9 @@ onMouseOutNodeType(inputs, state) {
   state.showInfoPanel = false;
   return {hoveredMeta: null};
 },
+onMouseWheel({eventlet: {scrollLeft, deltaY}}, state) {
+  state.scrollLeft = scrollLeft + deltaY;
+},
 template: html`
 <style>
   :host {
@@ -171,7 +175,7 @@ template: html`
     background-color: var(--xcolor-two) !important;
     color: var(--xcolor-four);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
   }
   [no-matched-nodes] {
     font-size: 12px;
@@ -224,9 +228,10 @@ template: html`
 </style>
 
 <slot name="search"></slot>
+
 <div flex column>
   <!-- <div scrolling flex column grid repeat="group_t">{{groups}}</div> -->
-  <div scrolling flex column grid repeat="nodetype_t">{{flat}}</div>
+  <div scrolling flex column grid scroll-left="{{scrollLeft:scrollLeft}}" on-mousewheel="onMouseWheel" repeat="nodetype_t">{{flat}}</div>
   <div no-matched-nodes hide$="{{hideNoMatchedNodesLabel}}">No matched nodes</div>
 </div>
 

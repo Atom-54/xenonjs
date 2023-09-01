@@ -108,6 +108,7 @@ markupTranscript(text, personas) {
 },
 buildColorChart(personas) {
   const color = ['#5d96be', '#be855d', '#855dbe', '#b65dbe', '#96be5d', '#5d66be'];
+  // make an object with keys from `personas` matched with colors from list above (this is the 'ColorChart', c.f. "Call Me")
   return keys(personas).reduce((chart, p, i) => {
     chart[p] = color[i%6];
     return chart;
