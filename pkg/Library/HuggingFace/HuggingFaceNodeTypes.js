@@ -63,6 +63,7 @@ export const HuggingFaceNodeTypes = {
         'microsoft/git-large-coco'
         // TODO: add more models: https://huggingface.co/models?pipeline_tag=image-to-text&sort=trending
       ],
+      toText$customModel: 'String',
       toText$working: 'Boolean',
       toText$text: 'String'
     }

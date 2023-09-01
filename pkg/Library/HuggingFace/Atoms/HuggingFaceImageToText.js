@@ -7,14 +7,15 @@ export const atom = (log, resolve) => ({
 async initialize(inputs, state, {service}) {
   state.inference = (model, inputs) => service('HuggingFaceService', 'textInference', {model, inputs});
 },
-shouldUpdate({model, image}) {
-  return model && image;
+shouldUpdate({model, customModel, image}) {
+  return (customModel || model) && image;
 },
-async update({model, image}, {inference}, {output}) {
+async update({model, customModel, image}, {inference}, {output}) {
   output({working: true});
-  const result = await inference(model, image.url ?? image);
+  const result = await inference(customModel || model, image.url ?? image);
   const text = result?.[0]?.generated_text;
   return {
+    result,
     text,
     working: false
   };
