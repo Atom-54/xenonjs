@@ -44,8 +44,9 @@ async loadPublicGraphs({publishedGraphsUrl}, state, {output, isDirty}) {
       // Replacing % with $ is backward compatibility for graphs,
       // that were published before double stringification.
       const text = (await res.text())?.replace(/%/g, '$');
+      const parsed = values(JSON.parse(text)).map(v => typeof v === 'string' ? JSON.parse(v) : v);
       output({
-        publicGraphs: values(JSON.parse(text)).map(v => typeof v === 'string' ? JSON.parse(v) : v)
+        publicGraphs: parsed.map(g => g.meta ? g : values(g)?.map(gg => JSON.parse(gg))).flat()
       });
     }
   //}
@@ -53,9 +54,9 @@ async loadPublicGraphs({publishedGraphsUrl}, state, {output, isDirty}) {
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
   return `${publishedGraphsUrl}/${this.publicGraphsPath}.json`;
 },
-formatPutPublishGraphUrl(graphId, {publishedGraphsUrl}) {
+formatPutPublishGraphUrl(graphId, owner, {publishedGraphsUrl}) {
   const sanitize = str => str.replace(/[^a-zA-Z0-9\s]/g, '');
-  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${sanitize(graphId)}.json`;
+  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${sanitize(owner?.split('@')?.[0])}/${sanitize(graphId)}.json`;
 },
 initGraphs(inputs, state, {service}) {
   let {readonly, graph, graphs, selectedId} = inputs;
@@ -233,12 +234,11 @@ restyleGraph(id, graphs, state) {
 },
 async publishGraph(id, graphs, publicGraphs, state) {
   const graph = this.graphById(id, graphs);
-  const publicId = `${graph.meta.id} by ${graph.meta.owner?.split('@')?.[0]}`;
-  const publicGraph = {...graph, meta: {...graph.meta, id: publicId, readonly: true}};
+  const publicGraph = {...graph, meta: {...graph.meta, readonly: true}};
 
-  const result = await this.putPublishedGraph(publicId, publicGraph, state)
+  const result = await this.putPublishedGraph(graph.meta, publicGraph, state)
   if (result) {
-    let publicIndex = publicGraphs.findIndex(graph => graph.meta.id === publicId);
+    let publicIndex = publicGraphs.findIndex(graph => graph.meta.id === id && graph.meta.owner === state.user?.email);
     if (publicIndex >= 0) {
       publicGraphs[publicIndex] = publicGraph;
     } else {
@@ -247,14 +247,14 @@ async publishGraph(id, graphs, publicGraphs, state) {
     return {publicGraphs};
   }
 },
-unpublishGraph(id, publicGraphs, state) {
+async unpublishGraph(id, publicGraphs, state) {
   const index = publicGraphs.findIndex(({meta}) => meta.id === id);
+  await this.removePublishedGraph(publicGraphs[index]?.meta, state);
   publicGraphs.splice(index, 1);
-  this.removePublishedGraph(id, state);
   return {publicGraphs};
 },
-async putPublishedGraph(id, graph, state) {
-  const url = this.formatPutPublishGraphUrl(id, state);
+async putPublishedGraph({id, owner}, graph, state) {
+  const url = this.formatPutPublishGraphUrl(id, owner, state);
   const result = await fetch(url, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
@@ -265,8 +265,8 @@ async putPublishedGraph(id, graph, state) {
   }
   return result.ok;
 },
-async removePublishedGraph(id, state) {
-  return fetch(this.formatPutPublishGraphUrl(id, state), {
+async removePublishedGraph({id, owner}, state) {
+  return fetch(this.formatPutPublishGraphUrl(id, owner, state), {
     method: 'DELETE',
     headers: {'Content-Type': 'application/json'}
   });
