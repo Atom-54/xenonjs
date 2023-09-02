@@ -11,6 +11,6 @@ export const GraphAgentNode = {
   },
   state: {
     graphAgent$graphs: [],
-    graphAgent$publishedGraphsUrl: 'https://xenon-js-default-rtdb.firebaseio.com',
+    graphAgent$publishedGraphsUrl: 'https://xenon-js-default-rtdb.firebaseio.com/0_3',
   }
 };
