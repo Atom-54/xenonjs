@@ -18,6 +18,8 @@ const {assign, entries, create, keys, map, nob, values} = SafeObject;
 const log = logf('App', 'purple');
 //logf.flags.App = true;
 
+globalThis.layers = create(null);
+
 // init the app with Atom industry `atomEmitter`
 export const createLayer = async (graph, atomEmitter, Composer, Services, name='') => {
   // absorb n graphs
@@ -41,6 +43,8 @@ export const createLayer = async (graph, atomEmitter, Composer, Services, name='
   connectServices(layer, Services);
   // strobe for rendering
   Layers.invalidate(layer);
+  //
+  globalThis.layers[name || 'base'] = layer;
   return layer;
 };
 

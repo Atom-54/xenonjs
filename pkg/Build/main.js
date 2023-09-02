@@ -5,10 +5,8 @@
  */
 import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
 import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
-// these objects and services form the dependency layer for the Graphs
-import {nodeTypes} from 'xenonjs/Apps/common/nodeTypes.js';
-import {services} from 'xenonjs/Apps/common/services.js';
-import 'xenonjs/Apps/common/dom.js';
+// libraries provide objects and services that form the dependency layer for Graphs
+import * as Library from 'xenonjs/Library/CoreFramework/Library.js'
 // Graphs may request types and services from above
 import {graph as BaseGraph} from '../Graphs/Base.js';
 import {graph as BuildGraph} from '../Graphs/Build.js';
@@ -28,7 +26,13 @@ const persistables = [
   '$SplitPanel$splitPanel$divider'
 ];
 
+const libraries = {
+  libraryAlso: 'xenonjs/LibraryAlso',
+  sjmilesCustom: 'https://customlibrary.sjmiles.repl.co'
+};
+
 export const main = async (xenon, App, Composer) => {
+  const {nodeTypes, services} = await Library.importLibraries(libraries);
   // configure design system 
   Design.configureDesignApp({xenon, Composer});
   // get offline data

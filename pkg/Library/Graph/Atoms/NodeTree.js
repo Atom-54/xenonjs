@@ -23,7 +23,7 @@ addObjectToTree(graph, tree, id) {
   const node = graph?.nodes[id];
   const oid = this.getObjectId(node?.container);
   if (oid.includes('$')) {
-    log(`THIS SHOULD NEVER HAPPEN: oid '${oid}' SHOULD NOT CONTAIN $`);
+    log.warn(`THIS SHOULD NEVER HAPPEN: oid '${oid}' SHOULD NOT CONTAIN $`);
   }
   if (!graph?.nodes[oid]) {
     return tree[id] ??= create(null);
@@ -65,7 +65,7 @@ onNodeSelect({eventlet: {key}}, state) {
 },
 select(selected, state) {
   if (selected?.includes('$')) {
-    log(`THIS SHOULD NEVER HAPPEN: selected '${selected}' SHOULD NOT CONTAIN $`);
+    log.warn(`THIS SHOULD NEVER HAPPEN: selected '${selected}' SHOULD NOT CONTAIN $`);
   }
   state.selected = selected;
   return {selected};
