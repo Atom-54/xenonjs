@@ -6,8 +6,8 @@
 export const HuggingFaceImageToTextNode = { 
   toText: {
     type: '$library/HuggingFace/Atoms/HuggingFaceImageToText',
-    inputs: ['image', 'model', 'options'],
-    outputs: ['text', 'working']
+    inputs: ['image', 'model', 'options', 'customModel'],
+    outputs: ['result', 'text', 'working']
   },
   state: {
     toText$model: 'nlpconnect/vit-gpt2-image-captioning'

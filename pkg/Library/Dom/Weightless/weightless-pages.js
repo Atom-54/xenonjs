@@ -63,6 +63,7 @@ export class WeightlessPages extends Xen.Async {
     };
   }
   _didRender({}, {children}) {
+    children.sort((a, b) => (a?.style?.order ?? 1) - (b?.style?.order ?? 1));
     children?.forEach((c, i) => c.style.display = (i === this.key) ? null : 'none');
   }
   onTabChange(e) {

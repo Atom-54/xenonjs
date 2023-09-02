@@ -20,7 +20,7 @@ update({stream, src}, state) {
 render({src}, {internalStream, stream}) {
   return {
     src,
-    id: src ? internalStream.id : stream?.id
+    id: stream?.id
   };
 },
 template: html`

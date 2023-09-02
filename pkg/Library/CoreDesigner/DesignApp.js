@@ -325,7 +325,7 @@ const replaceObject = async (layer, objectId, newId, object) => {
 
 const addObject = async (layer, newId, object) => {
   layer.graph.nodes[newId] = object;
-  applyStyleToObject(layer, {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-1)', borderStyle: 'solid'}, newId);
+  applyStyleToObject(layer, {l: 32, t: 32, w: 132, h: 132, /*borderWidth: 'var(--border-size-1)',*/ borderStyle: 'solid'}, newId);
 };
 
 export const cloneObject = async (owner, layer) => {
