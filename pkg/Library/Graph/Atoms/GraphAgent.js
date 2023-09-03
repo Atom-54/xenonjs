@@ -18,9 +18,13 @@ async update(inputs, state, tools) {
   //
   await this.loadPublicGraphs(inputs, state, tools);	
   //
-  const outputs = this.initGraphs(inputs, state, tools);
+  const outputs = await this.initGraphs(inputs, state, tools);
   if (outputs) {
     return outputs;
+  }
+  if (state.addDefault) {
+    state.addDefault = false;
+    this.addFirstDefaultNode(inputs, tools);
   }
   //
   const {event} = inputs;
@@ -80,7 +84,7 @@ async addGraph({graphs}, state) {
   //
   const newGraph = this.newGraph({id}, state);
   if (!graphs?.length) {
-    this.addFirstDefaultNode(newGraph);
+    state.addDefault = true;
   }
   graphs.push(newGraph);
   return {
@@ -106,18 +110,18 @@ newGraph({id, designerId, ...meta}, {user}) {
     }
   };
 },
-addFirstDefaultNode(graph) {
-  graph.nodes['Echo'] = {
-    type: '$library/EchoNode',
-    container: `${graph.meta.designerId}$panel#Container`
-  }
-  graph.state = {};
-  graph.state['Echo$echo$html'] = `Welcome to Build!<br><br>
-    Click to select and edit me using the Inspector panel on the right.<br><br>
-    Or click + to add more objects.<br>
-  `;
-  // TODO: add a link to the Build tutorial
-  graph.state['Echo$echo$style'] = 'background-color: thistle; text-align: center; padding: 10px; width: 100%';
+async addFirstDefaultNode({}, {service}) {
+  return service('GraphService', 'MorphObject', {
+    type: {type: '$library/EchoNode'},
+    state: {
+      'echo$html': `Welcome to Build!<br><br>
+        Click to select and edit me using the Inspector panel on the right.<br><br>
+        Or click + to add more objects.<br>
+      `,
+      'echo$style': `background-color: thistle; text-align:center; padding: 10px;`
+    },
+    layout: {width: 'auto'}
+  });
 },
 graphById(id, graphs) {
   return graphs?.find(({meta}) => meta?.id === id);

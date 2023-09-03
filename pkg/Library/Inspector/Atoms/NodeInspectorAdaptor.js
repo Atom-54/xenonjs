@@ -11,10 +11,11 @@ async update({graph, selected}, state, tools) {
   if (!deepEqual(graph, state.graph) || (selected !== state.selected)) {
     state.selected = selected;
     state.graph = graph;
-    return this.updateData({graph, selected}, state, tools);
+    return this.updateData(state, tools);
   }
 },
-async updateData({graph, selected}, state, {service}) {
+async updateData(state, {service}) {
+  const {graph, selected} = state;
   const ids = selected?.split('$');
   // TODO(sjmiles): sometimes has 'atomName' on end, sometimes does not
   if (ids?.length > 1) {

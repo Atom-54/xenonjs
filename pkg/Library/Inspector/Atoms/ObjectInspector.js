@@ -34,7 +34,7 @@ render({data, customInspectors}, state) {
     showNothingToInspect: String(data == null),
     title,
     disableRename: readonly,
-    showToolbar: String(!readonly),
+    showToolbar: String(!readonly && Boolean(data !== null)),
     props: state.renderedProps
   };
 },
