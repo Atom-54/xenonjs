@@ -31,6 +31,7 @@ globalThis.config = {
     Graphs: true,
     //Host: true,
     //Industry: true,
+    Library: true,
     //MessageBus: true,
     //Persist: true,
     Reactor: true,

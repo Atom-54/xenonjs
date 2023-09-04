@@ -89,6 +89,14 @@ initialize(inputs, state) {
   state.displays = ['', 'block', 'flex', 'inline-block', 'inline-flex', 'none'];
   state.justifyContents = ['', 'start', 'center', 'end'];
   state.alignItems = ['', 'start', 'center', 'end'];
+  state.shadows = [
+    {name: '', value: ''},
+    {name: 'none', value: ''},
+    {name: 'one', value: 'var(--shadow-1)'},
+    {name: 'two', value: 'var(--shadow-2)'},
+    {name: 'three', value: 'var(--shadow-3)'},
+    {name: 'four', value: 'var(--shadow-4)'}
+  ]
 },
 shouldUpdate({data, key}) {
   return (data && key);
@@ -99,7 +107,7 @@ shouldRender({data, key}) {
 render({data, propName}, state) {
   const prop = this.propByName(data.props, propName)
   if (prop?.value) {
-    const {flex, fontSize, borderWidth, borderRadius, position, padding, height, width, order, color, backgroundColor, display, alignItems} = prop.value;
+    const {flex, fontSize, borderWidth, borderRadius, position, padding, height, width, order, color, backgroundColor, display, alignItems, boxShadow} = prop.value;
     return {
       flexes: this.renderOptions(state.flexes, flex),
       fontSizes: this.renderOptions(state.fontSizes, fontSize),
@@ -113,6 +121,7 @@ render({data, propName}, state) {
       displays: this.renderOptions(state.displays, display),
       //justifyContents: this.renderOptions(state.justifyContents, justifyContent),
       alignItems: this.renderOptions(state.alignItems, alignItems),
+      shadows: this.renderOptions(state.shadows, boxShadow),
       height,
       width
     };
@@ -282,6 +291,11 @@ template: html`
   <div cell>
     <div label>Align</div>
     <select repeat="option_t" on-change="onPropChange" key="alignItems">{{alignItems}}</select>
+  </div>
+
+  <div cell>
+    <div label>Shadow</div>
+    <select repeat="option_t" on-change="onPropChange" key="boxShadow">{{shadows}}</select>
   </div>
 
 </div>

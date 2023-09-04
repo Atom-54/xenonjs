@@ -79,6 +79,10 @@ export const graph = {
       "type": "$library/Graph/Nodes/NodeTreeNode",
       "container": "SplitPanel$splitPanel#Container2"
     },
+    "NodeStatus": {
+      "type": "$library/Graph/Nodes/NodeStatusNode",
+      "container": "SplitPanel$splitPanel#Container2"
+    },
     "AtomToolbar": {
       "type": "$library/UX/Nodes/UXToolbarNode",
       "container": "design$Main$designer#ToolbarContainer"
@@ -307,6 +311,7 @@ export const graph = {
 
     "NodeGraph$Graph$selected": "NodeTree$NodeTree$selected",
     "NodeInspectorAdaptor$adaptor$selected": "NodeGraph$Graph$selected",
+    "NodeStatus$NodeStatus$selected": "NodeGraph$Graph$selected",
     "NodeTree$NodeTree$selected": "NodeGraph$Graph$selected",
     "OpenStyleInspector$inspector$key": "NodeGraph$Graph$selected",
 

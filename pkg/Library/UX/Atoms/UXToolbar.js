@@ -117,7 +117,7 @@ template: html`
   :host {
     display: block !important;
     /* flex: none !important; */
-    background: var(--xcolor-two);
+    /* background: var(--xcolor-two); */
     white-space: nowrap;
   }
   [row] > * {

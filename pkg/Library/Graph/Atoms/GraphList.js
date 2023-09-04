@@ -115,15 +115,20 @@ template: html`
   [container] {
     width: 300px;
   }
+  /* [container] {
+    background-image: url('/assets/frames/frame0.png');
+    background-position: 16px 12px;
+    background-repeat: no-repeat;
+    background-size: 90% 90%;
+  } */
   [capsule] {
     margin: 4px; 
     padding: 4px; 
     overflow: hidden; 
     border-radius: 6px;
     border-width: var(--border-size-1); 
-    /* border-radius: var(--radius-5);  */
     border: 2px solid var(--xcolor-three);
-    background-color: var(--xcolor-one); 
+    /* background-color: var(--xcolor-one);  */
     color: var(--xcolor-three);
     font-size: var(--font-size-0);  
   }
@@ -138,13 +143,7 @@ template: html`
     display: inline-block; 
     width: 100%; 
     border: none;
-    /* color: var(--xcolor-four); */
   }
-  /*
-  [selected] fancy-input {
-    color: var(--xcolor-four);
-  }
-  */
   label {
     padding-right: 0.2em;
     font-size: 0.9em;

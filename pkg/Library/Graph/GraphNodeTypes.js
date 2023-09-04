@@ -25,5 +25,10 @@ export const GraphNodeTypes = {
     category,
     description: 'Displays the rendering hierarchy of the graph',
     type: `$library/Graph/Nodes/NodeTreeNode`
+  },
+  NodeStatus: {
+    category,
+    description: 'Displays the info about selected object',
+    type: `$library/Graph/Nodes/NodeStatusNode`
   }
 };
