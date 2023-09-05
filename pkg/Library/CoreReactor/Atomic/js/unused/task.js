@@ -11,20 +11,29 @@
  * this.debounceTask = debounce(this.debounceTask, task, 1000);
  * ```
  */
+const keys = [];
+
 export const debounce = (key, action, delay) => {
-    if (key) {
-        clearTimeout(key);
-    }
-    if (action && delay) {
-        return setTimeout(action, delay);
-    }
+  const timer = keys[key];
+  if (timer >= 0) {
+    clearTimeout(timer);
+  }
+  if (action && delay) {
+    const timer = setTimeout(() => {
+      delete keys[key];
+      action();
+    }, delay);
+    keys[key] = timer;
+  }
 };
+
 export const async = task => {
-    return async (...args) => {
-        await Promise.resolve();
-        task(...args);
-    };
+  return async (...args) => {
+    await Promise.resolve();
+    task(...args);
+  };
 };
+
 export const asyncTask = (task, delayMs) => {
-    setTimeout(task, delayMs ?? 0);
+  setTimeout(task, delayMs ?? 0);
 };

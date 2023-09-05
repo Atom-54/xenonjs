@@ -1,4 +1,4 @@
-import {nodeTypes} from 'xenonjs/Apps/common/nodeTypes.js';
-import {services} from 'xenonjs/Apps/common/services.js';
-import 'xenonjs/Apps/common/dom.js';
+import './dom.js';
+import {nodeTypes} from './nodeTypes.js';
+import * as services from './services.js';
 export {nodeTypes, services};

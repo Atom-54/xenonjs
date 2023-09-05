@@ -6,7 +6,7 @@
 export const TextFieldNode = {
   field: {
     type: '$library/Fields/Atoms/TextField',
-    inputs: ['label', 'value', 'options'],
+    inputs: ['form', 'label', 'value', 'options'],
     outputs: ['value']
   }
 };

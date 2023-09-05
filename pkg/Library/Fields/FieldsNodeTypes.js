@@ -27,6 +27,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'Displays a text input field',
     types: {
+      field$form: 'String:FormId',
       field$label: 'String',
       field$labelDescription: 'The field label',
       field$value: 'String',
@@ -72,5 +73,13 @@ export const FieldsNodeTypes = {
       button$label: 'String',
     },  
     type: '$library/Fields/Nodes/ButtonNode'
+  },
+  Form: {
+    category,
+    description: 'Formulates a form',
+    types: {
+      Form$form: 'String:FormId'
+    },  
+    type: '$library/Fields/Nodes/FormNode'
   }
 };

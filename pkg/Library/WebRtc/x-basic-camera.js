@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 const FRAME_SIZE = {width: 1280, height: 720};
 
 const VIDEO = document.createElement('video');

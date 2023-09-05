@@ -10,21 +10,26 @@ update({value}, state) {
     return {value};
   }
 },
+
 onClick({action}, state) {
   return this.handleAction(action, state);
 },
 
 handleAction(action, state) {
+  let value;
   switch(action?.action ?? action) {
     case 'toggle': {
-      const newValue = !state.value;
-      state.value = newValue;
-      return {value: newValue};
+      const value = !state.value;
+      state.value = value;
     }
-    case 'set':
-      return {value: action.args?.value};
-    // TODO: to be continued.
+    case 'set': {
+      value = action.args?.value;
+    }
+    default: {
+      value = Math.random();
+    }
   }
+  return {value};
 },
 template: html`
 <style>

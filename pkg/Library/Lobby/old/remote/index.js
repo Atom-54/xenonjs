@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 import './conf/config.js';
 import {paths, Params} from './conf/allowlist.js';
 import {RemoteApp} from './Library/RemoteApp.js';
