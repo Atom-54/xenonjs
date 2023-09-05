@@ -74,5 +74,13 @@ export const LayoutNodeTypes = {
     category,
     description: 'Set of pages with Tabs for navigation',
     type: '$library/Layout/Nodes/TabPagesNode'
+  },
+  Accordion: {
+    category,
+    description: 'Set of panels in an accordion',
+    types: {
+      panels$sections: '[String]'
+    },
+    type: '$library/Layout/Nodes/AccordionNode'
   }
 };
