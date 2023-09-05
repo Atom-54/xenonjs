@@ -7,14 +7,12 @@ export const atom = (log, resolve) => ({
 shouldUpdate({graph}) {
   return graph;
 },
-async update({graph, selected}, state, tools) {
-  if (!deepEqual(graph, state.graph) || (selected !== state.selected)) {
-    state.selected = selected;
-    state.graph = graph;
-    return this.updateData({graph, selected}, state, tools);
+async update({graph, selected}, state, {service, isDirty}) {
+  if (isDirty('graph') || isDirty('selected')) {
+    return this.updateData({graph, selected}, service);
   }
 },
-async updateData({graph, selected}, state, {service}) {
+async updateData({graph, selected}, service) {
   const ids = selected?.split('$');
   // TODO(sjmiles): sometimes has 'atomName' on end, sometimes does not
   if (ids?.length > 1) {

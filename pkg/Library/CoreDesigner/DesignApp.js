@@ -25,6 +25,7 @@ export const baseSelectedKey = '$NodeGraph$Graph$selected';
 const defaultDesignerContainer = 'Main$panel#Container';
 const designerLayoutKey = 'Main$designer$layout';
 const layerLayoutKey = 'design$Main$designer$layout';
+const defaultObjectLayout = {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-1)', borderStyle: 'solid'};
 
 let xenon, Composer;
 
@@ -298,7 +299,7 @@ export const morphObject = async (owner, layer, meta) => {
     if (objectId) {
       await replaceObject(layer, objectId, newId, object);
     } else {
-      addObject(layer, newId, object);
+      addObject(layer, newId, object, meta);
 
     }
     // update graph
@@ -323,9 +324,12 @@ const replaceObject = async (layer, objectId, newId, object) => {
   layer.state = Graphs.changeStateId(layer.state, objectId, newId);
 };
 
-const addObject = async (layer, newId, object) => {
+const addObject = async (layer, newId, object, {state, layout}) => {
   layer.graph.nodes[newId] = object;
-  applyStyleToObject(layer, {l: 32, t: 32, w: 132, h: 132, /*borderWidth: 'var(--border-size-1)',*/ borderStyle: 'solid'}, newId);
+  keys(state).forEach(key => {
+    layer.graph.state[Id.qualifyId(newId, key)] = state[key];
+  });
+  applyStyleToObject(layer, {...defaultObjectLayout, ...layout??{}}, newId);
 };
 
 export const cloneObject = async (owner, layer) => {
