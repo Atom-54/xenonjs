@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 import {Paths} from '../Core/utils.js';
 import {loadScript} from '../Dom/dom.js';
 

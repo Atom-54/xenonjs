@@ -5,6 +5,7 @@ cat > $1.js << EndOfMessage
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 ({
 update({}, state, tools) {
 },

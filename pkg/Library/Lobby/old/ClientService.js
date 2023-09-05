@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 import {Myself} from './Myself.js';
 import {Resources} from '../App/Resources.js';
 import * as tryst from '../PubSub/Firebase/tryst.js';

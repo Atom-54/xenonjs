@@ -4,11 +4,12 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({value}, state) {
+update({value, form}, state, {service, isDirty}) {
   if (state.value !== value) {
     state.value = value;
     return {value};
   }
+  service('FormService', 'registerField', {form});
 },
 render({label, value, options}) {
   return {

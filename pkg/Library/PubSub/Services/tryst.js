@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 const tryst = `https://xenon-js-default-rtdb.firebaseio.com/tryst`;
 
 export const meetStrangers = async (group, nid, meta) => {

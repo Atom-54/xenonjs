@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 import {Xen} from '../../Dom/Xen/xen-async.js';
 
 const log = Xen.logFactory('UserGeolocation', '#004f00');

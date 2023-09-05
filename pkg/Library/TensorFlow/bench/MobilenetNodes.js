@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+
 export const MobilenetNode = {
   $meta: {
     id: 'MobilenetNode',

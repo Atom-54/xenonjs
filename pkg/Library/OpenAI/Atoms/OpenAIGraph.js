@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 ({
   initialize(inputs, state, {service}) {
     const post = (url, body) => fetch(url, {method: 'POST', body: JSON.stringify(body)});
