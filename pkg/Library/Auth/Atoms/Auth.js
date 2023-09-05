@@ -34,12 +34,16 @@ async update(inputs, state, {invalidate}) {
     //isLoggedIn: keys(state.user).length > 0
   };
 },
-render({}, {user}) {
+render({}, {user, showMore}) {
+  const isLoggedIn = keys(user).length > 0;
+  const shouldShowMore = Boolean(showMore) && isLoggedIn;
   return {
-    loggedIn: String(keys(user).length > 0),
+    loggedIn: String(isLoggedIn),
     displayName: user?.displayName ?? 'Guest',
     email: user?.email ?? 'not logged in',
-    photoURL: user?.photoURL ?? resolve('$library/Auth/Assets/user.png')
+    photoURL: user?.photoURL ?? resolve('$library/Auth/Assets/user.png'),
+    showMore: String(shouldShowMore),
+    manageButtonTxt: shouldShowMore ? 'Hide settings' : 'Manage settings'
   };
 },
 async onLoginClick(inputs, state, {invalidate}) {
@@ -53,6 +57,9 @@ async onLogoutClick(inputs, state, {invalidate}) {
   this.resetPolling(state, 1000);
   invalidate();
   return {user: state.user};
+},
+onMoreClick(_, state) {
+  state.showMore = Boolean(!state.showMore);
 },
 template: html`
 <style>
@@ -68,6 +75,17 @@ template: html`
   img {
     border-radius: 50%;
   }
+  button {
+    padding: 0 20px;
+    margin: 0 20px;
+  }
+  [more] {
+    margin-top: 20px;
+    min-width: 500px;
+  }
+  [name="Container"] {
+    border: 10px solid pink;
+  }
 </style>
 
 <div flex center column>
@@ -78,8 +96,13 @@ template: html`
   </div>
   <h4>{{email}}</h4>
   <button hide$="{{loggedIn}}" raised on-click="onLoginClick">Login</button>
-  <button show$="{{loggedIn}}" on-click="onLogoutClick">Logout</button>
+  <div bar show$="{{loggedIn}}">
+    <button on-click="onLogoutClick">Logout</button>
+    <button on-click="onMoreClick">{{manageButtonTxt}}</button>
+  </div>
+  <div flex show$="{{showMore}}" columns more>
+    <slot flex name="Container"></slot>
+  </div>
 </div>
 `
 });
-  
