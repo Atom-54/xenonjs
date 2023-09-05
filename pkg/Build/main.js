@@ -14,7 +14,7 @@ import {graph as BuildGraph} from '../Graphs/Build.js';
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
 import {jsonrepairService} from 'xenonjs/Library/jsonrepair/jsonrepairService.js';
 
-const {create} = SafeObject;
+const {create, assign, keys, values} = SafeObject;
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
@@ -25,15 +25,16 @@ const persistables = [
   '$GraphList$graphAgent$graphs',
   '$WorkPanel$splitPanel$divider',
   '$SplitPanel$splitPanel$divider',
-  '$CustomLib$field$text'
+  '$UserSettings$settings$userSettings'
 ];
 
 export const main = async (xenon, App, Composer) => {
-  // configure design system 
-  Design.configureDesignApp({xenon, Composer});
   // get offline data
   const persistations = await restore(persistables);
-  const {nodeTypes, services} = await loadLibraries(persistations);
+  const customLibraries = persistations?.$UserSettings$settings$userSettings?.customLibraries;
+  // configure design system 
+  Design.configureDesignApp({xenon, Composer, customLibraries});
+  const {nodeTypes, services} = await loadLibraries(customLibraries);
   persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
   xenon.setPaths(Paths.map);
   // create app layer 
@@ -60,6 +61,7 @@ const restore = async persistables => {
 
 const onValue = (App, state) => {
   updateCustomDesignValues(App, state);
+  maybeReload(state);
   persist(state, persistables);
 };
 
@@ -74,6 +76,12 @@ const updateCustomDesignValues = (App, state) => {
   }
 };
 
+const maybeReload = state => {
+  if (state.$UserSettings$settings$userSettings) {
+    location.reload();
+  }
+}
+
 const persist = async (state, persistables) => {
   for (let key of persistables) {
     if (key in state) {
@@ -87,15 +95,10 @@ const persist = async (state, persistables) => {
 //   libraryAlso: 'xenonjs/LibraryAlso',
 //   sjmilesCustom: 'https://customlibrary.sjmiles.repl.co'
 // }
-const loadLibraries = async ({$CustomLib$field$text: librariesStr}) => {
-  let libraries = {};
-  if (librariesStr) {
-    try {
-      const {json} = await jsonrepairService.repair(null, null, {value: librariesStr});
-      libraries = JSON.parse(json);
-    } catch(e) {
-      log.warn(`Failed to load libraries: ${librariesStr}`);
-    }
+const loadLibraries = async (customLibraries) => {
+  const libraries = {};
+  if (keys(customLibraries)?.length > 0 && values(customLibraries).every(value => typeof value === 'string')) {
+    assign(libraries, customLibraries);
   }
   return Library.importLibraries(libraries);
 };

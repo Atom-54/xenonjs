@@ -53,11 +53,8 @@ Graphs are constructed from XenonJs Nodes or other Graphs. The XenonJs Nodes and
 More detailed information on the components is available at the [Library README](./pkg/Library/README.md).
 
 ### Custom libraries
-`Build` also allows you to add your own custom and pluggable Nodes on the fly, and make them immediately usable in your Graphs. To get started, simply clone and tweak our [demo replit](https://replit.com/@ScottMiles/customlibraries#index.html)
-Here you can find codelabs for authoring your own components:
-* [Atoms](./pkg/Library/Atom.md)
-* [Nodes](./pkg/Library/Node.md)
-* [Node Types](./pkg/Library/NodeType.md)
+`Build` also allows you to add your own custom and pluggable Nodes on the fly, and make them immediately usable in your Graphs. To get started, simply clone and tweak our [demo replit](https://replit.com/@sjmiles/CustomLibrary).  
+Here you can find codelabs for authoring your own components: [Atoms](./pkg/Library/Atom.md), [Nodes](./pkg/Library/Node.md), and [Node Types](./pkg/Library/NodeType.md).
 
 ## Run XenonJs locally
 

@@ -11,15 +11,19 @@ export const graph = {
   "nodes": {
     "AuthFlyOut": {
       "type": "$library/Layout/Nodes/FlyOutNode",
-      "container": "root$panel#Container"
+      "container": "DesignMain$panel#Container"
+    },
+    "UserPanel": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "AuthFlyOut$flyOut#Container"
     },
     "Auth": {
       "type": "$library/Auth/Nodes/AuthNode",
-      "container": "AuthFlyOut$flyOut#Container"
+      "container": "UserPanel$panel#Container"
     },
-    "CustomLib": {
-      "type": "$library/Fields/Nodes/TextAreaNode",
-      "container": "Auth$Auth#Container"
+    "UserSettings": {
+      "type": "$library/Auth/Nodes/UserSettingsNode",
+      "container": "UserPanel$panel#Container"
     },
     "DesignMain": {
       "type": "$library/Layout/Nodes/DesignerNode",
@@ -121,6 +125,7 @@ export const graph = {
   },
   "state": {
     "DesignMain$panel$canvasLayout": "row",
+    "UserPanel$panel$layout": "row",
     "DesignMain$designer$disabled": true,
     // "GraphStylizer$GraphStylizer$avatar": "SuperBots",
     "BottomWorkCollapse$panel$collapsed": true,
@@ -293,9 +298,26 @@ export const graph = {
         "backgroundColor": "var(--xcolor-one)",
         "padding": "10px 0",
         "border-top": "1px solid var(--xcolor-two)"
+      },
+      "UserPanel": {
+        "border": "1px solid var(--xcolor-two)",
+        "backgroundColor": "var(--xcolor-one)"
+      },
+      "Auth": {
+        "order": "1",
+        "flex": "1",
+        "border": "1px solid var(--xcolor-two)",
+        "borderRadius": "25px",
+        "margin": "10px"
+      },
+      "UserSettings": {
+        "order": "2",
+        "flex": "1",
+        "border": "1px solid var(--xcolor-two)",
+        "borderRadius": "25px",
+        "margin": "10px 10px 10px 0"
       }
-    },
-    "CustomLib$field$label": "Custom Libraries (on update, refresh the page):"
+    }
   },
   "connections": {
     "AuthFlyOut$flyOut$show": "Auth$Auth$requireLogin",
@@ -303,6 +325,7 @@ export const graph = {
 
     "GraphList$graphAgent$user": "Auth$Auth$user",
     "GraphList$graphList$user": "Auth$Auth$user",
+    "UserSettings$settings$user": "Auth$Auth$user",
 
     "GraphList$graphAgent$graph": "NodeGraph$Graph$graph",
     // "GraphList$graphAgent$graph": ["GraphStylizer$GraphStylizer$graph", "NodeGraph$Graph$graph"],
