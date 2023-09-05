@@ -111,7 +111,7 @@ constructPropModel(key, prop, parent, template, state) {
     case 'select_t': {
       const selected = model.value;
       model.value = this.formatSelectValues(values, selected);
-      model.disabled = model.value?.length === 1;
+      model.disabled ||= model.value?.length === 1;
       model.multiple = multiple;
       break;
     }
@@ -584,7 +584,7 @@ template: html`
   <div prop-container vertical>
     <div label><span>{{displayName}}</span> (json)</div>
     <!-- <div label control>Enter plain JSON:</div> -->
-    <textarea rows="{{rows}}" key="{{key}}" on-blur="onJsonEditObjectChange">{{value}}</textarea>
+    <textarea rows="{{rows}}" key="{{key}}" on-blur="onJsonEditObjectChange" on-click="noop">{{value}}</textarea>
   </div>
 </template>
 
@@ -677,21 +677,21 @@ template: html`
 <template text_t>
   <div prop-container vertical>
     <span label control>{{displayName}}</span>
-    <input type="text" key="{{key}}" value="{{value}}" disabled="{{disabled}}" on-change="onPropChange">
+    <input type="text" key="{{key}}" value="{{value}}" disabled="{{disabled}}" on-change="onPropChange" on-click="noop">
   </div>
 </template>
 
 <template textarea_t>
   <div prop-container vertical>
     <span label control>{{displayName}}</span>
-    <textarea rows="{{rows}}" key="{{key}}" value="{{value}}" on-change="onPropChange"></textarea>
+    <textarea rows="{{rows}}" key="{{key}}" value="{{value}}" on-change="onPropChange" on-click="noop"></textarea>
   </div>
 </template>
 
 <template select_t>
   <div prop-container vertical>
     <div label control>{{displayName}}</div>
-    <multi-select select key="{{key}}" disabled$="{{disabled}}" on-change="onPropChange" multiple="{{multiple}}" size="{{size}}" options="{{value}}"></multi-select>
+    <multi-select select key="{{key}}" disabled="{{disabled}}" on-change="onPropChange" multiple="{{multiple}}" size="{{size}}" options="{{value}}" on-click="noop"></multi-select>
   </div>
 </template>
 

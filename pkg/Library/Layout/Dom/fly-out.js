@@ -61,6 +61,8 @@ const template = Xen.Template.html`
   }
   [flyout][show] {
     transform: translateX(0) translateY(0);
+    height: auto;
+    overflow: auto;
   }
   /* slot::slotted(*) {
     background-color: var(--xcolor-one);
@@ -69,7 +71,7 @@ const template = Xen.Template.html`
 
 <div scrim show$="{{showTools}}" on-click="onToggleFlyOver"></div>
 
-<div flyout side$="{{side}}" show$="{{showTools}}" on-click="onToggleFlyOver">
+<div flyout side$="{{side}}" show$="{{showTools}}" xon-click="onToggleFlyOver">
   <slot name="flyout"></slot>
 </div>
 `;

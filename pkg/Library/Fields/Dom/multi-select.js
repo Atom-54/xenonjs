@@ -16,7 +16,7 @@ export class MultiSelect extends Xen.Async {
 
   update(inputs, state) {
     Object.assign(state, inputs);
-    const {options, multiple, selected} = inputs;
+    const {options, multiple, selected, disabled} = inputs;
     state.multiple = multiple || multiple === '';
     state.size = this.chooseSize(inputs);
     let selectedKey = null;

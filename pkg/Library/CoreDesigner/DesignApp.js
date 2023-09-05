@@ -27,11 +27,12 @@ const designerLayoutKey = 'Main$designer$layout';
 const layerLayoutKey = 'design$Main$designer$layout';
 const defaultObjectLayout = {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-1)', borderStyle: 'solid'};
 
-let xenon, Composer;
+let xenon, Composer, customLibraries;
 
 export const configureDesignApp = options => {
   xenon = options?.xenon;
   Composer = options?.Composer;
+  customLibraries = options?.customLibraries;
 };
 
 export const getSelectedObjectId = layer => {
@@ -247,6 +248,7 @@ export const save = layer => {
   const app = globalThis.app;
   if (layer && !layer.graph.meta.readonly) {
     log('save graph:', layer.graph.meta.id);
+    layer.graph.meta.customLibraries = gatherCustomLibraries(layer);
     const graphs = App.get(app, '$GraphList$graphAgent$graphs');
     const newGraph = deepCopy(layer.graph);
     const newGraphs = replaceGraph(graphs, newGraph);
@@ -514,4 +516,19 @@ export const appendGraph = async(layer, {graph}) => {
   values(mapping).forEach(newId => reifyObject(layer, newId));
   updateLayout(layer);
   save(layer);
+};
+
+const gatherCustomLibraries = layer => {
+  const {graph, system} = layer;
+  const libraries = {};
+  const extractLibrary = type => type.split('/')?.[0]?.substring(1);
+  const collectLibraries = list => list.forEach(({type}) => {
+    const library = extractLibrary(type);
+    if (customLibraries?.[library]) {
+      libraries[library] ??= customLibraries?.[library];
+    }
+  });
+  collectLibraries(values(graph.nodes));
+  collectLibraries(values(system));
+  return libraries;
 };

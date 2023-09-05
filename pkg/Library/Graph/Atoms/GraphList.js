@@ -98,6 +98,7 @@ template: html`
     display: flex;
     flex-direction: column;
     background-color: var(--xcolor-two);
+    min-height: 500px;
     --shadow: 6px 6px 12px var(--xcolor-two), -6px -6px 12px var(--xcolor-one);
     --shadow-hover: 9px 9px 12px var(--xcolor-two), -9px -9px 12px var(--xcolor-one);
   }

@@ -46,7 +46,7 @@ export const main = async (xenon, App, Composer) => {
     };
 
     log(buildGraph);
-    const {services} = await loadLibraries(buildGraph.meta, await Persist.restoreValue('$CustomLib$field$text'));
+    const {services} = await loadLibraries(buildGraph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));
     // create app with Atom emitter
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
     await App.initializeData(app);
@@ -72,11 +72,12 @@ const fetchFbGraph = async (id) => {
   }
 };
 
-const loadLibraries = async ({customLibraries}, libString) => {
+const loadLibraries = async ({customLibraries}, userSettings) => {
   const libraries = customLibraries ?? {};
   try {
-    const {json} = await jsonrepairService.repair(null, null, {value: libString});
-    Object.assign(libraries, JSON.parse(json));
+    if (userSettings?.customLibraries) {
+      Object.assign(libraries, userSettings?.customLibraries);
+    }
   } catch(e) {
     log.warn(`Failed to parse libraries: ${libString} (error: ${e})`);
   }
