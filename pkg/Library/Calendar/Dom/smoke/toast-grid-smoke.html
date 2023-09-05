@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en-US">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Toast Grid</title>
+
+<!-- <script>
+  globalThis.config= {paths: {$library: '../../..'}};
+</script> -->
+
+<script type="module" src="../toast-grid.js"></script>
+
+<style>
+  body {
+    --icon-font: 'Material Symbols Outlined';
+    font-family: sans-serif;
+    margin: 0;
+    scroll-behavior: smooth;
+    background-color: hsla(292, 6%, 95%, 1);
+    padding: 20px;
+  }
+</style>
+
+<h1>Toast Grid Custom Element</h1>
+<toast-grid id="toast"></toast-grid>
+
+<script>
+  function doCheck(uids, value) {
+    console.log(`${value ? '' : 'un'}checked = ${uids.join(', ')}`);
+  }
+  function doCheckAll(value) {
+    console.log(`${value ? '' : 'un'}check ALL`);
+  }
+  toast.options = {rowHeaders: ['checkbox']};
+  toast.columns = [{
+    header: 'Name',
+    name: 'name'
+  }, {
+    header: 'Artist',
+    name: 'artist'
+  }, {
+    header: 'Release',
+    name: 'release',
+    sortable: true
+  }, {
+    header: 'Genre',
+    name: 'genre'
+  }];
+  toast.data = [{
+    uid: 111,
+    name: 'Beautiful Lies',
+    artist: 'Birdy',
+    release: '2016.03.26',
+    genre: 'Pop'
+  }, {
+    uid: 222,
+    name: 'Something else',
+    artist: 'Who knows',
+    release: '2015.03.26',
+    genre: 'Pop'
+  }, {
+    uid: 333,
+    name: 'No idea',
+    artist: 'Nobody',
+    release: '2010.03.26',
+    genre: 'Rock'
+  }];
+  toast.addEventListener('checked-changed', e => {
+    console.log(`Checked items: ${Object.keys(e.target.value).join(', ')}`);
+  });
+</script>
