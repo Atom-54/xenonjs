@@ -47,6 +47,8 @@ Here is an example [TextField](https://github.com/NeonFlan/xenonjs/blob/main/pkg
   
 <i>Also note: we are using our very own Xen templating engine. You can learn more about Xen in the [xen-explainer](https://xenon-js.web.app/0.3/Core/Library/Dom/Xen/xen-explainer.html). If you prefer, you can use another templating engine, it is pluggable.</i>  
 
+For more information see [Atom.md](./Atom.md).
+
 ## Nodes
 Node is a possible declaration (or instructions) of how the an Atom (or Atoms) could be reified and used in a Graph.
 Node is expressed as a simple JSON object.
@@ -85,6 +87,8 @@ In the following example, the "TextField" `Atom` is used twice, to create a `Nod
 ```
 The `state` is a special keyword, and it allows to configure data values of Atoms' inputs.
 
+For more information see [Node.md](./Node.md).
+
 ## Node Types
 
 `Node` contains all the information required for XenonJs Core to reify the `Node` in a `Graph`.
@@ -102,5 +106,7 @@ TextField: {
 }
 ```
 More examples [here](https://github.com/NeonFlan/xenonjs/blob/main/pkg/Library/Fields/FieldsNodeTypes.js).
+
+For more information see [NodeType.md](./NodeType.md).
 
 <i>to be continued...</i>

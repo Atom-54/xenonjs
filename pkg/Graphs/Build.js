@@ -17,6 +17,10 @@ export const graph = {
       "type": "$library/Auth/Nodes/AuthNode",
       "container": "AuthFlyOut$flyOut#Container"
     },
+    "CustomLib": {
+      "type": "$library/Fields/Nodes/TextAreaNode",
+      "container": "Auth$Auth#Container"
+    },
     "DesignMain": {
       "type": "$library/Layout/Nodes/DesignerNode",
       "container": "root$panel#Container"
@@ -290,7 +294,8 @@ export const graph = {
         "padding": "10px 0",
         "border-top": "1px solid var(--xcolor-two)"
       }
-    }
+    },
+    "CustomLib$field$label": "Custom Libraries (on update, refresh the page):"
   },
   "connections": {
     "AuthFlyOut$flyOut$show": "Auth$Auth$requireLogin",

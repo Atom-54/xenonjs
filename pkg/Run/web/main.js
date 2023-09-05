@@ -7,8 +7,9 @@ import './config.js';
 import {Params} from '../../Library/Xenon/Utils/params.js';
 import {graph as baseGraph} from '../../Graphs/Base.js';
 import * as Persist from '../../Library/CoreFramework/Persist.js';
-import {services} from '../../Apps/common/services.js';
 import '../../Apps/common/dom.js';
+import * as Library from '../../Library/CoreFramework/Library.js'
+import { jsonrepairService } from '../../Library/jsonrepair/jsonrepairService.js';
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
@@ -45,6 +46,7 @@ export const main = async (xenon, App, Composer) => {
     };
 
     log(buildGraph);
+    const {services} = await loadLibraries(buildGraph.meta, await Persist.restoreValue('$CustomLib$field$text'));
     // create app with Atom emitter
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
     await App.initializeData(app);
@@ -68,4 +70,15 @@ const fetchFbGraph = async (id) => {
     const graph = JSON.parse(text);
     return (typeof graph === 'string') ? JSON.parse(graph) : graph;
   }
+};
+
+const loadLibraries = async ({customLibraries}, libString) => {
+  const libraries = customLibraries ?? {};
+  try {
+    const {json} = await jsonrepairService.repair(null, null, {value: libString});
+    Object.assign(libraries, JSON.parse(json));
+  } catch(e) {
+    log.warn(`Failed to parse libraries: ${libString} (error: ${e})`);
+  }
+  return Library.importLibraries(libraries);
 };

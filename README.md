@@ -49,14 +49,19 @@ By default the Graphs you construct in `Build` are persisted in your browser's l
 
 ### Graphs Library
 
-Graphs are constructed from XenonJs Nodes or other Graphs. More detailed information on the components is available at the [Library README](./pkg/Library/README.md).
+Graphs are constructed from XenonJs Nodes or other Graphs. The XenonJs Nodes and Graphs form an emerging constantly growing ecosystem of components and you can easily compose graph from our off-the-shelf components.
+More detailed information on the components is available at the [Library README](./pkg/Library/README.md).
 
-The XenonJs Nodes and Graphs form an emerging constantly growing ecosystem of components. Today in `Build` you can only use our build-in Nodes to compose your graphs.  
-**In our next release** we'll introduce a simple way for using pluggable libraries of components in our application.
+### Custom libraries
+`Build` also allows you to add your own custom and pluggable Nodes on the fly, and make them immediately usable in your Graphs. To get started, simply clone and tweak our [demo replit](https://replit.com/@ScottMiles/customlibraries#index.html)
+Here you can find codelabs for authoring your own components:
+* [Atoms](./pkg/Library/Atom.md)
+* [Nodes](./pkg/Library/Node.md)
+* [Node Types](./pkg/Library/NodeType.md)
 
-Today to use custom components, you'll need to fetch our repo and run `Run` and `Build` locally. Here is how:
+## Run XenonJs locally
 
-### Run XenonJs locally
+It is also easy to run `Build` and `Run` locally:
 
 Clone the repo:
 ```

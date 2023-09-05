@@ -26,6 +26,7 @@ template: html`
   :host {
     display: flex;
     flex-direction: column; 
+    width: 100%;
   }
   textarea {
     width: 100%;
@@ -43,7 +44,7 @@ template: html`
 </style>
 <div flex column>
   <div label display$="{{showLabel}}">{{label}}</div>
-  <div flex><textarea xen:style="{{style}}" on-change="onTextChange">{{text}}</textarea></div>
+  <div flex><textarea xen:style="{{style}}" on-change="onTextChange" on-click="noop">{{text}}</textarea></div>
 </div>
 `
 });
