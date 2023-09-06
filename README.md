@@ -53,8 +53,12 @@ Graphs are constructed from XenonJs Nodes or other Graphs. The XenonJs Nodes and
 More detailed information on the components is available at the [Library README](./pkg/Library/README.md).
 
 ### Custom libraries
-`Build` also allows you to add your own custom and pluggable Nodes on the fly, and make them immediately usable in your Graphs. To get started, simply clone and tweak our [demo replit](https://replit.com/@sjmiles/CustomLibrary).  
-Here you can find codelabs for authoring your own components: [Atoms](./pkg/Library/Atom.md), [Nodes](./pkg/Library/Node.md), and [Node Types](./pkg/Library/NodeType.md).
+`Build` also allows you to add your own custom and pluggable Nodes on the fly.   
+In the custom Nodes, you can use the collection of existing Atoms, author your own, or mix them together. The custom Nodes are immediately usable when constructing your Graphs or sharing the Graphs with others.   
+You can also share your custom Nodes with other users, or use others' custom libraries.
+
+For information on how to configure the custom libraries, see [Custom Libraries](./pkg/Build/README.md#custom-libraries).  
+
 
 ## Run XenonJs locally
 
@@ -126,3 +130,8 @@ We allow for user's data to be available only via keys they hold.
 Computation ideally occurs locally, and data egress is constrained.
 
 <img src="./assets/finally.png" alt="finally" width="500px">
+
+---
+  
+  
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/NeonFlan/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
