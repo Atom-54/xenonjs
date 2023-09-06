@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({data, datum}, state, {isDirty}) {
-  if (datum != null && isDirty("datum")) {
+  if (datum && isDirty("datum")) {
     if (!Array.isArray(data)) {
       data = [];
     }

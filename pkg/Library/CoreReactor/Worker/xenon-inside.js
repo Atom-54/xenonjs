@@ -16,6 +16,10 @@ export const configureApi = (xenon, terminal) => {
     async industrialize() {
       return xenon.industrialize();
     },
+    async setPaths({paths}) {
+      paths.$library = Paths.map.$library;
+      Paths.map = paths;
+    },
     async setAtomOptions(options) {
       log('setAtomOptions', options);
       xenon.AtomFactory.atomOptions = options;

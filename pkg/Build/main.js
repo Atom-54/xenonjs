@@ -35,6 +35,7 @@ export const main = async (xenon, App, Composer) => {
   const persistations = await restore(persistables);
   const {nodeTypes, services} = await loadLibraries(persistations);
   persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
+  xenon.setPaths(Paths.map);
   // create app layer 
   const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services);
   // set up initial state

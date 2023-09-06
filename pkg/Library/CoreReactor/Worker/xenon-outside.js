@@ -5,11 +5,14 @@
  */
 export const configureApi = terminal => {
   return {
-    industrialize: async () => {
+    async industrialize() {
       await terminal.call({method: 'industrialize'});
     },
     emitter(name, spec) {
       return createAtom(terminal, name, spec);
+    },
+    async setPaths(paths) {
+      await terminal.call({method: 'setPaths', args: {paths}});
     }
   };
 };
