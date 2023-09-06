@@ -12,7 +12,6 @@ import {graph as BaseGraph} from '../Graphs/Base.js';
 import {graph as BuildGraph} from '../Graphs/Build.js';
 // for the app itself
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
-import {jsonrepairService} from 'xenonjs/Library/jsonrepair/jsonrepairService.js';
 
 const {create, assign, keys, values} = SafeObject;
 
@@ -93,7 +92,8 @@ const persist = async (state, persistables) => {
 // Example custom libraries configuration:
 // {
 //   libraryAlso: 'xenonjs/LibraryAlso',
-//   sjmilesCustom: 'https://customlibrary.sjmiles.repl.co'
+//   sjmilesCustom: 'https://customlibrary.sjmiles.repl.co',
+//   customLibrary: 'https://customlibrary.xenonjs.repl.co'
 // }
 const loadLibraries = async (customLibraries) => {
   const libraries = {};
