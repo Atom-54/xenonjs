@@ -3,7 +3,6 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 export const nob = Object.create(null);
 
 export const define = customElements.define.bind(customElements);
