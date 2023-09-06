@@ -32,6 +32,7 @@ import {NeonFlanNodeTypes} from 'xenonjs/Library/NeonFlan/NeonFlanNodeTypes.js';
 import {MailNodeTypes} from 'xenonjs/Library/Mail/MailNodeTypes.js';
 import {PubSubNodeTypes} from 'xenonjs/Library/PubSub/PubSubNodeTypes.js';
 import {PeerNodeTypes} from 'xenonjs/Library/Peer/PeerNodeTypes.js';
+import {CalendarNodeTypes} from 'xenonjs/Library/Calendar/CalendarNodeTypes.js';
 
 const nodeTypes = {
   Echo: {
@@ -70,7 +71,8 @@ const nodeTypes = {
   ...LocaleNodeTypes,
   ...MailNodeTypes,
   ...PubSubNodeTypes,
-  ...PeerNodeTypes
+  ...PeerNodeTypes,
+  ...CalendarNodeTypes
 };
 
 globalThis.nodeTypes = nodeTypes;

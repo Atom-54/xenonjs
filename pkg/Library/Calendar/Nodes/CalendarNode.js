@@ -7,6 +7,6 @@
 export const CalendarNode = {
   chart: {
     type: '$library/Calendar/Atoms/Calendar',
-    inputs: []
+    inputs: ['events']
   }
 };

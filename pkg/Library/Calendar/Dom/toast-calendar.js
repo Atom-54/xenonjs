@@ -31,7 +31,10 @@ export class ToastCalendar extends Xen.Async {
     return template;
   }
   _didMount(_, state) {
-    state.calendar = new Calendar(this.shadowRoot.querySelector('#calendar'));
+    state.calendar = new Calendar(this.shadowRoot.querySelector('#calendar'), {
+      defaultView: 'month',
+      taskView: true,    
+    });
     // const onresize = () => requestAnimationFrame(() => this.doresize());
     // this.resizeObserver = new ResizeObserver(onresize);
     // this.resizeObserver.observe(this);
