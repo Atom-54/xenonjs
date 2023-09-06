@@ -19,13 +19,18 @@ export const importLibraries = async libraries => {
 export const importLibrary = async (name, path, manifestPath) => {
   const map = {[`$${name}`]: path};
   globalThis.Paths.add(map);
-  //
-  manifestPath ||= path;
-  const {services, nodeTypes} = await import(`${manifestPath}/manifest.js`)
-  const library = {services, nodeTypes};
-  log.groupCollapsed('Library: ', path);
-  log(JSON.stringify(library, null, '  '));
-  log.groupEnd();
+  let library = {services: [], nodeTypes: {}};
+  try {
+    manifestPath ||= path;
+    const {services, nodeTypes} = await import(`${manifestPath}/manifest.js`)
+    library = {services, nodeTypes};
+    log.groupCollapsed('Library: ', path);
+    log(JSON.stringify(library, null, '  '));
+    log.groupEnd();
+  } catch(x) {
+    log.warn('failed to load library', path);
+    log.warn(x);
+  }
   return library;
 };
 
