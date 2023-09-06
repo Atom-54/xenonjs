@@ -109,4 +109,40 @@ More examples [here](https://github.com/NeonFlan/xenonjs/blob/main/pkg/Library/F
 
 For more information see [NodeType.md](./NodeType.md).
 
+## Graphs
+
+Graph is purely declarative and semantic. It consists of a set of Nodes, their state data, and connection information, and metadata.  
+The Graph contains all information needed to reify the experience.
+
+We use JSON format to serialize graphs. For example, the Demo graph above looks something like this:
+```
+{
+  meta: {
+    id: "DemoGraph",
+    owner: "neonflan@xenonjs.com",
+    ...
+  },
+  nodes: {
+    Hello: {
+      type: "$library/EchoNode"
+    },
+    TextField: {
+      type: "$library/Fields/Nodes/TextFieldNode"
+    }
+  },
+  state: {
+    TextField$label:"Enter text:",
+    ...
+  },
+  connections: {
+    Hello$html: "TextField$field$value"
+  }
+}
+```
+
 <i>to be continued...</i>
+
+---
+  
+  
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/NeonFlan/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
