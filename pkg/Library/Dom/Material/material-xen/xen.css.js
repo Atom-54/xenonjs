@@ -63,7 +63,7 @@ export const XenCss = `
   overflow: hidden;
 }
 [dark] {
-  color-scheme: dark;
+  /* color-scheme: dark;*/
 }
 [scrolling] {
   overflow: auto !important;

@@ -17,9 +17,6 @@ import '../Weightless/weightless-pages.js';
 import '../Weightless/weightless-accordion.js';
 // import '../Material/mwc/mwc.min.js';
 //
-import '../../Data/Dom/awesome-chart.js'
-import '../../Data/Dom/toast-grid.js';
-//
 import '../../Layout/Dom/split-panel.js';
 import '../../Layout/Dom/fly-out.js';
 import '../../Layout/Dom/design-grid.js';
