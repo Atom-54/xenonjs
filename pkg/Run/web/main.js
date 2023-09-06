@@ -7,9 +7,8 @@ import './config.js';
 import {Params} from '../../Library/Xenon/Utils/params.js';
 import {graph as baseGraph} from '../../Graphs/Base.js';
 import * as Persist from '../../Library/CoreFramework/Persist.js';
-import '../../Apps/common/dom.js';
+import '../../Library/Dom/common/dom.js';
 import * as Library from '../../Library/CoreFramework/Library.js'
-import { jsonrepairService } from '../../Library/jsonrepair/jsonrepairService.js';
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
@@ -47,6 +46,7 @@ export const main = async (xenon, App, Composer) => {
 
     log(buildGraph);
     const {services} = await loadLibraries(buildGraph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));
+    xenon.setPaths(Paths.map);
     // create app with Atom emitter
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
     await App.initializeData(app);
