@@ -4,16 +4,25 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async initialize(inputs, state, {service}) {
-  state.layer = await service('GraphService', 'CreateLayer');
-},
-async update({}, state, {service}) {
+async update({graph}, state, {service}) {
+  if (state.layerId) {
+    //await service('GraphService', 'DestroyLayer', {layerId});
+  }
+  if (graph && !state.layerId) {
+    state.layerId = await service('GraphService', 'CreateLayer', {graph});
+  }
 },
 template: html`
 <style>
   :host {
+    padding: 8px;
+  }
+  ::slotted(*) {
+    flex: 1 !important;
+    width: auto !important;
+    height: auto !important;
   }
 </style>
-<div>Layer <span>{{layer}}</span> me Bro</div>
+<slot name="Container">
 `
 });

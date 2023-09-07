@@ -14,12 +14,17 @@ async update({graphs, show}, state, {service}) {
     this.refresh(state, service);
   }
 },
+async refresh(state, service) {
+  state.context = await service('SystemService', 'request-context');
+  state.kick = Math.random();
+},
 render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ selectedTab}) {
-  const contextModel = {
-    design: context?.state,
-    runtime: context?.fullState
-  };
-  const graphJson = JSON.stringify(context?.fullState?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
+  const contextModel = context?.layers;
+  // const contextModel = {
+  //   design: context?.state,
+  //   runtime: context?.fullState
+  // };
+  const graphJson = JSON.stringify(context?.layers?.base?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
   return {
     kick,
@@ -32,10 +37,6 @@ render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ select
     graphOptions,
     selectedTab: {state: 0, logs: 1, atoms: 2, resources: 3, dom: 4}[selectedTab]
   };
-},
-async refresh(state, service) {
-  state.context = (await service('SystemService', 'request-context'));
-  state.kick = Math.random();
 },
 // map(object, visitor) {
 //   const result = {};

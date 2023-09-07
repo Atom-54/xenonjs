@@ -10,9 +10,9 @@ import * as Graphs from 'xenonjs/Library/CoreFramework/Graphs.js';
 import * as Nodes from 'xenonjs/Library/CoreFramework/Nodes.js';
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
 import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
-import * as App from '../CoreFramework/App.js';
-import {Resources} from '../Media/Resources.js';
-import {graph as Poetry} from '../../Graphs/Poetry.js';
+import * as App from 'xenonjs/Library/CoreFramework/App.js';
+import {Resources} from 'xenonjs/Library/Media/Resources.js';
+import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('GraphService', 'orangered');
@@ -22,10 +22,8 @@ log.flags.GraphService = true;
 const {assign, entries, keys, values} = SafeObject;
 
 export const GraphService = {
-  CreateLayer(layer, atom, data) {
-    const newLayer = App.createLayer.simple(Poetry, id);
-    const id = Resources.allocate(newLayer);
-    return {layer: id};
+  async CreateLayer(layer, atom, {graph}) {
+    return createHostedLayer(layer, atom, graph);
   },
   MakeName(layer, atom, data) {
     return makeCapName();
@@ -102,7 +100,61 @@ export const GraphService = {
   }
 };
 
-const isDesignMainSelected = (layer) => {
+const createHostedLayer = async (layer, atom, graphId) => {
+  const graphSpec = await loadGraph(graphId);
+  if (graphSpec) {
+    const id = makeCapName();
+    const newLayer = await App.createLayer.simple(graphSpec, id);
+    const container = `${atom.name}#Container`;
+    values(newLayer.system).forEach(spec => {
+      if (spec.container.endsWith('$root$panel#Container')) {
+        spec.container = container;
+      }
+    });
+    await App.initializeData(newLayer);
+    Resources.set(id, newLayer);
+    return id;
+  }
+};
+
+const localPrefix = 'local$';
+
+export const loadGraph = async graphId => {
+  let graph = null;
+  if (graphId) {
+    if (graphId.startsWith(localPrefix)) {
+      graph = await restoreLocalGraph(graphId.substring(localPrefix.length));
+    } else {
+      graph = await fetchFbGraph(graphId);
+    }
+    if (graph) {
+      graph.state[`${graphId}$Main$designer$disabled`] = true;
+    }
+  }
+  return graph;
+};
+
+const restoreLocalGraph = async (id) => {
+  return Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
+};
+
+const fetchFbGraph = async (id) => {
+  const firebaseUrl = globalThis.config.firebaseGraphsURL;
+  if (firebaseUrl) {
+    const url = `${firebaseURL}/${id}.json`;
+    try {
+      const res = await fetch(url);
+      if (res.status === 200) {
+        const text = (await res.text())?.replace(/%/g, '$');
+        const graph = JSON.parse(text);
+        return (typeof graph === 'string') ? JSON.parse(graph) : graph;
+      }
+    } catch(x) {
+    }
+  }
+};
+
+const isDesignMainSelected = layer => {
   return Design.getSelectedObjectId(layer) === Design.designerId;
 };
 

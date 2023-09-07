@@ -13,40 +13,30 @@ import * as Library from '../../Library/CoreFramework/Library.js'
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
 logf.flags.Main = true;
-const localPrefix = 'local$';
 
 export const main = async (xenon, App, Composer) => {
   // from whence, graph?
-  let buildGraph = null;
-  let graphId = Params.getParam('graph');
-  if (graphId) {
-    if (graphId.startsWith(localPrefix)) {
-      buildGraph = await restoreLocalGraph(graphId.substring(localPrefix.length));
-    } else {
-      buildGraph = await fetchFbGraph(graphId);
-    }
-  } else { // no URL param
-    const selectedId = await Persist.restoreValue(`$GraphList$graphAgent$selectedId`);
-    buildGraph = await restoreLocalGraph(selectedId);
-  }
-
+  const graphId = Params.getParam('graph') || await Persist.restoreValue(`$GraphList$graphAgent$selectedId`);
+  const buildGraph = GraphService.loadGraph(graphId);
   if (buildGraph) {
-    //
     document.title = buildGraph.meta.id;
     // TODO: support assigning icons for graphs (maybe auto-generate?)
     if (buildGraph.meta.icon) {
       document.querySelector("link[rel~='icon']").href = buildGraph.meta.icon;
     }
-
-    buildGraph.state[`Main$designer$disabled`] = true;
     buildGraph.nodes['footer'] = {
       type: "$library/NeonFlan/Nodes/FooterNode",
       container: "root$panel#Container"
     };
-
     log(buildGraph);
+    //
     const {services} = await loadLibraries(buildGraph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));
     xenon.setPaths(Paths.map);
+    // TODO(sjmiles): experimental: make layering more accessible
+    App.createLayer.simple = async (graph, name) => {
+      return await App.createLayer([graph], xenon.emitter, Composer, services, name);
+    };    
+    //
     // create app with Atom emitter
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
     await App.initializeData(app);
@@ -55,20 +45,6 @@ export const main = async (xenon, App, Composer) => {
     return app;
   } else {
     log(`Graph not found.`);
-  }
-};
-
-const restoreLocalGraph = async (id) => {
-  return Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
-};
-
-const fetchFbGraph = async (id) => {
-  const url = `${globalThis.config.firebaseGraphsURL}/${id}.json`;
-  const res = await fetch(url);
-  if (res.status === 200) {
-    const text = (await res.text())?.replace(/%/g, '$');
-    const graph = JSON.parse(text);
-    return (typeof graph === 'string') ? JSON.parse(graph) : graph;
   }
 };
 

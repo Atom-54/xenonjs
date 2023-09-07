@@ -40,7 +40,8 @@ export class XenComposer extends Composer {
       throw Error('Cannot generateSlot without a parent node');
     }
     const sid = sanitizeId(id);
-    const tag = sanitizeId(id.split(':').pop().match(/[\D]*/).pop().split('$').pop().toLowerCase());
+    //const tag = sanitizeId(id.split(':').pop().match(/[\D]*/).pop().split('$').pop().toLowerCase());
+    const tag = sanitizeId(id.split('$').pop().toLowerCase());
     const container = dom(`${tag}-atom`, {
       atomId: id,
       id: sid,
