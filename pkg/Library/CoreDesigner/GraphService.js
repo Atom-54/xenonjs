@@ -10,6 +10,9 @@ import * as Graphs from 'xenonjs/Library/CoreFramework/Graphs.js';
 import * as Nodes from 'xenonjs/Library/CoreFramework/Nodes.js';
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
 import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
+import * as App from '../CoreFramework/App.js';
+import {Resources} from '../Media/Resources.js';
+import {graph as Poetry} from '../../Graphs/Poetry.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('GraphService', 'orangered');
@@ -19,6 +22,11 @@ log.flags.GraphService = true;
 const {assign, entries, keys, values} = SafeObject;
 
 export const GraphService = {
+  CreateLayer(layer, atom, data) {
+    const newLayer = App.createLayer.simple(Poetry, id);
+    const id = Resources.allocate(newLayer);
+    return {layer: id};
+  },
   MakeName(layer, atom, data) {
     return makeCapName();
   },
