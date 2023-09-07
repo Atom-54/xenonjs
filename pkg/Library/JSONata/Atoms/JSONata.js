@@ -14,14 +14,16 @@ shouldUpdate({json, expression}) {
 
 async update({json, expression}, {evaluate}) {
   const object = this.maybeParseJson(json);
-  const {result} = await evaluate({json: object, expression});
-  if (result === "couldn't evaluate JSON") {
-    log.warn('JSONata expression is invalid: ', expression);
-    return null;
-  }
-  return {
-    // return `null` instead of `undefined`
-    result: result??null
+  if (object != null) {
+    const {result} = await evaluate({json: object, expression});
+    if (result === "couldn't evaluate JSON") {
+      log.warn('JSONata expression is invalid: ', expression);
+      return null;
+    }
+    return {
+      // return `null` instead of `undefined`
+      result: result??null
+    }
   }
 },
 maybeParseJson(json) {
@@ -34,7 +36,8 @@ maybeParseJson(json) {
       try {
         object = JSON.parse(`"${json}"`)
       } catch(x) {
-        log(m);
+        log.warn(m);
+        return null;
       }
     }
   }
