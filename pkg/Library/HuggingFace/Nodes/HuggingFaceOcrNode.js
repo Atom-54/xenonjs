@@ -7,7 +7,7 @@ export const HuggingFaceOcrNode = {
   ocr: {
     type: '$library/HuggingFace/Atoms/HuggingFaceImageToText',
     inputs: ['image', 'model', 'options'],
-    outputs: ['text', 'working']
+    outputs: ['result', 'text', 'working']
   },
   state: {
     ocr$model: 'microsoft/trocr-base-handwritten'

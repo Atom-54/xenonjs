@@ -81,5 +81,14 @@ export const FieldsNodeTypes = {
       Form$form: 'String:FormId'
     },  
     type: '$library/Fields/Nodes/FormNode'
+  },
+  ImageField: {
+    category,
+    description: 'Uploads an image or captures image URL',
+    types: {
+      field$url: 'String',
+      field$image: 'Image'
+    },  
+    type: '$library/Fields/Nodes/ImageFieldNode'
   }
 };
