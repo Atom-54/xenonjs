@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 export const XenCss = `
+:host {
+  --xen-pad: 8px;
+}
 * {
   box-sizing: border-box;
 }
@@ -48,33 +51,27 @@ export const XenCss = `
   white-space: nowrap;
 }
 [toolbar] {
-  padding: 8px;
+  padding: var(--xen-pad);
 }
 [toolbar] > * {
-  margin-right: 8px;
+  margin-right: var(--xen-pad);
 }
 [toolbar] > *:last-child {
   margin-right: 0;
 }
 [fullbleed] {
-  height: 100%;
-  width: 100%;
+  height: 100dvh;
+  width: 100dvw;
+  /* height: 100%;
+  width: 100%; */
   margin: 0;
   overflow: hidden;
 }
 [dark] {
-  /* color-scheme: dark;*/
+  color-scheme: dark;
 }
 [scrolling] {
   overflow: auto !important;
-}
-[flex][scrolling] {
-  height: 0;
-  flex: 1 1 auto;
-}
-[grid] {
-  display: flex;
-  flex-wrap: wrap;
 }
 [flex] {
   flex: 1 1 0;
@@ -96,6 +93,24 @@ export const XenCss = `
 }
 [flex][x7] {
   flex: 7;
+}
+[flex][scrolling] {
+  height: 0;
+  flex: 1 1 auto;
+}
+[grid] {
+  display: flex;
+  flex-wrap: wrap;
+}
+[grid] > * {
+  --grid-margin: var(--xen-pad);
+  --cell-pad: var(--xen-pad);
+  flex: 1;
+  margin: var(--grid-margin) var(--grid-margin) var(--grid-margin) 0;
+  padding: var(--cell-pad);
+}
+[grid] > :first-child {
+  margin-left: var(--grid-margin);
 }
 [hidden], [hide]:not([hide="false"]), [display="hide"], [display="false"], [show="false"] {
   display: none !important;
