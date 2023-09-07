@@ -141,15 +141,30 @@ const restoreLocalGraph = async (id) => {
 const fetchFbGraph = async (id) => {
   const firebaseUrl = globalThis.config.firebaseGraphsURL;
   if (firebaseUrl) {
-    const url = `${firebaseURL}/${id}.json`;
+    const url = `${firebaseUrl}/${id}.json`;
     try {
       const res = await fetch(url);
       if (res.status === 200) {
         const text = (await res.text())?.replace(/%/g, '$');
         const graph = JSON.parse(text);
-        return (typeof graph === 'string') ? JSON.parse(graph) : graph;
+        if (graph) {
+          return (typeof graph === 'string') ? JSON.parse(graph) : graph;
+        }
       }
-    } catch(x) {
+    } catch(x) {}
+    return findFbGraph(firebaseUrl, id);
+  }
+};
+
+const findFbGraph = async (firebaseUrl, id) => {
+  const res = await fetch(`${firebaseUrl}.json`);
+  if (res.status === 200) {
+    const text = (await res.text())?.replace(/%/g, '$');
+    const graphs = JSON.parse(text);
+    for (const userGraphs of values(graphs)) {
+      if (userGraphs[id]) {
+        return JSON.parse(userGraphs[id]);
+      }
     }
   }
 };
