@@ -13,7 +13,22 @@ async update({}, {id}, {isDirty, service}) {
   if (isDirty('submitTrigger')) {
     const data = await service('FormService', 'getValues', {form: id});
     log(JSON.stringify(data, null, '  '));
+    return {
+      colums: this.getColumns(data), 
+      row: this.getRow(data)
+    };
   }
+},
+getColumns(data) {
+  return data.map(({name})=> name.split('$')[1]);
+},
+getRow(data) {
+  const row = {};
+  data.forEach(({name, type, value})=> {
+    const key = name.split('$')[1];
+    row[key] = value;
+  });
+  return row;
 }
 });
   
