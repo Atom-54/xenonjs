@@ -3,7 +3,8 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Xen} from '../../Xen/xen-async.js';
+import {Xen} from '../Xen/xen-async.js';
+
 
 const template = Xen.Template.html`
   <style>
@@ -56,3 +57,4 @@ export class ImageUpload extends Xen.Async {
     }
   }
 }
+customElements.define('image-upload', ImageUpload);
