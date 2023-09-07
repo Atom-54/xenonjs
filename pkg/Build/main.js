@@ -41,7 +41,7 @@ export const main = async (xenon, App, Composer) => {
     return await App.createLayer([graph], xenon.emitter, Composer, services, name);
   };
   // create app layer 
-  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services, 'base');
+  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services);
   // set up initial state
   await App.initializeData(app);
   // might need to do this in concert with initializeData

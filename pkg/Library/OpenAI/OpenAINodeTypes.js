@@ -33,7 +33,7 @@ export const OpenAINodeTypes = {
     description: 'Generates text for the given prompt using OpenAI',
     types: {
       OpenAIText$context: 'MultilineText',
-      OpenAIText$prompt: 'String',
+      OpenAIText$prompt: 'MultilineText',
       OpenAIText$result: 'String',
       OpenAIText$restart: 'Boolean',
       OpenAIText$markup: 'String',

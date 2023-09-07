@@ -33,6 +33,9 @@ export const GraphNodeTypes = {
   },
   Layer: {
     category,
-    type: '$library/Graph/Nodes/LyaerNode'
+    type: '$library/Graph/Nodes/LayerNode',
+    types: {
+      Layer$graph: 'String'
+    }
   }
 };

@@ -26,7 +26,6 @@ export const createLayer = async (graph, atomEmitter, Composer, Services, name='
   if (Array.isArray(graph)) {
     graph = Graphs.union(graph);
   }
-  //
   // make a composer right away
   // TODO(sjmiles): Composer.options is a static value used by Composer.createComposer 
   // if we go asynchronous, we lose provenance over this value
@@ -36,19 +35,19 @@ export const createLayer = async (graph, atomEmitter, Composer, Services, name='
   // make a live graph layer
   layer = await Layers.reifyGraphLayer(graph, atomEmitter, name);
   layer.composer = composer;
-  //
   // connect Atoms to app listeners
   connectAtoms(layer, layer.atoms);
   // bind services
   connectServices(layer, Services);
   // strobe for rendering
   Layers.invalidate(layer);
-  //
+  // bookkeep
   globalThis.layers[name || 'base'] = layer;
   return layer;
 };
 
 export const obliterateLayer = layer => {
+  //globalThis.layers.remove(layer);
   // dispose Atoms
   Layers.obliterateGraphLayer(layer);
   // remove state data
@@ -195,9 +194,12 @@ const atomService = async (layer, atomName, atom, serviceName, methodName, data)
       case 'SystemService': {
         switch (methodName) {
           case 'request-context': 
+            const layers = {};
+            map(globalThis.layers, (key, value) => layers[key] = value.state);
             const context = {
-              state: globalThis.design?.state,
-              fullState: globalThis.app?.state,
+              layers,
+              // state: globalThis.design?.state,
+              // fullState: globalThis.app?.state,
               logs: [] //logf.get()
             }
             return finish(context);
