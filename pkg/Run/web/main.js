@@ -4,11 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import './config.js';
+import {SafeObject} from '../../Library/CoreReactor/safe-object.js';
 import {Params} from '../../Library/Xenon/Utils/params.js';
 import {graph as baseGraph} from '../../Graphs/Base.js';
 import * as Persist from '../../Library/CoreFramework/Persist.js';
 import '../../Library/Dom/common/dom.js';
 import * as Library from '../../Library/CoreFramework/Library.js'
+
+const {assign, values} = SafeObject;
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
@@ -48,11 +51,44 @@ export const main = async (xenon, App, Composer) => {
   }
 };
 
+<<<<<<< HEAD
+=======
+const restoreLocalGraph = async (id) => {
+  return Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
+};
+
+const fetchFbGraph = async (id) => {
+  const url = `${globalThis.config.firebaseGraphsURL}/${id}.json`;
+  const res = await fetch(url);
+  if (res.status === 200) {
+    const text = (await res.text())?.replace(/%/g, '$');
+    const graph = JSON.parse(text);
+    if (graph) {
+      return (typeof graph === 'string') ? JSON.parse(graph) : graph;
+    }
+  }
+  return findFbGraph(id);
+};
+
+const findFbGraph = async (id) => {
+  const res = await fetch(`${globalThis.config.firebaseGraphsURL}.json`);
+  if (res.status === 200) {
+    const text = (await res.text())?.replace(/%/g, '$');
+    const graphs = JSON.parse(text);
+    for (const userGraphs of values(graphs)) {
+      if (userGraphs[id]) {
+        return JSON.parse(userGraphs[id]);
+      }
+    }
+  }
+};
+
+>>>>>>> 7787b2f (Run to support graph search by name only, and bump README Run version)
 const loadLibraries = async ({customLibraries}, userSettings) => {
   const libraries = customLibraries ?? {};
   try {
     if (userSettings?.customLibraries) {
-      Object.assign(libraries, userSettings?.customLibraries);
+      assign(libraries, userSettings?.customLibraries);
     }
   } catch(e) {
     log.warn(`Failed to parse libraries: ${libString} (error: ${e})`);
