@@ -9,26 +9,30 @@ export const GraphNodeTypes = {
   GraphAgent: {
     category,
     description: 'Synchronize lists of graphs with durable Storage',
-    type: `$library/Graph/Nodes/GraphAgentNode`
+    type: '$library/Graph/Nodes/GraphAgentNode'
   },
   GraphListData: {
     category,
     description: 'Manage lists of graphs',
-    type: `$library/Graph/Nodes/GraphListDataNode`
+    type: '$library/Graph/Nodes/GraphListDataNode'
   },
   NodeTypeList: {
     category,
     description: 'Displays list of node types',
-    type: `$library/Graph/Nodes/NodeTypeListNode`
+    type: '$library/Graph/Nodes/NodeTypeListNode'
   },
   NodeTree: {
     category,
     description: 'Displays the rendering hierarchy of the graph',
-    type: `$library/Graph/Nodes/NodeTreeNode`
+    type: '$library/Graph/Nodes/NodeTreeNode'
   },
   NodeStatus: {
     category,
     description: 'Displays the info about selected object',
-    type: `$library/Graph/Nodes/NodeStatusNode`
+    type: '$library/Graph/Nodes/NodeStatusNode'
+  },
+  Layer: {
+    category,
+    type: '$library/Graph/Nodes/LyaerNode'
   }
 };

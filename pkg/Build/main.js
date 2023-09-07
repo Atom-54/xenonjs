@@ -36,8 +36,12 @@ export const main = async (xenon, App, Composer) => {
   const {nodeTypes, services} = await loadLibraries(customLibraries);
   persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
   xenon.setPaths(Paths.map);
+  // TODO(sjmiles): experimental: make layering more accessible
+  App.createLayer.simple = async (graph, name) => {
+    return await App.createLayer([graph], xenon.emitter, Composer, services, name);
+  };
   // create app layer 
-  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services);
+  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services, 'base');
   // set up initial state
   await App.initializeData(app);
   // might need to do this in concert with initializeData
