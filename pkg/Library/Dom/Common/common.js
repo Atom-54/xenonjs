@@ -11,8 +11,9 @@ import './fancy-input.js';
 import './draggable-item.js';
 import './drop-target.js';
 import './container-layout.js';
+import './image-upload.js';
 //
-import '../Material/material-xen/material-xen.js';
+//import '../Material/material-xen/material-xen.js';
 import '../Weightless/weightless-pages.js';
 import '../Weightless/weightless-accordion.js';
 // import '../Material/mwc/mwc.min.js';

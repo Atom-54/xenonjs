@@ -91,10 +91,10 @@ export const graph = {
       "type": "$library/Graph/Nodes/NodeStatusNode",
       "container": "SplitPanel$splitPanel#Container2"
     },
-    "AtomToolbar": {
-      "type": "$library/UX/Nodes/UXToolbarNode",
-      "container": "design$Main$designer#ToolbarContainer"
-    },
+    // "AtomToolbar": {
+    //   "type": "$library/UX/Nodes/UXToolbarNode",
+    //   "container": "design$Main$designer#ToolbarContainer"
+    // },
     "GraphListFlyOut": {
       "type": "$library/Layout/Nodes/FlyOutNode",
       "container": "DesignMain$panel#Container"
