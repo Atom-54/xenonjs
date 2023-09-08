@@ -6,7 +6,7 @@
 export const DataNavigatorNode = {
   Form: {
     type: '$library/Fields/Atoms/DataNavigator',
-    inputs: ['index', 'count'],
-    outputs: ['index']
+    inputs: ['index', 'count', 'records', 'submittedRecord'],
+    outputs: ['index', 'record', 'records']
   }
 };
