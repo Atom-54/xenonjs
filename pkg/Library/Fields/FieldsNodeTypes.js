@@ -74,14 +74,6 @@ export const FieldsNodeTypes = {
     },  
     type: '$library/Fields/Nodes/ButtonNode'
   },
-  Form: {
-    category,
-    description: 'Formulates a form',
-    types: {
-      Form$form: 'String:FormId'
-    },  
-    type: '$library/Fields/Nodes/FormNode'
-  },
   ImageField: {
     category,
     description: 'Uploads an image or captures image URL',
@@ -90,5 +82,20 @@ export const FieldsNodeTypes = {
       field$image: 'Image'
     },  
     type: '$library/Fields/Nodes/ImageFieldNode'
+  },
+  Form: {
+    category,
+    description: 'Formulates a form',
+    types: {
+      Form$form: 'String:FormId'
+    },  
+    type: '$library/Fields/Nodes/FormNode'
+  },
+  DataNavigator: {
+    category,
+    description: 'UX for navigating a dataset',
+    types: {
+    },  
+    type: '$library/Fields/Nodes/DataNavigatorNode'
   }
 };

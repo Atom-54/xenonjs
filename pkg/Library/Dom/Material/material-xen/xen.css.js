@@ -6,6 +6,8 @@
 export const XenCss = `
 :host {
   --xen-pad: 8px;
+  --cell-margin: var(--xen-pad) var(--xen-pad) 0 0;
+  --cell-pad: var(--xen-pad);
 }
 * {
   box-sizing: border-box;
@@ -103,14 +105,9 @@ export const XenCss = `
   flex-wrap: wrap;
 }
 [grid] > * {
-  --grid-margin: var(--xen-pad);
-  --cell-pad: var(--xen-pad);
-  flex: 1;
-  margin: var(--grid-margin) var(--grid-margin) var(--grid-margin) 0;
+  flex: 1 0 0;
+  margin: var(--cell-margin);
   padding: var(--cell-pad);
-}
-[grid] > :first-child {
-  margin-left: var(--grid-margin);
 }
 [hidden], [hide]:not([hide="false"]), [display="hide"], [display="false"], [show="false"] {
   display: none !important;
