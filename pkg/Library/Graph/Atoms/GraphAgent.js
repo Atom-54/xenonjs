@@ -11,7 +11,7 @@ initialize(inputs, state, {service}) {
   state.makeName = () => service('GraphService', 'MakeName');
 },
 shouldUpdate({graphs, user}) {
-  return graphs && keys(user).length;
+  return graphs; // && keys(user).length;
 },
 async update(inputs, state, tools) {
   state.user ??= inputs.user;
@@ -60,7 +60,8 @@ formatFetchPublishGraphsUrl(publishedGraphsUrl) {
 },
 formatPutPublishGraphUrl(graphId, owner, {publishedGraphsUrl}) {
   const sanitize = str => str.replace(/[^a-zA-Z0-9\s]/g, '');
-  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${sanitize(owner?.split('@')?.[0])}/${sanitize(graphId)}.json`;
+  const ownerId = owner?.split('@')?.[0] ?? 'anonymous';
+  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${sanitize(ownerId)}/${sanitize(graphId)}.json`;
 },
 initGraphs(inputs, state, {service}) {
   let {readonly, graph, graphs, selectedId} = inputs;
