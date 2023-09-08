@@ -174,10 +174,11 @@ template: html`
 <style>
   :host {
     --xcolor-hi-one: rgb(212, 13, 242);
+    --cell-pad: 0;
+    --cell-margin: 0px 18px 0 0;
   }
   [cell] {
-    width: 8em;
-    padding: 2px 12px 2px 0; 
+    min-width: 6em;
   }
   [label] {
     font-size: 0.7em;

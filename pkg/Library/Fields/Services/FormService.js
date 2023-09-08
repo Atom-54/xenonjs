@@ -27,8 +27,8 @@ const notifyForm = ({layer, atom, formId: form}) => {
     onComposerEvent(layer, atom, event);
     // const schema = FormService.getSchema(layer, atom, {form});
     // console.log(JSON.stringify(schema, null, '  '));
-    const values = FormService.getValues(layer, atom, {form});
-    console.log(JSON.stringify(values, null, '  '));
+    // const values = FormService.getValues(layer, atom, {form});
+    // console.log(JSON.stringify(values, null, '  '));
   };
   debounce(form, action, 50);
 };
@@ -51,6 +51,17 @@ export const FormService = {
       return {name, type, value};
     });
     return values;
+  },
+  setValues(layer, atom, {form: formId, values}) {
+    const form = requireForm(layer, atom, formId);
+    const state = form.fields.map(({name}) => {
+      //const {type} = layer.system[name];
+      const stateId = Id.qualifyId(name, 'value');
+      const value = values(name);
+      return {stateId, value}
+      //return {name, type, value};
+    });
+    return state;
   },
   registerForm(layer, atom, {form: formId}) {
     const form = {

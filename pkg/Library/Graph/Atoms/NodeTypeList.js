@@ -78,12 +78,27 @@ bgColorByCategory(category, categories) {
 },
 render({}, {groups, showInfoPanel, infoPanelPos, scrollLeft}) {
   const {top, right} = infoPanelPos || {top: 0, right: 0};
-  const flat = groups.flatMap(group => {
-    return [
-      {group: group.category, style: group.style, hideNodeType: true, hideGroup: false},
-      ...group.nodeTypes.map(nodeType => ({...nodeType, hideGroup: true, hideNodeType: false}))
-    ]
-  });
+  const nodeNodeTypes = groups.flatMap(group => group.category !== 'Graphs' ? group.nodeTypes : []);
+  nodeNodeTypes.sort(this.sortNodeTypes);
+  const flat = nodeNodeTypes.map(nodeType => ({
+    ...nodeType, 
+    hideGroup: true, 
+    hideNodeType: false
+  }));
+  // const flat = groups.flatMap(group => {
+  //   return [{
+  //     group: group.category, 
+  //     style: group.style, 
+  //     hideNodeType: true, 
+  //     hideGroup: group.category !== 'Graphs'
+  //   },
+  //   ...(group.nodeTypes.map(nodeType => ({
+  //       ...nodeType, 
+  //       hideGroup: true, 
+  //       hideNodeType: false
+  //     })))
+  //   ]
+  // });
   //log.warn(flat);
   return {
     scrollLeft,
@@ -176,6 +191,8 @@ template: html`
     color: var(--xcolor-four);
     display: flex;
     flex-direction: row;
+    --cell-margin: 0;
+    --cell-pad: 0;
   }
   [no-matched-nodes] {
     font-size: 12px;
@@ -224,6 +241,9 @@ template: html`
   }
   [grid] {
     padding: 8px;
+  }
+  [grid] > * {
+    flex: 0;
   }
 </style>
 
