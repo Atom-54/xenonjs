@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {debounce} from '../../CoreReactor/Atomic/js/unused/task.js';
-import {onComposerEvent} from '../../CoreFramework/App.js';
+import * as App from '../../CoreFramework/App.js';
 import * as Id from '../../CoreFramework/Id.js';
 
 const log = logf('Services:Form', 'lightblue', 'black');
@@ -24,11 +24,7 @@ const addField = (form, atom) => {
 const notifyForm = ({layer, atom, formId: form}) => {
   const action = () => {
     const event = {handler: 'onFormFields', data: {form}};
-    onComposerEvent(layer, atom, event);
-    // const schema = FormService.getSchema(layer, atom, {form});
-    // console.log(JSON.stringify(schema, null, '  '));
-    // const values = FormService.getValues(layer, atom, {form});
-    // console.log(JSON.stringify(values, null, '  '));
+    App.onComposerEvent(layer, atom, event);
   };
   debounce(form, action, 50);
 };
@@ -54,14 +50,14 @@ export const FormService = {
   },
   setValues(layer, atom, {form: formId, values}) {
     const form = requireForm(layer, atom, formId);
-    const state = form.fields.map(({name}) => {
-      //const {type} = layer.system[name];
+    const state = {};
+    form.fields.forEach(({name}) => {
       const stateId = Id.qualifyId(name, 'value');
-      const value = values(name);
-      return {stateId, value}
-      //return {name, type, value};
+      const field = Id.sliceId(name, 1, -1);
+      const value = values[field];
+      state[stateId] = value;
     });
-    return state;
+    App.setData(layer, state);
   },
   registerForm(layer, atom, {form: formId}) {
     const form = {

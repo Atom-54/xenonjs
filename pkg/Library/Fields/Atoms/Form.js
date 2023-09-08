@@ -9,18 +9,24 @@ initialize(_, state, {service}) {
   service('FormService', 'registerForm', state.id);
   return {form: state.id};
 },
-async update({}, {id}, {isDirty, service}) {
-  if (isDirty('submitTrigger')) {
+async update({inputData}, {id}, {isDirty, service}) {
+  let submit = isDirty('submitTrigger');
+  if (inputData && isDirty('inputData')) {
+    await service('FormService', 'setValues', {form: id, values: inputData});
+    log('inputData:', inputData);
+    submit = true;
+  }
+  if (submit) {
     const data = await service('FormService', 'getValues', {form: id});
-    log(JSON.stringify(data, null, '  '));
+    log('submitting', data);
     return {
-      colums: this.getColumns(data), 
+      columns: this.getColumns(data), 
       row: this.getRow(data)
     };
   }
 },
 getColumns(data) {
-  return data.map(({name})=> name.split('$')[1]);
+  return data.map(({name}) => ({name: name.split('$')[1]}));
 },
 getRow(data) {
   const row = {};
@@ -29,6 +35,9 @@ getRow(data) {
     row[key] = value;
   });
   return row;
+},
+onFormFields(inputs, state, {service}) {
+  state.schema = service('FormService', 'getSchema', {form: id});
+  return {schema};
 }
 });
-  
