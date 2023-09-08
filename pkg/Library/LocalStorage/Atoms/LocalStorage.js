@@ -12,6 +12,7 @@ shouldUpdate({key}) {
   return key;
 },
 async update({key, storeValue}, state, {service}) {
+  //key = `${globalThis.config.aeon}/${key}`;
   const bind = method => data => service('LocalStorageService', method, data);
   const [restore, persist] = [bind('restore'), bind('persist')];
   const cached = await restore({storeId: key});
