@@ -6,7 +6,7 @@
 export const FormNode = {
   Form: {
     type: '$library/Fields/Atoms/Form',
-    inputs: ['initData', 'submitTrigger'],
-    outputs: ['form', 'columns', 'row']
+    inputs: ['inputData', 'submitTrigger'],
+    outputs: ['form', 'columns', 'row', 'schema']
   }
 };

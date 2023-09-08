@@ -24,8 +24,11 @@ render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ select
   //   design: context?.state,
   //   runtime: context?.fullState
   // };
-  const graphJson = JSON.stringify(context?.layers?.base?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
+  const graphJson = JSON.stringify(contextModel?.base?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
+  if (contextModel?.design) {
+    delete contextModel.base;
+  }
   return {
     kick,
     showTools,
