@@ -21,10 +21,10 @@ render({readonly, graph, graphs, publicGraphs, showMode, search}, state) {
         : [];
   return {readonly, graphItems};
 },
-renderGraphItems({readonly, isPublic, graphs, graph, search}, state) {
+renderGraphItems({readonly, isPublic, graphs, graph, search}, {user}) {
   search = search?.toLowerCase?.() || '';
   //log(`search =`, search);
-  const isOwned = ({meta}) => state.user === meta?.owner;
+  const isOwned = ({meta}) => user === meta?.owner;
   const includes = value => value?.toLowerCase?.().includes(search);
   const match = ({meta, nodes}) => !search
     || meta && (
@@ -41,13 +41,13 @@ renderGraphItems({readonly, isPublic, graphs, graph, search}, state) {
       isPublic: Boolean(isPublic),
       id: g.meta?.id ?? '(anon)',
       description: g.meta?.description ?? this.defaultDescription,
-      hideOwner: String(!isPublic),
+      hideOwner: String(false), //!isPublic),
       owner: g.meta?.owner?.split('@')?.shift() ?? 'unknown',
       timestamp: g.meta ? new Date(g.meta.timestamp).toLocaleDateString() : '',
       selected: g.meta?.id === graph?.meta?.id,
       isOwned: isOwned(g),
-      hidePublish: Boolean(isPublic),
-      hideUnpublish: Boolean(!isPublic || !isOwned(g))
+      hidePublish: Boolean(!user || isPublic),
+      hideUnpublish: Boolean(!user || !isPublic || !isOwned(g))
     }))
     ;
 },
@@ -114,7 +114,8 @@ template: html`
     flex-basis: auto !important;
   }
   [container] {
-    width: 300px;
+    min-width: 300px;
+    flex: 0 !important;
   }
   /* [container] {
     background-image: url('/assets/frames/frame0.png');
@@ -130,12 +131,13 @@ template: html`
     border-width: var(--border-size-1); 
     border: 2px solid var(--xcolor-three);
     /* background-color: var(--xcolor-one);  */
-    color: var(--xcolor-three);
+    /* color: var(--xcolor-three); */
     font-size: var(--font-size-0);  
   }
   [capsule][selected] {
     box-shadow: var(--shadow-hover);
-    background: var(--xcolor-two);
+    /* background: var(--xcolor-two); */
+    background-color: var(--xcolor-one);
     border: 2px solid var(--xcolor-brand);
     color: var(--xcolor-four);
     font-weight: bold;
