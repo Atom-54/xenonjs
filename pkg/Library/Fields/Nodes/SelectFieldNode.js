@@ -7,7 +7,7 @@
 export const SelectFieldNode = {
   field: {
     type: '$library/Fields/Atoms/SelectField',
-    inputs: ['label', 'options', 'value', 'multiple'],
+    inputs: ['form', 'label', 'options', 'value', 'multiple'],
     outputs: ['value']
   }
 };

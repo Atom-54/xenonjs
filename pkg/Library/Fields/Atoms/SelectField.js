@@ -4,13 +4,13 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({value}, state) {
-  if (state.value !== value) {
-    state.value = value;
+update({form, value}, state, {service, isDirty}) {
+  service('FormService', 'registerField', {form});
+  if (isDirty('value')) {
     return {value};
   }
 },
-render({label, value, multiple, options}, state) {
+render({label, value, multiple, options}) {
   return {
     label: label ?? '',
     value,
@@ -18,14 +18,8 @@ render({label, value, multiple, options}, state) {
     options
   };
 },
-// onLabelChange({eventlet: {value}}) {
-//   return {label: value};
-// },
 onFieldChange({eventlet: {value}}, state) {
-  if (value !== state.value) {
-    state.value = value;
-    return {value};
-  }
+  return {value};
 },
 template: html`
 <style>
@@ -37,10 +31,9 @@ template: html`
   [label] {
     background: inherit;
     font-weight: bold;
-    /* font-size: 75%; */
     border: none;
-    text-align: left;
-    /* width: 16em; */
+    text-align: right;
+    min-width: 8em;
   }
   [delim] {
     padding-right: 12px;
@@ -48,10 +41,9 @@ template: html`
 </style>
 
 <div flex bar>
-  <!-- <input label value="{{label}}" on-change="onLabelChange"> -->
   <div label>{{label}}</div>
-  <span delim>:</span>
-  <multi-select flex field options="{{options}}" selected="{{value}}" selected="{{value}}" multiple="{{multiple}}" on-change="onFieldChange"></multi-select>
+  <span delim></span>
+  <multi-select flex options="{{options}}" selected="{{value}}" selected="{{value}}" multiple="{{multiple}}" on-change="onFieldChange"></multi-select>
 </div>
 `
 });

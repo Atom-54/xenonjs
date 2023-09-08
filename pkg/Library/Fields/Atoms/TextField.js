@@ -5,11 +5,10 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({value, form}, state, {service, isDirty}) {
-  if (state.value !== value) {
-    state.value = value;
+  service('FormService', 'registerField', {form});
+  if (isDirty('value')) {
     return {value};
   }
-  service('FormService', 'registerField', {form});
 },
 render({label, value, options}) {
   return {

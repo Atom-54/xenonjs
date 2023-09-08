@@ -25,7 +25,7 @@ export const baseSelectedKey = '$NodeGraph$Graph$selected';
 const defaultDesignerContainer = 'Main$panel#Container';
 const designerLayoutKey = 'Main$designer$layout';
 const layerLayoutKey = 'design$Main$designer$layout';
-const defaultObjectLayout = {l: 32, t: 32, w: 132, h: 132, borderWidth: 'var(--border-size-1)', borderStyle: 'solid'};
+const defaultObjectLayout = {l: 32, t: 32, w: 132, h: 132, borderStyle: 'solid'};
 
 let xenon, Composer, customLibraries;
 
