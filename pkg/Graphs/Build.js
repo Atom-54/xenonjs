@@ -320,7 +320,7 @@ export const graph = {
     }
   },
   "connections": {
-    "AuthFlyOut$flyOut$show": "Auth$Auth$requireLogin",
+    // "AuthFlyOut$flyOut$show": "Auth$Auth$requireLogin",
     // "GraphStylizer$GraphStylizer$avatar": "GraphListOptionsSelect$field$value",
 
     "GraphList$graphAgent$user": "Auth$Auth$user",
