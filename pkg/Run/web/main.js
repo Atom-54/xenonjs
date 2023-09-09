@@ -17,7 +17,7 @@ logf.flags.Main = true;
 
 export const main = async (xenon, App, Composer) => {
   // from whence, graph?
-  const graphId = Params.getParam('graph') || await Persist.restoreValue(`$GraphList$graphAgent$selectedId`);
+  const graphId = await retrieveGraphId();
   const buildGraph = await loadGraph(graphId);
   if (buildGraph) {
     document.title = buildGraph.meta.id;
@@ -25,6 +25,7 @@ export const main = async (xenon, App, Composer) => {
     if (buildGraph.meta.icon) {
       document.querySelector("link[rel~='icon']").href = buildGraph.meta.icon;
     }
+    buildGraph.state[`Main$designer$disabled`] = true;
     buildGraph.nodes['footer'] = {
       type: "$library/NeonFlan/Nodes/FooterNode",
       container: "root$panel#Container"
@@ -47,6 +48,17 @@ export const main = async (xenon, App, Composer) => {
   } else {
     log(`Graph not found.`);
   }
+};
+
+const retrieveGraphId = async () => {
+  let graphId = Params.getParam('graph');
+  if (!graphId) {
+    graphId = await Persist.restoreValue(`$GraphList$graphAgent$selectedId`);
+    if (graphId) {
+      graphId = `local$${graphId}`;
+    }
+  }
+  return graphId;
 };
 
 const loadLibraries = async ({customLibraries}, userSettings) => {
