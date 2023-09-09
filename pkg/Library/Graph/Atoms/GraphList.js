@@ -42,7 +42,7 @@ renderGraphItems({readonly, isPublic, graphs, graph, search}, {user}) {
       id: g.meta?.id ?? '(anon)',
       description: g.meta?.description ?? this.defaultDescription,
       hideOwner: String(false), //!isPublic),
-      owner: g.meta?.owner?.split('@')?.shift() ?? 'unknown',
+      owner: g.meta?.owner?.split('@')?.shift() ?? 'anonymous',
       timestamp: g.meta ? new Date(g.meta.timestamp).toLocaleDateString() : '',
       selected: g.meta?.id === graph?.meta?.id,
       isOwned: isOwned(g),
