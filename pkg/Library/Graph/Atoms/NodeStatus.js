@@ -32,8 +32,9 @@ template: html`
     padding: 4px;
     font-size: 75%;
     overflow: scroll !important;
+    flex: 1 !important;
   }
 </style>
-<pre>{{info}}</pre>
+<pre flex>{{info}}</pre>
 `
 });
