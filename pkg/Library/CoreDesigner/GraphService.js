@@ -25,7 +25,7 @@ export const GraphService = {
   async CreateLayer(layer, atom, {graph}) {
     return createHostedLayer(layer, atom, graph);
   },
-  async ComputerLayerIO(layer, atom, {layerId}) {
+  async ComputeLayerIO(layer, atom, {layerId}) {
     return computeLayerIO(Resources.get(layerId))
   },
   MakeName(layer, atom, data) {

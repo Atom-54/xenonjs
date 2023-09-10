@@ -10,8 +10,9 @@ async update({graph}, state, {service}) {
   }
   if (graph && !state.layerId) {
     const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph});
-    const io = await service('GraphService', 'ComputerLayerIO', {layerId});
-    return {layerId, io: io.i};
+    const io = await service('GraphService', 'ComputeLayerIO', {layerId});
+    const i = io.i?.map(path => path.replace(/\$/g, '.'));
+    return {layerId, io: i};
   }
 },
 template: html`
