@@ -4,10 +4,21 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-shouldRender({geolocation}) {
-  return Boolean(geolocation);
+update({geolocation}, state, {invalidate}) {
+  if (geolocation) {
+    state.geolocation = geolocation;
+  }
+  if (!state.geolocation) {
+    timeout(() => {
+      state.geolocation ??= {latitude: 48.8589384, longitude: 2.264635};
+      invalidate();
+    }, 200);
+  }
 },
-render({geolocation: {latitude, longitude}, markers}) {
+shouldRender({}, state) {
+  return Boolean(state.geolocation);
+},
+render({markers}, {geolocation: {latitude, longitude}}) {
   return {latitude, longitude, markers};
 },
 onMarkerClicked({eventlet: {key}}) {

@@ -74,8 +74,6 @@ const GoodMap = (() => {
       this.apiKey = globalThis?.config?.firebaseConfig?.apiKey;
       this.map = null;
       this.zoom = 8;
-      // this.latitude = 48.8589384;
-      // this.longitude = 2.264635;
       this.extraOptions = {};
       this.markerElems = [];
     }
