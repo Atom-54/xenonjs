@@ -10,13 +10,13 @@ initialize(inputs, state) {
     readonly: false,
     props: [{
       name: 'Custom Libraries',
-      store: {$type: 'Pojo'},
+      store: {type: 'Pojo'},
       visible: true
     },
     {
       name: 'Storage',
       store: {
-        $type: 'String',
+        type: 'String',
         values:['Local', 'Firebase']
       },
       value: 'Local',
@@ -25,13 +25,13 @@ initialize(inputs, state) {
     },
     {
       name: 'OpenAI API key',
-      store: {$type: 'String'},
+      store: {type: 'String'},
       value: 'coming soon...',
       disabled: true,
       visible: true
     }, {
       name: 'HuggingFace API key',
-      store: {$type: 'String'},
+      store: {type: 'String'},
       value: 'coming soon...',
       disabled: true,
       visible: true

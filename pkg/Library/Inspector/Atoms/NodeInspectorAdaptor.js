@@ -47,7 +47,7 @@ constructData(objectId, graph, {atoms, objectInfo}) {
     props.push({
       name: 'CssStyle',
       // custom-type matches type in CustomInspector map
-      store: {$type: 'OpenStyle'}, 
+      store: {type: 'OpenStyle'}, 
       // container prefix expected by CustomInspector
       // <prefix>InspectorContainer is created by ObjectInspector
       propId: 'OpenStyle',
@@ -59,7 +59,7 @@ constructData(objectId, graph, {atoms, objectInfo}) {
     props.push({
       name: 'Container',
       propId: `${objectId}$Container`,
-      store: {$type: 'String'},
+      store: {type: 'String'},
       value: container,
       visible: true
     });
@@ -110,7 +110,7 @@ enpropenate({state, connections}, objectId, atoms) {
 formCandidates(candidates, objectId, prop, propConns) {
   const selected = [];
   let separator = false;
-  const type = prop.store.$type;
+  const type = prop.store.type;
   const typedCandidates = candidates[type]?.sort((candidate1, candidate2) => this.sortCandidates(propConns, prop.name, type, candidate1, candidate2)) ?? [];
   typedCandidates.forEach(candidate => {
     if (!separator && (candidate.type === 'Pojo')) {
@@ -166,7 +166,7 @@ makeProp(atomId, propName, types, state) {
     name: propName, 
     propId,
     store: {
-      $type: types?.[atomPropId] || 'Pojo',
+      type: types?.[atomPropId] || 'Pojo',
       values: types?.[`${atomPropId}Values`]
     },
     value: state?.[propId],
@@ -179,7 +179,7 @@ makeConnectionProp(prop, candidates, connections) {
     name: prop.name,
     propId: prop.propId,
     store: {
-      $type: 'TypeWithConnection',
+      type: 'TypeWithConnection',
       store: prop.store
     },
     value: {
