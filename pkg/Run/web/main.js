@@ -8,7 +8,7 @@ import {Params} from '../../Library/Xenon/Utils/params.js';
 import {graph as baseGraph} from '../../Graphs/Base.js';
 import * as Persist from '../../Library/CoreFramework/Persist.js';
 import {loadGraph} from '../../Library/CoreDesigner/GraphService.js';
-import '../../Library/Dom/common/dom.js';
+import '../../Library/Dom/Common/dom.js';
 import * as Library from '../../Library/CoreFramework/Library.js'
 
 // it rolls down stairs, alone or in pairs! it's log!
