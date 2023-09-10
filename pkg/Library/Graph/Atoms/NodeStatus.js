@@ -4,9 +4,13 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({selected}, state) {
+async update({selected}, state, {service}) {
+  state.context = await service('SystemService', 'request-context');
 },
-render({selected}) {
+render({selected}, {context}) {
+  const selectedKey = `design$${selected}`;
+  const stateKeys = values(context.layers).flatMap(layerState => keys(layerState).filter(key => key?.includes(selectedKey)));
+  log(stateKeys);
   return {
     selected: selected || '(no selection)'
   };

@@ -32,14 +32,7 @@ handleAction(action, state) {
   return {value};
 },
 template: html`
-<style>
-  button {
-    padding: 5px;
-  }
-</style>
-<div>
-  <button on-click="onClick">{{label}}</button>
-</div>
+<wl-button on-click="onClick">{{label}}</wl-button>
 `
 
 });

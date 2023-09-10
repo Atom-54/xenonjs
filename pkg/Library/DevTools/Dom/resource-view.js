@@ -21,12 +21,15 @@ export class ResourceView extends Xen.Async {
     const cap = s => `${s[0].toUpperCase()}${s.slice(1)}`;
     return {
       resources: entries(resources).filter(([name, res]) => name && res).map(([name, res]) => {
+        const notLayer = !res?.graph;
         const notCanvas = res?.localName !== 'canvas';
         const notStream = !(res instanceof MediaStream);
         const notShader = !res?.camera;
-        const notObject = !notCanvas || !notStream || !notShader;
-        const json = JSON.stringify(res, null, '  ');
-        const size = !notObject 
+        const notObject = !notCanvas || !notStream || !notShader || !notLayer;
+        const json = notObject ? '' : JSON.stringify(res, null, '  ');
+        const size = !notLayer
+          ? 'Layer'
+          : !notObject 
             ? `${json.length} bytes`
             : !notShader
               ? 'Shader' 

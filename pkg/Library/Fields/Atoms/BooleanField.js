@@ -32,6 +32,7 @@ template: html`
     font-size: 75%;
     border: none;
     text-align: right;
+    min-width: var(--field-label-width);
   }
   [delim] {
     padding-right: 9px;
@@ -39,7 +40,7 @@ template: html`
 </style>
 <div flex bar>
   <div label>{{label}}</div>
-  <span delim>:</span>
+  <span delim></span>
   <input field type="checkbox" checked="{{value}}" on-change="onValueChange">
 </div>
 `

@@ -107,22 +107,14 @@ template: html`
   }
   [grid] {
     align-content: flex-start;
-  }
-  [grid] > * {
-    min-width: 4em;
-    min-height: 4em;
-    flex-basis: auto !important;
+    --cell-margin: 0;
+    --cell-pad: 0;
   }
   [container] {
-    min-width: 300px;
+    min-width: 18em;
+    min-height: 4em;
     flex: 0 !important;
   }
-  /* [container] {
-    background-image: url('/assets/frames/frame0.png');
-    background-position: 16px 12px;
-    background-repeat: no-repeat;
-    background-size: 90% 90%;
-  } */
   [capsule] {
     margin: 4px; 
     padding: 4px; 

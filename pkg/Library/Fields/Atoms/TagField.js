@@ -38,7 +38,7 @@ template: html`
     font-size: 75%;
     border: none;
     text-align: right;
-    width: 8em;
+    min-width: var(--field-label-width);
   }
   [field] {
     box-sizing: border-box;
