@@ -25,6 +25,9 @@ export const GraphService = {
   async CreateLayer(layer, atom, {graph}) {
     return createHostedLayer(layer, atom, graph);
   },
+  async ComputerLayerIO(layer, atom, {layerId}) {
+    return computeLayerIO(Resources.get(layerId))
+  },
   MakeName(layer, atom, data) {
     return makeCapName();
   },
@@ -102,7 +105,6 @@ const createHostedLayer = async (layer, atom, graphId) => {
   if (graphSpec) {
     const id = makeCapName();
     const newLayer = await App.createLayer.simple(graphSpec, id);
-    computeLayerIO(newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
       if (spec.container.endsWith('$root$panel#Container')) {
@@ -122,7 +124,7 @@ const computeLayerIO = async layer => {
     const props = keys(value);
     return {id, props};
   });
-  log(inp, outp);
+  return {i: inp, o: outp};
 };
 
 const localPrefix = 'local$';

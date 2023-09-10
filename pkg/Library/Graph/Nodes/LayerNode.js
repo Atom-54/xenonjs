@@ -7,7 +7,7 @@ export const LayerNode = {
   Layer: {
     type: '$library/Graph/Atoms/Layer',
     inputs: ['graph'],
-    outputs: []
+    outputs: ['layerId', 'io']
   },
   state: {
   }

@@ -9,7 +9,9 @@ async update({graph}, state, {service}) {
     //await service('GraphService', 'DestroyLayer', {layerId});
   }
   if (graph && !state.layerId) {
-    state.layerId = await service('GraphService', 'CreateLayer', {graph});
+    const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph});
+    const io = await service('GraphService', 'ComputerLayerIO', {layerId});
+    return {layerId, io: io.i};
   }
 },
 template: html`
