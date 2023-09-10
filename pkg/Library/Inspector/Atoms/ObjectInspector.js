@@ -13,7 +13,6 @@ async update({data}, state, {output}) {
   state.data = data;
   return {data};
 },
-
 async refreshRendering(state, output) {
   // clear out rendered flyweight data
   state.shouldClear = true;
@@ -22,7 +21,6 @@ async refreshRendering(state, output) {
   // next time render normally
   state.shouldClear = false;
 },
-
 render({data, customInspectors}, state) {
   if (state.shouldClear) {
     return {title: '', props: []};
@@ -31,14 +29,13 @@ render({data, customInspectors}, state) {
   const readonly = Boolean(data?.readonly);
   state.renderedProps = this.renderProps(data, customInspectors, state);
   return {
-    showNothingToInspect: String(data == null),
     title,
+    showNothingToInspect: String(data == null),
     disableRename: readonly,
     showToolbar: String(!readonly && Boolean(data !== null)),
     props: state.renderedProps
   };
 },
-
 renderProps(data, customInspectors, state) {
   return !Array.isArray(data?.props) ? null :
     data.props
@@ -46,7 +43,6 @@ renderProps(data, customInspectors, state) {
       .map(prop => this.renderProp(prop, undefined, customInspectors, state))
     ;
 },
-
 renderProp(prop, parent, customInspectors, state) {
   const key = `${parent ? `${parent}:` : ''}${prop.name}`;
   const $template = this.chooseTemplate(prop, state.editedKey === key, customInspectors);
@@ -58,8 +54,7 @@ renderProp(prop, parent, customInspectors, state) {
     }
   };
 },
-
-chooseTemplate({store: {$type, values, range}, value}, isEditing, customInspectors) {
+chooseTemplate({store: {type, values, range}, value}, isEditing, customInspectors) {
   let template = {
     Boolean: 'checkbox_t',
     String: 'text_t',
@@ -72,10 +67,10 @@ chooseTemplate({store: {$type, values, range}, value}, isEditing, customInspecto
     Select: 'select_t',
     MultilineText: 'textarea_t',
     TypeWithConnection: 'prop_with_conn_t'
-  }[$type] ?? 'unimpl_t';
-  if (customInspectors?.[$type]) {
+  }[type] ?? 'unimpl_t';
+  if (customInspectors?.[type]) {
     template = 'custom_t';
-  } else if ($type === 'Number' && ['min', 'max', 'step'].every(key => keys(range || {}).some(k => k === key))) {
+  } else if (type === 'Number' && ['min', 'max', 'step'].every(key => keys(range || {}).some(k => k === key))) {
     template = 'range_t';
   } else if (['unimpl_t', 'text_t'].includes(template) && Array.isArray(values)) {
     template = 'select_t';
@@ -84,14 +79,13 @@ chooseTemplate({store: {$type, values, range}, value}, isEditing, customInspecto
   }
   return template;
 },
-
 constructPropModel(key, prop, parent, template, state) {
-  const {name, propId, store: {$type, values, range, multiple}, value, disabled, displayName} = prop;
+  const {name, propId, store: {type, values, range, multiple}, value, disabled, displayName} = prop;
   let model = {
     name,
     key,
     displayName: displayName || name,
-    type: $type,
+    type: type,
     disabled,
     value
   };
@@ -168,7 +162,6 @@ constructPropModel(key, prop, parent, template, state) {
   }
   return model;
 },
-
 formatSelectValues(values, selected) {
   const formatted = values.map(v => {
     if (typeof v !== 'object') {
@@ -182,7 +175,6 @@ formatSelectValues(values, selected) {
   formatted.splice(0, 0, {key: '', name: '', selected: !formatted.some(v => v.selected)});
   return formatted;
 },
-
 calculateTextRows({key, value}, state) {
   let rows = String(value??'').split('\n').length??1;
   if (state.data.props[state.data.props.length - 1].name === key) {
@@ -192,12 +184,11 @@ calculateTextRows({key, value}, state) {
   }
   return rows;
 },
-
 initCheckedConn(prop, checked) {
   if (checked === undefined) {
     const noValue = ((prop.value.property === null) || (prop.value.property === undefined));
     const hasConnection = (prop.value.connection.value?.length > 0);
-    const nonConcreteType = !['String', 'Number', 'Boolean'].includes(prop.store.store.$type);
+    const nonConcreteType = !['String', 'Number', 'Boolean'].includes(prop.store.store.type);
     return {
       checked: (noValue && nonConcreteType) || hasConnection,
       multi: Array.isArray(prop.value.connection.value) && prop.value.connection.value.length > 1
@@ -205,7 +196,6 @@ initCheckedConn(prop, checked) {
   }
   return checked;
 },
-
 formatConnectionSelect(prop, {checkedConns}) {
   const key = `${prop.name}-connection`;
   const displayName = prop.displayName || prop.name;
@@ -234,40 +224,40 @@ formatConnectionSelect(prop, {checkedConns}) {
     showProp: String(!checkedConn)
   };
 },
-
 renderSubProp(parent, {name, value}, state) {
   const type = typeof value;
-  return this.renderProp({name, store: {$type: type}, value}, parent, {}, state);
+  return this.renderProp({name, store: {type: type}, value}, parent, {}, state);
 },
-
 onPropChange({eventlet: {key, value}, data}, state, {service}) {
   const propNames = key.split(':');
   const formatter = (propValue, propStore) => this.formatPropValueByType(propValue, propStore || {}, value);
   return this.updatePropValue(data, propNames, formatter, service);
 },
-
 onImageUrl({eventlet: {key, value}, data}, state, tools) {
   const image = {url: value};
-  return this.onPropChange({eventlet: {key, value: image}, data}, state, tools);
+  const eventlet = {key, value: image};
+  return this.onPropChange({eventlet, data}, state, tools);
 },
-
-onConnChecked({eventlet: {key}, data}, state, tools) {
-  state.checkedConns[key].checked = Boolean(!state.checkedConns[key].checked);
-  if (!state.checkedConns[key].checked) {
-    return this.onPropChange({eventlet: {key}, data}, state, tools);
+onConnChecked({eventlet, data}, state, tools) {
+  const conn = state.checkedConns[eventlet.key];
+  conn.checked = !conn.checked;
+  if (!conn.checked) {
+    return this.onPropChange({eventlet, data}, state, tools);
   }
 },
-
 onMultiChecked({eventlet: {key}, data}, state) {
-  state.checkedConns[key].multi = Boolean(!state.checkedConns[key].multi);
+  const conn = state.checkedConns[key];
+  conn.multi = !conn.multi;
 },
-
+onPubChecked({eventlet: {key}, data}, state) {
+  const conn = state.checkedConns[key];
+  conn.pub = !conn.pub;
+},
 onAddItem({eventlet: {key, value}, data}, state, {service}) {
   const propNames = key.split(':');
-  const formatter = (propValue, {$type: propType}) => [...propValue, this.makeNewItem(value, propType)];
+  const formatter = (propValue, {type: propType}) => [...propValue, this.makeNewItem(value, propType)];
   return this.updatePropValue(data, propNames, formatter, service);
 },
-
 makeNewItem(value, propType) {
   if (propType === '[Image]') {
     return {src: value || ''};
@@ -354,7 +344,7 @@ cloneValue(value) {
   return Array.isArray(value) ? [...value] : {...value};
 },
 
-formatPropValueByType(currentValue, {$type: currentType, store}, newValue) {
+formatPropValueByType(currentValue, {type: currentType, store}, newValue) {
   if (currentType === 'TypeWithConnection') {
     return {
       ...currentValue,      
@@ -441,7 +431,6 @@ template: html`
     padding: 0 6px;
     --thumb-size: 10px;
     --track-height: 2px;
-    /* --sl-input-label-font-size-medium: 9px; */
   }
   sl-range::part(input) {
     height: 17px;
@@ -477,6 +466,7 @@ template: html`
     text-align: left;
     color: var(--theme-color-fg-2);
     text-transform: capitalize;
+    align-self: center;
   }
   [label][control] {
     margin-bottom: 4px;
@@ -507,16 +497,17 @@ template: html`
     color: var(--xcolor-three);
     background-color: var(--xcolor-one);
   }
-  icon {
+  /* icon {
     cursor: pointer;
-    padding: 0 6px;
-    border-radius: 50%;
+    border-radius: 50%; 
+    padding: 0.5em;  
     text-align: center;
-    padding: 0.5em;
+    font-size: 120%;
   }
   icon:hover {
     background: var(--xcolor-two);
   }
+  */
   [name="ToolbarContainer"]::slotted(*) {
     background-color: var(--xcolor-one);
   }
@@ -547,15 +538,22 @@ template: html`
 
 <template prop_with_conn_t>
   <div>
-    <span flex row>
+    <span centering flex row>
       <span label flex>{{displayName}}</span>
-      <label row>
-        <input type="checkbox" hide$="{{hideMulti}}" checked="{{checkedMulti}}" on-change="onMultiChecked" key="{{key}}">
-        <i hide$="{{hideMulti}}">multi&nbsp;&nbsp;</i>
+      <label hide$="{{hideMulti}}" centering row>
+        <input type="checkbox" checked="{{checkedMulti}}" on-change="onMultiChecked" key="{{key}}">
+        <icon title="multi-connect">all_inclusive</icon>
+        &nbsp;&nbsp;
       </label>
-      <label row>
+      <label centering row>
         <input type="checkbox" checked="{{checkedConn}}" on-change="onConnChecked" key="{{key}}">
-        <i>connect&nbsp;</i>
+        <icon title="connected">link</icon>
+        &nbsp;
+      </label>
+      <label centering row>
+        <input type="checkbox" checked="{{checkedPub}}}" on-change="onPubChecked" key="{{key}}">
+        <icon title="public">public</icon>
+        &nbsp;
       </label>
     </span>
     <div prop display$="{{showProp}}">{{prop}}</div>
@@ -659,9 +657,9 @@ template: html`
     <div label flex>{{displayName}}</div>
     <div bar>
       <output style="width:auto;">{{min}}</output>
-      <input type="range" flex key="{{key}}" value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" on-input="onPropChange">
+      <!-- <input type="range" flex key="{{key}}" value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" on-input="onPropChange"> -->
       <!-- TODO: wl-slider doesn't pass the 'key" to the event handler--> 
-      <!-- <wl-slider flex style="overflow:visible" key="{{key}}" thumblabel value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" on-input="onPropChange"></wl-slider> -->
+      <wl-slider flex style="overflow:visible" key$="{{key}}" thumblabel value="{{value}}" min="{{min}}" max="{{max}}" step="{{step}}" on-input="onPropChange"></wl-slider>
       <output style="margin-left: 10px;">{{max}}</output>
     </div>
   </div>
