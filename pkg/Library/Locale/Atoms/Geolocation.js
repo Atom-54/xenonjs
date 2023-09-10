@@ -4,7 +4,6 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 async update({geolocation, address}, state, {service}) {
   if (address && !this.isMyLocation(address)) {
     if (state.address !== address) {
@@ -17,6 +16,9 @@ async update({geolocation, address}, state, {service}) {
   }
   if (geolocation && this.coordsChanged(geolocation, state.coords)) {
     return this.fetchReverseCoords(geolocation, state, service);
+  }
+  if (!geolocation) {
+    return {geolocation: {latitude: 0, longitude: 0}};
   }
 },
 
