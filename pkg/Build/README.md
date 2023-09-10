@@ -4,12 +4,12 @@
 We use `Build/` to construct all Graphs we make and use, including all demo Graphs.
 With `Build/` you can create new experiences without writing a single line of code.
 
-`Build/` is available for you at: [XenonJs/Build](https://xenon-js.web.app/0.3/NeonFlan/Apps/Build/)  
+`Build/` is available for you at: [XenonJs/Build](https://xenon-js.web.app/0.6/Build)  
 or you can run it locally, as described in [How to run XenonJs locally](../../README.md#local).
 
 ## How to
 
-Build/ UI features the following:
+`Build/` UI features the following:
 * **Preview panel**: where you can see and interact with your Graph in realtime
 * **Node Graph structure panel**: demonstrates how the Nodes in the Graph connect to each other
 * **Individual Node Inspector panel**: let's you configure the data and layout of selected node

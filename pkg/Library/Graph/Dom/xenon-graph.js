@@ -16,7 +16,7 @@ import * as Persist from '../../CoreFramework/Persist.js';
 import {graph as baseGraph} from '../../../Graphs/Base.js';
 import '../../Fields/FieldsDom.js';
 import '../../PixiJs/PixiJsDom.js';
-import {services} from '../../../Apps/common/services.js';
+import * as services from '../../services.js';
 
 const template = Xen.Template.html`
 <style>

@@ -45,7 +45,7 @@ Here is an example [TextField](https://github.com/NeonFlan/xenonjs/blob/main/pkg
 
 <i>Note: in this example the template is DOM, but it doesn't have to be.</i>  
   
-<i>Also note: we are using our very own Xen templating engine. You can learn more about Xen in the [xen-explainer](https://xenon-js.web.app/0.3/Core/Library/Dom/Xen/xen-explainer.html). If you prefer, you can use another templating engine, it is pluggable.</i>  
+<i>Also note: we are using our very own Xen templating engine. You can learn more about Xen in the [xen-explainer](https://xenon-js.web.app/0.6/Library/Dom/Xen/xen-explainer.html). If you prefer, you can use another templating engine, it is pluggable.</i>  
 
 For more information see [Atom.md](./Atom.md).
 
