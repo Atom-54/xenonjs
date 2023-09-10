@@ -34,7 +34,7 @@ async updateStateValues({actions, controls}, state, {service}) {
   };
 },
 getLocalActions(actions, controls) {
-  return !controls ? actions : controls.map(control => actions.find(a => a.name === control));
+  return !controls ? actions : controls.map(control => actions?.find(a => a.name === control));
 },
 onActionClick({eventlet: {key}, actions}, state) {
   const action = actions[key];
@@ -52,6 +52,9 @@ getNextEvent(state) {
     state.key = Math.random();
     return {event: {...fresh, key: state.key}};
   }
+},
+shouldRender({actions}) {
+  return Boolean(actions);
 },
 render({actions, controls}, state) {
   const localActions = this.getLocalActions(actions, controls);

@@ -44,7 +44,7 @@ dataInspectorAdaptor(record, schema) {
       visible: prop.name !== 'uid',
       name: prop.name,
       store: {
-        $type: prop.type,
+        type: prop.type,
         values: prop.values,
         value: prop.value,
         range: formatRange(prop)

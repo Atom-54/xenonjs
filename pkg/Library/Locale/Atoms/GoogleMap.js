@@ -4,7 +4,6 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 shouldRender({geolocation}) {
   return Boolean(geolocation);
 },

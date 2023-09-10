@@ -394,7 +394,7 @@ export const updateProp = async (layer, {propId, store, value}) => {
     } else if (propId.endsWith('$Container')) {
       const objectId = Id.objectIdFromAtomId(propId);
       return setObjectContainer(layer, objectId, value);
-    } else if (store.$type !== 'TypeWithConnection') {
+    } else if (store.type !== 'TypeWithConnection') {
       updateDataProp(layer, propId, value);
     } else {
       await updatePropWithConnection(layer, propId, value)
