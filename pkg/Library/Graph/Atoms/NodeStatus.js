@@ -9,10 +9,18 @@ async update({selected}, state, {service}) {
 },
 render({selected}, {context}) {
   const selectedKey = `design$${selected}`;
-  const stateKeys = values(context.layers).flatMap(layerState => keys(layerState).filter(key => key?.includes(selectedKey)));
-  log(stateKeys);
+  const info = {};
+  values(context.layers)
+    .flatMap(layerState => keys(layerState)
+      .forEach(key => {
+        if (key?.includes(selectedKey)) {
+          info[key] = layerState[key];
+        }
+      })
+    );
+  log(info);
   return {
-    selected: selected || '(no selection)'
+    info: JSON.stringify(info, null, '  ')
   };
 },
 getObjectId(id) {
@@ -22,11 +30,10 @@ template: html`
 <style>
   :host {
     padding: 4px;
-  }
-  h3 {
-    margin: 0;
+    font-size: 75%;
+    overflow: scroll !important;
   }
 </style>
-<h3>{{selected}}</h3>
+<pre>{{info}}</pre>
 `
 });

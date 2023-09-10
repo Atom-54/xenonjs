@@ -83,13 +83,17 @@ export const graph = {
       "type": "$library/Inspector/Nodes/OpenStyleInspectorNode",
       "container": "ObjectInspector$inspector#OpenStyleInspectorContainer"
     },
+    "SplitSplitPanel": {
+      "type": "$library/Layout/Nodes/SplitPanelNode",
+      "container": "SplitPanel$splitPanel#Container2"
+    },
     "NodeTree": {
       "type": "$library/Graph/Nodes/NodeTreeNode",
-      "container": "SplitPanel$splitPanel#Container2"
+      "container": "SplitSplitPanel$splitPanel#Container"
     },
     "NodeStatus": {
       "type": "$library/Graph/Nodes/NodeStatusNode",
-      "container": "SplitPanel$splitPanel#Container2"
+      "container": "SplitSplitPanel$splitPanel#Container2"
     },
     // "AtomToolbar": {
     //   "type": "$library/UX/Nodes/UXToolbarNode",
