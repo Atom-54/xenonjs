@@ -6,12 +6,12 @@
 import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
 import {makeCapName} from 'xenonjs/Library/CoreReactor/Atomic/js/names.js';
 import {TypeMatcher} from 'xenonjs/Library/CoreFramework/TypeMatcher.js';
+import {Resources} from 'xenonjs/Library/Media/Resources.js';
 import * as Graphs from 'xenonjs/Library/CoreFramework/Graphs.js';
 import * as Nodes from 'xenonjs/Library/CoreFramework/Nodes.js';
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
 import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
 import * as App from 'xenonjs/Library/CoreFramework/App.js';
-import {Resources} from 'xenonjs/Library/Media/Resources.js';
 import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
 
 // rolls over the neighbor's dog! it's log!
@@ -19,7 +19,7 @@ const log = logf('GraphService', 'orangered');
 log.flags.GraphService = true;
 
 // be pithy
-const {assign, entries, keys, values} = SafeObject;
+const {assign, entries, keys, values, map} = SafeObject;
 
 export const GraphService = {
   async CreateLayer(layer, atom, {graph}) {
@@ -52,9 +52,6 @@ export const GraphService = {
       return Design.obliterateGraph(layer, data.graph);
     }
   },
-  // AddObject(layer, atom, data) {
-  //   return Design.addObject(layer, globalThis.design, data?.node, data?.style);
-  // }, 
   MorphObject(layer, atom, data) {
     if (globalThis.design && !isDesignMainSelected(globalThis.design)) {
       return Design.morphObject(layer, globalThis.design, data);
@@ -105,6 +102,7 @@ const createHostedLayer = async (layer, atom, graphId) => {
   if (graphSpec) {
     const id = makeCapName();
     const newLayer = await App.createLayer.simple(graphSpec, id);
+    computeLayerIO(newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
       if (spec.container.endsWith('$root$panel#Container')) {
@@ -115,6 +113,16 @@ const createHostedLayer = async (layer, atom, graphId) => {
     Resources.set(id, newLayer);
     return id;
   }
+};
+
+const computeLayerIO = async layer => {
+  const inp = keys(layer.bindings.inputBindings).map(key => Id.sliceId(key, 1))
+  const outp = map(layer.bindings.outputBindings, (key, value) => {
+    const id = Id.sliceId(key, 1);
+    const props = keys(value);
+    return {id, props};
+  });
+  log(inp, outp);
 };
 
 const localPrefix = 'local$';

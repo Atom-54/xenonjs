@@ -9,17 +9,6 @@ export const ClientNode = {
     displayName: 'Client (for Lobby)',
     category: 'Lobby'
   },
-  $stores: {
-    group: {
-      $type: 'String'
-    },
-    user: {
-      $type: 'Profile'
-    },
-    stream: {
-      $type: 'Stream'
-    }
-  },
   lobby: {
     $kind: '$library/Lobby/Client',
     $inputs: [
