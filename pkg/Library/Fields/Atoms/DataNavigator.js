@@ -68,16 +68,17 @@ template: html`
 </style>
 <div flex toolbar>
   <span flex x3></span>
-  <button>&lt;&lt;</button>
-  <button on-click="onPrev">&lt;</button>
+  <wl-button inverted>&lt;&lt;</wl-button>
+  <wl-button inverted on-click="onPrev">&lt;</wl-button>
   <span flex></span>
   <div row>
     <input value="{{index}}" style="width: 3em;" on-change="onInputChange"><span>&nbsp;of&nbsp;</span><span>{{count}}</span>
   </div>
-  <button on-click="onNew">New</button>
+  <span>&nbsp;</span>
+  <wl-button inverted on-click="onNew">New</wl-button>
   <span flex></span>
-  <button on-click="onNext">&gt;</button>
-  <button>&gt;&gt;</button>
+  <wl-button inverted on-click="onNext">&gt;</wl-button>
+  <wl-button inverted>&gt;&gt;</wl-button>
   <span flex x3></span>
 </div>
 `

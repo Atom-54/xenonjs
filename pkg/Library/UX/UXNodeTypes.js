@@ -26,5 +26,10 @@ export const UXNodeTypes = {
       bar$interval: 'Number',
     },
     type: `$library/UX/Nodes/ProgressBarNode`
+  },
+  UXActionSet: {
+    category,
+    description: 'Collects UX action definitions for buttons and controls',
+    type: `$library/UX/Nodes/UXActionSetNode`
   }
 };

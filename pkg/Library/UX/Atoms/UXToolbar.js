@@ -1,5 +1,4 @@
 export const atom = (log, resolve) => ({
-
 /**
  * @license
  * Copyright 2023 NeonFlan LLC
@@ -8,14 +7,14 @@ export const atom = (log, resolve) => ({
 initialize(inputs, state) {
   state.events = [];
   state.defaults = {
-      name: '(no name)',
-      ligature: '',
-      disabled: false
-    };
+    name: '(no name)',
+    ligature: '',
+    disabled: false
+  };
 },
-async update({event, actions}, state, tools) {
-  if (actions?.length > 0) { // && !state.values) {
-    await this.updateStateValues(actions, state, tools);
+async update({event, actions, controls}, state, tools) {
+  if (actions?.length > 0) { 
+    await this.updateStateValues({actions, controls}, state, tools);
   }
   // dispatch events one at a time
   if (state.key && event?.key === state.key && event?.complete) {
@@ -23,13 +22,19 @@ async update({event, actions}, state, tools) {
     return this.getNextEvent(state);
   }
 },
-async updateStateValues(actions, state, {service}) {
+async updateStateValues({actions, controls}, state, {service}) {
+  // replace with batch getter
+  const getValue = key => service({kind: 'StateService', msg: 'GetStateValue', data: {key}});
+  const localActions = this.getLocalActions(actions, controls);
   state.values = {};
-  for (let {stateKey} of actions) {
+  for (let {stateKey} of localActions) {
     if (stateKey) {
-      state.values[stateKey] = await service({kind: 'StateService', msg: 'GetStateValue', data: {stateKey}});
+      state.values[stateKey] = await getValue(stateKey);
     }
   };
+},
+getLocalActions(actions, controls) {
+  return !controls ? actions : controls.map(control => actions.find(a => a.name === control));
 },
 onActionClick({eventlet: {key}, actions}, state) {
   const action = actions[key];
@@ -48,9 +53,10 @@ getNextEvent(state) {
     return {event: {...fresh, key: state.key}};
   }
 },
-render({actions}, state) {
+render({actions, controls}, state) {
+  const localActions = this.getLocalActions(actions, controls);
   return {
-    actions: this.renderActions(actions, state)
+    actions: this.renderActions(localActions, state)
   };
 },
 renderActions(actions, state) {
@@ -155,6 +161,7 @@ template: html`
     border-radius: 25px;
     opacity: 1.0;
   }
+  /* 
   button {
     border: 1px solid var(--xcolor-three);
     border-radius: 5%;
@@ -168,6 +175,7 @@ template: html`
     opacity: 1;
     background-color: var(--xcolor-two);
   }
+  */
 </style>
 
 <div flex center row repeat="action_t">{{actions}}</div>
@@ -189,7 +197,7 @@ template: html`
 </template>
 
 <template button_t>
-  <button on-click="onActionClick" key="{{key}}">{{label}}</button>
+  <wl-button inverted$="{{key}}" on-click="onActionClick" key="{{key}}">{{label}}</wl-button>
 </template>
 
 <template slot_t>

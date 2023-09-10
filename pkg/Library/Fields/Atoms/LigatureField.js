@@ -7,13 +7,15 @@ export const atom = (log, resolve) => ({
 update({value, form}, state, {service, isDirty}) {
   service('FormService', 'registerField', {form});
   if (isDirty('value')) {
+    value = value?.replace(/ /g, '_');
     return {value};
   }
 },
 render({label, value, options}) {
   return {
     label,
-    value: value??'',
+    ligature: value ?? 'help',
+    value: value ?? '',
     options: options?.map(option => ({option}))
   }
 },
@@ -42,10 +44,17 @@ template: html`
   [delim] {
     padding: 6px;
   }
+  icon {
+    border: 1px solid var(--xcolor-two);
+    padding: 2px;
+    font-size: 150%;
+  }
 </style>
 
 <div flex bar>
   <div label>{{label}}</div>
+  <span delim></span>
+  <icon>{{ligature}}</icon>
   <span delim></span>
   <input flex field value="{{value}}" on-change="onFieldChange" list="options">
   <datalist id="options" repeat="option_t">{{options}}</datalist>

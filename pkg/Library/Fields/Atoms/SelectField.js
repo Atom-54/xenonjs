@@ -33,7 +33,7 @@ template: html`
     font-weight: bold;
     border: none;
     text-align: right;
-    min-width: 8em;
+    min-width: var(--field-label-width);
   }
   [delim] {
     padding-right: 12px;

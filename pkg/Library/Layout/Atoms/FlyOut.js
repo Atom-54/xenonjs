@@ -12,6 +12,8 @@ template: html`
   :host {
     position: absolute;
     flex: 0 !important;
+    max-width: 0;
+    max-height: 0;
   }
 </style>
 

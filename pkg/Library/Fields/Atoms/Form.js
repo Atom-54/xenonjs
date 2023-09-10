@@ -16,14 +16,18 @@ async update({inputData}, {id}, {isDirty, service}) {
     log('inputData:', inputData);
     submit = true;
   }
+  const data = await service('FormService', 'getValues', {form: id});
+  const columns = this.getColumns(data); 
+  const row = this.getRow(data);
+  const result = {
+    columns,
+    preview: row
+  };
   if (submit) {
-    const data = await service('FormService', 'getValues', {form: id});
     log('submitting', data);
-    return {
-      columns: this.getColumns(data), 
-      row: this.getRow(data)
-    };
+    result.row = row;
   }
+  return result;
 },
 getColumns(data) {
   return data.map(({name}) => ({name: name.split('$')[1]}));

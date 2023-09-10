@@ -36,6 +36,20 @@ export const FieldsNodeTypes = {
     },
     type: '$library/Fields/Nodes/TextFieldNode'
   },
+  LigatureField: {
+    category,
+    description: 'An input field for icons',
+    types: {
+      field$form: 'String:FormId',
+      field$label: 'String',
+      field$labelDescription: 'The field label',
+      field$value: 'String',
+      //field$value$values: ligatures,
+      field$valueDescription: 'The enterable text value',
+      field$options: '[String]'
+    },
+    type: '$library/Fields/Nodes/LigatureFieldNode'
+  },
   BooleanField: {
     category,
     description: 'Displays a checkbox field',

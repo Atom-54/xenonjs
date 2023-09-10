@@ -7,7 +7,7 @@ export const UXToolbarNode = {
   UXToolbar: {
     type: '$library/UX/Atoms/UXToolbar',
     bindings: {event: 'UXActionExecutor$event'},
-    inputs: ['actions']
+    inputs: ['actions', 'controls']
   },
   UXActionExecutor: {
     type: '$library/UX/Atoms/UXActionExecutor',
