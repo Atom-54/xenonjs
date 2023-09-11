@@ -191,7 +191,7 @@ const graph = {
         "height":"auto"
       }
     },
-    "JSONata$JSONata$expression":"$join([*[2], ', ', *[4]])",
+    "JSONata$JSONata$expression":"$exists(*[4]) ? $join([*[2], ', ', *[4]]) : 'Loading...'",
     "Echo$echo$style":"text-align: center; flex:1; padding-top: 15px;"
   },
   "connections":{

@@ -18,7 +18,7 @@ async update({geolocation, address}, state, {service}) {
     return this.fetchReverseCoords(geolocation, state, service);
   }
   if (!geolocation) {
-    return {geolocation: {latitude: 0, longitude: 0}};
+    return {geolocation: {}};
   }
 },
 

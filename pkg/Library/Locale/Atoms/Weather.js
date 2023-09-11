@@ -5,11 +5,10 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-async update({geolocation}, state, {service}) {
+async update({geolocation}, state, {service, isDirty}) {
   const latitude = geolocation?.latitude?.toFixed(2);
   const longitude = geolocation?.longitude?.toFixed(2);
-  if (latitude &&  longitude && ((state.latitude !== latitude) || state.longitude !== longitude)) {
-    assign(state, {latitude, longitude});
+  if (latitude && longitude && isDirty('geolocation')) {
     const weather = await service('WeatherApiService', 'weatherData', geolocation);
     log(weather);
     state.weather = weather;
