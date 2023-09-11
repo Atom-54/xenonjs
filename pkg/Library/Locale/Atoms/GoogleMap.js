@@ -19,7 +19,11 @@ shouldRender({}, state) {
   return Boolean(state.geolocation);
 },
 render({markers}, {geolocation: {latitude, longitude}}) {
-  return {latitude, longitude, markers};
+  return {
+    latitude: latitude??0,
+    longitude: longitude??0,
+    markers
+  };
 },
 onMarkerClicked({eventlet: {key}}) {
   if (key) {
