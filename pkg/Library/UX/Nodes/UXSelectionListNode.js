@@ -6,6 +6,7 @@
 export const UXSelectionListNode = {
   UXSelectionList: {
     type: '$library/UX/Atoms/UXSelectionList',
-    inputs: ['list', 'selection']
+    inputs: ['list', 'selection'],
+    outputs: ['selection']
   }
 };

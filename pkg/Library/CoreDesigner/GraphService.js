@@ -105,6 +105,7 @@ const createHostedLayer = async (layer, atom, graphId) => {
   if (graphSpec) {
     const id = makeCapName();
     const newLayer = await App.createLayer.simple(graphSpec, id);
+    Resources.set(id, newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
       if (spec.container.endsWith('$root$panel#Container')) {
@@ -112,18 +113,24 @@ const createHostedLayer = async (layer, atom, graphId) => {
       }
     });
     await App.initializeData(newLayer);
-    Resources.set(id, newLayer);
+    App.set(newLayer, `${id}$Main$designer$disabled`, true);
     return id;
   }
 };
 
 const computeLayerIO = async layer => {
-  const inp = keys(layer.bindings.inputBindings).map(key => Id.sliceId(key, 1))
+  const inp = keys(layer.bindings.inputBindings).map(key => {
+    const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
+    const simpleKey = Id.joinId(nodeId, atomId, propertyId);
+    return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
+  }).filter(i=>i);
   const outp = map(layer.bindings.outputBindings, (key, value) => {
+    const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
+    const simpleKey = Id.joinId(nodeId, atomId, propertyId);
     const id = Id.sliceId(key, 1);
     const props = keys(value);
     return {id, props};
-  });
+  }).filter(i=>i);
   return {i: inp, o: outp};
 };
 

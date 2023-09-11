@@ -168,7 +168,7 @@ export const rebuildObject = async (layer, id) => {
 };
 
 const connectionsByObjectId = (graph, id) => {
-  const prefix = `${id}$`;
+  const prefix = `${id}\$`;
   const addConn = (connections, key, conn) => {
     if (key.startsWith(prefix) || conn.startsWith(prefix)) {
       connections[key] = conn;
@@ -217,7 +217,7 @@ const deleteObjectFromGraph = (layer, objectId) => {
 
 const deleteObjectState = (graph, objectId) => {
   keys(graph.state).forEach(key => {
-    if (key.startsWith(`${objectId}$`)) {
+    if (key.startsWith(`${objectId}\$`)) {
       delete graph.state[key];
     }
   });
