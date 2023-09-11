@@ -56,8 +56,10 @@ template: html`
   <span delim></span>
   <icon>{{ligature}}</icon>
   <span delim></span>
-  <input flex field value="{{value}}" on-change="onFieldChange" list="options">
-  <datalist id="options" repeat="option_t">{{options}}</datalist>
+  <div flex>
+    <input style="width: 100%;" field value="{{value}}" on-change="onFieldChange" list="options">
+    <datalist id="options" repeat="option_t">{{options}}</datalist>
+  </div>
 </div>
 
 <template option_t>
