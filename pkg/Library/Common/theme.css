@@ -1,0 +1,23 @@
+/* french grays */
+html {
+  --xcolor-one: hsla(292, 6%, 95%, 1);
+  --xcolor-two: hsla(292, 6%, 85%, 1);
+  --xcolor-three: hsl(291, 3%, 60%, 1);
+  --xcolor-four: hsla(292, 3%, 20%, 1);
+  --button-font-size: 0.75em; 
+  --field-label-width: 6em;
+  --primary-hue: 310;
+}
+html[dark] {
+  color-scheme: dark;
+  --xcolor-one: hsla(292, 3%, 20%, 1);
+  --xcolor-two: hsla(292, 3%, 30%, 1);
+  --xcolor-three: hsl(291, 6%, 50%, 1);
+  --xcolor-four: hsla(292, 6%, 80%, 1);
+}
+/* */
+html {
+  --xcolor-brand: rgb(145, 46, 150);
+  color: var(--xcolor-four);
+  background-color: var(--xcolor-one);
+}

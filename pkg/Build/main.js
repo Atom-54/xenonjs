@@ -28,6 +28,7 @@ const persistables = [
 ];
 
 export const main = async (xenon, App, Composer) => {
+  await xenon.industrialize();
   // get offline data
   const persistations = await restore(persistables);
   const customLibraries = persistations?.$UserSettings$settings$userSettings?.customLibraries;

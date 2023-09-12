@@ -3,13 +3,13 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
-import {deepCopy, deepEqual} from 'xenonjs/Library/CoreReactor/Atomic/js/utils/object.js';
-import * as App from 'xenonjs/Library/CoreFramework/App.js';
-import * as Binder from 'xenonjs/Library/CoreFramework/Binder.js';
-import * as Graphs from 'xenonjs/Library/CoreFramework/Graphs.js';
-import * as Layers from 'xenonjs/Library/CoreFramework/Layers.js';
-import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
+import {SafeObject} from '../CoreReactor/safe-object.js';
+import {deepCopy, deepEqual} from '../CoreReactor/Atomic/js/utils/object.js';
+import * as App from '../CoreFramework/App.js';
+import * as Binder from '../CoreFramework/Binder.js';
+import * as Graphs from '../CoreFramework/Graphs.js';
+import * as Layers from '../CoreFramework/Layers.js';
+import * as Id from '../CoreFramework/Id.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('DesignApp', 'orange', 'black');

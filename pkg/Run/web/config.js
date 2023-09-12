@@ -22,7 +22,7 @@ globalThis.config = {
     Atom: true,
     //Binder: true,
     //BusTerminal: true,
-    //Composer: true,
+    Composer: true,
     Graphs: true,
     //Host: true,
     //Industry: true,

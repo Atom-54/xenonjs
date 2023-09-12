@@ -4,3 +4,5 @@ node_modules
 firebase-debug.log
 **/key.js
 **/docs
+**/configKeys.js
+

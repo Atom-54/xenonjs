@@ -10,7 +10,7 @@ import {PIXI} from './pixi.js';
 
 const log = logf('DOM:PixiNuPogodi', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Apps/Assets');
+const assets = Paths.resolve('$xenon/Library/Assets');
 
 export class PixiNuPogodi extends Xen.Async {
   static get observedAttributes() {

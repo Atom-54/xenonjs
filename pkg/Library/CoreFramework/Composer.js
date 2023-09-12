@@ -10,7 +10,7 @@ import '../Layout/Dom/designer-panel.js';
 import '../../third-party/weightless/weightless.min.js';
 
 // Load library css
-loadCss(`${config.xenonPath}/Apps/common/theme.css`);
+loadCss(`${config.xenonPath}/Library/Common/theme.css`);
 loadCss(`${config.xenonPath}/Library/Dom/Material/material-icon-font/icons.css`);
 loadCss(`${config.xenonPath}/third-party/open-props/open-props.min.css`);
 
@@ -25,15 +25,14 @@ const {assign} = Object;
 // do a body fade-in just to mask font-fouc
 // or other brief improprieties
 requestAnimationFrame(() => {
-  assign(document.documentElement.style, {
+  const sheet = document.documentElement.style;
+  assign(sheet, {
     opacity: 0,
-    //scale: 20
   });
-  setTimeout(() => assign(document.documentElement.style, {
+  setTimeout(() => assign(sheet, {
     transition: 'all 400ms ease-in-out',
     opacity: 1,
-    //scale: 1
-  }), 100);
+  }), 1000);
 });
 
 export const options = {
