@@ -1,51 +1,70 @@
 const graph = {
   "meta":{
-    "timestamp":1691632498146,
+    "timestamp":1694546189843,
     "owner":"kleiner.masha@gmail.com",
     "graphRects":{
       "OpenAIText":{
-        "l":304,
-        "t":48,
+        "l":336,
+        "t":128,
         "w":200,
         "h":116
       },
       "ProgressBar":{
-        "l":624,
-        "t":160,
+        "l":336,
+        "t":272,
         "w":200,
         "h":156
       },
       "AskText":{
         "l":32,
-        "t":64,
+        "t":256,
         "w":200,
-        "h":96
+        "h":116
       },
       "AnswerText":{
-        "l":624,
-        "t":64,
+        "l":592,
+        "t":256,
         "w":200,
         "h":60
       },
       "Button":{
         "l":32,
-        "t":192,
+        "t":304,
         "w":200,
         "h":96
       },
       "VerticalPanel":{
         "l":32,
-        "t":32,
+        "t":272,
         "w":200,
         "h":96
+      },
+      "DeviceUx":{
+        "l":32,
+        "t":16,
+        "w":200,
+        "h":76
+      },
+      "Listen":{
+        "l":32,
+        "t":128,
+        "w":200,
+        "h":96
+      },
+      "Speak":{
+        "l":592,
+        "t":16,
+        "w":200,
+        "h":116
       }
     },
     "description":"voice interface for OpenAI and listen and speak interface and listen and speak interface and listen and speak interface",
-    "id":"OpenAIQnA",
-    "designerId":"Main",
     "customLibraries":{
       
-    }
+    },
+    "readonly":false,
+    "id":"OpenAIQnA",
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
@@ -74,6 +93,18 @@ const graph = {
     },
     "VerticalPanel":{
       "type":"$library/Layout/Nodes/PanelNode",
+      "container":"Main$panel#Container"
+    },
+    "DeviceUx":{
+      "type":"$library/Media/Nodes/DeviceUxNode",
+      "container":"Main$panel#Container"
+    },
+    "Listen":{
+      "type":"$library/Media/Nodes/ListenNode",
+      "container":"Main$panel#Container"
+    },
+    "Speak":{
+      "type":"$library/Media/Nodes/SpeakNode",
       "container":"Main$panel#Container"
     }
   },
@@ -132,12 +163,13 @@ const graph = {
         "height":"auto",
         "backgroundColor":"var(--xcolor-one)",
         "order":"3",
-        "padding":"var(--size-2)"
+        "padding":"var(--size-2)",
+        "width":"auto"
       },
       "Main":{
         "borderWidth":"var(--border-size-1)",
         "backgroundColor":"var(--xcolor-one)",
-        "padding":"var(--size-4)",
+        "padding":"var(--size-2)",
         "borderRadius":"var(--radius-3)"
       },
       "Button":{
@@ -164,7 +196,31 @@ const graph = {
         "borderRadius":"var(--radius-3)",
         "flex":"",
         "width":"auto",
-        "justifyContent":"start"
+        "justifyContent":"start",
+        "order":"2"
+      },
+      "DeviceUx":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderStyle":"solid",
+        "order":"1",
+        "padding":"var(--size-2)"
+      },
+      "Listen":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderStyle":"solid"
+      },
+      "Speak":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderStyle":"solid"
       }
     },
     "OpenAIText$OpenAIText$context":"provide brief informative answer to questions;\n",
@@ -177,6 +233,10 @@ const graph = {
     "AnswerText$StaticText$text":"OpenAIText$OpenAIText$result",
     "OpenAIText$OpenAIText$prompt":"AskText$field$value",
     "ProgressBar$bar$inProgress":"OpenAIText$OpenAIText$working",
-    "OpenAIText$OpenAIText$restart":"Button$button$value"
+    "OpenAIText$OpenAIText$restart":"Button$button$value",
+    "Listen$SpeechRecognizer$mediaDeviceState":"DeviceUx$deviceUx$mediaDeviceState",
+    "AskText$field$value":"Listen$SpeechRecognizer$transcript",
+    "Speak$SpeechSynthesizer$mediaDeviceState":"DeviceUx$deviceUx$mediaDeviceState",
+    "Speak$SpeechSynthesizer$transcript":"OpenAIText$OpenAIText$result"
   }
 };

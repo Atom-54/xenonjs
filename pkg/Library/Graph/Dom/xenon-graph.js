@@ -11,7 +11,8 @@ import {Xen} from '../../Dom/Xen/xen-async.js';
 import {connectXenon} from '../../CoreReactor/Worker/xenon-web-worker.js';
 import * as App from '../../CoreFramework/App.js';
 import * as Composer from '../../CoreFramework/Composer.js';
-import * as Persist from '../../CoreFramework/Persist.js';
+import {loadGraph} from '../../CoreDesigner/GraphService.js';
+import '../../../Apps/common/configKeys.js';
 
 import {graph as baseGraph} from '../../../Graphs/Base.js';
 import '../../Fields/FieldsDom.js';
@@ -54,7 +55,7 @@ export class XenonGraph extends Xen.Async {
   async update({name}, state) {
     if (state.name !== name) {
       state.name = name;
-      const graph = await Persist.restoreValue(`$GraphList$graphAgent$graphs.${this.state.name}`);  
+      const graph = await loadGraph(state.name);
       if (graph) {
         xenon = xenon ?? (await this.initXenon());
         await this.reifyGraph(graph);

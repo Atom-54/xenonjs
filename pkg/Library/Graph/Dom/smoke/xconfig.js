@@ -36,6 +36,7 @@ globalThis.config = {
   // firebaseGraphsURL: "https://xenon-js-default-rtdb.firebaseio.com/0_3/demos/0723/publicGraphs"
   // for local developement:
   // firebaseGraphsURL: "https://xenon-js-default-rtdb.firebaseio.com/publicGraphs"
+  firebaseGraphsURL: "https://xenon-js-default-rtdb.firebaseio.com/0_3/publicGraphs"
 };
 
 globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `${v}${strings[i + 1]}`).join('')}`.trim();
