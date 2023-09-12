@@ -10,10 +10,10 @@ initialize(inputs, state, {service}) {
   const post = (url, body) => fetch(url, {method: 'POST', body: JSON.stringify(body)});
   state.ai = (context, prompt) => post(server, `${context ?? ''}${prompt}`);
 },
-shouldUpdate({context, prompt}) {
-  return context && prompt;
+shouldUpdate({context, prompt, enabled}) {
+  return context && prompt && enabled;
 },
-async update({context, prompt, restart}, state, {output}) {
+async update({context, prompt}, state, {output, isDirty}) {
   let promptChanged = false;
   if (state.prompt !== prompt || state.context !== context) {
     log.groupCollapsed('caching prompt', prompt);
@@ -24,10 +24,9 @@ async update({context, prompt, restart}, state, {output}) {
     promptChanged = true;
   }
   let completion;
-  if (promptChanged || restart) {
-    log.groupCollapsed(/*'promptChanged || */'restart', prompt);
-    log('output temporary result');
-    output({/*status: `a moment...`, *//*restart: false,*/ working: true});
+  if (promptChanged || isDirty('restart')) {
+    log.groupCollapsed('working', prompt);
+    output({working: true});
     log('query ai');
     const response = await state.ai(context, prompt);
     const text = await response.text();
