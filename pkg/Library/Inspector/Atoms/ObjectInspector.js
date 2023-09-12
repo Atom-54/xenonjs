@@ -558,11 +558,11 @@ template: html`
         <icon title="connected">link</icon>
         &nbsp;
       </label>
-      <label centering row>
+      <!-- <label centering row>
         <input type="checkbox" checked="{{checkedPub}}}" on-change="onPubChecked" key="{{key}}">
         <icon title="public">public</icon>
         &nbsp;
-      </label>
+      </label> -->
     </span>
     <div prop display$="{{showProp}}">{{prop}}</div>
     <div prop display$="{{showConn}}">{{connection}}</div>
