@@ -37,6 +37,8 @@ xenon.industrialize = async () => {
 };
 // Atom production line (once industrialized)
 xenon.emitter = async (name, spec) => emit(xenon.Host, name, spec.type);
-
+// thunks
+xenon.setPaths = () => {};
+const connectXenon = async () => ({xenon});
 // export xenon
-export {xenon};
+export {xenon, connectXenon};

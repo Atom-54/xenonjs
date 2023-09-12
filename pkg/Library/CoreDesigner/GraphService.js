@@ -3,16 +3,15 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
-import {makeCapName} from 'xenonjs/Library/CoreReactor/Atomic/js/names.js';
-import {TypeMatcher} from 'xenonjs/Library/CoreFramework/TypeMatcher.js';
-import {Resources} from 'xenonjs/Library/Media/Resources.js';
-import * as Graphs from 'xenonjs/Library/CoreFramework/Graphs.js';
-import * as Nodes from 'xenonjs/Library/CoreFramework/Nodes.js';
-import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
-import * as Id from 'xenonjs/Library/CoreFramework/Id.js';
-import * as App from 'xenonjs/Library/CoreFramework/App.js';
-import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
+import {SafeObject} from '../CoreReactor/safe-object.js';
+import {makeCapName} from '../CoreReactor/Atomic/js/names.js';
+import {TypeMatcher} from '../CoreFramework/TypeMatcher.js';
+import {Resources} from '../Media/Resources.js';
+import * as Graphs from '../CoreFramework/Graphs.js';
+import * as Nodes from '../CoreFramework/Nodes.js';
+import * as Design from '../CoreDesigner/DesignApp.js';
+import * as Id from '../CoreFramework/Id.js';
+import * as Persist from '../CoreFramework/Persist.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('GraphService', 'orangered');
@@ -146,7 +145,10 @@ const localPrefix = 'local$';
 export const loadGraph = async graphId => {
   let graph = null;
   if (graphId) {
-    if (graphId.startsWith(localPrefix)) {
+    if (graphId.startsWith('.')) {
+      const module = await import(graphId);
+      graph = module.graph;
+    } else if (graphId.startsWith(localPrefix)) {
       graph = await restoreLocalGraph(graphId.substring(localPrefix.length));
     } else {
       graph = await fetchFbGraph(graphId);
@@ -169,8 +171,8 @@ const fetchFbGraph = async (id) => {
     try {
       const res = await fetch(url);
       if (res.status === 200) {
-        const text = (await res.text())?.replace(/%/g, '$');
-        const graph = JSON.parse(text);
+        const text = await res.text();
+        const graph = text && JSON.parse(text.replace(/%/g, '$'));
         if (graph) {
           return (typeof graph === 'string') ? JSON.parse(graph) : graph;
         }

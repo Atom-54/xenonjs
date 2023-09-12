@@ -24,7 +24,7 @@ async update({event, actions, controls}, state, tools) {
 },
 async updateStateValues({actions, controls}, state, {service}) {
   // replace with batch getter
-  const getValue = key => service({kind: 'StateService', msg: 'GetStateValue', data: {key}});
+  const getValue = stateKey => service({kind: 'StateService', msg: 'GetStateValue', data: {stateKey}});
   const localActions = this.getLocalActions(actions, controls);
   state.values = {};
   for (let {stateKey} of localActions) {

@@ -1,6 +1,6 @@
-// import {nodeTypes} from 'xenonjs/Apps/common/nodeTypes.js';
-// import {services} from 'xenonjs/Apps/common/services.js';
-// import 'xenonjs/Apps/common/dom.js';
+// import {nodeTypes} from 'xenonjs/Library/Common/nodeTypes.js';
+// import {services} from 'xenonjs/Library/Common/services.js';
+// import 'xenonjs/Library/Common/dom.js';
 
 const nodeTypes = {
   CustomEcho: {

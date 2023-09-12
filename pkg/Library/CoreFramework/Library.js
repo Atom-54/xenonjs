@@ -3,13 +3,13 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
+import {SafeObject} from '../CoreReactor/safe-object.js';
 
 const {keys} = SafeObject;
 const log = logf('Library', 'lightgreen', 'black');
 
 export const importLibraries = async libraries => {
-  let library = await importLibrary('library', 'xenonjs/Library');
+  let library = await importLibrary('library', `${globalThis.config.xenonPath}/Library`);
   for (let names=keys(libraries), i=0, name; (name=names[i]); i++) {
     library = await appendLibrary(library, name, libraries[name]);
   }
@@ -25,7 +25,8 @@ export const importLibrary = async (name, path, manifestPath) => {
     const {services, nodeTypes} = await import(`${manifestPath}/manifest.js`)
     library = {services, nodeTypes};
     log.groupCollapsed('Library: ', path);
-    log(JSON.stringify(library, null, '  '));
+    log(library);
+    //log(JSON.stringify(library, null, '  '));
     log.groupEnd();
   } catch(x) {
     log.warn('failed to load library', path);
@@ -34,9 +35,10 @@ export const importLibrary = async (name, path, manifestPath) => {
   return library;
 };
 
-export const appendLibrary = async ({services, nodeTypes}, name, path, mainfestPath) => {
-  const library = await importLibrary(name, path, mainfestPath);
+export const appendLibrary = async ({services, nodeTypes}, name, path, manifestPath) => {
+  const library = await importLibrary(name, path, manifestPath);
   library.services = {...services, ...library.services};
   library.nodeTypes = {...nodeTypes, ...library.nodeTypes};
+  log.warn(name, path, manifestPath, services, nodeTypes)
   return library;
 };

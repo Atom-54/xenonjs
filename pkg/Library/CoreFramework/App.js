@@ -95,8 +95,8 @@ export const setData = async (layer, data) => {
 export const connectAtoms = (layer, atoms) => {
   map(atoms, (name, atom) => {
     atom.listen('output', ({output}) => atomOutput(layer, name, atom, output));
-    atom.listen('render', ({packet}) => atomRender(layer, name, atom, packet));
-    atom.listen('service', ({service, msg, data}) => atomService(layer, name, atom, service, msg, data));
+    atom.listen('render', (packet) => atomRender(layer, name, atom, packet?.packet ?? packet));
+    atom.listen('service', ({kind, service, msg, data}) => atomService(layer, name, atom, service || kind, msg, data));
   }); 
 };
 

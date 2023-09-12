@@ -11,7 +11,7 @@ import {PIXI} from '../../PixiJs/Dom/pixi.js';
 
 const log = logf('DOM:PixiObject', 'beige', 'black');
 
-//const assets = Paths.resolve('$xenon/Apps/Assets');
+//const assets = Paths.resolve('$xenon/Library/Assets');
 //const kinds = ['stone_blue', 'stone_green', 'stone_pink', 'stone_yellow'];
 
 // const [cols, rows] = [8, 8];

@@ -9,7 +9,7 @@ import {PixiObject} from './pixi-object.js';
 
 const log = logf('DOM:PixiSprite', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Apps/Assets');
+const assets = Paths.resolve('$xenon/Library/Assets');
 
 export class PixiSprite extends PixiObject {
   static get observedAttributes() {
