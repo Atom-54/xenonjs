@@ -57,6 +57,7 @@ renderProp(prop, parent, customInspectors, state) {
 chooseTemplate({store: {type, values, range}, value}, isEditing, customInspectors) {
   let template = {
     Boolean: 'checkbox_t',
+    Nonce: 'nonce_t',
     String: 'text_t',
     Number: 'text_t',
     Image: 'imageupload_t',
@@ -188,7 +189,7 @@ initCheckedConn(prop, checked) {
   if (checked === undefined) {
     const noValue = ((prop.value.property === null) || (prop.value.property === undefined));
     const hasConnection = (prop.value.connection.value?.length > 0);
-    const nonConcreteType = !['String', 'Number', 'Boolean'].includes(prop.store.store.type);
+    const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].includes(prop.store.store.type);
     return {
       checked: (noValue && nonConcreteType) || hasConnection,
       multi: Array.isArray(prop.value.connection.value) && prop.value.connection.value.length > 1
@@ -233,6 +234,10 @@ onPropChange({eventlet: {key, value}, data}, state, {service}) {
   const formatter = (propValue, propStore) => this.formatPropValueByType(propValue, propStore || {}, value);
   return this.updatePropValue(data, propNames, formatter, service);
 },
+onNonceClick({eventlet: {key}, data}, state, tools) {
+  const eventlet = {key, value: Math.random()};
+  return this.onPropChange({eventlet, data}, state, tools);
+},
 onImageUrl({eventlet: {key, value}, data}, state, tools) {
   const image = {url: value};
   const eventlet = {key, value: image};
@@ -240,7 +245,7 @@ onImageUrl({eventlet: {key, value}, data}, state, tools) {
 },
 onConnChecked({eventlet, data}, state, tools) {
   const conn = state.checkedConns[eventlet.key];
-  conn.checked = !conn.checked;
+  eventlet.value = conn.checked = !conn.checked;
   if (!conn.checked) {
     return this.onPropChange({eventlet, data}, state, tools);
   }
@@ -497,6 +502,9 @@ template: html`
     color: var(--xcolor-three);
     background-color: var(--xcolor-one);
   }
+  icon {
+    font-size: 150%;
+  }
   /* icon {
     cursor: pointer;
     border-radius: 50%; 
@@ -540,13 +548,13 @@ template: html`
   <div>
     <span centering flex row>
       <span label flex>{{displayName}}</span>
-      <label hide$="{{hideMulti}}" centering row>
-        <input type="checkbox" checked="{{checkedMulti}}" on-change="onMultiChecked" key="{{key}}">
-        <icon title="multi-connect">all_inclusive</icon>
+      <label style="padding-right: 4px;" hide$="{{hideMulti}}" centering row>
+        <input style="margin-right: 0;" type="checkbox" checked="{{checkedMulti}}" on-change="onMultiChecked" key="{{key}}">
+        <icon title="multi-connect">arrow_split</icon>
         &nbsp;&nbsp;
       </label>
       <label centering row>
-        <input type="checkbox" checked="{{checkedConn}}" on-change="onConnChecked" key="{{key}}">
+        <input style="margin-right: 4px;" type="checkbox" checked="{{checkedConn}}" on-change="onConnChecked" key="{{key}}">
         <icon title="connected">link</icon>
         &nbsp;
       </label>
@@ -667,6 +675,7 @@ template: html`
 
 <template checkbox_t>
   <div prop-container>
+    <!-- <icon>exclamation</icon> -->
     <input type="checkbox" checked="{{value}}" key="{{key}}" on-change="onPropChange">
     <span label>{{displayName}}</span>
   </div>
@@ -690,6 +699,13 @@ template: html`
   <div prop-container vertical>
     <div label control>{{displayName}}</div>
     <multi-select select key="{{key}}" disabled="{{disabled}}" on-change="onPropChange" multiple="{{multiple}}" size="{{size}}" options="{{value}}" on-click="noop"></multi-select>
+  </div>
+</template>
+
+<template nonce_t>
+  <div prop-container vertical>
+    <div label control>{{displayName}}</div>
+    <wl-button key="{{key}}" on-click="onNonceClick" >{{name}}</wl-button>
   </div>
 </template>
 

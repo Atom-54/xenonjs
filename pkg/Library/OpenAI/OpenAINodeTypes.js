@@ -35,7 +35,8 @@ export const OpenAINodeTypes = {
       OpenAIText$context: 'MultilineText',
       OpenAIText$prompt: 'MultilineText',
       OpenAIText$result: 'String',
-      OpenAIText$restart: 'Boolean',
+      OpenAIText$enabled: 'Boolean',
+      OpenAIText$restart: 'Nonce',
       OpenAIText$markup: 'String',
       OpenAIText$working: 'Boolean'
     },

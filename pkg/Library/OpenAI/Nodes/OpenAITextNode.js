@@ -6,7 +6,7 @@
 export const OpenAITextNode = {
   OpenAIText: {
     type: '$library/OpenAI/Atoms/OpenAIText',
-    inputs: ['context', 'prompt', 'restart'],
-    outputs: ['result', 'markup', 'restart', 'working'] //, 'restart' - it's not a public output?
+    inputs: ['context', 'prompt', 'enabled', 'restart'],
+    outputs: ['result', 'markup', 'working']
   }
 };
