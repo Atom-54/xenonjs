@@ -20,19 +20,27 @@ async refresh(state, service) {
 },
 render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ selectedTab}) {
   const contextModel = context?.layers;
-  // const contextModel = {
-  //   design: context?.state,
-  //   runtime: context?.fullState
-  // };
   const graphJson = JSON.stringify(contextModel?.base?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
   if (contextModel?.design) {
     delete contextModel.base;
   }
+  const formattedModel = {};
+  map(contextModel, (key, value) => {
+    const layerModel = formattedModel[key] = {};
+    map(value, (key, value) => {
+      key = key.split('$').slice(1).join('∙');
+      layerModel[key] = value;
+    });
+  });
+  // const contextModel = {
+  //   design: context?.state,
+  //   runtime: context?.fullState
+  // };
   return {
     kick,
     showTools,
-    context: contextModel,
+    context: formattedModel,
     //logs: context?.logs,
     version: Math.random(),
     capturedState,

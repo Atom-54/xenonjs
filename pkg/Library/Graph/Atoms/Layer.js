@@ -4,22 +4,25 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({graph}, state, {service}) {
-  if (state.layerId) {
-    //await service('GraphService', 'DestroyLayer', {layerId});
+async update({graph, data}, state, {service, isDirty}) {
+  if (isDirty('data')) {
+    return {data};
   }
-  if (graph && !state.layerId) {
-    const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph});
-    const io = await service('GraphService', 'ComputeLayerIO', {layerId});
-    const i = io.i?.map(path => path.replace(/\$/g, '.'));
-    return {layerId, io: i};
+  if (isDirty('graph')) {
+    if (state.layerId) {
+      //await service('GraphService', 'DestroyLayer', {layerId});
+    }
+    if (graph && !state.layerId) {
+      const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph});
+      await service('GraphService', 'CreateLayerBinding', {layerId});
+      const io = await service('GraphService', 'ComputeLayerIO', {layerId});
+      const i = io.i?.map(path => path.replace(/\$/g, '.'));
+      return {layerId, io: i};
+    }
   }
 },
 template: html`
 <style>
-  :host {
-    padding: 8px;
-  }
   ::slotted(*) {
     flex: 1 !important;
     width: auto !important;

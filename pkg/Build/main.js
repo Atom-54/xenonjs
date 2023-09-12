@@ -12,6 +12,7 @@ import {graph as BaseGraph} from '../Graphs/Base.js';
 import {graph as BuildGraph} from '../Graphs/Build.js';
 // for the app itself
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
+import {Flan} from 'xenonjs/Library/CoreFramework/Flan.js';
 
 const {create, assign, keys, values} = SafeObject;
 
@@ -40,18 +41,16 @@ export const main = async (xenon, App, Composer) => {
   App.createLayer.simple = async (graph, name) => {
     return await App.createLayer([graph], xenon.emitter, Composer, services, name);
   };
-  // create app layer 
-  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services);
-  // set up initial state
-  await App.initializeData(app);
-  // might need to do this in concert with initializeData
-  App.setData(app, persistations);
-  // observe data
-  app.onvalue = state => state && onValue(App, state);
+  // create main flan
+  const flan = globalThis.flan = new Flan(App, xenon.emitter, Composer, services, persistations);
+  // create base layer
+  const layer = await flan.createLayer([BaseGraph, BuildGraph], '');
+  // observe data changes
+  layer.onvalue = state => state && onValue(App, state);
   // ready
   log('app is live 🌈');
-  globalThis.app = app;
-  return app;
+  //globalThis.app = layer;
+  //return layer;
 };
 
 const restore = async persistables => {
@@ -83,7 +82,7 @@ const maybeReload = state => {
   if (state.$UserSettings$settings$userSettings) {
     location.reload();
   }
-}
+};
 
 const persist = async (state, persistables) => {
   for (let key of persistables) {

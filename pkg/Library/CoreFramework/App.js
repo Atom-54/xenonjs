@@ -80,7 +80,7 @@ export const clearData = (layer, atomIds) => {
 
 export const get = (layer, scopedKey) => {
   log('get', scopedKey);
-  return layer.state[scopedKey];
+  return layer.flan.state[scopedKey];
 };
 
 export const set = (layer, scopedKey, value) => {
@@ -109,35 +109,60 @@ const atomRender = ({composer, system}, atomName, atom, packet) => {
 };
 
 const atomOutput = (layer, atomName, atom, output) => {
-  log('onOutputEvent', atomName, output);
-  layer.onoutput?.(layer, atomName, atom, output);
-  forwardBoundOutput(layer, atomName, output);
+  if (keys(output).length) {
+    log('onOutputEvent', atomName, output);
+    layer.onoutput?.(layer, atomName, atom, output);
+    forwardBoundOutput(layer, atomName, output);
+  }
 };
 
 const forwardBoundOutput = (layer, atomName, output) => {
   // translate atom output through outputBindings to create boundInput
   const boundInput = Binder.processOutput(atomName, output, layer.bindings.outputBindings);
+  // collate by layer
+  // const skeys = keys(boundInput);
+  // if (skeys.length) {
+  //   skeys.sort();
+  //   skeys.push('sentinel');
+  //   let layerInput = {};
+  //   skeys.reduce((lastLayerId, key) => {
+  //     const layerId = Id.sliceId(key, 0, 1) || 'base';
+  //     if (lastLayerId && lastLayerId !== layerId) {
+  //       const layer = globalThis.layers[lastLayerId];
+  //       if (layer) {
+  //         // feed bindings back as boundInput
+  //         forwardBoundInput(layer, layerInput);
+  //       }
+  //       layerInput = {};
+  //     }
+  //     layerInput[key] = boundInput[key];
+  //     return layerId;
+  //   }, null);
+  // }
   // feed bindings back as boundInput
   forwardBoundInput(layer, boundInput);
 };
 
 const forwardBoundInput = (layer, scopedInput) => {
   // rmove output that is unchanged from state
-  const dirtyInput = dirtyCheck(layer, scopedInput);
+  const dirtyInput = dirtyCheck(layer.flan.state, scopedInput);
   //log.warn('assigning dirtyInput:', dirtyInput);
   // if there is any...
   if (keys(dirtyInput).length) {
     // drop input into state
-    assign(layer.state, dirtyInput);
+    assign(layer.flan.state, dirtyInput);
+    // allow layer to intervene
     layer.onvalue?.(dirtyInput);
     // translate input through bindings to create bound input list
-    const boundInput = Binder.processInput(dirtyInput, layer.bindings.inputBindings);
-    // send bound inputs to Atoms
-    boundInput.forEach(({id, inputs}) => layer.atoms[id] && (layer.atoms[id].inputs = inputs));
+    // const boundInput = Binder.processInput(dirtyInput, layer.bindings.inputBindings);
+    // log.warn(boundInput);
+    // // send bound inputs to Atoms
+    layer.flan.forwardStateChanges(dirtyInput);
+    // boundInput.forEach(({id, inputs}) => layer.atoms[id] && (layer.atoms[id].inputs = inputs));
   }
 };
 
-export const dirtyCheck = ({state}, data) => {
+export const dirtyCheck = (state, data) => {
   const dirty = create(null);
   const clean = create(null);
   entries(data).forEach(([key, value]) => {
@@ -180,7 +205,7 @@ const atomService = async (layer, atomName, atom, serviceName, methodName, data)
       }
       return value;
     };
-    const service = (globalThis.app.services || layer.services)[serviceName];
+    const service = (globalThis.layers.base.services || layer.services)[serviceName];
     if (service) {
       const task = service[methodName];
       if (task) {
@@ -198,8 +223,6 @@ const atomService = async (layer, atomName, atom, serviceName, methodName, data)
             map(globalThis.layers, (key, value) => layers[key] = value.state);
             const context = {
               layers,
-              // state: globalThis.design?.state,
-              // fullState: globalThis.app?.state,
               logs: [] //logf.get()
             }
             return finish(context);

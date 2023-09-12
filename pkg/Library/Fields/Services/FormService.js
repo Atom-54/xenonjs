@@ -43,7 +43,7 @@ export const FormService = {
     const values = form.fields.map(({name}) => {
       const {type} = layer.system[name];
       const stateId = Id.qualifyId(name, 'value');
-      const value = layer.state[stateId];
+      const value = layer.flan.state[stateId];
       return {name, type, value};
     });
     return values;

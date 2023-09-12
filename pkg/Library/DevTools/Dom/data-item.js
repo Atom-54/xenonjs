@@ -171,11 +171,11 @@ class DataItem extends Xen.Base {
     //
     const uiIsObject = isobject && expanded && Object.keys(value).length;
     const uiObject = uiIsObject ? value : null;
-    const labelize = key => key.includes('$') ? (key.startsWith('$') ? key.slice(1) : key.slice(7)).replace(/\$/g, '∙') : key;
+    //const labelize = key => key.includes('$') ? (key.startsWith('$') ? key.slice(1) : key.slice(7)).replace(/\$/g, '∙') : key;
     return {
       expanded,
       type,
-      name: labelize(name),
+      name: name, //labelize(name),
       value: (isnull || isobject) ? 'null' : (isbool ? value : String(value)),
       isobject: uiIsObject,
       notobject: !uiIsObject,
