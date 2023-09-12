@@ -9,8 +9,8 @@ import {Flan} from 'xenonjs/Library/CoreFramework/Flan.js';
 // libraries provide objects and services that form the dependency layer for Graphs
 import * as Library from 'xenonjs/Library/CoreFramework/Library.js'
 // Graphs request types and services from libraries
-import {graph as BaseGraph} from '../Graphs/Base.js';
-import {graph as BuildGraph} from '../Graphs/Build.js';
+import {graph as BaseGraph} from '../Library/Graphs/Base.js';
+import {graph as BuildGraph} from '../Library/Graphs/Build.js';
 // Design extensions
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
 
