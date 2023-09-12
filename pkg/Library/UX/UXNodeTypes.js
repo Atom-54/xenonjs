@@ -34,7 +34,7 @@ export const UXNodeTypes = {
   },
   UXSelectionList: {
     category,
-    description: 'Render a list, allow user to select items',
+    description: 'Renders a list and allows user to select items',
     type: `$library/UX/Nodes/UXSelectionListNode`
   }
 };
