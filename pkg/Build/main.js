@@ -5,20 +5,19 @@
  */
 import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
 import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
+import {Flan} from 'xenonjs/Library/CoreFramework/Flan.js';
 // libraries provide objects and services that form the dependency layer for Graphs
 import * as Library from 'xenonjs/Library/CoreFramework/Library.js'
-// Graphs may request types and services from above
+// Graphs request types and services from libraries
 import {graph as BaseGraph} from '../Graphs/Base.js';
 import {graph as BuildGraph} from '../Graphs/Build.js';
-// for the app itself
+// Design extensions
 import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
-import {Flan} from 'xenonjs/Library/CoreFramework/Flan.js';
 
 const {create, assign, keys, values} = SafeObject;
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
-logf.flags.Main = true;
 
 const persistables = [
   '$GraphList$graphAgent$selectedId',
@@ -37,10 +36,6 @@ export const main = async (xenon, App, Composer) => {
   const {nodeTypes, services} = await loadLibraries(customLibraries);
   persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
   xenon.setPaths(Paths.map);
-  // TODO(sjmiles): experimental: make layering more accessible
-  App.createLayer.simple = async (graph, name) => {
-    return await App.createLayer([graph], xenon.emitter, Composer, services, name);
-  };
   // create main flan
   const flan = globalThis.flan = new Flan(App, xenon.emitter, Composer, services, persistations);
   // create base layer
@@ -49,8 +44,6 @@ export const main = async (xenon, App, Composer) => {
   layer.onvalue = state => state && onValue(App, state);
   // ready
   log('app is live 🌈');
-  //globalThis.app = layer;
-  //return layer;
 };
 
 const restore = async persistables => {

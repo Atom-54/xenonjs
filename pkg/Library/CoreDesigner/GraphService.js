@@ -109,7 +109,6 @@ const createHostedLayer = async (layer, atom, graphId) => {
   if (graphSpec) {
     const id = makeCapName();
     const newLayer = await layer.flan.createLayer(graphSpec, id);
-    //const newLayer = await App.createLayer.simple(graphSpec, id);
     Resources.set(id, newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
@@ -117,7 +116,6 @@ const createHostedLayer = async (layer, atom, graphId) => {
         spec.container = container;
       }
     });
-    //await App.initializeData(newLayer);
     return id;
   }
 };
@@ -129,8 +127,6 @@ const computeLayerIO = async layer => {
     return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
   }).filter(i=>i);
   const outp = map(layer.bindings.outputBindings, (key, value) => {
-    //const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
-    //const simpleKey = Id.joinId(nodeId, atomId, propertyId);
     const id = Id.sliceId(key, 1);
     const props = keys(value);
     return {id, props};
@@ -140,21 +136,9 @@ const computeLayerIO = async layer => {
 
 const createLayerBinding = async (layer, atom, {layerId, binding}) => {
   const childLayer = Resources.get(layerId);
-  //log(layer, childLayer, atom);
   binding = `${childLayer.name}$DataNavigator$Form$records`;
   layer.bindings.inputBindings[binding] = [{id: atom.name, prop: 'data'}];
   log('createLayerBinding:', binding, " => ", layer.bindings.inputBindings[binding]);
-  // const parts = Id.splitId(binding);
-  // const prop = parts.pop();
-  // const inbound = Id.qualifyId(childLayer.name, Id.joinId(...parts));
-  // const outbound = Id.qualifyId(atom.name, 'data');
-  // // log({[inbound]: {[prop]: outbound}});
-  // const bounded = childLayer.bindings.outputBindings[inbound];
-  // childLayer.bindings.outputBindings[inbound] = {
-  //   ...bounded,
-  //   [prop]: outbound
-  // };
-  // log(childLayer.bindings.outputBindings[inbound]);
 };
 
 const localPrefix = 'local$';
