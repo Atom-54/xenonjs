@@ -47,7 +47,6 @@ export const createLayer = async (graph, atomEmitter, Composer, Services, name='
 };
 
 export const obliterateLayer = layer => {
-  //globalThis.layers.remove(layer);
   // dispose Atoms
   Layers.obliterateGraphLayer(layer);
   // remove state data
@@ -119,26 +118,6 @@ const atomOutput = (layer, atomName, atom, output) => {
 const forwardBoundOutput = (layer, atomName, output) => {
   // translate atom output through outputBindings to create boundInput
   const boundInput = Binder.processOutput(atomName, output, layer.bindings.outputBindings);
-  // collate by layer
-  // const skeys = keys(boundInput);
-  // if (skeys.length) {
-  //   skeys.sort();
-  //   skeys.push('sentinel');
-  //   let layerInput = {};
-  //   skeys.reduce((lastLayerId, key) => {
-  //     const layerId = Id.sliceId(key, 0, 1) || 'base';
-  //     if (lastLayerId && lastLayerId !== layerId) {
-  //       const layer = globalThis.layers[lastLayerId];
-  //       if (layer) {
-  //         // feed bindings back as boundInput
-  //         forwardBoundInput(layer, layerInput);
-  //       }
-  //       layerInput = {};
-  //     }
-  //     layerInput[key] = boundInput[key];
-  //     return layerId;
-  //   }, null);
-  // }
   // feed bindings back as boundInput
   forwardBoundInput(layer, boundInput);
 };
@@ -153,12 +132,8 @@ const forwardBoundInput = (layer, scopedInput) => {
     assign(layer.flan.state, dirtyInput);
     // allow layer to intervene
     layer.onvalue?.(dirtyInput);
-    // translate input through bindings to create bound input list
-    // const boundInput = Binder.processInput(dirtyInput, layer.bindings.inputBindings);
-    // log.warn(boundInput);
-    // // send bound inputs to Atoms
+    // send bound inputs to Atoms
     layer.flan.forwardStateChanges(dirtyInput);
-    // boundInput.forEach(({id, inputs}) => layer.atoms[id] && (layer.atoms[id].inputs = inputs));
   }
 };
 

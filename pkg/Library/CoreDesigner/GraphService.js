@@ -208,7 +208,7 @@ const getGraphInfo = async (layer, graph) => {
 };
 
 const getNodeTypes = layer => {
-  return (layer ?? globalThis).flan.state.$NodeTypeList$typeList$nodeTypes;
+  return (layer ?? globalThis).flan.state.$NodeTypeList$typeList$nodeTypes || {};
 };
 
 const getNodeType = type => {
