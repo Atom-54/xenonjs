@@ -43,15 +43,16 @@ export const DesignApp = {
 };
 
 export const createDesignLayer = async graph => {
+  const design = await globalThis.flan.createLayer(graph, 'design');
   // create design layer
-  const design = await App.createLayer(graph, xenon.emitter, Composer, /* services= */ {}, 'design');
+  //const design = await App.createLayer(graph, xenon.emitter, Composer, /* services= */ {}, 'design');
   values(design.system).forEach(meta => {
     // recontextualize root
     if (meta.container === Id.qualifyId(design.name, 'root$panel#Container')) {
       meta.container = '$WorkPanel$splitPanel#Container'
     }
   });
-  await App.initializeData(design);
+  //await App.initializeData(design);
   design.onvalue = state => state && onValue(design, state);
   return design;
 };
@@ -63,6 +64,7 @@ const onValue = (layer, state) => {
     save(layer);
   }
   if (designSelectedKey in state) {
+    const app = globalThis.layers.base;
     // copy design.selected to app.selected
     App.set(app, baseSelectedKey, state[designSelectedKey]);
   }
@@ -95,9 +97,9 @@ export const designGraph = async (owner, graph) => {
   // more clean up
   // for example, bob's AtomToolbar is contained by app.designed's DesignerPanel,
   // hence it needs to be rerendered, if app.designed was re-created.
-  entries(globalThis.app.system).forEach(([id, spec]) => {
+  entries(globalThis.layers.base.system).forEach(([id, spec]) => {
     if (disposedAtomIds.has(spec.container?.split('#').shift())) {
-      globalThis.app.atoms[id].invalidate();
+      globalThis.layers.base.atoms[id].invalidate();
     }
   });
   // `createDesignLayer` may alter design.graph to collect
@@ -245,7 +247,7 @@ const atomIdsForObjectId = ({name, atoms}, objectId) => {
 };
 
 export const save = layer => {
-  const app = globalThis.app;
+  const app = globalThis.layers.base;
   if (layer && !layer.graph.meta.readonly) {
     log('save graph:', layer.graph.meta.id);
     layer.graph.meta.customLibraries = gatherCustomLibraries(layer);
@@ -272,11 +274,11 @@ const replaceGraph = (graphs, graph) => {
   // return result;
 };
 
-export const getLayers = () => [
-    globalThis.app,
-    globalThis.design
-  ].filter(i=>i)
-  ;
+// export const getLayers = () => [
+//     globalThis.app,
+//     globalThis.design
+//   ].filter(i=>i)
+//   ;
 
 // TODO: make a clearer API (it's now Add w/optional Delete).
 export const morphObject = async (owner, layer, meta) => {
@@ -323,7 +325,7 @@ const replaceObject = async (layer, objectId, newId, object) => {
   mod.nodes[newId] = object;
   // install graph
   layer.graph = mod;
-  layer.state = Graphs.changeStateId(layer.state, objectId, newId);
+  layer.flan.state = Graphs.changeStateId(layer.flan.state, objectId, newId);
 };
 
 const addObject = async (layer, newId, object, {state, layout}) => {

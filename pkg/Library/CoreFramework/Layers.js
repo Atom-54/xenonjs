@@ -17,8 +17,6 @@ log.flags.Layers = true;
 
 // make a Graph into a GraphLayer
 export const reifyGraphLayer = async (graph, emit, name='') => {
-  // create layer state
-  const state = Object.create(null);
   // combine atom specs from all nodes into one 'system'
   const system = await Graphs.graphToAtomSpecs(graph, name);
   // construct bindings from the atom specs
@@ -28,7 +26,7 @@ export const reifyGraphLayer = async (graph, emit, name='') => {
   // make real atoms from specs
   const atoms = await reifyAtoms(system, emit);
   // this is a layer
-  return {name, graph, system, atoms, bindings, state};
+  return {name, graph, system, atoms, bindings};
 };
 
 export const obliterateGraphLayer = async layer => {
@@ -62,7 +60,7 @@ export const initializeData = async (layer/*, persistables*/) => {
   // qualify local state
   const qualifiedState = Graphs.qualifyState(layer.name, state);
   // we must capture the LIVE APP STATE also, if it exists
-  assign(qualifiedState, layer.state)
+  assign(qualifiedState, layer.flan.state)
   // create mutable copy of initial state
   const mutableState = deepCopy(qualifiedState);
   // restore persisted values
@@ -79,14 +77,14 @@ export const renameObject = async (layer, objectId, newId) => {
   // replace all objectId references with newId in the durable graph
   layer.graph = Graphs.changeObjectId(layer.graph, objectId, newId);
   // fixup references in the live graph
-  layer.state = Graphs.changeStateId(layer.state, objectId, newId);
+  layer.flan.state = Graphs.changeStateId(layer.flan.state, objectId, newId);
   // fixup container references in the system 
   recontainSystemObjects(layer.system, objectId, newId);
 };
 
 export const recontainSystemObjects = (system, fromObjectId, toContainer) => {
   values(system).forEach(spec => {
-    const from = `$${fromObjectId}$`;
+    const from = `$${fromObjectId}\$`;
     if (spec.container?.includes(from)) {
       spec.container = spec.container.replace(from, `$${toContainer}$`);
     }
@@ -107,9 +105,9 @@ export const obliterateObject = async (layer, objectId) => {
   });
   // clean layer state
   const qualifiedPredix = `${Id.qualifyId(layer.name, objectId)}$`;
-  keys(layer.state).forEach(key => {
+  keys(layer.flan.state).forEach(key => {
     if (key.startsWith(qualifiedPredix)) {
-      delete layer.state[key];
+      delete layer.flan.state[key];
     }
   });
   // clean bindings

@@ -32,7 +32,7 @@ export class GraphElement extends Xen.Async {
     Composer.options.root = this.host;
     // create app with Atom emitter
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
-    globalThis.app = app;
+    //globalThis.app = app;
     await App.initializeData(app);
     log('app is live 🌈');
     this.state = {app, App, xenon};
@@ -82,15 +82,15 @@ export const initXenon = async (connectXenon) => {
 const log = logf('Main', 'indigo');
 logf.flags.Main = true;
 
-export const main = async (xenon, App, Composer) => {
-  const buildGraph = {};
-  // const buildGraph = await Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
-  // buildGraph.state[`Main$designer$disabled`] = true;
-  // log(buildGraph);
-  // create app with Atom emitter
-  const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
-  await App.initializeData(app);
-  log('app is live 🌈');
-  globalThis.app = app;
-  return app;
-};
+// export const main = async (xenon, App, Composer) => {
+//   const buildGraph = {};
+//   // const buildGraph = await Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
+//   // buildGraph.state[`Main$designer$disabled`] = true;
+//   // log(buildGraph);
+//   // create app with Atom emitter
+//   const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
+//   await App.initializeData(app);
+//   log('app is live 🌈');
+//   //globalThis.app = app;
+//   return app;
+// };

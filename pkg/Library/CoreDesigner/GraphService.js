@@ -22,12 +22,6 @@ log.flags.GraphService = true;
 const {assign, entries, keys, values, map} = SafeObject;
 
 export const GraphService = {
-  async CreateLayer(layer, atom, {graph}) {
-    return createHostedLayer(layer, atom, graph);
-  },
-  async ComputeLayerIO(layer, atom, {layerId}) {
-    return computeLayerIO(Resources.get(layerId))
-  },
   MakeName(layer, atom, data) {
     return makeCapName();
   },
@@ -97,6 +91,16 @@ export const GraphService = {
   },
   AppendGraph(layer, atom, data) {
     return Design.appendGraph(globalThis.design, data);
+  },
+  // experimental layer stuff
+  async CreateLayer(layer, atom, {graph}) {
+    return createHostedLayer(layer, atom, graph);
+  },
+  async ComputeLayerIO(layer, atom, {layerId}) {
+    return computeLayerIO(Resources.get(layerId));
+  },
+  async CreateLayerBinding(layer, atom, {layerId, binding}) {
+    return createLayerBinding(layer, atom, {layerId, binding});
   }
 };
 
@@ -104,7 +108,8 @@ const createHostedLayer = async (layer, atom, graphId) => {
   const graphSpec = await loadGraph(graphId);
   if (graphSpec) {
     const id = makeCapName();
-    const newLayer = await App.createLayer.simple(graphSpec, id);
+    const newLayer = await layer.flan.createLayer(graphSpec, id);
+    //const newLayer = await App.createLayer.simple(graphSpec, id);
     Resources.set(id, newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
@@ -112,8 +117,7 @@ const createHostedLayer = async (layer, atom, graphId) => {
         spec.container = container;
       }
     });
-    await App.initializeData(newLayer);
-    App.set(newLayer, `${id}$Main$designer$disabled`, true);
+    //await App.initializeData(newLayer);
     return id;
   }
 };
@@ -125,13 +129,32 @@ const computeLayerIO = async layer => {
     return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
   }).filter(i=>i);
   const outp = map(layer.bindings.outputBindings, (key, value) => {
-    const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
-    const simpleKey = Id.joinId(nodeId, atomId, propertyId);
+    //const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
+    //const simpleKey = Id.joinId(nodeId, atomId, propertyId);
     const id = Id.sliceId(key, 1);
     const props = keys(value);
     return {id, props};
   }).filter(i=>i);
   return {i: inp, o: outp};
+};
+
+const createLayerBinding = async (layer, atom, {layerId, binding}) => {
+  const childLayer = Resources.get(layerId);
+  //log(layer, childLayer, atom);
+  binding = `${childLayer.name}$DataNavigator$Form$records`;
+  layer.bindings.inputBindings[binding] = [{id: atom.name, prop: 'data'}];
+  log('createLayerBinding:', binding, " => ", layer.bindings.inputBindings[binding]);
+  // const parts = Id.splitId(binding);
+  // const prop = parts.pop();
+  // const inbound = Id.qualifyId(childLayer.name, Id.joinId(...parts));
+  // const outbound = Id.qualifyId(atom.name, 'data');
+  // // log({[inbound]: {[prop]: outbound}});
+  // const bounded = childLayer.bindings.outputBindings[inbound];
+  // childLayer.bindings.outputBindings[inbound] = {
+  //   ...bounded,
+  //   [prop]: outbound
+  // };
+  // log(childLayer.bindings.outputBindings[inbound]);
 };
 
 const localPrefix = 'local$';
@@ -145,7 +168,7 @@ export const loadGraph = async graphId => {
       graph = await fetchFbGraph(graphId);
     }
     if (graph) {
-      graph.state[`${graphId}$Main$designer$disabled`] = true;
+      graph.state.Main$designer$disabled = true;
     }
   }
   return graph;
@@ -201,7 +224,7 @@ const getGraphInfo = async (layer, graph) => {
 };
 
 const getNodeTypes = layer => {
-  return globalThis.app?.state?.$NodeTypeList$typeList$nodeTypes;
+  return (layer ?? globalThis).flan.state.$NodeTypeList$typeList$nodeTypes;
 };
 
 const getNodeType = type => {

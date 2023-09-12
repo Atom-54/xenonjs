@@ -202,8 +202,9 @@ export class DesignerPanel extends DragDrop {
       if (!designer || designer === this.parentNode.host) {
         break;
       }
-      t = designer;
+      t = designer.parentElement;
     }
+    
     // TODO(sjmiles): document id conventions
     // in this case: [<misc>_nodeName]_atomName
     // almost same as getObjectId

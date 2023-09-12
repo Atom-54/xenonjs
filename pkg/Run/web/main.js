@@ -43,7 +43,7 @@ export const main = async (xenon, App, Composer) => {
     const app = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services);
     await App.initializeData(app);
     log('app is live 🌈');
-    globalThis.app = app;
+    //globalThis.app = app;
     return app;
   } else {
     log(`Graph not found.`);
