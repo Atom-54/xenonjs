@@ -39,20 +39,16 @@ export const getSelectedObjectId = layer => {
   return App.get(layer, designSelectedKey);
 };
 
-export const DesignApp = {
-};
-
 export const createDesignLayer = async graph => {
-  const design = await globalThis.flan.createLayer(graph, 'design');
   // create design layer
-  //const design = await App.createLayer(graph, xenon.emitter, Composer, /* services= */ {}, 'design');
+  const design = await globalThis.flan.createLayer(graph, 'design');
+  // recontextualize container root
   values(design.system).forEach(meta => {
-    // recontextualize root
     if (meta.container === Id.qualifyId(design.name, 'root$panel#Container')) {
       meta.container = '$WorkPanel$splitPanel#Container'
     }
   });
-  //await App.initializeData(design);
+  // observe state changes
   design.onvalue = state => state && onValue(design, state);
   return design;
 };
@@ -271,14 +267,7 @@ const replaceGraph = (graphs, graph) => {
       return result;
     }
   }
-  // return result;
 };
-
-// export const getLayers = () => [
-//     globalThis.app,
-//     globalThis.design
-//   ].filter(i=>i)
-//   ;
 
 // TODO: make a clearer API (it's now Add w/optional Delete).
 export const morphObject = async (owner, layer, meta) => {
