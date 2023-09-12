@@ -27,11 +27,9 @@ const designerLayoutKey = 'Main$designer$layout';
 const layerLayoutKey = 'design$Main$designer$layout';
 const defaultObjectLayout = {l: 32, t: 32, w: 132, h: 132, borderStyle: 'solid'};
 
-let xenon, Composer, customLibraries;
+let customLibraries;
 
 export const configureDesignApp = options => {
-  xenon = options?.xenon;
-  Composer = options?.Composer;
   customLibraries = options?.customLibraries;
 };
 
@@ -88,7 +86,7 @@ export const designGraph = async (owner, graph) => {
   // this designer should be editable
   graph.state[`${id}$designer$disabled`] = false;
   // reify stuff
-  const design = await createDesignLayer(graph, xenon, Composer);
+  const design = await createDesignLayer(graph); 
   globalThis.design = design;
   // more clean up
   // for example, bob's AtomToolbar is contained by app.designed's DesignerPanel,
