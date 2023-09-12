@@ -83,19 +83,18 @@ export const graph = {
       "type": "$library/Inspector/Nodes/OpenStyleInspectorNode",
       "container": "ObjectInspector$inspector#OpenStyleInspectorContainer"
     },
-    // "SplitSplitPanel": {
-    //   "type": "$library/Layout/Nodes/SplitPanelNode",
-    //   "container": "SplitPanel$splitPanel#Container2"
-    // },
+    "SplitSplitPanel": {
+      "type": "$library/Layout/Nodes/SplitPanelNode",
+      "container": "SplitPanel$splitPanel#Container2"
+    },
     "NodeTree": {
       "type": "$library/Graph/Nodes/NodeTreeNode",
-      "container": "SplitPanel$splitPanel#Container2"
-      // "container": "SplitSplitPanel$splitPanel#Container"
+      "container": "SplitSplitPanel$splitPanel#Container"
     },
-    // "NodeStatus": {
-    //   "type": "$library/Graph/Nodes/NodeStatusNode",
-    //   "container": "SplitSplitPanel$splitPanel#Container2"
-    // },
+    "NodeStatus": {
+      "type": "$library/Graph/Nodes/NodeStatusNode",
+      "container": "SplitSplitPanel$splitPanel#Container2"
+    },
     // "AtomToolbar": {
     //   "type": "$library/UX/Nodes/UXToolbarNode",
     //   "container": "design$Main$designer#ToolbarContainer"
@@ -180,10 +179,8 @@ export const graph = {
         "stateKey": "GraphListFlyOut$flyOut$show"
       },
       {
-        // "name": "spanner",
         "name": "Graph Name",
         "slot": "graphName",
-        //"flex": 1
       },
       {
         "name": "spanner",
@@ -234,7 +231,6 @@ export const graph = {
       },
       {
         "name": "Zoom Graph",
-        // "ligature": "bottom_panel_close",
         "ligature": {
           true: "top_panel_close",
           false: "bottom_panel_close",

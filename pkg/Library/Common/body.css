@@ -1,3 +1,6 @@
+html {
+  font-size: 90%;
+}
 /* full-bleed, needs viewport-meta help */
 body {
   height: 100vh;
@@ -6,6 +9,9 @@ body {
   display: flex;
   flex-direction: column;
   font-family: Quicksand, sans-serif;
+}
+body {
+  height: 100dvh;
 }
 /* root level design decision */
 :root {
