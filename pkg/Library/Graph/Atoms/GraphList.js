@@ -39,30 +39,43 @@ renderGraphItems({readonly, isPublic, graphs, graph, search}, {user}) {
     .map(g => ({
       readonly,
       isPublic: Boolean(isPublic),
-      id: g.meta?.id ?? '(anon)',
-      description: g.meta?.description ?? this.defaultDescription,
-      hideOwner: String(false), //!isPublic),
-      owner: g.meta?.owner?.split('@')?.shift() ?? 'anonymous',
-      timestamp: g.meta ? new Date(g.meta.timestamp).toLocaleDateString() : '',
-      selected: g.meta?.id === graph?.meta?.id,
+      ...this.renderGraphMeta(g, graph?.meta),
       isOwned: isOwned(g),
       hidePublish: Boolean(!user || isPublic),
       hideUnpublish: Boolean(!user || !isPublic || !isOwned(g))
     }))
     ;
 },
+renderGraphMeta({meta}, selectedMeta) {
+  const selectMeta = {id: meta?.id, readonly: meta?.readonly, owner: meta?.owner};
+  const isSelected = ({id, readonly, owner}) => id === selectedMeta?.id && Boolean(readonly) === Boolean(selectedMeta?.readonly) && owner === selectedMeta?.owner;
+  return {
+    id: meta?.id ?? '(anon)',
+    selectMeta,
+    description: meta?.description ?? this.defaultDescription,
+    hideOwner: String(!Boolean(meta?.owner)),
+    owner: meta?.owner?.split('@')?.shift() ?? 'anonymous',
+    timestamp: meta ? new Date(meta.timestamp).toLocaleDateString() : '',
+    selected: isSelected(meta)
+  }
+},
 onEvent({eventlet: {key: name, value}}, state) {
   return this.addEvent({action: {name}, data: {value}}, state)
 },
-onRename({eventlet: {key: originalId, value: newId}}, state) {
-  const event = {
-    action: {name: 'Rename Graph'},
-    data: {originalId, newId}
-  };
-  return this.addEvent(event, state)
+onRename({eventlet: {key: meta, value: newId}}, state) {
+  if (!meta.readonly) {
+    const event = {
+      action: {name: 'Rename Graph'},
+      data: {originalId: meta.id, newId}
+    };
+    return this.addEvent(event, state)
+  }
 },
-onDescribe({eventlet: {key, value}, graphs}, state) {
-  const graph = graphs?.find(g => g.meta.id === key);
+findGraph({id, readonly, owner}, graphs) {
+  return graphs?.find(g => g.meta.id === id && g.meta.readonly === readonly && g.meta.owner === owner);
+},
+onDescribe({eventlet: {key: meta, value}, graphs}, state) {
+  const graph = meta && this.findGraph(meta, graphs);
   if (graph) {
     const event = {
       action: {name: 'Set Graph Meta'},
@@ -212,20 +225,20 @@ template: html`
 
 <template graph_t>
   <div container>
-    <div capsule value="{{id}}" selected$="{{selected}}" on-click="onEvent" key="Select Graph">
+    <div capsule value="{{selectMeta}}" selected$="{{selected}}" on-click="onEvent" key="Select Graph">
       <div hidden="{{readonly}}" bar>
         <span flex>
-          <fancy-input name xautofocus="{{selected}}" disabled="{{isPublic}}" key="{{id}}" value="{{id}}" on-change="onRename" on-click="donothing"></fancy-input>
+          <fancy-input name xautofocus="{{selected}}" disabled="{{isPublic}}" key="{{selectMeta}}" value="{{id}}" on-change="onRename" on-click="donothing"></fancy-input>
         </span>
         <icon on-click="onEvent" key="Publish Graph" value="{{id}}" hidden="{{hidePublish}}">public</icon>
         <icon on-click="onEvent" key="Unpublish Graph" value="{{id}}" hidden="{{hideUnpublish}}">shield_lock</icon>
-        <icon on-click="onEvent" key="Clone Graph" value="{{id}}">content_copy</icon>
+        <icon on-click="onEvent" key="Clone Graph" value="{{selectMeta}}">content_copy</icon>
         <icon on-click="onEvent" key="Delete Graph" value="{{id}}" hidden="{{isPublic}}">delete</icon>
         <div>&nbsp;&nbsp;</div>
       </div>
       <div style="font-size: var(--font-size-1); line-height: 80%;">
         <!-- Support multiline in fancy-input? -->
-        <fancy-input description disabled="{{isPublic}}" key="{{id}}" value="{{description}}" on-change="onDescribe" on-click="donothing"></fancy-input>
+        <fancy-input description disabled="{{isPublic}}" key="{{selectMeta}}" value="{{description}}" on-change="onDescribe" on-click="donothing"></fancy-input>
       </div>
       <div bar style="order: 3; line-height: 80%; padding: 8px;">
         <span owner flex><span hide$="{{hideOwner}}">{{owner}}</span></span>

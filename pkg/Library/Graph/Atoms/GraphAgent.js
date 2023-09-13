@@ -11,10 +11,12 @@ initialize(inputs, state, {service}) {
   state.makeName = () => service('GraphService', 'MakeName');
 },
 shouldUpdate({graphs, user}) {
-  return graphs; // && keys(user).length;
+  return graphs;
 },
 async update(inputs, state, tools) {
-  state.user ??= inputs.user;
+  if (tools.isDirty('user')) {
+    state.user = inputs.user;
+  }
   //
   await this.loadPublicGraphs(inputs, state, tools);	
   //
@@ -49,34 +51,41 @@ async loadPublicGraphs({publishedGraphsUrl}, state, {output, isDirty}) {
       // that were published before double stringification.
       const text = (await res.text())?.replace(/%/g, '$');
       const parsed = values(JSON.parse(text)).map(v => typeof v === 'string' ? JSON.parse(v) : v);
-      output({
-        publicGraphs: parsed.map(g => g.meta ? g : values(g)?.map(gg => JSON.parse(gg))).flat()
-      });
+      const publicGraphs = parsed.map(g => g.meta ? g : values(g)?.map(gg => JSON.parse(gg))).flat()
+      if (!publicGraphs.every(g => g.meta.readonly)) {
+        log.warn(`All public graphs must be readonly`);
+      }
+      output({publicGraphs});
     }
   //}
 },
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
   return `${publishedGraphsUrl}/${this.publicGraphsPath}.json`;
 },
-formatPutPublishGraphUrl(graphId, owner, {publishedGraphsUrl}) {
-  const sanitize = str => str.replace(/[^a-zA-Z0-9\s]/g, '');
-  const ownerId = owner?.split('@')?.[0] ?? 'anonymous';
-  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${sanitize(ownerId)}/${sanitize(graphId)}.json`;
+sanitizeId(str) {
+  return str.replace(/[^a-zA-Z0-9\s]/g, '');
 },
-initGraphs(inputs, state, {service}) {
-  let {readonly, graph, graphs, selectedId} = inputs;
+sanitizeOwnerId(owner) {
+  return this.sanitizeId(owner?.split('@')?.[0] ?? 'anonymous').toLowerCase();
+},
+formatPutPublishGraphUrl(graphId, owner, {publishedGraphsUrl}) {
+  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${this.sanitizeOwnerId(owner)}/${this.sanitizeId(graphId)}.json`;
+},
+initGraphs(inputs, state) {
+  let {readonly, graph, graphs, publicGraphs, selectedMeta} = inputs;
   //log(graph, graphs.length);
+  const matches = ({id, readonly, owner}, meta) => id === meta?.id && readonly === meta?.readonly && owner === meta?.owner;
   if (!readonly) {
     if (!graphs?.length) {
       return this.addGraph(inputs, state);
     }
-    graph ??= this.graphById(selectedId, graphs);
-    if (graph && graph.meta?.id !== state.selectedId) {
-      return this.selectGraph(graph, state);
+    graph ??= this.retrieveGraph(selectedMeta, graphs, publicGraphs);
+    if (graph && matches(graph, state.selectedMeta)) {
+      return this.doSelectGraph(selectedMeta, graph, state);
     }
   } else {
-    if (state.selectedId !== selectedId) {
-      return this.selectGraphById(selectedId, inputs, state);
+    if (!matches(state.selectedMeta !== selectedMeta)) {
+      return this.doSelectGraph(selectedMeta, graph, state);
     }
   }
 },
@@ -100,8 +109,7 @@ newGraph({id, designerId, ...meta}, {user}) {
       ...meta,
       id,
       designerId,
-      timestamp: Date.now(),
-      owner: user?.email,
+      timestamp: Date.now()
     },
     nodes: {
       [designerId]: {
@@ -124,21 +132,40 @@ async addFirstDefaultNode({}, {service}) {
     layout: {width: 'auto'}
   });
 },
-graphById(id, graphs) {
+findGraph(id, graphs) {
   return graphs?.find(({meta}) => meta?.id === id);
 },
-selectGraphById(id, {graphs, publicGraphs}, state) {
-  if (state.selectedId !== id) {
-    const selectedGraph = this.graphById(id, graphs) ?? this.graphById(id, publicGraphs);
-    return this.selectGraph(selectedGraph, state);
+findPublicGraph(id, owner, publicGraphs) {
+  return publicGraphs?.find(({meta}) => meta?.id === id && meta?.owner === owner);
+},
+retrieveGraph(meta, graphs, publicGraphs) {
+  if (meta) {
+    const {id, readonly, owner} = meta;
+    if (readonly) {
+      return this.findPublicGraph(id, owner, publicGraphs);
+    } else {
+      return this.findGraph(id, graphs);
+    }
   }
 },
+selectGraphByMeta(selectedMeta, {graphs, publicGraphs}, state) {
+  const graph = this.retrieveGraph(selectedMeta, graphs, publicGraphs);
+  return this.doSelectGraph(selectedMeta, graph, state);
+},
 selectGraph(graph, state) {
-  if (graph && state.selectedId != graph.meta.id) {
-    //service({kind: 'GraphService', msg: 'SelectGraph', data: {graph}});
+  const selectedMeta = {
+    id: graph?.meta?.id,
+    readonly: graph?.meta?.readonly,
+    owner: graph?.meta?.owner
+  };
+  return this.doSelectGraph(selectedMeta, graph, state);
+},
+doSelectGraph(selectedMeta, graph, state) {
+  selectedMeta.ownerId = this.sanitizeOwnerId(selectedMeta.owner);
+  if (graph && !deepEqual(state.selectedMeta, selectedMeta)) {
     state.select(graph);
-    state.selectedId = graph.meta.id;
-    return {graph, selectedId: state.selectedId};
+    state.selectedMeta = selectedMeta;
+    return {graph, selectedMeta};
   }
 },
 async handleEvent(inputs, state, {service, output}) {
@@ -147,7 +174,7 @@ async handleEvent(inputs, state, {service, output}) {
     case 'Add Graph':
       return this.addGraph(inputs, state);
     case 'Select Graph':
-      return this.selectGraphById(event.data.value, inputs, state);
+      return this.selectGraphByMeta(event.data.value, inputs, state);
     case 'Delete Graph':
       return this.deleteGraph(event.data.value, graph, graphs, service);
     case 'Clone Graph':
@@ -191,21 +218,22 @@ deleteGraph(id, graph, graphs, service) {
     };
   }
 },
-uniqifyId(id, graphs, publicGraphs) {
+uniqifyId(id, graphs) {
   let i = 0;
-  while (this.graphById(id, graphs) || this.graphById(id, publicGraphs)) {
+  while (this.findGraph(id, graphs)) {
     id = `${id} (${++i})`;
   }
   return id;
 },
-async cloneGraph(id, graphs, publicGraphs, state) {
-  const graph = this.graphById(id, graphs) ?? this.graphById(id, publicGraphs);
+async cloneGraph(meta, graphs, publicGraphs, state) {
+  const graph = this.retrieveGraph(meta, graphs, publicGraphs);
   if (graph) {
     const copyId = `Copy of ${graph.meta.id}`;
     const {meta} = this.newGraph({
       ...graph.meta,
       readonly: false,
-      id: this.uniqifyId(copyId, graphs, publicGraphs)
+      owner: '',
+      id: this.uniqifyId(copyId, graphs)
     }, state);
     const clonedGraph = {...graph, meta};
     graphs.push(clonedGraph);
@@ -231,17 +259,17 @@ renameGraph({originalId, newId}, graph, graphs) {
   }
 },
 restyleGraph(id, graphs, state) {
-  const graph = this.graphById(id, graphs);
+  const graph = this.findGraph(id, graphs);
   if (graph) {
     delete graph.meta.stylized;
     return {graph, ...this.selectGraph(graph, state)};
   }
 },
 async publishGraph(id, graphs, publicGraphs, state) {
-  const graph = this.graphById(id, graphs);
-  const publicGraph = {...graph, meta: {...graph.meta, readonly: true}};
+  const graph = this.findGraph(id, graphs);
+  const publicGraph = {...graph, meta: {...graph.meta, readonly: true, owner: state.user?.email}};
 
-  const result = await this.putPublishedGraph(graph.meta, publicGraph, state)
+  const result = await this.putPublishedGraph(publicGraph, state)
   if (result) {
     let publicIndex = publicGraphs.findIndex(graph => graph.meta.id === id && graph.meta.owner === state.user?.email);
     if (publicIndex >= 0) {
@@ -258,7 +286,8 @@ async unpublishGraph(id, publicGraphs, state) {
   publicGraphs.splice(index, 1);
   return {publicGraphs};
 },
-async putPublishedGraph({id, owner}, graph, state) {
+async putPublishedGraph(graph, state) {
+  const {id, owner} = graph.meta;
   const url = this.formatPutPublishGraphUrl(id, owner, state);
   const result = await fetch(url, {
     method: 'PUT',
