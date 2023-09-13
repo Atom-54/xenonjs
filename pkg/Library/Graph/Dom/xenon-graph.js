@@ -39,7 +39,7 @@ const template = Xen.Template.html`
 <slot name="root" flex></slot>
 `;
 
-let xenon, flan;
+let xenon;
 
 export class XenonGraph extends Xen.Async {
   static get observedAttributes() {
@@ -55,7 +55,7 @@ export class XenonGraph extends Xen.Async {
       if (graph) {
         xenon = xenon ?? (await this.initXenon());
         // create main flan
-        globalThis.flan = flan = flan ?? new Flan(App, xenon.emitter, Composer);
+        const flan = new Flan(App, xenon.emitter, Composer);
         await this.reifyGraph(flan, graph);
       } else {
         console.log(`Graph not found.`);
