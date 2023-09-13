@@ -9,7 +9,7 @@ import * as Persist from '../../Library/CoreFramework/Persist.js';
 import * as Library from '../../Library/CoreFramework/Library.js'
 import {Flan} from 'xenonjs/Library/CoreFramework/Flan.js';
 import {loadGraph} from '../../Library/CoreDesigner/GraphService.js';
-import {graph as baseGraph} from '../../Graphs/Base.js';
+import {graph as baseGraph} from '../../Library/Graphs/Base.js';
 
 const {create, assign, keys, values} = SafeObject;
 
