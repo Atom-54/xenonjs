@@ -23,6 +23,7 @@ template: html`
     margin: 0; 
     font-size: 0.75em;
     font-family: sans-serif;
+    text-wrap: wrap;
   }
 </style>
 <div scrolling flex column>

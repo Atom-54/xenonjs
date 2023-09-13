@@ -35,8 +35,8 @@ export const GraphListNode = {
   },
   graphAgent: {
     type: '$library/Graph/Atoms/GraphAgent',
-    inputs: ['readonly', 'user', 'publishedGraphsUrl', 'graphs', 'publicGraphs', 'graph', 'selectedId'],
-    outputs: ['graphs', 'publicGraphs', 'graph', 'selectedId'],
+    inputs: ['readonly', 'user', 'publishedGraphsUrl', 'graphs', 'publicGraphs', 'graph', 'selectedMeta'],
+    outputs: ['graphs', 'publicGraphs', 'graph', 'selectedMeta'],
     bindings: {
       event: 'actionExecutor$event',
       readonly: 'graphList$readonly',

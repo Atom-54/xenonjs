@@ -20,6 +20,7 @@ export const main = async (xenon, App, Composer) => {
   const graphId = await retrieveGraphId();
   const buildGraph = await loadGraph(graphId);
   if (buildGraph) {
+    log(`Loaded graph '${graphId}'`, buildGraph);
     document.title = buildGraph.meta.id;
     // TODO: support assigning icons for graphs (maybe auto-generate?)
     if (buildGraph.meta.icon) {
@@ -46,16 +47,20 @@ export const main = async (xenon, App, Composer) => {
     globalThis.app = app;
     return app;
   } else {
-    log(`Graph not found.`);
+    log(`Graph '${graphId}' not found.`);
   }
 };
 
 const retrieveGraphId = async () => {
   let graphId = Params.getParam('graph');
   if (!graphId) {
-    graphId = await Persist.restoreValue(`$GraphList$graphAgent$selectedId`);
-    if (graphId) {
-      graphId = `local$${graphId}`;
+    const meta = await Persist.restoreValue(`$GraphList$graphAgent$selectedMeta`);
+    if (meta) {
+      if (meta.readonly) {
+        graphId = `${meta.ownerId}/${meta.id}`;
+      } else {
+        graphId = `local$${meta.id}`;
+      }
     }
   }
   return graphId;

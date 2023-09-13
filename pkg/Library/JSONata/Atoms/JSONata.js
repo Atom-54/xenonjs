@@ -8,11 +8,11 @@ initialize(inputs, state, {service}) {
   state.evaluate = data => service({kind: 'JSONataService', msg: 'evaluate', data})
 },
 
-shouldUpdate({json, expression}) {
-  return Boolean(json && expression);
-},
-
 async update({json, expression}, {evaluate}) {
+  if (!json || !expression) {
+    return {result: null};
+  }
+
   const object = this.maybeParseJson(json);
   if (object != null) {
     const {result} = await evaluate({json: object, expression});

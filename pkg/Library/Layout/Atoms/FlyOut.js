@@ -4,6 +4,12 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+render({show, side}) {
+  return {
+    show: Boolean(show),
+    side
+  };
+},
 async onToggleFlyOutClick() {
   return {show: false};
 },

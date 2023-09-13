@@ -20,7 +20,7 @@ const log = logf('Main', 'indigo');
 logf.flags.Main = true;
 
 const persistables = [
-  '$GraphList$graphAgent$selectedId',
+  '$GraphList$graphAgent$selectedMeta',
   '$GraphList$graphAgent$graphs',
   '$WorkPanel$splitPanel$divider',
   '$SplitPanel$splitPanel$divider',
