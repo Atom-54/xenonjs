@@ -74,7 +74,7 @@ export const clearData = (layer, atomIds) => {
   const nullify = nob();
   props.forEach(key => nullify[key] = null);
   log('clearData built nullification object:', nullify);
-  setData(nullify);
+  setData(layer, nullify);
 };
 
 export const get = (layer, scopedKey) => {
