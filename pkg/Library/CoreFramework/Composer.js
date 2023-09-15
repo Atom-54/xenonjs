@@ -22,20 +22,6 @@ const {assign} = Object;
 
 //xenon.AtomFactory.setAtomOptions({injections: {themeRules}});
 
-// do a body fade-in just to mask font-fouc
-// or other brief improprieties
-requestAnimationFrame(() => {
-  assign(document.documentElement.style, {
-    opacity: 0,
-    //scale: 20
-  });
-  setTimeout(() => assign(document.documentElement.style, {
-    transition: 'all 400ms ease-in-out',
-    opacity: 1,
-    //scale: 1
-  }), 100);
-});
-
 export const options = {
   root: document.body
 };
