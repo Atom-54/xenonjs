@@ -6,7 +6,7 @@
 export const ObjectDetectorNode = {
   ObjectDetector: {
     type: '$library/TensorFlow/Atoms/ObjectDetector',
-    inputs: ['image', 'display'],
+    inputs: ['image', 'display', 'options'],
     outputs: ['data', 'display']
   }
 };
