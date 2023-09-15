@@ -10,6 +10,20 @@ import * as App from 'xenonjs/Library/CoreFramework/App.js';
 import * as Composer from 'xenonjs/Library/CoreFramework/Composer.js';
 import {main} from './main.js';
 
+// do a body fade-in just to mask font-fouc
+// or other brief improprieties
+requestAnimationFrame(() => {
+  Object.assign(document.documentElement.style, {
+    opacity: 0,
+    //scale: 20
+  });
+  setTimeout(() => Object.assign(document.documentElement.style, {
+    transition: 'all 400ms ease-in-out',
+    opacity: 1,
+    //scale: 1
+  }), 100);
+});
+
 (async () => {
   try {
     const {xenon/*, terminal*/} = await connectXenon();
