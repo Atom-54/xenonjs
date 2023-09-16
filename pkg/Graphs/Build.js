@@ -48,6 +48,10 @@ export const graph = {
       "type": "$library/EchoNode",
       "container": "UXToolbar$UXToolbar#graphName"
     },
+    "GraphStatus": {
+      "type": "$library/Graph/Nodes/GraphStatusNode",
+      "container": "OuterWorkPanel$panel#Container"
+    },
     "WorkPanel": {
       "type": "$library/Layout/Nodes/SplitPanelNode",
       "container": "OuterWorkPanel$panel#Container"
@@ -269,7 +273,7 @@ export const graph = {
       },
       "WorkPanel": {
         "flex": "1",
-        "order": "2",
+        "order": "3",
         "backgroundColor": "var(--xcolor-one)"
       },
       "BottomWorkCollapse": {
@@ -281,6 +285,12 @@ export const graph = {
         "fontSize": "var(--font-size-3)",
         "padding": "var(--size-1)",
         "backgroundColor": "var(--xcolor-one)"
+      },
+      "GraphStatus": {
+        "order": "2",
+        "height": "auto",
+        "backgroundColor": "var(--xcolor-brand)",
+        "color": "white"
       },
       "DesignMain": {
         "order": "2"
@@ -338,6 +348,7 @@ export const graph = {
     "NodeGraph$Graph$graph": "GraphList$graphAgent$graph",
     "NodeInspectorAdaptor$adaptor$graph": "GraphList$graphAgent$graph",
     "NodeTree$NodeTree$graph": "GraphList$graphAgent$graph",
+    "GraphStatus$GraphStatus$graph": "GraphList$graphAgent$graph",
 
     "GetGraphName$JSONata$json": "GraphList$graphAgent$graph",
     "GraphName$echo$html": "GetGraphName$JSONata$result",
