@@ -10,7 +10,6 @@ export const GraphAgentNode = {
     outputs: ['graph', 'graphs', 'publicGraphs', 'selectedId']
   },
   state: {
-    graphAgent$graphs: [],
-    graphAgent$publishedGraphsUrl: 'https://xenon-js-default-rtdb.firebaseio.com/0_3',
+    graphAgent$graphs: []
   }
 };

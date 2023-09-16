@@ -81,13 +81,18 @@ export const GraphService = {
   OpenUrl(layer, atom, data) {
     // consider passing urlParam to RunInRun?
     const urls = {
-      'RunInRun': '../Run/',
+      'RunInRun': '../Run',
       'ContactUs': 'https://discord.gg/PFsHCJHJdN',
       'Email': 'mailto:info@xenonjs.com',
       'BugReport': 'https://github.com/NeonFlan/xenonjs/issues/new'
     };
-    if (urls[data]) {
-      window.open(urls[data]);
+    const url = urls[data?.url];
+    if (url) {
+      let params = '';
+      if (data.url === 'RunInRun') {
+        params = `?graph=${graphParamForMeta(globalThis.layers.design.graph.meta)}`;
+      }
+      window.open(`${url}/${params}`);
     }
   },
   getNodeTypeMetas(layer, atom, data) {
@@ -128,6 +133,18 @@ const computeLayerIO = async layer => {
 
 const localPrefix = 'local$';
 
+export const graphParamForMeta = meta => {
+  if (meta.readonly) {
+    if (meta.ownerId) {
+      return `${meta.ownerId}/${meta.id}`;
+    } else {
+      return meta.id;
+    }
+  } else {
+    return `${localPrefix}${meta.id}`;
+  }
+};
+
 export const loadGraph = async graphId => {
   let graph = null;
   if (graphId) {
@@ -148,7 +165,7 @@ const restoreLocalGraph = async (id) => {
 };
 
 const fetchFbGraph = async (id) => {
-  const firebaseUrl = globalThis.config.firebaseGraphsURL;
+  const firebaseUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
   if (firebaseUrl) {
     const url = `${firebaseUrl}/${id}.json`;
     try {

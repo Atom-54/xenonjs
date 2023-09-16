@@ -5,6 +5,8 @@
  */
 import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
 import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
+import {Params} from 'xenonjs/Library/Xenon/Utils/params.js';
+import {loadGraph} from 'xenonjs/Library/CoreDesigner/GraphService.js';
 // libraries provide objects and services that form the dependency layer for Graphs
 import * as Library from 'xenonjs/Library/CoreFramework/Library.js'
 // Graphs may request types and services from above
@@ -35,6 +37,11 @@ export const main = async (xenon, App, Composer) => {
   Design.configureDesignApp({xenon, Composer, customLibraries});
   const {nodeTypes, services} = await loadLibraries(customLibraries);
   persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
+  persistations.$GraphList$graphAgent$publishedGraphsUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
+  const buildGraph = await loadGraph(Params.getParam('graph'));
+  if (buildGraph) {
+    persistations.$GraphList$graphAgent$graph = buildGraph;
+  }
   xenon.setPaths(Paths.map);
   // TODO(sjmiles): experimental: make layering more accessible
   App.createLayer.simple = async (graph, name) => {

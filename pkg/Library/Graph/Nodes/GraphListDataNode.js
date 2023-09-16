@@ -26,7 +26,6 @@ export const GraphListDataNode = {
   // },
   state: {
     // graphAgent$graphs: [],
-    // graphAgent$publishedGraphsUrl: 'https://xenon-js-default-rtdb.firebaseio.com',
     graphData$showMode: 'private'
   }
 };
