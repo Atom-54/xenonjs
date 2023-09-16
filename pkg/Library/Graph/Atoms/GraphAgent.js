@@ -5,7 +5,6 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 defaultDesignerId: 'Main',
-publicGraphsPath: 'publicGraphs',
 initialize(inputs, state, {service}) {
   state.select = graph => service('GraphService', 'SelectGraph', {graph});
   state.makeName = () => service('GraphService', 'MakeName');
@@ -60,16 +59,17 @@ async loadPublicGraphs({publishedGraphsUrl}, state, {output, isDirty}) {
   //}
 },
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
-  return `${publishedGraphsUrl}/${this.publicGraphsPath}.json`;
+  return `${publishedGraphsUrl}.json`;
 },
 sanitizeId(str) {
-  return str.replace(/[^a-zA-Z0-9\s]/g, '');
+  return str?.replace(/[^a-zA-Z0-9\s]/g, '');
 },
 sanitizeOwnerId(owner) {
-  return this.sanitizeId(owner?.split('@')?.[0] ?? 'anonymous').toLowerCase();
+  return this.sanitizeId(owner?.split('@')?.[0])?.toLowerCase();
 },
 formatPutPublishGraphUrl(graphId, owner, {publishedGraphsUrl}) {
-  return `${publishedGraphsUrl}/${this.publicGraphsPath}/${this.sanitizeOwnerId(owner)}/${this.sanitizeId(graphId)}.json`;
+  const ownerId = this.sanitizeOwnerId(owner) ?? 'anonymous';
+  return `${publishedGraphsUrl}/${ownerId}/${this.sanitizeId(graphId)}.json`;
 },
 initGraphs(inputs, state) {
   let {readonly, graph, graphs, publicGraphs, selectedMeta} = inputs;
@@ -80,11 +80,11 @@ initGraphs(inputs, state) {
       return this.addGraph(inputs, state);
     }
     graph ??= this.retrieveGraph(selectedMeta, graphs, publicGraphs);
-    if (graph && matches(graph, state.selectedMeta)) {
+    if (graph && !matches(graph.meta, state.selectedMeta)) {
       return this.doSelectGraph(selectedMeta, graph, state);
     }
   } else {
-    if (!matches(state.selectedMeta !== selectedMeta)) {
+    if (!matches(state.selectedMeta, selectedMeta)) {
       return this.doSelectGraph(selectedMeta, graph, state);
     }
   }
@@ -180,7 +180,7 @@ async handleEvent(inputs, state, {service, output}) {
     case 'Clone Graph':
       return this.cloneGraph(event.data.value, graphs, publicGraphs, state);
     case 'Rename Graph':
-      return this.renameGraph(event.data, graph, graphs);
+      return this.renameGraph(event.data, graph, graphs, state);
     case 'Restyle Graph':
       return this.restyleGraph(event.data.value, graphs, state);
     case 'Refresh Public Graphs':
@@ -214,7 +214,7 @@ deleteGraph(id, graph, graphs, service) {
     }
     return {
       graphs,
-      ...((id === graph?.meta?.id) && {graph : null})
+      ...((id === graph?.meta?.id) && {graph: null, selectedMeta: null})
     };
   }
 },
@@ -243,7 +243,7 @@ async cloneGraph(meta, graphs, publicGraphs, state) {
     };
   }
 },
-renameGraph({originalId, newId}, graph, graphs) {
+renameGraph({originalId, newId}, graph, graphs, state) {
   let graphIndex = graphs.findIndex(g => g?.meta?.id === originalId);
   if (graphIndex < 0) {
     graphIndex = graphs.findIndex(g => deepEqual(g, graph));
@@ -254,7 +254,7 @@ renameGraph({originalId, newId}, graph, graphs) {
     modified.meta.id = newId;
     return {
       graphs,
-      graph: modified
+      ...this.selectGraph(modified, state)
     };
   }
 },
@@ -262,7 +262,7 @@ restyleGraph(id, graphs, state) {
   const graph = this.findGraph(id, graphs);
   if (graph) {
     delete graph.meta.stylized;
-    return {graph, ...this.selectGraph(graph, state)};
+    return this.selectGraph(graph, state);
   }
 },
 async publishGraph(id, graphs, publicGraphs, state) {

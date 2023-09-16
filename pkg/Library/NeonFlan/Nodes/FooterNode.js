@@ -26,7 +26,7 @@ export const FooterNode = {
         "args": {
           "kind": "GraphService",
           "msg": "OpenUrl",
-          "data": "BugReport"
+          "data": {"url": "BugReport"}
         }
       }, {
         "name": "Contact us",
@@ -36,7 +36,7 @@ export const FooterNode = {
         "args": {
           "kind": "GraphService",
           "msg": "OpenUrl",
-          "data": "ContactUs"
+          "data": {"url": "ContactUs"}
         }
       }, {
         "name": "Email",
@@ -46,7 +46,7 @@ export const FooterNode = {
         "args": {
           "kind": "GraphService",
           "msg": "OpenUrl",
-          "data": "Email"
+          "data": {"url": "Email"}
         }
       }, {
         "name": "spanner",

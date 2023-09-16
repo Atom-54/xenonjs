@@ -212,7 +212,7 @@ export const graph = {
         "args": {
           "kind": "GraphService",
           "msg": "OpenUrl",
-          "data": "RunInRun"
+          "data": {"url": "RunInRun"}
         }
       },
       {

@@ -33,7 +33,7 @@ globalThis.config = {
     //Worker: true,
     //WorkerTransit: true
   },
-  firebaseGraphsURL: "https://xenon-js-default-rtdb.firebaseio.com/0_3/publicGraphs"
+  publicGraphsPath: '0_3/publicGraphs'
 };
 
 globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `${v}${strings[i + 1]}`).join('')}`.trim();
