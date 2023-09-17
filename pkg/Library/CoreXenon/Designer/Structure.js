@@ -1,15 +1,14 @@
-persistations.$GraphList$graphAgent$publishedGraphsUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
 /**
  * @license
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {assign, keys, nob} from '..//Reactor/safe-object.js';
-import * as Id from '..//Framework/Id.js';
-import * as Binder from '..//Framework/Binder.js';
-import * as Graphs from '..//Framework/Graphs.js';
-import * as Layers from '..//Framework/Layers.js';
-import * as App from '..//Framework/App.js';
+import {assign, keys, nob} from '../Reactor/safe-object.js';
+import * as Id from '../Framework/Id.js';
+import * as Binder from '../Framework/Binder.js';
+import * as Graphs from '../Framework/Graphs.js';
+import * as Layers from '../Framework/Layers.js';
+import * as App from '../Framework/App.js';
 import * as Design from './DesignService.js';
 
 const defaultLayout = {l: 32, t: 32, w: 132, h: 132};

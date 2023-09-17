@@ -20,14 +20,12 @@ import {main} from './main.js';
 // or other brief improprieties
 requestAnimationFrame(() => {
   Object.assign(document.documentElement.style, {
-    opacity: 0,
-    //scale: 20
+    opacity: 0
   });
   setTimeout(() => Object.assign(document.documentElement.style, {
     transition: 'all 400ms ease-in-out',
-    opacity: 1,
-    //scale: 1
-  }), 100);
+    opacity: 1
+  }), 1000);
 });
 
 (async () => {

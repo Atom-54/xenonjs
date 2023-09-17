@@ -345,6 +345,7 @@ export const graph = {
     "NodeGraph$Graph$graph": "GraphList$graphAgent$graph",
     "NodeInspectorAdaptor$adaptor$graph": "GraphList$graphAgent$graph",
     "NodeTree$NodeTree$graph": "GraphList$graphAgent$graph",
+    "GraphStatus$GraphStatus$graph": "GraphList$graphAgent$graph",
     //
     "GetGraphName$JSONata$json": "GraphList$graphAgent$graph",
     "GraphName$echo$html": "GetGraphName$JSONata$result",
