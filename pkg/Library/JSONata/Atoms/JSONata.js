@@ -17,7 +17,9 @@ async update({json, expression}, {evaluate}) {
   if (object != null) {
     const {result} = await evaluate({json: object, expression});
     if (result === "couldn't evaluate JSON") {
-      log.warn('JSONata failed to evaluate: ', expression, 'on', object);
+      log.groupCollapsed('JSONata failed to evaluate');
+      log(expression, 'on', object);
+      log.groupEnd();
       return null;
     }
     return {

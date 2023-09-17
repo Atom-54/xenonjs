@@ -20,7 +20,7 @@ async refresh(state, service) {
 },
 render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ selectedTab}) {
   const contextModel = context?.layers;
-  const graphJson = JSON.stringify(contextModel?.base?.$GraphList$graphAgent$graph || 'n/a', null, '  ');
+  const graphJson = JSON.stringify(contextModel?.base?.GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
   // if (contextModel?.design) {
   //   delete contextModel.base;
@@ -45,44 +45,7 @@ render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ select
     selectedTab: {state: 0, logs: 1, atoms: 2, resources: 3, dom: 4}[selectedTab]
   };
 },
-// map(object, visitor) {
-//   const result = {};
-//   object && entries(object).map(([name, elt]) => result[name] = visitor(elt));
-//   return result;
-// },
-// renderAllHosts(users) {
-//   const mapHosts = xenon => this.map(xenon, arc => this.renderHosts(arc.hosts));
-//   return this.map(users, user => mapHosts(user?.xenon));
-// },
-// renderHosts(hosts) {
-//   return this.map(hosts, ({meta, atom: {internal: {state, inputs}}}) => {
-//     const filtered = {};
-//     keys(state)
-//       .filter(key => (key !== 'runtime') && (typeof state[key] !== 'function'))
-//       .forEach(key => filtered[key] = state[key])
-//       ;
-//     return {meta, inputs, state: filtered};
-//   });
-// },
-// renderAllStores(users) {
-//   return this.map(users, user => this.renderSimpleStores(user?.stores));
-// },
-// renderSimpleStores(stores) {
-//   const result = {};
-//   const mappedStores = this.map(stores, ({data, meta}) => ({value: data, meta}));
-//   //const kbSize = value => !isNaN(value) ? `${(value / 1024).toFixed(1)} Kb` : '';
-//   entries(mappedStores).forEach(([name, store]) => {
-//     // TODO(sjmiles): really slow for big stores
-//     //result[`${name} (${kbSize(stores[name]?.save()?.length)})`] = store;
-//     result[name] = store;
-//   });
-//   return result;
-// },
-// async onTabSelected(inputs, state, {service}) {
-//   return this.refresh(state, service);
-// },
 onPageSelected({eventlet}, state) {
-  //log('onTabChange', eventlet);
   state.selectedTab = eventlet.value;
 },
 async onToggleDevToolsClick(inputs, state, {service}) {
@@ -90,9 +53,6 @@ async onToggleDevToolsClick(inputs, state, {service}) {
     await this.refresh(state, service);
   }
 },
-// toggleState(state, name) {
-//   return state[name] = !state[name];
-// },
 async onRefreshClick(inputs, state, {service}) {
   return this.refresh(state, service);
 },
@@ -127,23 +87,9 @@ template: html`
     flex: 0 !important;
     --xcolor-hi-one: hsl(292deg 83% 31%);
     --xcolor-hi-two: hsl(292deg 83% 71%);
-    /* 
-    --ui-page-background: #202124;
-    --ui-nav-red: #C3291C;
-    --ui-bright-red: #E24741;
-    --mdc-icon-button-size: 32px;
-    --mdc-theme-primary: #ffffff;
-    --mdc-tab-text-label-color-default: var(--ui-bright-red); 
-    */
     font-family: 'Google Sans', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
   }
-  /* 
-  wl-tab-group {
-    --tab-bg: var(--xcolor-hi-two); */
-    /* --tab-bg-filled: var(--xcolor-hi-two);
-  } 
-  */
   mxc-tab-pages {
     background-color: inherit;
   }
@@ -151,7 +97,7 @@ template: html`
     padding: 8px;
   }
   [title] {
-    font-size: 1.3em;
+    font-size: 1.2em;
   }
   [devtools] {
     position: fixed;
@@ -226,13 +172,6 @@ template: html`
 
   <!-- tabbed pages -->
   <weightless-pages dark flex on-selected="onPageSelected" tabs="State,Resources,DOM,Graph">
-  <!-- <wl-tab-group selectedtab="state" on-change="onTabChange">
-    <wl-tab key="state">State</wl-tab>
-    <wl-tab key="logs">Logs</wl-tab>
-    <wl-tab key="dom">Dom</wl-tab>
-    <wl-tab key="resources">Resources</wl-tab>
-  </wl-tab-group> -->
-  <!-- <mxc-tab-pages dark flex selected="{{selectedTab}}" Xtabs="State,Atoms,Resources,DOM,Graphs,Charts,Tests" Xon-selected="onTabSelected"> -->
     <!-- State -->
     <data-explorer flex scrolling object="{{context}}" expand="2"></data-explorer>
     <!-- Resources -->
