@@ -5,7 +5,7 @@
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {PIXI} from './pixi.js';
-import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 
 export class PixiSpineBoyPro extends Xen.Async {
   static get observedAttributes() {

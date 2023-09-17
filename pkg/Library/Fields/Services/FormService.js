@@ -3,9 +3,9 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {debounce} from '../../CoreReactor/Atomic/js/unused/task.js';
-import * as App from '../../CoreFramework/App.js';
-import * as Id from '../../CoreFramework/Id.js';
+import {debounce} from '../../CoreXenon/Reactor/Atomic/js/unused/task.js';
+import * as App from '../../CoreXenon/Framework/App.js';
+import * as Id from '../../CoreXenon/Framework/Id.js';
 
 const log = logf('Services:Form', 'lightblue', 'black');
 
@@ -24,7 +24,7 @@ const addField = (form, atom) => {
 const notifyForm = ({layer, atom, formId: form}) => {
   const action = () => {
     const event = {handler: 'onFormFields', data: {form}};
-    App.onComposerEvent(layer, atom, event);
+    App.handleAtomEvent(layer, atom, event);
   };
   debounce(form, action, 50);
 };
@@ -43,7 +43,7 @@ export const FormService = {
     const values = form.fields.map(({name}) => {
       const {type} = layer.system[name];
       const stateId = Id.qualifyId(name, 'value');
-      const value = layer.state[stateId];
+      const value = layer.flan.state[stateId];
       return {name, type, value};
     });
     return values;

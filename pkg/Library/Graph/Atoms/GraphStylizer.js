@@ -18,7 +18,7 @@ async update({graph, image, avatar, avatars}, state, {service}) {
       delete meta.stylized3;
       meta.stylized = true;
       log('stylized graph meta', meta);
-      await service({kind: 'GraphService', msg: 'SetGraphMeta', data: meta});
+      await service('DesignService', 'SetGraphMeta', meta);
       return {restart: false};
     }
     const vav = values(avatars);

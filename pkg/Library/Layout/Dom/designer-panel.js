@@ -3,11 +3,11 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Xen} from '../../Dom/Xen/xen-async.js';
+import {Xen, debounce} from '../../Dom/Xen/xen-async.js';
 import {DragDrop} from '../../Dom/Common/drag-drop.js';
 import {IconsCss} from '../../Dom/Material/material-icon-font/icons.css.js';
 
-const log = logf('DOM: designer-panel', '#AB0', '#000');
+const log = logf('DOM: designer-panel', '#black', 'orange');
 
 const GRID_SIZE = 16;
 
@@ -26,7 +26,7 @@ export class DesignerPanel extends DragDrop {
     this.boxer.hidden = true;
     // observe size changes to keep selectors in-place
     this.resizeObserver = new ResizeObserver(() => this.structureChanged());
-    this.resizeObserver.observe(this);
+    //this.resizeObserver.observe(this);
     // if children appear we must notice them
     this.mutationObserver = new MutationObserver(() => this.structureChanged());
     this.mutationObserver.observe(this.parentNode.host, {childList: true, subtree: true});
@@ -39,9 +39,9 @@ export class DesignerPanel extends DragDrop {
       }
     });
   }
-  update({selected, layout/*, readonly*/}, state) {
+  update({selected, layout, readonly}, state) {
     // TODO(sjmiles): readonly should be on 'this' and in 'inputs', but it's not?
-    this.disabled = this.hasAttribute('readonly');
+    state.disabled = this.disabled = readonly; //this.hasAttribute('readonly');
     // '' is true for attributes
     //this.readonly = (readonly === '' || readonly);
     state.layout = layout;
@@ -63,11 +63,15 @@ export class DesignerPanel extends DragDrop {
     });
   }
   structureChanged() {
-    if (!this.dragStarted) {
-      const selected = this.lastSelected;
-      this.lastSelected = null;
-      this.updateAtomLayout(this.state.layout);
-      this.select(selected);
+    if (!this.dragging) {
+      const task = () => {
+        log('structureChanged');
+        const selected = this.lastSelected;
+        this.lastSelected = null;
+        this.updateAtomLayout(this.state.layout);
+        this.select(selected);
+      };
+      this.structureDebounce = debounce(this.structureDebounce, task, 100);
     }
   }
   // onSlotChange() {
@@ -110,7 +114,11 @@ export class DesignerPanel extends DragDrop {
     if (style) {
       entries(style).forEach(([key, value]) => {
         if (value != null) {
-          atom.style[key] = value;
+          if (typeof value === 'object') {
+            log('applyStyleToAtom: non-concrete style value', key, value);
+          } else {
+            atom.style[key] = value;
+          }
         }
       })
     }
@@ -202,7 +210,7 @@ export class DesignerPanel extends DragDrop {
       if (!designer || designer === this.parentNode.host) {
         break;
       }
-      t = designer;
+      t = designer.parentElement;
     }
     // TODO(sjmiles): document id conventions
     // in this case: [<misc>_nodeName]_atomName
@@ -245,7 +253,7 @@ export class DesignerPanel extends DragDrop {
   }
   doMove(dx, dy) {
     // moving with a target is dragging
-    this.dragStarted = Boolean(this.dragRect && dx && dy);
+    this.dragStarted = this.dragStarted || Boolean(this.dragRect && dx && dy);
     // give up if no target rect
     if (this.dragRect) {
       //
@@ -268,6 +276,7 @@ export class DesignerPanel extends DragDrop {
   }
   doUp() {
     if (!this.disabled) {
+      //log(this.target, this.dragStarted, this.dragRect);
       if (this.target && this.dragStarted && this.dragRect) {
         this.dragStarted = false;
         this.commitRect();
@@ -279,16 +288,13 @@ export class DesignerPanel extends DragDrop {
     }
   }
   commitRect() {
+    //log('commitRect');
     const nob = () => Object.create(null);
-    //
-    const rect = this.getLocalRect(this.getReferenceFrame(this.target), this.target);
     const id = this.target.id.split('_').slice(1, -1).join('_');
-    //
     const rules = ((this.state.layout ??= nob())[id]) ??= nob();
+    const rect = this.getLocalRect(this.getReferenceFrame(this.target), this.target);
     assign(rules, rect);
-    //
     this.value = this.state.layout;
-    //log('fire layout');
     this.fire('layout');
   }
   calculateDragOffsets(dx, dy, dragKind, dragFrom) {

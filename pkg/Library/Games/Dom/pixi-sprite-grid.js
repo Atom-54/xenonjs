@@ -3,14 +3,14 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 import {PIXI} from '../../PixiJs/Dom/pixi.js';
-import {arand, irand} from '../../CoreReactor/Atomic/js/utils/rand.js';
+import {arand, irand} from '../../CoreXenon/Reactor/Atomic/js/utils/rand.js';
 import {PixiObject} from '../../PixiJs/Dom/pixi-object.js';
 
 // const log = logf('DOM:PixiSpriteGrid', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Apps/Assets/gems');
+const assets = Paths.resolve('$xenon/Library/Assets/gems');
 
 const [cols, rows] = [8, 8];
 const siz = 65, margin = 8;

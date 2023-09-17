@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
-import {deepEqual, deepCopy} from '../../CoreReactor/Atomic/js/utils/object.js';
+import {deepEqual, deepCopy} from '../../CoreXenon/Reactor/Atomic/js/utils/object.js';
 import {css as mainCss} from '../../../third-party/toast/tui-grid.css.js';
 import {css as themeCss} from '../../../third-party/toast/some-theme.css.js';
 import '../../../third-party/toast/tui-grid.js'

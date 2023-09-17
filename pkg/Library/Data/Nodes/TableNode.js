@@ -5,7 +5,7 @@
  */
 export const TableNode = {
   Table: {
-    type: '$library/Data/Atoms/Table',
+    type: '$library/Data/Atoms/ToastTable',
     inputs: ['columns', 'data', 'options'],
     outputs: ['event']
   },

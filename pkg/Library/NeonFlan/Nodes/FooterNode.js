@@ -20,7 +20,7 @@ export const FooterNode = {
         "flex": 1
       }, {
         "name": "File an issue",
-        "image": "$xenon/Apps/Assets/github.png",
+        "image": "$xenon/Library/Assets/github.png",
         "style": "opacity: 0.8; cursor: pointer; height: 18px; height: 18px",
         "action": "service",
         "args": {
@@ -30,7 +30,7 @@ export const FooterNode = {
         }
       }, {
         "name": "Contact us",
-        "image": "$xenon/Apps/Assets/discord.png",
+        "image": "$xenon/Library/Assets/discord.png",
         "style": "opacity: 0.7; cursor: pointer; height: 18px; width: 18px",
         "action": "service",
         "args": {

@@ -317,7 +317,7 @@ async updatePropValue(data, propNames, formatter, service) {
     prop = data.props[index];
     prop.value = this.formatNewValue(prop.value, prop.store, propNames, formatter);
   }
-  await service({kind: 'GraphService', msg: 'UpdateProp', data: prop});
+  await service('DesignService', 'UpdateProp', prop);
   return {data, prop};
   //return {action: {name: 'object-prop-update', prop}};
 },
@@ -381,7 +381,7 @@ formatPropValueByType(currentValue, {type: currentType, store}, newValue) {
   return newValue;
 },
 onRename({eventlet: {value}}, state, {service}) {
-  return service('GraphService', 'RenameObject', {name: value});
+  return service('DesignService', 'RenameObject', {name: value});
 },
 
 template: html`

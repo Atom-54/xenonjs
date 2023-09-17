@@ -17,12 +17,12 @@ async update({json, expression}, {evaluate}) {
   if (object != null) {
     const {result} = await evaluate({json: object, expression});
     if (result === "couldn't evaluate JSON") {
-      log.warn('JSONata expression is invalid: ', expression);
+      log.warn('JSONata failed to evaluate: ', expression, 'on', object);
       return null;
     }
     return {
       // return `null` instead of `undefined`
-      result: result??null
+      result: result ?? null
     }
   }
 },
@@ -36,6 +36,7 @@ maybeParseJson(json) {
       try {
         object = JSON.parse(`"${json}"`)
       } catch(x) {
+        log.warn('Failed to parse JSON', json);
         log.warn(m);
         return null;
       }

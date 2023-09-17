@@ -11,7 +11,7 @@ update({divider}, state) {
     return {divider};
   }
 },
-render({layout, style, endflex, divider, collapsed}) {
+render({layout, style, endflex, collapsed}, {divider}) {
   const row = (layout === 'row') || (layout === 'vertical');
   return {
     style,
@@ -23,6 +23,7 @@ render({layout, style, endflex, divider, collapsed}) {
   };
 },
 onDividerChange({eventlet: {value}}, state) {
+  state.divider = value;
   return {divider: value};
 },
 template: html`
@@ -40,7 +41,6 @@ template: html`
     height: auto !important;
     left: 0 !important;
     top: 0 !important;
-    /* flex: 1; */
   }
 </style>
 <split-panel flex 

@@ -13,7 +13,7 @@ export const atom = (log, resolve) => ({
         if (typeof arg === 'object') {
           arg = JSON.stringify(arg);
         }
-        result = result.replace(`$\{arg${i}}`, arg || '?');
+        result = result.replace(`$\{arg${i}}`, arg || null);
       }
       return {result};
     }

@@ -12,7 +12,7 @@ const xenonPath = new URL('../', import.meta.url).href.slice(0, -1);
 globalThis.config = {
   xenonPath,
   // storage prefix
-  aeon: 'xenon/0.3.0',
+  aeon: 'v1',
   paths: {
     // as needed
     $library: `${xenonPath}/Library`,
@@ -22,20 +22,24 @@ globalThis.config = {
   },
   logFlags: {
     //App: true,
-    Atom: true,
+    //Atom: true,
     //Binder: true,
     //BusTerminal: true,
     //Composer: true,
-    DesignApp: true,
+    //Design: true,
     //DOM: true,
-    Graphs: true,
+    //Flan: true,
+    //Graphs: true,
     //Host: true,
     //Industry: true,
-    Library: true,
+    //Layers: true,
+    //Library: true,
+    Main: true,
     //MessageBus: true,
+    //Nodes: true,
     //Persist: true,
-    Reactor: true,
-    Services: true,
+    //Reactor: true,
+    //Services: true,
     //Worker: true,
     //WorkerTransit: true
   },

@@ -18,11 +18,11 @@ initialize(inputs, state, {service}) {
     n: 1
   });
 },
-shouldUpdate({restart, prompt}) {
-  return restart && prompt;
+shouldUpdate({enabled, prompt}) {
+  return enabled && prompt;
 },
-async update({prompt, options}, state, {output}) {
-  if (prompt.startsWith('a moment')) {
+async update({prompt, options}, state, {output, isDirty}) {
+  if (!isDirty('prompt') && !isDirty('restart') || prompt.startsWith('a moment')) {
     return {image: null};
   }
   log('starting:', prompt);

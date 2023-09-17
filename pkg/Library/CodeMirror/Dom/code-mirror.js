@@ -8,7 +8,7 @@ import '../../../third-party/CodeMirror/lib/javascript.min.js';
 import {css as codeMirrorCss} from '../../../third-party/CodeMirror/themejs/codemirror.css.js';
 import {css as materialDarkerCss} from '../../../third-party/CodeMirror/themejs/material-darker.css.js';
 import {Xen} from '../../Dom/Xen/xen-async.js';
-import {deepEqual} from '../../CoreReactor/Atomic/js/utils/object.js';
+import {deepEqual} from '../../CoreXenon/Reactor/Atomic/js/utils/object.js';
 
 const {CodeMirror} = window;
 

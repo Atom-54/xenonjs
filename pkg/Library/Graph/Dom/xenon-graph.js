@@ -8,13 +8,14 @@
 
 import {Xen} from '../../Dom/Xen/xen-async.js';
 
-import {connectXenon} from '../../CoreReactor/Worker/xenon-web-worker.js';
-import * as App from '../../CoreFramework/App.js';
-import * as Composer from '../../CoreFramework/Composer.js';
-import {loadGraph} from '../../CoreDesigner/GraphService.js';
-import '../../../Apps/common/configKeys.js';
+import {connectXenon} from '../../CoreXenon/Reactor/Worker/xenon-web-worker.js';
+import * as App from '../../CoreXenon/Framework/App.js';
+import * as Composer from '../../CoreXenon/Framework/Composer.js';
+import {Flan} from '../../CoreXenon/Framework/Flan.js';
+import {loadGraph} from '../../CoreXenon/Designer/GraphService.js';
+import '../../Common/configKeys.js';
 
-import {graph as baseGraph} from '../../../Graphs/Base.js';
+import {graph as baseGraph} from '../../Graphs/Base.js';
 import '../../Fields/FieldsDom.js';
 import '../../PixiJs/PixiJsDom.js';
 import * as services from '../../services.js';
@@ -40,11 +41,6 @@ const template = Xen.Template.html`
 
 let xenon;
 
-globalThis.app = {
-  // services: {},
-  layers: {}
-};
-
 export class XenonGraph extends Xen.Async {
   static get observedAttributes() {
     return ['name'];
@@ -58,7 +54,9 @@ export class XenonGraph extends Xen.Async {
       const graph = await loadGraph(state.name);
       if (graph) {
         xenon = xenon ?? (await this.initXenon());
-        await this.reifyGraph(graph);
+        // create main flan
+        const flan = new Flan(App, xenon.emitter, Composer);
+        await this.reifyGraph(flan, graph);
       } else {
         console.log(`Graph not found.`);
       }
@@ -69,19 +67,18 @@ export class XenonGraph extends Xen.Async {
     xenon.industrialize();
     return xenon;
   }
-  async reifyGraph(buildGraph) {
-    buildGraph.state[`Main$designer$disabled`] = true;
-    console.log(buildGraph);
+  async reifyGraph(flan, graph) {
+    graph.state[`Main$designer$disabled`] = true;
+    console.log(graph);
     //
     // create app with Atom emitter
     Composer.options.root = this.shadowRoot.querySelector('slot');
     console.log('setting Composer root to', Composer.options.root);
-    const layer = await App.createLayer([baseGraph, buildGraph], xenon.emitter, Composer, services, `Layer` + Math.floor(Math.random()*1000+1000));
+    flan.services = services;
     //
-    await App.initializeData(layer);
+    const layer = await flan.createLayer([baseGraph, graph], '');
     //
     console.log('graph is live 🌈');
-    globalThis.app.layers[layer.name] = layer;
     //
     return layer;
   }

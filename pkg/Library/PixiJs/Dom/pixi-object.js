@@ -5,13 +5,13 @@
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {Resources} from '../../Media/Resources.js';
-//import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+//import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 import {PIXI} from '../../PixiJs/Dom/pixi.js';
-//import {arand, irand} from '../../CoreReactor/Atomic/js/utils/rand.js';
+//import {arand, irand} from '../../CoreXenon/Reactor/Atomic/js/utils/rand.js';
 
 const log = logf('DOM:PixiObject', 'beige', 'black');
 
-//const assets = Paths.resolve('$xenon/Apps/Assets');
+//const assets = Paths.resolve('$xenon/Library/Assets');
 //const kinds = ['stone_blue', 'stone_green', 'stone_pink', 'stone_yellow'];
 
 // const [cols, rows] = [8, 8];

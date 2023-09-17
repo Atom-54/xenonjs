@@ -41,11 +41,6 @@ export const DataNodeTypes = {
     description: 'General purpose records manager, supporting addition, auto-generation, deletion and inspection of records',
     type: '$library/Data/Nodes/RecordsCollectorNode'
   },
-  RecordsTable: {
-    category,
-    description: 'Deprecated',
-    type: '$library/Data/Nodes/RecordsTableNode'
-  },
   RecordsChart: {
     category,
     description: 'Displays records in a chart, sliced on a selected field',
@@ -64,10 +59,5 @@ export const DataNodeTypes = {
     category,
     description: 'Renders data in a table',
     type: '$library/Data/Nodes/TableNode'
-  },
-  Grid: {
-    category,
-    description: 'Renders data in a table (deprecated)',
-    type: '$library/Data/Nodes/GridNode'
   }
 };

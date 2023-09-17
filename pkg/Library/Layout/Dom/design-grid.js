@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
-import {deepEqual} from '../../CoreReactor/Atomic/js/utils/object.js';
+import {deepEqual} from '../../CoreXenon/Reactor/Atomic/js/utils/object.js';
 import '../../../third-party/gridstack/gridstack-all.js';
 import {css} from '../../../third-party/gridstack/gridstack.min.css.js';
 
