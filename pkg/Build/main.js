@@ -16,7 +16,7 @@ import {graph as BuildGraph} from '../Library/Graphs/Build.js';
 const log = logf('Main', 'indigo');
 
 const persistables = [
-  'base$GraphList$graphAgent$selectedId',
+  'base$GraphList$graphAgent$selectedMeta',
   'base$GraphList$graphAgent$graphs',
   'base$WorkPanel$splitPanel$divider',
   'base$SplitPanel$splitPanel$divider',
