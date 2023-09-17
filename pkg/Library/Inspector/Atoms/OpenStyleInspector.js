@@ -164,7 +164,7 @@ updateValue(data, propName, newValue, service) {
   // find prop with 'name'
   const prop = this.propByName(data.props, propName);
   prop.value = {...prop.value, ...newValue};
-  service({kind: 'GraphService', msg: 'UpdateProp', data: prop});
+  service('DesignService', 'UpdateProp', prop);
   return {data};
 },
 propByName(props, name) {
@@ -177,8 +177,11 @@ template: html`
     --cell-pad: 0;
     --cell-margin: 0px 18px 0 0;
   }
+  [grid] {
+    padding-bottom: 2px;
+  }
   [cell] {
-    min-width: 6em;
+    min-width: 7em;
   }
   [label] {
     font-size: 0.7em;

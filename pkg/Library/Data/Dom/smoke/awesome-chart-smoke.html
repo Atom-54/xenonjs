@@ -6,10 +6,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <link rel="stylesheet" href="../../../Dom/Material/material-xen/xen.css">
 
-<script type="module" src="../awesome-chart.js"></script>
+<script type="module" src="../chart-js.js"></script>
 <script>  
 function onUpdateData() {
-  const charts = document.querySelectorAll('awesome-chart');
+  const charts = document.querySelectorAll('chart-js');
   const labels = ['Crimson', 'Thistle', 'Moccasin', 'Olive', 'Plum', 'Salmon'];
   const data = labels.map(_ => Math.floor(Math.random()*30));
   charts.forEach(chart => {
@@ -63,7 +63,7 @@ h3 {
   <button onclick="onUpdateData();">update</button>
 </div>
 <div chart>
-  <awesome-chart type="bar"></awesome-chart>
+  <chart-js type="bar"></chart-js>
 </div>
 
 <button onclick="onUpdateData();">update</button>
@@ -73,7 +73,7 @@ h3 {
   <button onclick="onUpdateData();">update</button>
 </div>
 <div chart>
-  <awesome-chart type="doughnut"></awesome-chart>
+  <chart-js type="doughnut"></chart-js>
 </div>
 
 <div bar>
@@ -82,7 +82,7 @@ h3 {
 </div>
 
 <div chart>
-  <awesome-chart type="pie"></awesome-chart>
+  <chart-js type="pie"></chart-js>
 </div>
 
 <div bar>
@@ -90,7 +90,7 @@ h3 {
   <button onclick="onUpdateData();">update</button>
 </div>
 <div chart>
-  <awesome-chart type="line"></awesome-chart>
+  <chart-js type="line"></chart-js>
 </div>
 
 </body>

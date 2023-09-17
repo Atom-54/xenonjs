@@ -7,4 +7,4 @@ import './Dom/pixi-app.js';
 import './Dom/pixi-stream.js';
 import './Dom/pixi-view.js';
 import './Dom/pixi-nu-pogodi.js';
-import './Dom/pixi-spine-boy-pro.js';
+// import './Dom/pixi-spine-boy-pro.js';

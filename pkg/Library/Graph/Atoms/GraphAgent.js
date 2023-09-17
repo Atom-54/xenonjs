@@ -6,28 +6,28 @@ export const atom = (log, resolve) => ({
  */
 defaultDesignerId: 'Main',
 initialize(inputs, state, {service}) {
-  state.select = graph => service('GraphService', 'SelectGraph', {graph});
   state.makeName = () => service('GraphService', 'MakeName');
 },
 shouldUpdate({graphs, user}) {
   return graphs;
 },
-async update(inputs, state, tools) {
-  if (tools.isDirty('user')) {
-    state.user = inputs.user;
+async update(inputs, state, {output, isDirty, service}) {
+  state.user ??= inputs.user;
+  if (inputs.publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
+    state.publishedGraphsUrl = inputs.publishedGraphsUrl;
+    const publicGraphs = await this.loadPublicGraphs(inputs.publishedGraphsUrl);	
+    if (publicGraphs) {
+      output({publicGraphs});
+    }
   }
-  //
-  await this.loadPublicGraphs(inputs, state, tools);	
-  //
-  const outputs = await this.initGraphs(inputs, state, tools);
+  const outputs = await this.initGraphs(inputs, state);
   if (outputs) {
     return outputs;
   }
-  if (state.addDefault) {
-    state.addDefault = false;
-    this.addFirstDefaultNode(inputs, tools);
-  }
-  //
+  // if (state.addDefault) {
+  //   state.addDefault = false;
+  //   this.addFirstDefaultNode(service);
+  // }
   const {event} = inputs;
   if (event && !deepEqual(event, state.event)) {
     // TODO(maria): limit all events, except 'select' to non `readonly`.
@@ -36,27 +36,25 @@ async update(inputs, state, tools) {
     state.event = event;
     const outputs = {event: {...event, complete: true}};
     if (!event.complete || (event.status === 'error')) {
-      assign(outputs, await this.handleEvent(inputs, state, tools));
+      assign(outputs, await this.handleEvent(inputs, state, {service, output}));
     }
     return outputs;
   }
 },
-async loadPublicGraphs({publishedGraphsUrl}, state, {output, isDirty}) {
-  //if (isDirty('publishedGraphsUrl')) {
-    state.publishedGraphsUrl = publishedGraphsUrl;
-    const res = await fetch(this.formatFetchPublishGraphsUrl(publishedGraphsUrl));
-    if (res.status === 200) {
-      // Replacing % with $ is backward compatibility for graphs,
-      // that were published before double stringification.
-      const text = (await res.text())?.replace(/%/g, '$');
-      const parsed = values(JSON.parse(text)).map(v => typeof v === 'string' ? JSON.parse(v) : v);
-      const publicGraphs = parsed.map(g => g.meta ? g : values(g)?.map(gg => JSON.parse(gg))).flat()
-      if (!publicGraphs.every(g => g.meta.readonly)) {
-        log.warn(`All public graphs must be readonly`);
-      }
-      output({publicGraphs});
+async loadPublicGraphs(publishedGraphsUrl) {
+  const url = this.formatFetchPublishGraphsUrl(publishedGraphsUrl);
+  const res = await fetch(url);
+  if (res.status === 200) {
+    // Replacing % with $ is backward compatibility for graphs,
+    // that were published before double stringification.
+    const text = (await res.text())?.replace(/%/g, '$');
+    const parsed = values(JSON.parse(text)).map(v => typeof v === 'string' ? JSON.parse(v) : v);
+    const publicGraphs = parsed.map(g => g.meta ? g : values(g)?.map(gg => JSON.parse(gg))).flat()
+    if (!publicGraphs.every(g => g.meta.readonly)) {
+      log.warn(`All public graphs must be readonly`);
     }
-  //}
+    return publicGraphs;
+  }
 },
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
   return `${publishedGraphsUrl}.json`;
@@ -77,7 +75,7 @@ initGraphs(inputs, state) {
   const matches = ({id, readonly, owner}, meta) => id === meta?.id && readonly === meta?.readonly && owner === meta?.owner;
   if (!readonly) {
     if (!graphs?.length) {
-      return this.addGraph(inputs, state);
+      return this.addGraph({graphs}, state);
     }
     graph ??= this.retrieveGraph(selectedMeta, graphs, publicGraphs);
     if (graph && !matches(graph.meta, state.selectedMeta)) {
@@ -119,8 +117,8 @@ newGraph({id, designerId, ...meta}, {user}) {
     }
   };
 },
-async addFirstDefaultNode({}, {service}) {
-  return service('GraphService', 'MorphObject', {
+async addFirstDefaultNode(service) {
+  return service('DesignService', 'MorphObject', {
     type: {type: '$library/EchoNode'},
     state: {
       'echo$html': `Welcome to Build!<br><br>
@@ -163,7 +161,6 @@ selectGraph(graph, state) {
 doSelectGraph(selectedMeta, graph, state) {
   selectedMeta.ownerId = this.sanitizeOwnerId(selectedMeta.owner);
   if (graph && !deepEqual(state.selectedMeta, selectedMeta)) {
-    state.select(graph);
     state.selectedMeta = selectedMeta;
     return {graph, selectedMeta};
   }
@@ -184,7 +181,6 @@ async handleEvent(inputs, state, {service, output}) {
     case 'Restyle Graph':
       return this.restyleGraph(event.data.value, graphs, state);
     case 'Refresh Public Graphs':
-      delete state.publishedGraphsUrl;
       return this.loadPublicGraphs(inputs, state, {output});
     case 'Publish Graph':
       return this.publishGraph(event.data.value, graphs, publicGraphs, state);
@@ -268,7 +264,6 @@ restyleGraph(id, graphs, state) {
 async publishGraph(id, graphs, publicGraphs, state) {
   const graph = this.findGraph(id, graphs);
   const publicGraph = {...graph, meta: {...graph.meta, readonly: true, owner: state.user?.email}};
-
   const result = await this.putPublishedGraph(publicGraph, state)
   if (result) {
     let publicIndex = publicGraphs.findIndex(graph => graph.meta.id === id && graph.meta.owner === state.user?.email);
@@ -300,7 +295,7 @@ async putPublishedGraph(graph, state) {
   return result.ok;
 },
 async removePublishedGraph({id, owner}, state) {
-  return fetch(this.formatPutPublishGraphUrl(id, owner, state), {
+  return fetch(this.formatPutUrl(id, owner, state), {
     method: 'DELETE',
     headers: {'Content-Type': 'application/json'}
   });

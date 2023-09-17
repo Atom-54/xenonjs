@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Composer} from '../../CoreReactor/Atomic/js/core/Composer.js';
+import {Composer} from '../../CoreXenon/Reactor/Atomic/js/core/Composer.js';
 import {Xen} from '../Xen/xen-async.js';
 import {IconsCss} from '../Material/material-icon-font/icons.css.js';
 import {XenCss} from '../Material/material-xen/xen.css.js';

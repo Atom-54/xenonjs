@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {SSEPubSub} from './SSEPubSub.js';
-import {onComposerEvent} from '../../CoreFramework/App.js';
+import * as App from '../../CoreXenon/Framework/App.js';
 
 const log = logf('Services:(SSE)PubSub', 'yellow', 'black');
 //const pubSub = new SSEPubSub(`${globalThis.config?.firebaseConfig?.databaseURL}/pubsub`);
@@ -23,7 +23,7 @@ export const SSEPubSubService = {
     const signal = (value) => {
       log('Signal', path, value);
       const event =  {handler: 'onSubscribedValue', data: {value}};
-      onComposerEvent(layer, atom.name, event);
+      App.handleAtomEvent(layer, atom.name, event);
     };
     return getPubSub(path).subscribe(path, signal);
   }

@@ -14,7 +14,6 @@ const log = logf('DOM: drag-drop', '#111', 'orange');
 export const DragDrop = class extends Xen.Async {
   onDown(e) {
     // this 'e' is from local context
-    //
     if (this.doDown(e) !== false) {
       log('onDown: doDown allows dragging');
       this.dragging = true;
@@ -35,8 +34,6 @@ export const DragDrop = class extends Xen.Async {
   }
   onMove(e) {
     // this 'e' is from window context
-    //
-    // TODO(sjmiles): optional?
     //e.preventDefault();
     if (!e.buttons) {
       log('onMove: no buttons: forcing onUp');

@@ -6,8 +6,7 @@
 export const OpenAIImageGenNode = {
   OpenAIImage: {
     type: '$library/OpenAI/Atoms/OpenAIImage',
-    // makes `prompt` a "public" property for this Node
-    inputs: ['prompt', 'restart', 'options'],
+    inputs: ['prompt', 'enabled', 'restart', 'options'],
     outputs: ['image', 'working']
   }
 };

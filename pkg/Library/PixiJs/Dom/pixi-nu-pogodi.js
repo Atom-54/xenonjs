@@ -5,12 +5,12 @@
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {Resources} from '../../Media/Resources.js';
-import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 import {PIXI} from './pixi.js';
 
 const log = logf('DOM:PixiNuPogodi', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Apps/Assets');
+const assets = Paths.resolve('$xenon/Library/Assets');
 
 export class PixiNuPogodi extends Xen.Async {
   static get observedAttributes() {

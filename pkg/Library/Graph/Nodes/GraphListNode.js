@@ -3,13 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 export const GraphListNode = {
-  // types: {
-  //   graphAgent$graphs: '[Graph]',
-  //   graphAgent$graph: 'Graph',
-  //   graphList$readonly: 'Boolean'
-  // },
   graphToolbar: {
     type: '$library/UX/Atoms/UXToolbar',
     inputs: ['actions'],
@@ -49,7 +43,6 @@ export const GraphListNode = {
   },
   state: {
     graphAgent$graphs: [],
-    graphAgent$publishedGraphsUrl: 'https://xenon-js-default-rtdb.firebaseio.com/0_3',
     graphList$showMode: 'private',
     graphToolbar$actions: [{
       name: 'Show Public',

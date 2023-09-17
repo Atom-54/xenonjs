@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-export const DesignGridNode = {
+export const DesignTableNode = {
   grid: {
     type: '$library/Layout/Atoms/DesignGrid',
     inputs: ['items']

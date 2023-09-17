@@ -115,7 +115,7 @@ export class ResourceView extends Xen.Async {
 <div repeat="resource_t">{{resources}}</div>
 <template resource_t>
   <div resource>
-    <div><b>{{typeof}}</b>&nbsp;(<i>{{key}}</i>)&nbsp;</div>
+    <div><b>{{typeof}}</b>&nbsp;<i>(<span>{{key}}<span>)</i>&nbsp;</div>
     <canvas hidden$="{{notCanvas}}" key$="{{key}}" xen:style="{{canvasRatio}}" width="120" height="90"></canvas>
     <video hidden$="{{notStream}}" srcobject="{{srcObject:stream}}" playsinline autoplay muted></video>
     <pre hidden$="{{notObject}}">{{json}}</pre>

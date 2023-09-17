@@ -6,6 +6,8 @@
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {DragDrop} from '../../Dom/Common/drag-drop.js';
 
+const log = logf('DOM: split-panel', 'black', 'orange');
+
 const template = Xen.Template.html`
 <style>
   :host {
@@ -120,7 +122,7 @@ export class SplitPanel extends DragDrop {
     let dividerOrd;
     // if we've never messed with it manually, just do half
     if (divider !== 0 && !divider) {
-      //console.log('defaulting divider to 50%');
+      //log('defaulting divider to 50%');
       dividerOrd = `50%`;
     } else {
       dividerOrd = `${divider}px`
@@ -176,7 +178,6 @@ export class SplitPanel extends DragDrop {
   }
   doUp() {
     this.value = this.state.divider;
-    //console.log('doUp', this.value);
     this.fire('divider-change');
   }
 }

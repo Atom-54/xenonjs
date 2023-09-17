@@ -120,12 +120,12 @@ async onItemClick({eventlet: {key}, nodeTypes, graphs}) {
   const type = nodeTypes[key];
   if (type) {
     const action = {
-      name: 'Morph Object', 
-      ligature: 'morph',
+      //name: 'Morph Object', 
+      //ligature: 'morph',
       actions: [{
         action: 'service',
         args: {
-          kind: 'GraphService',
+          kind: 'DesignService',
           msg: 'MorphObject',
           data: {type}
         }
@@ -138,7 +138,7 @@ async onItemClick({eventlet: {key}, nodeTypes, graphs}) {
   } else {
     const graph = graphs.find(g => g.meta.id === key);
     const action = {
-      name: 'Append Graph', 
+      //name: 'Append Graph', 
       actions: [{
         action: 'service',
         args: {

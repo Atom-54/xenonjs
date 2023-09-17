@@ -3,100 +3,55 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SafeObject} from 'xenonjs/Library/CoreReactor/safe-object.js';
-import * as Persist from 'xenonjs/Library/CoreFramework/Persist.js';
-import {Params} from 'xenonjs/Library/Xenon/Utils/params.js';
-import {loadGraph} from 'xenonjs/Library/CoreDesigner/GraphService.js';
+import {assign, keys, values} from 'xenonjs/Library/CoreXenon/Reactor/safe-object.js';
+import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
+import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
 // libraries provide objects and services that form the dependency layer for Graphs
-import * as Library from 'xenonjs/Library/CoreFramework/Library.js'
-// Graphs may request types and services from above
-import {graph as BaseGraph} from '../Graphs/Base.js';
-import {graph as BuildGraph} from '../Graphs/Build.js';
-// for the app itself
-import * as Design from 'xenonjs/Library/CoreDesigner/DesignApp.js';
-
-const {create, assign, keys, values} = SafeObject;
+import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
+// Graphs request types and services from libraries
+import {graph as BaseGraph} from '../Library/Graphs/Base.js';
+import {graph as BuildGraph} from '../Library/Graphs/Build.js';
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
-logf.flags.Main = true;
 
 const persistables = [
-  '$GraphList$graphAgent$selectedMeta',
-  '$GraphList$graphAgent$graphs',
-  '$WorkPanel$splitPanel$divider',
-  '$SplitPanel$splitPanel$divider',
-  '$UserSettings$settings$userSettings'
+  'base$GraphList$graphAgent$selectedId',
+  'base$GraphList$graphAgent$graphs',
+  'base$WorkPanel$splitPanel$divider',
+  'base$SplitPanel$splitPanel$divider',
+  'base$UserSettings$settings$userSettings'
 ];
 
-export const main = async (xenon, App, Composer) => {
+export const main = async (xenon, Composer) => {
+  // tell xenon we need to make stuff
+  await xenon.industrialize();
+  // xenon.setPaths(Paths.map);
   // get offline data
-  const persistations = await restore(persistables);
+  const persistations = await Persist.restore(persistables);
   const customLibraries = persistations?.$UserSettings$settings$userSettings?.customLibraries;
-  // configure design system 
-  Design.configureDesignApp({xenon, Composer, customLibraries});
-  const {nodeTypes, services} = await loadLibraries(customLibraries);
-  persistations.$NodeTypeList$typeList$nodeTypes = nodeTypes;
-  persistations.$GraphList$graphAgent$publishedGraphsUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
-  const buildGraph = await loadGraph(Params.getParam('graph'));
-  if (buildGraph) {
-    persistations.$GraphList$graphAgent$graph = buildGraph;
-  }
-  xenon.setPaths(Paths.map);
-  // TODO(sjmiles): experimental: make layering more accessible
-  App.createLayer.simple = async (graph, name) => {
-    return await App.createLayer([graph], xenon.emitter, Composer, services, name);
-  };
-  // create app layer 
-  const app = await App.createLayer([BaseGraph, BuildGraph], xenon.emitter, Composer, services);
-  // set up initial state
-  await App.initializeData(app);
-  // might need to do this in concert with initializeData
-  App.setData(app, persistations);
-  // observe data
-  app.onvalue = state => state && onValue(App, state);
+  const library = await loadLibraries(customLibraries);
+  // map nodeTypes in from library
+  persistations.base$NodeTypeList$typeList$nodeTypes = library.nodeTypes;
+  persistations.base$GraphList$graphAgent$publishedGraphsUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
+  // create main flan
+  const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library, persistations);
+  // create base layer
+  const base = await flan.createLayer([BaseGraph, BuildGraph], 'base');
+  // observe data changes
+  base.onvalue = state => state && onValue(state);
   // ready
-  log('app is live 🌈');
-  globalThis.app = app;
-  return app;
+  log('Flan is ready 🍮');
 };
 
-const restore = async persistables => {
-  const state = create(null);
-  for (let key of persistables) {
-    state[key] = await Persist.restoreValue(key);
-  }
-  return state;
-};
-
-const onValue = (App, state) => {
-  updateCustomDesignValues(App, state);
+const onValue = state => {
   maybeReload(state);
-  persist(state, persistables);
-};
-
-const updateCustomDesignValues = (App, state) => {
-  const {design} = globalThis;
-  if (design) {
-    const selected = state.$NodeGraph$Graph$selected;
-    if (selected !== undefined) {
-      // set app.selected to design.selected
-      App.set(design, Design.designSelectedKey, selected);
-    }
-  }
+  Persist.persist(state, persistables);
 };
 
 const maybeReload = state => {
   if (state.$UserSettings$settings$userSettings) {
     location.reload();
-  }
-}
-
-const persist = async (state, persistables) => {
-  for (let key of persistables) {
-    if (key in state) {
-      Persist.persistValue(key, state[key]);
-    }
   }
 };
 
@@ -111,5 +66,7 @@ const loadLibraries = async (customLibraries) => {
   if (keys(customLibraries)?.length > 0 && values(customLibraries).every(value => typeof value === 'string')) {
     assign(libraries, customLibraries);
   }
-  return Library.importLibraries(libraries);
+  const library = Library.importLibraries(libraries);
+  library.customLibraries = customLibraries;
+  return library;
 };

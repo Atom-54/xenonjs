@@ -1,0 +1,66 @@
+<!doctype html>
+
+<script type="module">
+  import * as cvs from './index.js';
+  //
+  const bigText = `
+Summary of Rolling Recommendations
+
+60 seconds or more
+Moderate pressure
+Moderate foam roll density
+Patterned foam rolls
+Vibration provides additional benefit
+Foam rolling superior to roller massage devices
+Muscle selection has a significant impact on benefits achieved
+Self-guided, live-instructed and video-guided instruction are all effective
+Active ROM (Dynamic Release) superior
+Note: Research is needed comparing static Release on trigger/tender points versus rolling back and forth on a foam roll. The BI has never recommended rolling back and forth, as the original intent of foam rolling was to mimic manual ischemic compression. Dynamic Release is considered a progression of static compression with the intent of mimicking manual pin and stretch techniques.
+Experienced and inexperienced lifters see similar benefits
+
+Recommended Use:
+
+Performance
+Improves endurance performance
+No effect on max strength performance
+Improves power performance when followed by a active/dynamic warm-up
+Recovery
+Recovery from DOMS
+Reduces the decrease in performance noted between frequent bouts of exercise
+Not recommended between sets
+Improve Movement Quality
+Improves movement quality when used as part of an integrated program based on movement assessment.
+
+For full article and references cut and paste link below in your web browser
+
+https://brookbushinstitute.com/article/static-manual-release-hip-flexors?userid=298599
+`; 
+  //
+  const embeds = [{
+    id: "Rolling",
+    embedding: await cvs.getEmbedding(bigText)
+  }, {
+    id: "Groucho",
+    embedding: await cvs.getEmbedding('Time flies like an arrow, fruit flies like a banana.')
+  }, {
+    id: "Harpo",
+    embedding: await cvs.getEmbedding('Honk honk!')
+  }, {
+    id: "Chico",
+    embedding: await cvs.getEmbedding('If a nightingale, coudl sing like you')
+  }];
+  //
+  const index = new cvs.EmbeddingIndex(embeds);
+  index.printIndex();
+  console.log('');
+  //
+  const q = async query => {
+    const value = await index.search(await cvs.getEmbedding(query));
+    //console.log(value);
+    console.log('query:', query,'=', value[0].object.id);
+  }
+  q('opera');
+  q('food joke');
+  q('sound effects');
+  q('fitness');
+</script>

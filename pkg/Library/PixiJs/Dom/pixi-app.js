@@ -5,7 +5,7 @@
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
 import {Resources} from '../../Media/Resources.js';
-//import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+//import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 import {PIXI} from './pixi.js';
 
 //const assets = Paths.resolve('$xenon/third-party/pixijs/old/assets');

@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 initialize(inputs, state, {service}) {
-  state.auth = method => service({kind: 'AuthService', msg: method});
+  state.auth = method => service('AuthService', method);
   this.resetPolling(state, 500);
 },
 resetPolling(state, interval) {

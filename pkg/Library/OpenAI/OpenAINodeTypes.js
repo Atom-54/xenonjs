@@ -12,7 +12,8 @@ export const OpenAINodeTypes = {
     types: {
       OpenAIImage$prompt: 'MultilineText',
       Image$image: 'Image',
-      OpenAIImage$restart: 'Boolean',
+      OpenAIImage$enabled: 'Boolean',
+      OpenAIImage$restart: 'Nonce',
       OpenAIImage$working: 'Boolean'
     },
     type: '$library/OpenAI/Nodes/OpenAIImageNode'
@@ -23,7 +24,8 @@ export const OpenAINodeTypes = {
     types: {
       OpenAIImage$prompt: 'MultilineText',
       Image$image: 'Image',
-      OpenAIImage$restart: 'Boolean',
+      OpenAIImage$enabled: 'Boolean',
+      OpenAIImage$restart: 'Nonce',
       OpenAIImage$working: 'Boolean'
     },
     type: '$library/OpenAI/Nodes/OpenAIImageGenNode'

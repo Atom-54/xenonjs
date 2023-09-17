@@ -4,14 +4,13 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({layout, selected}, state, {service, isDirty}) {
+update({layout, selected, disabled}, state, {service, isDirty}) {
   // we have to test here to avoid spurious updates due to 
   // `selected` changing when layout is not
   // normally we just accept the extra updates, 
   // but this seemed like a better tradeoff here
-  if (isDirty('layout')) {
-  //if (!deepEqual(state.layout, layout)) {
-    this.cacheLayout(state, service, layout);
+  if (!deepEqual(state.layout, layout)) {
+    this.cacheLayout(disabled, state, service, layout);
     return {layout};
   }
   if (state.selected !== selected) {
@@ -25,17 +24,29 @@ select(selected, state) {
   state.selected = selected;
   return {selected};
 },
-async onLayout({eventlet: {value: layout}}, state, {service}) {
-  this.cacheLayout(state, service, layout);
-  return {layout};
+async onLayout({eventlet: {value: layout}, disabled}, state, {service}) {
+  if (!deepEqual(state.layout, layout)) {
+    this.cacheLayout(disabled, state, service, layout);
+    return {layout};
+  }
 },
 async onContain({eventlet}, state, {service}) {
-  await service({kind: 'GraphService', msg: 'Contain', data: eventlet});
+  await service('DesignService', 'Contain', eventlet);
 },
-cacheLayout(state, service, layout) {
+cacheLayout(disabled, state, service, layout) {
   state.layout = layout;
-  // layout may be need to be monitored by the DesignService
-  //service({kind: 'DesignService', msg: 'Layout', data: {layout}});
+  if (!disabled) {
+    log('updateLayout', layout);
+    service('DesignService', 'LayoutChanged', {layout});
+  }
+},
+render({disabled, color}, {selected, layout}) {
+  return {
+    disabled,
+    color,
+    selected,
+    layout: deepCopy(layout)
+  };
 },
 template: html`
 <style>
@@ -67,7 +78,7 @@ template: html`
   }
 </style>
 <designer-panel flex column 
-    readonly$="{{disabled}}" 
+    readonly="{{disabled}}" 
     layout="{{layout}}" 
     selected="{{selected}}" 
     color="{{color}}" 

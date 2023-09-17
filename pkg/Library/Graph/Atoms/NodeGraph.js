@@ -9,7 +9,7 @@ async update({graph, selected}, state, {service}) {
     state.graphRects = {};
     state.graph = graph;
     if (graph) {
-      state.graphInfo = await service({kind: 'GraphService', msg: 'GetGraphInfo', data: {graph: state.graph}});
+      state.graphInfo = await service('GraphService', 'GetGraphInfo', {graph: state.graph});
     }
   }
   if (state.selectedId !== selected) {
@@ -99,7 +99,7 @@ getAtomsByPrefix(id, graphInfo) {
 },
 
 onNodeSelect({eventlet: {key}}, state) {
-  log(`selected ${key}`);
+  //log(`selected ${key}`);
   if (state.selectedId !== key) {
     state.selectedId = key;
     return {selected: key};
@@ -112,7 +112,7 @@ onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
   if (JSON.stringify(graphRects[key]) !== JSON.stringify(value)) {
     graphRects[key] = value;
     const meta = {...graph.meta, graphRects};
-    service({kind: 'GraphService', msg: 'SetGraphMeta', data: meta});
+    service('DesignService', 'SetGraphMeta', meta);
     return {
       graph: {...graph, meta}
     }

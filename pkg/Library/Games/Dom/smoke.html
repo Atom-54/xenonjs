@@ -4,7 +4,7 @@
 <style>
   body {
     background-color: black;
-    background-image: url('../../../Apps/Assets/gems/bg_day.jpg');
+    background-image: url('../../../Library/Assets/gems/bg_day.jpg');
     background-size: 100% 100%;
     background-repeat: no-repeat;
     height: 100vh;
@@ -28,10 +28,10 @@
 <pixi-sprite-grid id="grid"></pixi-sprite-grid>
 
 <script type="module">
-  import '../../CoreReactor/Atomic/js/logf.js';
+  import '../../CoreXenon/Reactor/Atomic/js/logf.js';
   import {Resources} from '../../Media/Resources.js';
   // flaw in pixi-app code that it depends on Paths at parse-time
-  import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+  import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
   Paths.add({$xenon: '../../..'});
   await import("../../PixiJs/Dom/pixi-app.js");
   await import("./pixi-sprite-grid.js");

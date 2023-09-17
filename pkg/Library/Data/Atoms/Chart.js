@@ -13,7 +13,7 @@ template: html`
 </style>
 
 <div>
-  <awesome-chart type="{{type}}" data="{{data}}" options="{{options}}"></awesome-chart>
+  <chart-js type="{{type}}" data="{{data}}" options="{{options}}"></chart-js>
 </div>
 
 `

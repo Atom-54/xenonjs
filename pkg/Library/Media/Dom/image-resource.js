@@ -97,7 +97,7 @@ export class ImageResource extends Xen.Async {
   }
   _didRender() {
     if (this.dimage) {
-      this.dimage.src = oneTransparentPixel; //'../Apps/Assets/dogs.png'; 
+      this.dimage.src = oneTransparentPixel; //'../Library/Assets/dogs.png'; 
       requestAnimationFrame(() => {
         if (this.state.src) {
           const image = new Image();

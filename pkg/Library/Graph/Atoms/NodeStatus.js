@@ -8,17 +8,20 @@ async update({selected}, state, {service}) {
   state.context = await service('SystemService', 'request-context');
 },
 render({selected}, {context}) {
-  const selectedKey = `design$${selected}`;
+  delete context.base;
   const info = {};
+  const prefix = `${selected}\$`;
   values(context.layers)
     .flatMap(layerState => keys(layerState)
       .forEach(key => {
-        if (key?.includes(selectedKey)) {
-          info[key] = layerState[key];
+        if (key?.startsWith(prefix)) {
+          const displayKey = key.slice(prefix).replace(/\$/g, '.');
+          info[displayKey] = layerState[key];
         }
       })
-    );
-  log(info);
+    )
+  ;
+  //log(info);
   return {
     info: JSON.stringify(info, null, '  ')
   };
@@ -31,7 +34,7 @@ template: html`
   :host {
     padding: 4px;
     font-size: 75%;
-    overflow: scroll !important;
+    overflow: auto !important;
     flex: 1 !important;
   }
 </style>

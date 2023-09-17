@@ -3,13 +3,13 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Paths} from '../../CoreReactor/Atomic/js/utils/paths.js';
+import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 import {PIXI} from '../../PixiJs/Dom/pixi.js';
 import {PixiObject} from './pixi-object.js';
 
 const log = logf('DOM:PixiSprite', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Apps/Assets');
+const assets = Paths.resolve('$xenon/Library/Assets');
 
 export class PixiSprite extends PixiObject {
   static get observedAttributes() {

@@ -31,5 +31,10 @@ export const UXNodeTypes = {
     category,
     description: 'Collects UX action definitions for buttons and controls',
     type: `$library/UX/Nodes/UXActionSetNode`
+  },
+  UXSelectionList: {
+    category,
+    description: 'Renders a list and allows user to select items',
+    type: `$library/UX/Nodes/UXSelectionListNode`
   }
 };

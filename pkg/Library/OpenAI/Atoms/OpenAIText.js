@@ -16,29 +16,22 @@ shouldUpdate({context, prompt, enabled}) {
 async update({context, prompt}, state, {output, isDirty}) {
   let promptChanged = false;
   if (state.prompt !== prompt || state.context !== context) {
-    log.groupCollapsed('caching prompt', prompt);
-    log(prompt);
+    log('caching prompt', prompt);
     state.prompt = prompt;
     state.context = context;
-    log.groupEnd();
     promptChanged = true;
   }
   let completion;
   if (promptChanged || isDirty('restart')) {
-    log.groupCollapsed('working', prompt);
+    log('working');
     output({working: true});
-    log('query ai');
     const response = await state.ai(context, prompt);
     const text = await response.text();
     completion = text.trim() || '(unintelligible)';
-    log(`got result: "${completion}"`);
-    log.groupEnd();
   }
   if (completion && completion != state.completion) {
     state.completion = completion;
-    log.groupCollapsed('completion');
     log(completion);
-    log.groupEnd();
     return {result: completion, markup: this.simpleFormatter(completion), working: false};
   }
 },

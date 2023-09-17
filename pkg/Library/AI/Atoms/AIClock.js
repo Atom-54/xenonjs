@@ -6,37 +6,42 @@ export const atom = (log, resolve) => ({
  */
 async update({mood, text}, state, {output, invalidate}) {
   // process relevant input text
-  if (!text?.startsWith('a moment')) {
-    // text = (text ?? '').replace(/\n/g, '').replace(/,/g, ',\n').replace(/;/g, ';\n').replace(/\.\s*/g, '.\n').replace(/\!\s/g, '!\n');
-    // if (text.startsWith('"') && text.endsWith('"')) {
-    //   text = text.slice(1, -1);
-    // }
-    state.text = text;
+  if (text && !text?.startsWith('a moment')) {
+    state.text = text.replace(/^["'`]*/, '').replace(/["'`]*$/, '').trim();
   }
-  // time stuff
-  const minute = 60 * 1000;
-  const hour = 60 * minute;
-  // when are we?
-  const now = new Date();
-  // how far into the hour are we?
-  const minutes = now.getMinutes();
-  // go again in the next quantum (or so)
-  timeout(invalidate, hour - minutes); 
-  // once an hour for now
-  const marker = now.getHours();
-  if (marker !== state.marker || mood !== state.mood) {
-    // // truncate to hour
-    // now.setMilliseconds(0);
-    // now.setSeconds(0);
-    // now.setMinutes(0);
-    const aiTime = now.toLocaleTimeString(undefined, {hour: "numeric"});
-    const prompt = `${mood ? `The mood is ${mood}. ` : ''}Time is ${aiTime}.`;
-    const displayTime = aiTime;
-    state.mood = mood;
-    state.marker = marker;
+  if (!state.waiting) {
+    // time stuff
+    const minute = 60 * 1000;
+    const duration = 30;
+    // when are we?
+    const now = new Date();
+    // how far into the hour is that?
+    const minutes = now.getMinutes();
+    // go again in the next quantum (or so)
+    state.waiting = true;
+    const wait = duration - (minutes % duration);
+    timeout(() => {
+      state.waiting = false;
+      invalidate()
+    }, wait * minute);
+    log('will update again in', wait, 'minutes');
+    // rounding
+    const aiMinutes = minutes < 30 ? '00' : '30';
+    // formatting
+    const chime = new Date();
+    chime.setHours(now.getHours());
+    chime.setMinutes(aiMinutes);
+    const displayTime = chime.toLocaleTimeString(undefined, {hour: "numeric", minute: "numeric"});
+    const prompt = `${mood ? `The mood is ${mood}. ` : ''}Time is ${displayTime}.`;
     state.displayTime = displayTime;
     return {displayTime, mood, prompt};
   }
+},
+shouldRender({}, {text}) {
+  return Boolean(text);
+},
+render({image}, {displayTime, text}) {
+  return {image, displayTime, text};
 },
 template: html`
 <style>
@@ -65,7 +70,6 @@ template: html`
   <div time>{{displayTime}}</div>
   <div words>{{text}}</div>
 </div>
-<!-- <multi-select select key="{{key}}" on-change="onMoodChange" options="{{options}}"></multi-select> -->
 `
 });
   

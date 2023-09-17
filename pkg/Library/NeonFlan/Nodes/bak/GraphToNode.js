@@ -1,10 +1,10 @@
-import '../../../../Core/Library/CoreReactor/Atomic/js/logf.js';
-import {SafeObject} from '../../../../Core/Library/CoreReactor/safe-object.js';
-import {Paths} from '../../../../Core/Library/CoreReactor/Atomic/js/utils/paths.js';
-import {deepCopy} from '../../../../Core/Library/CoreReactor/Atomic/js/utils/object.js';
-import * as Id from '../../../../Core/Library/CoreFramework/Id.js';
-import * as Graphs from '../../../../Core/Library/CoreFramework/Graphs.js';
-import * as Binder from '../../../../Core/Library/CoreFramework/Binder.js';
+import '../../../../Core/Library/CoreXenon/Reactor/Atomic/js/logf.js';
+import {SafeObject} from '../../../../Core/Library/CoreXenon/Reactor/safe-object.js';
+import {Paths} from '../../../../Core/Library/CoreXenon/Reactor/Atomic/js/utils/paths.js';
+import {deepCopy} from '../../../../Core/Library/CoreXenon/Reactor/Atomic/js/utils/object.js';
+import * as Id from '../../../../Core/Library/CoreXenon/Framework/Id.js';
+import * as Graphs from '../../../../Core/Library/CoreXenon/Framework/Graphs.js';
+import * as Binder from '../../../../Core/Library/CoreXenon/Framework/Binder.js';
 import {graph} from './SampleGraph.js';
 
 Paths.add({'$library': '../../../Core/Library'});
