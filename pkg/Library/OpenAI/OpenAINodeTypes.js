@@ -71,6 +71,8 @@ export const OpenAINodeTypes = {
     types: {
       complete$prompt: 'String',
       complete$image: 'Image',
+      complete$enabled: 'Boolean',
+      complete$restart: 'Nonce',
       complete$result: 'Image',
       complete$working: 'Boolean'
     },
