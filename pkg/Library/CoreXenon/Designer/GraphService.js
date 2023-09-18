@@ -146,7 +146,7 @@ export const loadGraph = async graphId => {
 };
 
 const restoreLocalGraph = async (id) => {
-  return Persist.restoreValue(`$GraphList$graphAgent$graphs.${id}`);
+  return Persist.restoreValue(`base$GraphList$graphAgent$graphs.${id}`);
 };
 
 const fetchFbGraph = async (id) => {

@@ -22,7 +22,7 @@ globalThis.config = {
   },
   logFlags: {
     //App: true,
-    //Atom: true,
+    Atom: true,
     //Binder: true,
     //BusTerminal: true,
     //Composer: true,

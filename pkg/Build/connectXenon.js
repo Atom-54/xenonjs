@@ -26,7 +26,6 @@ export const {
 
 // be mutable
 const xenon = {...core};
-
 // set up for global Atom context
 const isolationScope = globalThis;
 // instructions to prepare Atom industry

@@ -16,7 +16,7 @@ export const Flan = class {
     this.state = nob();
     this.library = library;
     this.persistations = persistations;
-    this.layerFactory = async (graphOrGraphs, name) => App.createLayer(graphOrGraphs, emitter, Composer, library.services, name);
+    this.layerFactory = async (graphOrGraphs, name) => App.createLayer(graphOrGraphs, emitter, Composer, this.library.services, name);
     this.atomsFactory = async system => Layers.reifyAtoms(system, emitter);
   }
   async createLayer(graphOrGraphs, name) {

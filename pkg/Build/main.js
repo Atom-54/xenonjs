@@ -6,9 +6,7 @@
 import {assign, keys, values} from 'xenonjs/Library/CoreXenon/Reactor/safe-object.js';
 import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
 import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
-// libraries provide objects and services that form the dependency layer for Graphs
 import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
-// Graphs request types and services from libraries
 import {graph as BaseGraph} from '../Library/Graphs/Base.js';
 import {graph as BuildGraph} from '../Library/Graphs/Build.js';
 

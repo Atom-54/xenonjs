@@ -5,17 +5,19 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update() {
-  return {outputString: '', emptyString: ''};
+  return {emptyString: ''};
 },
 onSendClick({inputString}, {}, {output}) {
-  output({emptyString: '-'});
-  return {outputString: inputString, emptyString: ''};
+  if (inputString?.length) {
+    output({emptyString: '-'});
+    return {outputString: inputString, emptyString: ''};
+  }
 },
 template: html`
 <!-- <style>
   :host {
   }
 </style> -->
-<button disabled="{{disabled}}" on-click="onSendClick">Send</button>
+<wl-button disabled="{{disabled}}" on-click="onSendClick">Send</wl-button>
 `
 });

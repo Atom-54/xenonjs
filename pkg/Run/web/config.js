@@ -9,7 +9,7 @@ globalThis.config = {
   // as needed
   xenonPath,
   // storage prefix
-  aeon: 'xenon/0.3.0',
+  aeon: 'v1',
   paths: {
     // as needed
     $library: `${xenonPath}/Library`,
