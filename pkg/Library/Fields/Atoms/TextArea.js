@@ -37,6 +37,7 @@ template: html`
     resize: none;
     margin: 0;
     font-size: inherit;
+    text-wrap: wrap;
   }
   [label] {
     padding: 8px;

@@ -186,11 +186,7 @@ const graph = {
     }
   },
   "state":{
-    "Grid$chart$options":{
-      "rowHeaders":[
-        "checkbox"
-      ]
-    },
+    "Grid$chart$options":{},
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
