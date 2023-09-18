@@ -45,6 +45,7 @@ template: html`
     padding: 6px 9px;
     border-radius: 4px;
     border: 1px solid var(--xcolor-two);
+    overflow-x: auto;
   }
   [delim] {
     padding: 6px;
