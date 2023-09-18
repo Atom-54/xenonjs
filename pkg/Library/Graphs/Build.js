@@ -153,7 +153,7 @@ export const graph = {
         "ligature": "content_copy",
         "action": "service",
         "args": {
-          "kind": "GraphService",
+          "kind": "DesignService",
           "msg": "CloneObject"
         }
       },

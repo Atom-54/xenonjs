@@ -205,9 +205,6 @@ deleteGraph(id, graph, graphs, service) {
   if (index >= 0) {
     // TODO(maria): add an 'are you sure?'
     graphs.splice(index, 1);
-    if (id === graph?.meta?.id) {
-      service('GraphService', 'UnselectGraph', {graph});
-    }
     return {
       graphs,
       ...((id === graph?.meta?.id) && {graph: null, selectedMeta: null})
