@@ -29,7 +29,7 @@ export class NodeGraph extends Xen.Async {
   _didMount() {
     this.canvas = this.querySelector('canvas');
     this._rects = {};
-    this.state.zoom = this.style.zoom = 0.5;
+    this.state.zoom = this.style.zoom = 0.7;
   }
   render(inputs, state) {
     // inputs.graph is ad hoc, not really a graph

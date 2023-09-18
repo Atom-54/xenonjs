@@ -4,12 +4,6 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-initialize(_, state, {invalidate}) {
-  timeout(() => {
-    state.waited = true;
-    invalidate()
-  }, 1000);
-},
 render({graph}, {waited}) {
   let warning = null;
   if (graph?.meta?.readonly) {
@@ -17,10 +11,9 @@ render({graph}, {waited}) {
   } else if (!graph) {
     warning = 'Please, select a graph';
   }
-  warning = warning && waited;
   return {
     warning,
-    hideWarning: String(!warning)
+    showWarning: String(Boolean(warning))
   }
 },
 template: html`
@@ -38,7 +31,7 @@ template: html`
     text-wrap: wrap;
   }
 </style>
-<div bar hide$="{{hideWarning}}">
+<div bar show$="{{showWarning}}">
   <icon>warning</icon>
   <span>{{warning}}</span>
 </div>

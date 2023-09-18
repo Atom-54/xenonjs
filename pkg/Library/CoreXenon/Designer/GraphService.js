@@ -227,7 +227,7 @@ const getNodeInfo = async (layer, objectId) => {
       const atomInfo = system[qualifiedAtomId];
       const nodeType = getNodeType(graph.nodes[atomObjectId].type);
       system[qualifiedAtomId].outputs?.forEach(name => {
-        const type = nodeType.types?.[Id.qualifyId(atomName, name)] || 'Pojo';
+        const type = nodeType?.types?.[Id.qualifyId(atomName, name)] || 'Pojo';
         (systemCandidates[type] ??= []).push({name, objectId: atomObjectId, atomId, key: Id.qualifyId(atomId, name), type});
       });
 

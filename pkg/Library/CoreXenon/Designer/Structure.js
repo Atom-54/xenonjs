@@ -32,7 +32,7 @@ const createOrReplaceObject = async (layer, objectId, node, type, state, layout)
   // here is the new shape
   const object = createObjectSpec(node, type);
   if (objectId) {
-    await replaceObject(layer, objectId, newId, object);
+    await replaceObject(layer, objectId, id, object);
   } else {
     addObject(layer, id, object, state, layout);
   }
