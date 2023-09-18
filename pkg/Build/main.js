@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {assign, keys, values} from 'xenonjs/Library/CoreXenon/Reactor/safe-object.js';
+import {Params} from 'xenonjs/Library/CoreXenon/Reactor/Atomic/js/utils/params.js';
 import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
 import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
 import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
+import {loadGraph} from 'xenonjs/Library/CoreXenon/Designer/GraphService.js';
 import {graph as BaseGraph} from '../Library/Graphs/Base.js';
 import {graph as BuildGraph} from '../Library/Graphs/Build.js';
 
@@ -32,6 +34,12 @@ export const main = async (xenon, Composer) => {
   // map nodeTypes in from library
   persistations.base$NodeTypeList$typeList$nodeTypes = library.nodeTypes;
   persistations.base$GraphList$graphAgent$publishedGraphsUrl = `${globalThis.config.firebaseConfig.databaseURL}/${globalThis.config.publicGraphsPath}`;
+  const graph = await loadGraph(Params.getParam('graph'));
+  if (graph) {
+    persistations.base$GraphList$graphAgent$graph = graph;
+    const {id, owner, readonly} = graph.meta;
+    persistations.base$GraphList$graphAgent$selectedMeta = {id, owner, readonly};
+  }
   // create main flan
   const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library, persistations);
   // create base layer
