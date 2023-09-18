@@ -54,7 +54,7 @@ const connectServices = (layer, services) => {
 export const connectAtoms = (layer) => {
   map(layer.atoms, (name, atom) => {
     // TODO(sjmiles): worker output is output.output :( won't work right now
-    atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ deepCopy(output)));
+    atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ output));
     atom.listen('render', packet => atomRender(layer, name, atom, packet?.packet ?? packet));
     atom.listen('service', request => atomService(layer, name, atom, request));
   }); 
