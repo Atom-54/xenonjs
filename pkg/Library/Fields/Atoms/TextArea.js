@@ -45,7 +45,7 @@ template: html`
 </style>
 <div flex column>
   <div label display$="{{showLabel}}">{{label}}</div>
-  <div flex><textarea xen:style="{{style}}" on-change="onTextChange" on-click="noop">{{text}}</textarea></div>
+  <div flex><textarea xen:style="{{style}}" on-change="onTextChange" on-click="noop" value="{{text}}"></textarea></div>
 </div>
 `
 });

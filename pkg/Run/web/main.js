@@ -14,11 +14,12 @@ import {graph as baseGraph} from 'xenonjs/Library/Graphs/Base.js';
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
 
-export const main = async (xenon, App, Composer) => {
-  // propagate config paths
+export const main = async (xenon, Composer) => {
+  // tell xenon we need to make stuff
+  await xenon.industrialize();
   //xenon.setPaths(Paths.map);
   // create main flan
-  const flan = globalThis.flan = new Flan(App, xenon.emitter, Composer);
+  const flan = globalThis.flan = new Flan(xenon.emitter, Composer);
   // from whence, graph?
   const graphId = await retrieveGraphId();
   const graph = await loadGraph(graphId);
@@ -41,12 +42,9 @@ const reifyGraph = async (flan, graph) => {
     container: 'root$panel#Container'
   };
   //log(graph);
-  //
-  const {services} = await loadLibraries(graph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));
-  flan.services = services;
-  //
+  flan.library = await loadLibraries(graph.meta, await Persist.restoreValue('base$UserSettings$settings$userSettings'));
   // create layer
-  await flan.createLayer([baseGraph, graph], '');
+  await flan.createLayer([baseGraph, graph], 'base');
   // ready;
   log('app is live 🌈');
 };
@@ -54,7 +52,7 @@ const reifyGraph = async (flan, graph) => {
 const retrieveGraphId = async () => {
   let graphId = Params.getParam('graph');
   if (!graphId) {
-    const meta = await Persist.restoreValue(`$GraphList$graphAgent$selectedMeta`);
+    const meta = await Persist.restoreValue(`base$GraphList$graphAgent$selectedMeta`);
     if (meta) {
       graphId = graphParamForMeta(meta);
     }
