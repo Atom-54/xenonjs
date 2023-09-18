@@ -25,27 +25,4 @@ export {DesignService} from './CoreXenon/Designer/DesignService.js';
 export {jsonrepairService} from './jsonrepair/jsonrepairService.js';
 export {SSEPubSubService as PubSubService} from './PubSub/Services/SSEPubSubService.js';
 export {FormService} from './Fields/Services/FormService.js';
-
-// export const services = {
-//   AuthService, 
-//   GraphService, 
-//   ImageService,
-//   MediaService, 
-//   ShaderService, 
-//   jsonrepairService,
-//   JSONataService,
-//   SelfieSegmentationService,
-//   FaceMeshService,
-//   HolisticService,
-//   VisionTasksService,
-//   HuggingFaceService,
-//   StorageService: FirebaseStorageService,
-//   LocalStorageService,
-//   CocoSsdService,
-//   GoogleApisService,
-//   WeatherApiService,
-//   POIService,
-//   OpenAIService,
-//   PubSubService,
-//   FormService
-// };
+export {PolymathService} from './Polymath/Services/PolymathService.js'

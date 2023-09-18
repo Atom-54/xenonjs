@@ -1,0 +1,39 @@
+<!doctype html>
+
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  div {
+    padding: 0.5em;
+  }
+  [big] {
+    font-size: 1.3em;
+  }
+</style>
+
+<script type="module">
+  import {Ingest} from './src/ingest/main.js';
+  import {apiKey} from '../../../other/agents/cloudflare/src/key.js';
+  //
+  const ingester = async args => {
+    const library = {
+      version: 1,
+      embedding_model: "openai.com:text-embedding-ada-002",
+      bits: [],
+    };
+    (args.options ??= {}).apiKey = apiKey;
+    const ingest = new Ingest();
+    for await (const bit of ingest.run(args)) {
+      library.bits.push(bit);
+    }
+    return library;
+  };
+  //
+  const args = {
+    importer: 'html',
+    source: `/ingestable/Hypocrisy - Wikipedia.html`
+  };
+  const library = await ingester(args);
+  console.log(library);
+</script>

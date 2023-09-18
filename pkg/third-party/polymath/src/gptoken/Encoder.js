@@ -41,13 +41,14 @@ const chr = x => {
  * @returns {string[]} - An array of string representations of the UTF-8 encoded bytes of the input string.
  */
 const encodeStr = str => {
-    return Array.from(Buffer.from(str, 'utf-8')).map(x => x.toString());
+    return new TextEncoder().encode(str);
+    //return Array.from(Buffer.from(str, 'utf-8')).map(x => x.toString());
 }
 
 const decodeStr = arr => {
-    return Buffer.from(arr).toString('utf-8')
+    return new TextDecoder().decode(arr);
+    //return Buffer.from(arr).toString('utf-8')
 }
-
 
 /**
  * Returns a mapping of byte values to their corresponding Unicode characters.

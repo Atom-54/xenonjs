@@ -48,20 +48,22 @@ class PolymathResults {
     }
     sortBitsBySimilarity() {
         this._bits = this._bits.sort((a, b) => (b.similarity || 0) - (a.similarity || 0));
+        //this._bits = this._bits.filter(bit => bit.similarity > 0.8);
     }
     // Return info objects ordered by the most similarity, no duplicates
     infoSortedBySimilarity() {
         const uniqueInfos = [];
         return this._bits
+            .filter(b => b.similarity >= 0.8)
             .sort((a, b) => (b.similarity || 0) - (a.similarity || 0))
             .filter((bit) => {
-            const info = bit.info || { url: "" };
-            if (!uniqueInfos.some((ui) => ui.url === info.url)) {
-                uniqueInfos.push(info);
-                return true;
-            }
-            return false;
-        })
+                const info = bit.info || { url: "" };
+                if (!uniqueInfos.some((ui) => ui.url === info.url)) {
+                    uniqueInfos.push(info);
+                    return true;
+                }
+                return false;
+            })
             .map((bit) => bit.info || { url: "" });
     }
     // Return a JSON response appropriate for sending back to a client

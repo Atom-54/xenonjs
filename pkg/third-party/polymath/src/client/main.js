@@ -1,9 +1,9 @@
 import { encode } from "../gptoken/Encoder.js";
 import { CompletionStreamer, openai } from "../ai/index.js";
-import { /*PolymathPinecone,*/ PolymathFile } from "../host/index.js";
+import { PolymathFirebase, PolymathFile } from "../host/index.js";
 import { PolymathResults } from "./results.js";
 import { PolymathEndpoint } from "./endpoint.js";
-// import { getMaxTokensForModel, DEFAULT_MAX_TOKENS_COMPLETION, } from "./utils.js";
+import { getMaxTokensForModel, DEFAULT_MAX_TOKENS_COMPLETION, } from "./utils.js";
 
 // Initialize .env variables
 //import * as dotenv from "dotenv";
@@ -11,6 +11,8 @@ import { PolymathEndpoint } from "./endpoint.js";
 // dotenv.config({
 //     path: findUpSync(".env"),
 // });
+
+const firebases = {};
 
 // --------------------------------------------------------------------------
 // This Polymath has some class.
@@ -32,6 +34,7 @@ class Polymath {
     libraries;
     servers;
     pinecone;
+    firebase;
     promptTemplate;
     _debug;
     constructor(options) {
@@ -50,6 +53,8 @@ class Polymath {
         this.servers = options.servers || [];
         // A Pinecone config
         this.pinecone = options.pinecone;
+        // A firebase URL
+        this.firebase = options.firebase;
         // The prompt template. {context} and {query} will be replaced
         // The default is the classic from: https://github.com/openai/openai-cookbook/blob/main/examples/Question_answering_using_embeddings.ipynb
         this.promptTemplate =
@@ -65,12 +70,12 @@ class Polymath {
     }
     // Returns true if the Polymath is configured with at least one source
     validate() {
-        return this.libraries.length || this.servers.length || this.pinecone;
+        return this.libraries.length || this.servers.length || this.pinecone || this.firebase;
     }
     // Given a users query, return the Polymath results which contain the bits that will make a good context for a completion
     async ask(query, askOptions) {
         if (!this.validate()) {
-            throw new Error("Polymath requires at least one library or polymath server or pinecone server");
+            throw new Error("Polymath requires at least one library or polymath, pinecone, or firebase server");
         }
         // If passed the query_embedding, use it. Otherwise, generate it.
         // Beware the fact that there is a chance generateEmbedding(query) != queryEmbedding
@@ -101,6 +106,13 @@ class Polymath {
             //TODO: shouldn't pinecone also take an askOptions and filter appropriately?
             const results = await ps.queryPacked(args);
             this.debug("Pinecone Results: " + JSON.stringify(results, null, 2));
+            bits.push(...results.bits);
+        }
+        // Second.5, look for firebase bits
+        if (this.firebase) {
+            const ls = firebases[this.firebase] ??= new PolymathFirebase(this.firebase);
+            const results = await ls.queryPacked(args);
+            this.debug("Firebase Results: " + JSON.stringify(results, null, 2));
             bits.push(...results.bits);
         }
         // Third, look for local bits
@@ -139,12 +151,14 @@ class Polymath {
             infos: polymathResults.infoSortedBySimilarity(),
         };
         completionOptions ||= this.completionOptions;
-        const model = completionOptions?.model || "text-davinci-003";
+        const model = completionOptions?.model || "gpt-3.5-turbo" //"text-davinci-003";
         // How much room do we have for the content?
         // 4000 - 1024 - tokens for the prompt with the query without the context
-        const contextTokenCount = getMaxTokensForModel(model) -
+        const contextTokenCount = 
+            getMaxTokensForModel(model) -
             DEFAULT_MAX_TOKENS_COMPLETION -
-            this.getPromptTokenCount(query);
+            this.getPromptTokenCount(query)
+            ;
         const prompt = this.getPrompt(query, polymathResults.context(contextTokenCount));
         try {
             let responseText;

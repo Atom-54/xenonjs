@@ -53,7 +53,8 @@ const connectServices = (layer, services) => {
 // connect Atoms to app listeners
 export const connectAtoms = (layer) => {
   map(layer.atoms, (name, atom) => {
-    atom.listen('output', output => atomOutput(layer, name, atom, output?.output ?? output));
+    // TODO(sjmiles): worker output is output.output :( won't work right now
+    atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ deepCopy(output)));
     atom.listen('render', packet => atomRender(layer, name, atom, packet?.packet ?? packet));
     atom.listen('service', request => atomService(layer, name, atom, request));
   }); 
@@ -128,15 +129,15 @@ const forwardBoundOutput = (layer, atomName, output) => {
 };
 
 const forwardBoundInput = (layer, scopedInput) => {
-  // rmove output that is unchanged from state
+  // remove output that is unchanged from state
   const dirtyInput = dirtyCheck(layer.flan.state, scopedInput);
-  //log.warn('assigning dirtyInput:', dirtyInput);
+  //log('assigning dirtyInput:', dirtyInput);
   // if there is any...
   if (keys(dirtyInput).length) {
-    // allow layer to intervene
-    layer.onvalue?.(dirtyInput);
     // drop input into state
     assign(layer.flan.state, dirtyInput);
+    // allow layer to intervene
+    layer.onvalue?.(dirtyInput);
     // send bound inputs to Atoms
     layer.flan.forwardStateChanges(dirtyInput);
   }
