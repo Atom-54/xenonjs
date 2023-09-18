@@ -1,6 +1,6 @@
 //import { join } from "path";
 //import { createHash } from "crypto";
-import { Polymath } from "../client/index.js";
+import { Polymath } from "../client/main.js";
 //import chalk from "chalk";
 import { Ingester } from "./ingester.js";
 import { encodeEmbedding } from "./utils.js";

@@ -3,54 +3,17 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'AI';
+const category = 'Polymath';
 
 export const PolymathNodeTypes = {
-  PolymathAIO: {
+  AskPolymath: {
     category,
-    description: `TextEmbedding creates a 'vector' from it's input
-      that creates a context for Polymath to study
-      against it's endpoints.
-      
-      Polymath consumes the 'vector' and produces the
-      mysterious 'bits' structure.
-      
-      PromptMaker consumes the 'bits' a (prompt) 'template'
-      and outputs the also mysterious 'prompt.`,  
+    description: `Query a Polymath library for information`,  
     types: {
-      OpenAIText$restart: 'Boolean',
-      PromptMaker$query: 'String',
-      Polymath$bits: 'PolymathBits'
+      AskPolymath$query: 'MultilineText',
+      AskPolymath$result: 'PolymathResult',
+      AskPolymath$completion: 'MultilineText'
     },
-    type: '$library/Polymath/Nodes/PolymathAIONode'
-  },
-  Polymath: {
-    category,
-    description: 'Consumes the `vector` and produces the mysterious `bits` structure',
-    types: {
-      Polymath$vector: 'EmbeddingVector',
-      Polymath$bits: 'PolymathBits'
-    },
-    type: '$library/Polymath/Nodes/PolymathNode'
-  },
-  PromptMaker: {
-    category,
-    description: 'Creates a prompt from the given `template` and `query`',
-    types: {
-      PromptMaker$template: 'String',
-      PromptMaker$bits: 'PolymathBits',
-      PromptMaker$query: 'String',
-      PromptMaker$prompt: 'String'
-    },
-    type: '$library/Polymath/Nodes/PromptMakerNode'
-  },
-  TextEmbedding: {
-    category,
-    description: 'Creates a `vector` from its input that creates a context for Polymath to study against its endpoints',
-    types: {
-      TextEmbedding$vector: 'EmbeddingVector',
-      TextEmbedding$text: 'String'
-    },
-    type: '$library/Polymath/Nodes/TextEmbeddingNode'
+    type: '$library/Polymath/Nodes/AskPolymathNode'
   }
 };
