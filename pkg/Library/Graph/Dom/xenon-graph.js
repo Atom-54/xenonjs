@@ -8,11 +8,12 @@
 
 import {Xen} from '../../Dom/Xen/xen-async.js';
 
-import {connectXenon} from '../../CoreXenon/Reactor/Worker/xenon-web-worker.js';
-import * as App from '../../CoreXenon/Framework/App.js';
+import {connectXenon} from './connectXenon.js';
 import * as Composer from '../../CoreXenon/Framework/Composer.js';
 import {Flan} from '../../CoreXenon/Framework/Flan.js';
 import {loadGraph} from '../../CoreXenon/Designer/GraphService.js';
+import * as Library from '../../CoreXenon/Framework/Library.js'
+import * as Persist from '../../CoreXenon/Framework/Persist.js';
 import '../../Common/configKeys.js';
 
 import {graph as baseGraph} from '../../Graphs/Base.js';
@@ -51,11 +52,12 @@ export class XenonGraph extends Xen.Async {
   async update({name}, state) {
     if (state.name !== name) {
       state.name = name;
+      xenon = xenon ?? (await this.initXenon());
       const graph = await loadGraph(state.name);
       if (graph) {
-        xenon = xenon ?? (await this.initXenon());
+        const library = await this.loadLibraries(graph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));        
         // create main flan
-        const flan = new Flan(App, xenon.emitter, Composer);
+        const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library);
         await this.reifyGraph(flan, graph);
       } else {
         console.log(`Graph not found.`);
@@ -64,7 +66,7 @@ export class XenonGraph extends Xen.Async {
   }
   async initXenon() {
     const {xenon} = await connectXenon();
-    xenon.industrialize();
+    // await xenon.industrialize();
     return xenon;
   }
   async reifyGraph(flan, graph) {
@@ -82,6 +84,17 @@ export class XenonGraph extends Xen.Async {
     //
     return layer;
   }
+  async loadLibraries({customLibraries}, userSettings) {
+    const libraries = customLibraries ?? {};
+    try {
+      if (userSettings?.customLibraries) {
+        assign(libraries, userSettings?.customLibraries);
+      }
+    } catch(e) {
+      log.warn(`Failed to parse libraries: ${libString} (error: ${e})`);
+    }
+    return Library.importLibraries(libraries);
+  };  
 }
 
 customElements.define('xenon-graph', XenonGraph);

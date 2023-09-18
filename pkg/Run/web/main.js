@@ -3,27 +3,26 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {assign} from 'xenonjs/Library/CoreXenon/Reactor/safe-object.js';
 import {Params} from 'xenonjs/Library/CoreXenon/Reactor/Atomic/js/utils/params.js';
 import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
 import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
 import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
-import {loadGraph} from 'xenonjs/Library/CoreXenon/Designer/GraphService.js';
+import {loadGraph, graphParamForMeta} from 'xenonjs/Library/CoreXenon/Designer/GraphService.js';
 import {graph as baseGraph} from 'xenonjs/Library/Graphs/Base.js';
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
 
 export const main = async (xenon, Composer) => {
-  // tell xenon we need to make stuff
   await xenon.industrialize();
   //xenon.setPaths(Paths.map);
-  // create main flan
-  const flan = globalThis.flan = new Flan(xenon.emitter, Composer);
   // from whence, graph?
   const graphId = await retrieveGraphId();
   const graph = await loadGraph(graphId);
   if (graph) {
+    const library = await Library.importLibraries(graph.meta.customLibraries ?? {});
+    // create main flan
+    const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library);
     return reifyGraph(flan, graph);
   } else {
     log(`Graph '${graphId}' not found.`);
@@ -42,7 +41,6 @@ const reifyGraph = async (flan, graph) => {
     container: 'root$panel#Container'
   };
   //log(graph);
-  flan.library = await loadLibraries(graph.meta, await Persist.restoreValue('base$UserSettings$settings$userSettings'));
   // create layer
   await flan.createLayer([baseGraph, graph], 'base');
   // ready;
@@ -58,16 +56,4 @@ const retrieveGraphId = async () => {
     }
   }
   return graphId;
-};
-
-const loadLibraries = async ({customLibraries}, userSettings) => {
-  const libraries = customLibraries ?? {};
-  try {
-    if (userSettings?.customLibraries) {
-      assign(libraries, userSettings?.customLibraries);
-    }
-  } catch(e) {
-    log.warn(`Failed to parse libraries: ${libString} (error: ${e})`);
-  }
-  return Library.importLibraries(libraries);
 };

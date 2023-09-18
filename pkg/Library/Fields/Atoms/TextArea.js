@@ -17,7 +17,7 @@ render({label, text, style}) {
   return {
     label,
     showLabel: String(Boolean(label?.length > 0)),
-    text,
+    text: text??'',
     style
   };
 },

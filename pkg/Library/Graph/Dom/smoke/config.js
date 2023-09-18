@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const xenonPath = new URL('../../../..', import.meta.url).href;
+const xenonPath = new URL('../../../..', import.meta.url).href.slice(0, -1);
 
 globalThis.config = {
   // as needed
@@ -32,7 +32,8 @@ globalThis.config = {
     //Reactor: true,
     //Worker: true,
     //WorkerTransit: true
-  }
+  },
+  publicGraphsPath: '0_3/publicGraphs'
 };
 
 globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `${v}${strings[i + 1]}`).join('')}`.trim();

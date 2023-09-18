@@ -111,7 +111,8 @@ const createLayerBinding = async (layer, atom, {layerId, binding}) => {
   log('createLayerBinding:', binding, " => ", layer.bindings.inputBindings[binding]);
 };
 
-const localPrefix = 'local$';
+const localPrefix = 'local:';
+const fbPrefix = 'fb:';
 
 export const graphParamForMeta = meta => {
   if (meta.readonly) {
@@ -133,10 +134,11 @@ export const loadGraph = async graphId => {
       graph = module.graph;
     } else if (graphId.startsWith(localPrefix)) {
       graph = await restoreLocalGraph(graphId.slice(localPrefix.length));
-    } else if (graphId.startsWith('fb:')) {
-      graph = await fetchFbGraph(graphId.slice(3));
+    } else if (graphId.startsWith(fbPrefix)) {
+      graph = await fetchFbGraph(graphId.slice(fbPrefix.length));
     } else {
-      graph = await restoreLocalGraph(graphId);
+      // Default to trying to fetch the graph from firebase.
+      graph = await fetchFbGraph(graphId);
     }
     if (graph) {
       graph.state.Main$designer$disabled = true;
