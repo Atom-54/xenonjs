@@ -14,7 +14,7 @@ export const MediapipeNodeTypes = {
   //   },
   //   type: `$library/Mediapipe/Nodes/PoseNode`
   // },
-  FaceMeshNode: {
+  FaceMesh: {
     category,
     description: 'Recognizes face',
     types: {
@@ -23,7 +23,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/FaceMeshNode`
   },
-  FaceMeshDisplayNode: {
+  FaceMeshDisplay: {
     category,
     description: 'Renders face',
     types: {
@@ -32,7 +32,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/FaceMeshDisplayNode`
   },
-  SelfieSegmentationNode: {
+  SelfieSegmentation: {
     category,
     description: 'Segments selfie image',
     types: {
@@ -41,7 +41,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/SelfieSegmentationNode`
   },
-  HolisticNode: {
+  Holistic: {
     category,
     description: 'Uses Mediapipe classifier for pose recognition',
     types: {
@@ -51,7 +51,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/HolisticNode`
   },
-  BodyPoseDisplayNode: {
+  BodyPoseDisplay: {
     category,
     description: 'Renders face',
     types: {
@@ -60,7 +60,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/BodyPoseDisplayNode`
   },
-  FingerPaintNode: {
+  FingerPaint: {
     category,
     description: 'Paints and/or erases painting following fingers motion.',
     types: {
@@ -71,7 +71,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/FingerPaintNode`
   },
-  VirtualPointerNode: {
+  VirtualPointer: {
     category,
     description: 'Tracks finger motion',
     types: {
@@ -80,7 +80,7 @@ export const MediapipeNodeTypes = {
     },
     type: `$library/Mediapipe/Nodes/VirtualPointerNode`
   },
-  PointerPomsNode: {
+  PointerPoms: {
     category,
     description: 'Paints and/or erases according to the given pointer tracking',
     types: {

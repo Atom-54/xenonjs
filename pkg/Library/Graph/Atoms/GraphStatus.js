@@ -4,18 +4,28 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-render({graph}, {waited}) {
-  let warning = null;
+render({graph}) {
+  let status;
   if (graph?.meta?.readonly) {
-    warning = 'This graph is readonly. Clone it, if you want to modify it (or your changes won\'t be saved).';
+    status = this.makeWarning('This graph is readonly. Clone it, if you want to modify it (or your changes won\'t be saved).');
   } else if (!graph) {
-    warning = 'Please, select a graph';
+    status = this.makeWarning('No graph is selected. Click the logo icon to create or select a graph.');
+  } else if (!keys(graph.nodes).length <= 1) {
+    status = this.makeMessage('Click + icon to add Nodes to the Graph.');
   }
   return {
-    warning,
-    showWarning: String(Boolean(warning))
+    ...status,
+    show: String(Boolean(keys(status).length))
   }
 },
+makeWarning(text) {
+  return {text, icon: 'warning', isWarning: true};
+},
+
+makeMessage(text) {
+  return {text, icon: 'info', isWarning: false};
+},
+
 template: html`
 <style>
   div {
@@ -24,6 +34,10 @@ template: html`
   icon {
     font-size: 1.5em
   }
+  [warning] {
+    background-color: var(--xcolor-brand);
+    color: white;
+  }
   span {
     font-size: 0.8em;
     overflow: hidden;
@@ -31,10 +45,9 @@ template: html`
     text-wrap: wrap;
   }
 </style>
-<div bar show$="{{showWarning}}">
-  <icon>warning</icon>
-  <span>{{warning}}</span>
+<div bar show$="{{show}}" warning$="{{isWarning}}">
+  <icon>{{icon}}</icon>
+  <span>{{text}}</span>
 </div>
 `
 });
-

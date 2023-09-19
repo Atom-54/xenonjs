@@ -283,9 +283,7 @@ export const graph = {
       },
       "GraphStatus": {
         "order": "2",
-        "height": "auto",
-        "backgroundColor": "var(--xcolor-brand)",
-        "color": "white"
+        "height": "auto"
       },
       "Main": {
         "order": "2"
