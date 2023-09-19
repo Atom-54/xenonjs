@@ -102,8 +102,8 @@ render({}, {groups, showInfoPanel, infoPanelPos, scrollLeft}) {
   //log.warn(flat);
   return {
     scrollLeft,
-    flat,
-    //groups,
+    // flat,
+    groups,
     hideNoMatchedNodesLabel: groups?.length !== 0,
     showInfoPanel: String(Boolean(showInfoPanel)),
     infoPanelContainerStyle: {
@@ -228,7 +228,7 @@ template: html`
     text-transform: capitalize;
   }
   [item] {
-    font-size: 0.8em;
+    /* font-size: 0.8em; */
     cursor: pointer;
     border: 2px solid transparent;
     padding: 2px;
@@ -250,8 +250,8 @@ template: html`
 <slot name="search"></slot>
 
 <div flex column>
-  <!-- <div scrolling flex column grid repeat="group_t">{{groups}}</div> -->
-  <div scrolling flex column grid scroll-left="{{scrollLeft:scrollLeft}}" on-mousewheel="onMouseWheel" repeat="nodetype_t">{{flat}}</div>
+  <div scrolling flex column grid repeat="group_t">{{groups}}</div>
+  <!-- <div scrolling flex column grid scroll-left="{{scrollLeft:scrollLeft}}" on-mousewheel="onMouseWheel" repeat="nodetype_t">{{flat}}</div> -->
   <div no-matched-nodes hide$="{{hideNoMatchedNodesLabel}}">No matched nodes</div>
 </div>
 
@@ -264,17 +264,17 @@ template: html`
     <div center bar xen:style="{{style}}">
       <div category>{{category}}</div>
     </div>
-    <!-- <div repeat="nodetype_t">{{nodeTypes}}</div> -->
+    <div repeat="nodetype_t">{{nodeTypes}}</div>
   </div>
 </template>
 
 <template nodetype_t>
   <div>
-    <div group hidden="{{hideGroup}}">
+    <!-- <div group hidden="{{hideGroup}}">
       <div center bar xen:style="{{style}}">
         <div category>{{group}}</div>
       </div>
-    </div>
+    </div> -->
     <!-- -->
     <div item hidden="{{hideNodeType}}" toolbar key="{{id}}" on-click="onItemClick">
       <draggable-item icon="deployed_code" disabled="true" key="{{id}}" on-enter="onHoverNodeType" on-leave="onMouseOutNodeType">
