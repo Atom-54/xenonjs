@@ -102,7 +102,7 @@ export class SplitPanel extends DragDrop {
       state.endflex = (endflex === '') || endflex;
       collapsed = collapsed || (collapsed === '');
       // alter collapsed state?
-      if (collapsed !== state.collapsed) {
+      if (collapsed !== Boolean(state.collapsed)) {
         state.collapsed = collapsed;
         if (collapsed) {
           state.holdDivider = divider;
