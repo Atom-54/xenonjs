@@ -3,27 +3,26 @@ body {
 }
 
 /* Make content area fill the entire browser window */
-html,
+/* html,
 [fullscreen] {
   display: flex;
   height: 100%;
   margin: 0;
   padding: 0;
   width: 100%;
-}
+} */
 
 /* Center the content in the browser window */
 [container] {
   /* margin: auto; */
   display: flex;
   flex-direction: column;
-  text-align: center;
-  width: 100%
+  flex: 1;
 }
 
-[container]>* {
+[container] > * {
   display: flex;
-  height: 100%;
+  Xheight: 100%;
 }
 
 /* .title {
