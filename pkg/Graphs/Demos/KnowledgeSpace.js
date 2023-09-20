@@ -31,7 +31,7 @@ const graph = {
         "w":200,
         "h":76
       },
-      "Grid":{
+      "Table":{
         "l":1152,
         "t":32,
         "w":200,
@@ -104,12 +104,15 @@ const graph = {
         "h":96
       }
     },
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "readonly":false,
-    "timestamp":1691959626310,
+    "timestamp":1695170726998,
+    "description":"query OpenAI and get structured responses",
     "id":"KnowledgeSpace",
     "designerId":"Main",
-    "description":"query OpenAI and get structured responses"
+    "customLibraries":{
+      
+    }
   },
   "nodes":{
     "CollapsePanel":{
@@ -132,7 +135,7 @@ const graph = {
       "container":"CollapsePanel$panel#Container",
       "type":"$library/EchoNode"
     },
-    "Grid":{
+    "Table":{
       "container":"Panel$panel#Container",
       "type":"$library/Data/Nodes/TableNode"
     },
@@ -186,7 +189,11 @@ const graph = {
     }
   },
   "state":{
-    "Grid$chart$options":{},
+    "Table$Table$options":{
+      "rowHeaders":[
+        "checkbox"
+      ]
+    },
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
@@ -266,7 +273,7 @@ const graph = {
         "t":203.6953125,
         "w":928
       },
-      "Grid":{
+      "Table":{
         "borderStyle":"solid",
         "borderWidth":"0",
         "flex":"1",
@@ -277,14 +284,6 @@ const graph = {
         "w":813,
         "width":"auto",
         "height":"auto"
-      },
-      "GridData":{
-        "borderStyle":"solid",
-        "borderWidth":"var(--border-size-2)",
-        "h":132,
-        "l":32,
-        "t":32,
-        "w":132
       },
       "KnowledgeSpace":{
         "borderStyle":"solid",
@@ -421,8 +420,8 @@ const graph = {
     "Data$Data$json":"TagField$field$json",
     "Echo$echo$html":"OpenAISimpleChat$OpenAISimpleChat$result",
     "Echo2$echo$html":"StringFormatter$formatter$result",
-    "Grid$chart$columns":"ColumnNata$JSONata$result",
-    "Grid$chart$data":"RowNata$JSONata$result",
+    "Table$Table$columns":"ColumnNata$JSONata$result",
+    "Table$Table$data":"RowNata$JSONata$result",
     "LocalStorage$LocalStorage$storeValue":"KnowledgeSpace$field$text",
     "OpenAISimpleChat$OpenAISimpleChat$user":"PromptNata$JSONata$result",
     "PromptNata$JSONata$json":"StringFormatter$formatter$result",

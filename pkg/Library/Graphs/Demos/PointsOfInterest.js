@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
-    "timestamp":1691800279666,
-    "owner":"kleiner.masha@gmail.com",
+    "timestamp":1695167166060,
+    "owner":"",
     "graphRects":{
       "GoogleMap":{
         "l":752,
@@ -15,18 +15,6 @@ const graph = {
         "w":200,
         "h":76
       },
-      "RadiusSelect":{
-        "l":32,
-        "t":288,
-        "w":200,
-        "h":116
-      },
-      "CategorySelect":{
-        "l":32,
-        "t":176,
-        "w":200,
-        "h":116
-      },
       "POIFinder":{
         "l":368,
         "t":208,
@@ -39,7 +27,7 @@ const graph = {
         "w":200,
         "h":60
       },
-      "Grid":{
+      "Table":{
         "l":752,
         "t":496,
         "w":200,
@@ -63,22 +51,38 @@ const graph = {
         "w":200,
         "h":76
       },
-      "PanelQuery":{
-        "l":32,
+      "Panel":{
+        "l":240,
         "t":432,
         "w":200,
         "h":96
       },
+      "RadiusSelect":{
+        "l":16,
+        "t":272,
+        "w":200,
+        "h":116
+      },
       "ChooseLocation":{
-        "l":48,
-        "t":32,
+        "l":16,
+        "t":16,
         "w":200,
         "h":136
+      },
+      "CategorySelect":{
+        "l":16,
+        "t":176,
+        "w":200,
+        "h":116
       }
     },
     "description":"find local attractions for selected location",
-    "id":"PointsOfInterest",
-    "designerId":"Main"
+    "readonly":false,
+    "id":"myPointsOfInterest",
+    "designerId":"Main",
+    "customLibraries":{
+      
+    }
   },
   "nodes":{
     "Main":{
@@ -93,22 +97,6 @@ const graph = {
       "type":"$library/JSONata/Nodes/JSONataNode",
       "container":"Main$panel#Container"
     },
-    "RadiusSelect":{
-      "type":"$library/Fields/Nodes/SelectFieldNode",
-      "container":"PanelQuery$panel#Container"
-    },
-    "PanelQuery":{
-      "type":"$library/Layout/Nodes/PanelNode",
-      "container":"Main$panel#Container"
-    },
-    "ChooseLocation":{
-      "type":"$library/Locale/Nodes/ChooseLocationNode",
-      "container":"Main$panel#Container"
-    },
-    "CategorySelect":{
-      "type":"$library/Fields/Nodes/SelectFieldNode",
-      "container":"PanelQuery$panel#Container"
-    },
     "POIFinder":{
       "type":"$library/Locale/Nodes/POIFinderNode",
       "container":"Main$panel#Container"
@@ -121,7 +109,7 @@ const graph = {
       "type":"$library/Layout/Nodes/PanelNode",
       "container":"SplitPanel$splitPanel#Container"
     },
-    "Grid":{
+    "Table":{
       "type":"$library/Data/Nodes/TableNode",
       "container":"PanelList$panel#Container"
     },
@@ -136,26 +124,42 @@ const graph = {
     "ProgressBar":{
       "type":"$library/UX/Nodes/ProgressBarNode",
       "container":"Main$panel#Container"
+    },
+    "Panel":{
+      "type":"$library/Layout/Nodes/PanelNode",
+      "container":"Main$panel#Container"
+    },
+    "ChooseLocation":{
+      "type":"$library/Locale/Nodes/ChooseLocationNode",
+      "container":"Panel$panel#Container"
+    },
+    "RadiusSelect":{
+      "type":"$library/Fields/Nodes/SelectFieldNode",
+      "container":"Panel$panel#Container"
+    },
+    "CategorySelect":{
+      "type":"$library/Fields/Nodes/SelectFieldNode",
+      "container":"Panel$panel#Container"
     }
   },
   "state":{
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
-    "PanelQuery$panel$layout":"row",
-    "ChooseLocation$choose$label":"Location",
-    "ChooseLocation$choose$options":[
-      "My Location"
-    ],
     "POIFinder$filter$context":"Given a list of places, please answer questions about them.\n      You should reply with a simple \"yes\", \"no\" or \"don't know\" about each place\n    ",
     "POIFinder$filter$restart":false,
     "PanelList$panel$layout":"row",
-    "Grid$chart$options":{
+    "Table$Table$options":{
       "header":{
         "height":0
       }
     },
     "ProgressBar$bar$height":5,
+    "Panel$panel$layout":"row",
+    "ChooseLocation$choose$label":"Location",
+    "ChooseLocation$choose$options":[
+      "My Location"
+    ],
     "Main$designer$layout":{
       "Geolocation":{
         "l":32,
@@ -204,65 +208,6 @@ const graph = {
         "width":"auto",
         "height":"auto"
       },
-      "RadiusSelect":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "height":"auto",
-        "padding":"var(--size-2)",
-        "backgroundColor":"var(--xcolor-one)",
-        "order":"3",
-        "width":"auto",
-        "flex":"1"
-      },
-      "PanelQuery":{
-        "l":0,
-        "t":56,
-        "w":612,
-        "h":56,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"2",
-        "height":"auto",
-        "backgroundColor":"var(--xcolor-one)",
-        "width":"auto",
-        "flex":"",
-        "padding":"var(--size-2)",
-        "alignItems":""
-      },
-      "ChooseLocation":{
-        "l":359,
-        "t":0,
-        "w":319,
-        "h":56,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"1",
-        "height":"auto",
-        "width":"auto",
-        "backgroundColor":"var(--xcolor-one)",
-        "flex":"",
-        "padding":"var(--size-2)",
-        "alignItems":"",
-        "fontSize":"var(--font-size-3)"
-      },
-      "CategorySelect":{
-        "l":82,
-        "t":82,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "height":"auto",
-        "padding":"var(--size-2)",
-        "backgroundColor":"var(--xcolor-one)",
-        "order":"2",
-        "width":"auto",
-        "flex":"1"
-      },
       "POIFinder":{
         "l":32,
         "t":32,
@@ -293,10 +238,12 @@ const graph = {
         "borderStyle":"solid",
         "order":"2",
         "flex":"1",
-        "height":null,
+        "height":{
+          
+        },
         "width":"auto"
       },
-      "Grid":{
+      "Table":{
         "l":32,
         "t":32,
         "w":132,
@@ -348,9 +295,74 @@ const graph = {
         "h":132,
         "borderWidth":"",
         "borderStyle":"solid"
+      },
+      "Panel":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderWidth":"",
+        "borderStyle":"solid",
+        "width":"auto",
+        "height":"auto",
+        "flex":"",
+        "padding":"var(--size-3)",
+        "order":"1",
+        "color":"",
+        "backgroundColor":"var(--xcolor-one)"
+      },
+      "ChooseLocation":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderWidth":"",
+        "borderStyle":"solid",
+        "height":"auto",
+        "width":"auto",
+        "flex":"1",
+        "fontSize":"var(--font-size-3)",
+        "order":"1"
+      },
+      "RadiusSelect":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "borderWidth":"",
+        "borderStyle":"solid",
+        "height":"auto",
+        "width":"auto",
+        "flex":"none",
+        "order":"3"
+      },
+      "CategorySelect":{
+        "l":82,
+        "t":82,
+        "w":132,
+        "h":132,
+        "borderWidth":"",
+        "borderStyle":"solid",
+        "height":"auto",
+        "width":"auto",
+        "flex":"none",
+        "order":"2"
       }
     },
     "Markeronata$JSONata$expression":"$map(*, function($v, $i, $a) {\n   ({\n        \"longitude\": ($v.point.lon),\n        \"latitude\": ($v.point.lat),\n        \"title\": ($v.name),\n        \"key\": ($v.xid)\n   })\n})",
+    "Table$Table$columns":[
+      {
+        "name":"xid",
+        "hidden":true,
+        "isId":true
+      },
+      {
+        "name":"name"
+      }
+    ],
+    "Eventonata$JSONata$expression":"record.xid",
+    "ProgressBar$bar$interval":100,
+    "ProgressBar$bar$percentage":0,
     "RadiusSelect$field$label":"search within",
     "RadiusSelect$field$options":[
       {
@@ -370,9 +382,7 @@ const graph = {
         "name":"100 km"
       }
     ],
-    "RadiusSelect$field$value":"5",
     "CategorySelect$field$label":"category",
-    "CategorySelect$field$value":"*",
     "CategorySelect$field$options":[
       {
         "name":"All",
@@ -383,21 +393,9 @@ const graph = {
       "Museums",
       "History and Religion"
     ],
-    "Grid$chart$columns":[
-      {
-        "name":"xid",
-        "hidden":true,
-        "isId":true
-      },
-      {
-        "name":"name"
-      }
-    ],
-    "Eventonata$JSONata$expression":"record.xid",
-    "ProgressBar$bar$interval":100,
-    "ProgressBar$bar$percentage":0,
-    "ChooseLocation$choose$value":"My Location",
-    "PanelQuery$panel$center":false
+    "CategorySelect$field$value":"*",
+    "RadiusSelect$field$value":"5",
+    "ChooseLocation$choose$value":"My Location"
   },
   "connections":{
     "GoogleMap$map$geolocation":"ChooseLocation$location$geolocation",
@@ -405,14 +403,14 @@ const graph = {
     "POIFinder$poi$geolocation":"ChooseLocation$location$geolocation",
     "POIDisplay$poi$location":"POIFinder$poi$location",
     "POIFinder$poi$filter":"CategorySelect$field$value",
-    "POIFinder$poi$radius":"RadiusSelect$field$value",
-    "Grid$chart$data":"POIFinder$poi$locations",
+    "Table$Table$data":"POIFinder$poi$locations",
     "Markeronata$JSONata$json":"POIFinder$poi$locations",
-    "Eventonata$JSONata$json":"Grid$chart$event",
+    "Eventonata$JSONata$json":"Table$Table$event",
     "POIFinder$poi$selected":[
       "Eventonata$JSONata$result",
       "GoogleMap$map$marker"
     ],
-    "ProgressBar$bar$inProgress":"POIFinder$filter$working"
+    "ProgressBar$bar$inProgress":"POIFinder$filter$working",
+    "POIFinder$poi$radius":"RadiusSelect$field$value"
   }
 };

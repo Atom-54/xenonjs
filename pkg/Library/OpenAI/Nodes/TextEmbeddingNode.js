@@ -5,7 +5,7 @@
  */
 export const TextEmbeddingNode = {
   TextEmbedding: {
-    type: '$library/Polymath/Atoms/TextEmbedding',
+    type: '$library/OpenAI/Atoms/TextEmbedding',
     inputs: [/*'apiKey',*/ 'text'],
     outputs: ['vector']
   }
