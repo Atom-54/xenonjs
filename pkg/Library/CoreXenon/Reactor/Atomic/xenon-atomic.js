@@ -245,6 +245,7 @@ var customLogFactory = (id) => logf(`Host (${id})`, arand(logColors));
 var logColors = ["#5a189a", "#51168b", "#48137b", "#6b2fa4", "#7b46ae", "#3f116c"];
 var Host = class extends EventEmitter {
   id;
+  lastInputs;
   lastOutput;
   lastPacket;
   lastRenderModel;
@@ -327,9 +328,10 @@ var Host = class extends EventEmitter {
   /**/
   set inputs(inputs) {
     if (this.atom && inputs) {
-      let lastInputs = this.atom.internal.inputs ?? this.meta?.staticInputs ?? /* @__PURE__ */ Object.create(null);
-      this.atom.inputs = deepCopy({ ...lastInputs, ...inputs });
-      this.fire("inputs-changed");
+      let lastInputs = this.lastInputs ?? /* @__PURE__ */ Object.create(null);
+      if (this.dirtyCheck(inputs, lastInputs, this.lastOutput)) {
+        this.lastInputs = this.atom.inputs = deepCopy({ ...lastInputs, ...inputs });
+      }
     }
   }
   dirtyCheck(inputs, lastInputs, lastOutput) {
