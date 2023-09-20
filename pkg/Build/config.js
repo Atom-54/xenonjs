@@ -43,7 +43,7 @@ globalThis.config = {
     //Worker: true,
     //WorkerTransit: true
   },
-  publicGraphsPath: '0_3/publicGraphs'
+  publicGraphsPath: 'v1/publicGraphs'
 };
 
 globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `${v}${strings[i + 1]}`).join('')}`.trim();

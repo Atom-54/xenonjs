@@ -15,7 +15,7 @@ shouldRender({columns, options}) {
 render({columns, options, data}, {columnid}) {
   return {
     columns,
-    //options,
+    options,
     data: Array.isArray(data) ? data : null,
     columnid
   }
@@ -35,7 +35,7 @@ template: html`
 <toast-grid flex
   columns="{{columns}}"
   data="{{data}}"
-  Xoptions="{{options}}"
+  options="{{options}}"
   Xcolumnid="{{columnid}}"
   Xon-selected="onSelect"
   Xon-checked-changed="onCheck"

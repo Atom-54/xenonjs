@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
-    "timestamp":1688619225114,
-    "owner":"kleiner.masha@gmail.com",
+    "timestamp":1695170112371,
+    "owner":"",
     "stylized":true,
     "graphRects":{
       "FrameCapture":{
@@ -42,15 +42,15 @@ const graph = {
       },
       "TextField":{
         "l":16,
-        "t":320,
+        "t":288,
         "w":200,
-        "h":96
+        "h":116
       },
       "OpenAIImageGen":{
         "l":256,
         "t":256,
         "w":200,
-        "h":96
+        "h":116
       },
       "ProgressBar":{
         "l":528,
@@ -59,9 +59,13 @@ const graph = {
         "h":156
       }
     },
+    "description":"OpenAI-generated background for video stream",
+    "readonly":false,
     "id":"VideoBackgroundGen",
     "designerId":"Main",
-    "description":"OpenAI-generated background for video stream"
+    "customLibraries":{
+      
+    }
   },
   "nodes":{
     "Main":{
@@ -110,6 +114,7 @@ const graph = {
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
     "FrameCapture$FrameCapture$fps":30,
+    "Panel$panel$layout":"column",
     "ProgressBar$bar$height":3,
     "Image2$image$image":{
       "alt":"no image"
@@ -259,7 +264,8 @@ const graph = {
     "TextField$field$label":"choose background:",
     "OpenAIImageGen$OpenAIImage$restart":true,
     "ProgressBar$bar$interval":100,
-    "ImageComposite$ImageComposite$opD":"destination-atop"
+    "ImageComposite$ImageComposite$opD":"destination-atop",
+    "OpenAIImageGen$OpenAIImage$enabled":true
   },
   "connections":{
     "FrameCapture$FrameCapture$stream":"DeviceUx$defaultStream$stream",

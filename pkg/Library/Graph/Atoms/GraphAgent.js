@@ -12,10 +12,12 @@ shouldUpdate({graphs, user}) {
   return graphs;
 },
 async update(inputs, state, {output, isDirty, service}) {
-  state.user ??= inputs.user;
+  if (isDirty('user')) {
+    state.user = inputs.user;
+  }
   if (inputs.publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
     state.publishedGraphsUrl = inputs.publishedGraphsUrl;
-    const publicGraphs = await this.loadPublicGraphs(inputs.publishedGraphsUrl);	
+    const publicGraphs = await this.loadPublicGraphs(inputs);	
     if (publicGraphs) {
       output({publicGraphs});
     }
@@ -41,7 +43,7 @@ async update(inputs, state, {output, isDirty, service}) {
     return outputs;
   }
 },
-async loadPublicGraphs(publishedGraphsUrl) {
+async loadPublicGraphs({publishedGraphsUrl}) {
   const url = this.formatFetchPublishGraphsUrl(publishedGraphsUrl);
   const res = await fetch(url);
   if (res.status === 200) {

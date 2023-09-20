@@ -10,7 +10,7 @@ render({graph}) {
     status = this.makeWarning('This graph is readonly. Clone it, if you want to modify it (or your changes won\'t be saved).');
   } else if (!graph) {
     status = this.makeWarning('No graph is selected. Click the logo icon to create or select a graph.');
-  } else if (!keys(graph.nodes).length <= 1) {
+  } else if (keys(graph.nodes).length <= 1) {
     status = this.makeMessage('Click + icon to add Nodes to the Graph.');
   }
   return {
