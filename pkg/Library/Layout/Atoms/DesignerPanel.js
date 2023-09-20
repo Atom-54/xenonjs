@@ -79,6 +79,7 @@ template: html`
 </style>
 <designer-panel flex column 
     readonly="{{disabled}}" 
+    readonly$="{{disabled}}" 
     layout="{{layout}}" 
     selected="{{selected}}" 
     color="{{color}}" 
