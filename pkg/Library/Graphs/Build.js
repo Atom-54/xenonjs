@@ -177,7 +177,7 @@ export const graph = {
       {
         "name": "Graphs Menu",
         // "ligature": "dashboard_customize",
-        "image": "$xenon/Library/Assets/icons/favicon.png",
+        "image": "$xenon/Library/assets/icons/favicon.png",
         "action": "toggle",
         "stateKey": "GraphListFlyOut$flyOut$show"
       },
