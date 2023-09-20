@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import './config.js';
-import 'xenonjs/Library/common/configKeys.js';
+import 'xenonjs/Library/Common/configKeys.js';
 import {connectXenon} from './connectXenon.js';
 import * as Composer from '../../../Library/CoreXenon/Framework/Composer.js';
 import {main} from './main.js';
