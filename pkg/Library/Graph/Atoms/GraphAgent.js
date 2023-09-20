@@ -17,7 +17,7 @@ async update(inputs, state, {output, isDirty, service}) {
   }
   if (inputs.publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
     state.publishedGraphsUrl = inputs.publishedGraphsUrl;
-    const publicGraphs = await this.loadPublicGraphs(inputs);	
+    const publicGraphs = await this.loadPublicGraphs(inputs.publishedGraphsUrl);	
     if (publicGraphs) {
       output({publicGraphs});
     }
@@ -43,7 +43,7 @@ async update(inputs, state, {output, isDirty, service}) {
     return outputs;
   }
 },
-async loadPublicGraphs({publishedGraphsUrl}) {
+async loadPublicGraphs(publishedGraphsUrl) {
   const url = this.formatFetchPublishGraphsUrl(publishedGraphsUrl);
   const res = await fetch(url);
   if (res.status === 200) {
@@ -183,7 +183,7 @@ async handleEvent(inputs, state, {service, output}) {
     case 'Restyle Graph':
       return this.restyleGraph(event.data.value, graphs, state);
     case 'Refresh Public Graphs':
-      return this.loadPublicGraphs(inputs, state, {output});
+      return this.loadPublicGraphs(inputs.publishedGraphsUrl, state, {output});
     case 'Publish Graph':
       return this.publishGraph(event.data.value, graphs, publicGraphs, state);
     case 'Unpublish Graph':
