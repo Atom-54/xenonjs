@@ -35,7 +35,7 @@ export const GraphNodeTypes = {
     category,
     type: '$library/Graph/Nodes/LayerNode',
     types: {
-      Layer$designable: Boolean,
+      Layer$designable: 'Boolean',
       Layer$graph: 'String'
     }
   }
