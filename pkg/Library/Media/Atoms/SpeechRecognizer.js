@@ -13,9 +13,9 @@ onTranscript({eventlet: {value}}) {
   return value;
 },
 onEnd({mediaDeviceState}) {
-  return {
-    mediaDeviceState: {...mediaDeviceState, isMicEnabled: false}
-  };
+  // return {
+  //   mediaDeviceState: {...mediaDeviceState, isMicEnabled: false}
+  // };
 },
 template: html`
 <style>:host, * { display: none !important; }</style>

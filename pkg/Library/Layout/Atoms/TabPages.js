@@ -16,7 +16,7 @@ onPageSelected() {
   //
 },
 template: html`
-<weightless-pages dark flex on-selected="onPageSelected" tabs="{{tabs}}">
+<weightless-pages flex on-selected="onPageSelected" tabs="{{tabs}}">
   <slot name="pageContainer"></slot>
 </weightless-pages>
   <!-- tabs -->
