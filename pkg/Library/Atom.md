@@ -168,7 +168,7 @@ The following would be invalid:
 ```
 
 #### Sub-templates and more examples
-For more templates and sub-templates examples, see [xen-explainer.html](https://xenon-js.web.app/0.6/Library/Dom/Xen/xen-explainer.html) and read [explainer code](./Dom/Xen/xen-explainer.html).
+For more templates and sub-templates examples, see [xen-explainer.html](https://xenon-js.web.app/0.7/Library/Dom/Xen/xen-explainer.html) and read [explainer code](./Dom/Xen/xen-explainer.html).
 
 ### shouldRender
 A helper method similar to [shouldUpdate](#shouldupdate).

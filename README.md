@@ -22,11 +22,11 @@ XenonJs features 2 applications:
 ### Run Graphs
 
 To get started, try using our demo XenonJs Graphs:  
-* [Knowledge Space](https://xenon-js.web.app/0.6/Run/?graph=neonflan/KnowledgeSpace)
-* [Video effects](https://xenon-js.web.app/0.6/Run/?graph=neonflan/VideoRain)
-* [Image completion](https://xenon-js.web.app/0.6/Run/?graph=neonflan/ImageCompletion)
-* [Translation](https://xenon-js.web.app/0.6/Run/?graph=neonflan/TranslateWithAudio)
-* [Weather forecast](https://xenon-js.web.app/0.6/Run/?graph=neonflan/LocalWeather)
+* [Knowledge Space](https://xenon-js.web.app/0.7/Run/?graph=neonflan/KnowledgeSpace)
+* [Video effects](https://xenon-js.web.app/0.7/Run/?graph=neonflan/VideoRain)
+* [Image completion](https://xenon-js.web.app/0.7/Run/?graph=neonflan/ImageCompletion)
+* [Translation](https://xenon-js.web.app/0.7/Run/?graph=neonflan/TranslateWithAudio)
+* [Weather forecast](https://xenon-js.web.app/0.7/Run/?graph=neonflan/LocalWeather)
 
 More demo Graphs can be found on our website: [xenonjs.com](https://xenon-js.web.app/#demos)
 
@@ -34,7 +34,7 @@ More demo Graphs can be found on our website: [xenonjs.com](https://xenon-js.web
 ### Build Graphs
 
 You can also build your very own XenonJs Graphs from the collection of XenonJs Nodes:
-* Try out the [Build](https://xenon-js.web.app/0.6/Build) IDE  
+* Try out the [Build](https://xenon-js.web.app/0.7/Build) IDE  
 * Here is a guide on how to use it: [Build README](./pkg/Build/README.md)
 
 
@@ -42,10 +42,10 @@ You can also build your very own XenonJs Graphs from the collection of XenonJs N
 The Graphs you compose in `Build` are immediately accessible in the `Run` application.
 
 To run a specific graph, pass its name as URL parameter to the `Run` app:  
-> [xenon-js.web.app/0.6/Run/?graph=GRAPH-NAME](https://xenon-js.web.app/0.6/Run/?graph=GRAPH-NAME)
+> [xenon-js.web.app/0.7/Run/?graph=GRAPH-NAME](https://xenon-js.web.app/0.7/Run/?graph=GRAPH-NAME)
 
 By default the Graphs you construct in `Build` are persisted in your browser's local storage. You can access a locally stored Graph at:  
-> [xenon-js.web.app/0.6/Run/?graph=local$GRAPH-NAME](https://xenon-js.web.app/0.6/Run/?graph=local$GRAPH-NAME)
+> [xenon-js.web.app/0.7/Run/?graph=local$GRAPH-NAME](https://xenon-js.web.app/0.7/Run/?graph=local$GRAPH-NAME)
 
 ### Graphs Library
 
@@ -66,12 +66,12 @@ It is also easy to run `Build` and `Run` locally:
 
 Clone the repo:
 ```
-git clone https://github.com/NeonFlan/xenonjs.git -b 0.6
+git clone https://github.com/NeonFlan/xenonjs.git -b 0.7
 
 cd xenonjs
 ```
 
-*Note: `0.6` is our stable(-ish) version. We are constantly adding cool new features, and you are welcome to try ToT at your own risk :)*
+*Note: `0.7` is our stable(-ish) version. We are constantly adding cool new features, and you are welcome to try ToT at your own risk :)*
 
 At the very first time run:
 ```

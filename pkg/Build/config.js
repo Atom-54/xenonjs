@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-// let xenonPath = 'https://xenon-js.web.app/0.5/';
+// let xenonPath = 'https://xenon-js.web.app/0.7/';
 // if (import.meta.url.startsWith('http://localhost')) {
 //   xenonPath = new URL('../', import.meta.url).href;
 // }
