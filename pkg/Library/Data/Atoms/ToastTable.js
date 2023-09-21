@@ -5,9 +5,9 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({columns, data}, state) {
-  // if (columns?.find && !state.columnid) {
-  //   state.columnid = columns.find(({isId}) => isId)?.name ?? 'uid';
-  // }
+  if (columns?.find && !state.columnid) {
+    state.columnid = columns.find(({isId}) => isId)?.name ?? 'uid';
+  }
 },
 shouldRender({columns, options}) {
   return columns?.length; // && options;
@@ -25,19 +25,19 @@ render({columns, options, data}, {columnid}) {
 //     event: {kind: 'check', checked: keys(value)}
 //   };
 // },
-// onSelect({eventlet: {key}, data}, state) {
-//   const record = data?.find(({[state.columnid]:uid}) => uid === key);
-//   return {
-//     event: {kind: 'select', record}
-//   };
-// },
+onSelect({eventlet: {key}, data}, state) {
+  const record = data?.find(({[state.columnid]:uid}) => uid === key);
+  return {
+    event: {kind: 'select', record}
+  };
+},
 template: html`
 <toast-grid flex
   columns="{{columns}}"
   data="{{data}}"
   options="{{options}}"
-  Xcolumnid="{{columnid}}"
-  Xon-selected="onSelect"
+  columnid="{{columnid}}"
+  on-selected="onSelect"
   Xon-checked-changed="onCheck"
   ></toast-grid>
 `
