@@ -21,8 +21,8 @@ export const DragDrop = class extends Xen.Async {
         move: this.onMove.bind(this),
         up: this.onUp.bind(this)
       };
-      window.addEventListener('mousemove', this.listeners.move);
-      window.addEventListener('mouseup', this.listeners.up);
+      window.addEventListener('pointermove', this.listeners.move);
+      window.addEventListener('pointerup', this.listeners.up);
       //log('onDown: started listening');
       const {pageX, pageY} = e;
       const [x, y] = [pageX, pageY].map(Math.round);
@@ -37,7 +37,7 @@ export const DragDrop = class extends Xen.Async {
     //e.preventDefault();
     if (!e.buttons) {
       log('onMove: no buttons: forcing onUp');
-      // Force onUp in case the mouse was released out of our view
+      // Force onUp in case the pointer was released out of our view
       // onUp needs to be aware of this scenario
       this.onUp(e);
     } else if (this.dragging) {
@@ -59,8 +59,8 @@ export const DragDrop = class extends Xen.Async {
       // clean up the scary dangly bits
       if (this.listeners) {
         //log('onUp: done listening');
-        window.removeEventListener('mousemove', this.listeners.move);
-        window.removeEventListener('mouseup', this.listeners.up);
+        window.removeEventListener('pointermove', this.listeners.move);
+        window.removeEventListener('pointerup', this.listeners.up);
         this.listeners = null;
       }
       // pass control to client
