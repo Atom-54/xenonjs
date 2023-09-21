@@ -4,7 +4,7 @@
 We use `Build/` to construct all Graphs we make and use, including all demo Graphs.
 With `Build/` you can create new experiences without writing a single line of code.
 
-`Build/` is available for you at: [XenonJs/Build](https://xenon-js.web.app/0.6/Build)  
+`Build/` is available for you at: [XenonJs/Build](https://xenon-js.web.app/0.7/Build)  
 or you can run it locally, as described in [How to run XenonJs locally](../../README.md#local).
 
 ## How to
