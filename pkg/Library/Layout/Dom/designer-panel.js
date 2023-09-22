@@ -333,21 +333,6 @@ export class DesignerPanel extends DragDrop {
         elts.some(elt => child = elt.querySelector(selector));
       }
     }
-    // const selector = `[id*="_${sid}_"]`;
-    // // the elements assigned to our slot
-    // const elts = this.shadowRoot.querySelector('slot').assignedElements({flatten: true});
-    // if (elts) {    
-    //   // any assigned elements match selector directly?
-    //   child = elts.find(elt => elt.matches(selector));
-    //   if (!child) {
-    //     // if not, look in the subtree of each assigned element
-    //     elts.some(elt => child = elt.querySelector(selector));
-    //   }
-    // }
-    // if (child !== child0) {
-    //   console.warn(child, child0);
-    // }
-    //log(child, sid, elts);
     return child;
   }
   identifyDragKind(e) {

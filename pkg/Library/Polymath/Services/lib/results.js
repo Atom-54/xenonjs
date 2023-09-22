@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {encode} from "../../../third-party/gptoken/Encoder.js";
+import {encode} from "../../../../third-party/gptoken/Encoder.js";
 //import {omit, trim} from "../host/index.js";
 import {DEFAULT_MAX_TOKENS_FOR_MODEL} from "./utils.js";
 
