@@ -7,12 +7,10 @@ export const atom = (log, resolve) => ({
 initialize(inputs, state, {isDirty}) {
   isDirty('trigger');
 },
-async shouldUpdate({library, source}, state) {
-  return library && source;
+async shouldUpdate({library, type, source, content, trigger}, state, {isDirty}) {
+  return library && source && content && trigger && isDirty('trigger');
 },
-async update({library, source, trigger}, state, {service, isDirty}) {
-  if (trigger && isDirty('trigger')) {
-    return await service('PolymathService', 'Learn', {library, source});
-  }
+async update({library, type, source, content}, state, {service}) {
+  return await service('PolymathService', 'Learn', {library, type, source, content});
 }
 });
