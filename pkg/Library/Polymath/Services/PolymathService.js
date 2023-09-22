@@ -86,37 +86,12 @@ const fetchLibraryTitles = async store => {
   return response.json();
 };
 
-//let wikiPolymath;
-
-// const queryLibrary = async query => {
-//   wikiPolymath ??= new Polymath({
-//     apiKey,
-//     firebase: `${polymathStore}.json`
-//   });
-//   const response = await wikiPolymath.completion(query);
-//   return response;
-// };
-
 const ingestWikiQuery = async (library, query) => {
   const {title, html} = await fetchWikiPage(query);
   if (title) {
-    // const titles = await fetchLibraryTitles(polymathStore);
-    // if (titles[title]) {
-    //   console.log('title', title, 'already exists');
-    // } else {
-      // const args = {
-      //   importer: 'html',
-      //   source: title,
-      //   options: {
-      //     html
-      //   }
-      // };
-      const shelf = await ingester('html', title, html);
-      console.log(library.path, shelf);
-      storeBits(library.path, title, shelf);
-      //const id = Resources.allocate(shelf);
-      //return {id};
-    //}
+    const shelf = await ingester('html', title, html);
+    console.log(library.path, shelf);
+    storeBits(library.path, title, shelf);
   }
 };
 
