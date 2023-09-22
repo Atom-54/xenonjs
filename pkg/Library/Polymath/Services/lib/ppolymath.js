@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import * as OpenAI from "../../OpenAI/OpenAIService.js";
+import * as OpenAI from "../../../OpenAI/OpenAIService.js";
 import * as Results from "./results.js";
 import * as Utils from "./utils.js";
 

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as OpenAI from "../../OpenAI/OpenAIService.js";
-import * as Polymath from './Polymath.js';
+import * as Polymath from './lib/Polymath.js';
 //import {Ingest} from '../../../third-party/polymath/src/ingest/main.js';
 import {Resources} from '../../Media/Resources.js';
 
