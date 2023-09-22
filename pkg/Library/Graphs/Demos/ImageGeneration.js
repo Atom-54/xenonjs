@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1688761063637,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "TextField":{
         "l":16,

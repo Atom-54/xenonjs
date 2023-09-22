@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1691302217280,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "Panel":{
         "l":752,
@@ -58,7 +58,7 @@ const graph = {
         "h":156
       }
     },
-    "description":"text translation and transcribing for selected languages and listen and speak interface",
+    "description":"text translation for selected languages",
     "id":"Translate",
     "designerId":"Main",
     "readonly":true

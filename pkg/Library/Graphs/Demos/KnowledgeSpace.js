@@ -104,7 +104,7 @@ const graph = {
         "h":96
       }
     },
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "readonly":false,
     "timestamp":1691959626310,
     "id":"KnowledgeSpace",

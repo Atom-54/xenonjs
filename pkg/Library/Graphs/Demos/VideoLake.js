@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1688593313281,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "stylized":true,
     "graphRects":{
       "FrameCapture":{

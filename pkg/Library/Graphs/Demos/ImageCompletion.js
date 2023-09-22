@@ -3,7 +3,7 @@ const graph = {
     "id":"ImageCompletion",
     "designerId":"Main",
     "timestamp":1690765803801,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "OpenAIImageCompletion":{
         "l":272,

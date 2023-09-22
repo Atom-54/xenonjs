@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1688595734693,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "stylized":true,
     "graphRects":{
       "DeviceUx":{
@@ -59,7 +59,7 @@ const graph = {
         "h":136
       }
     },
-    "description":"colorful fingerpainging on the streamed video",
+    "description":"colorful fingerpainting on the streamed video",
     "id":"VideoFingerpaint",
     "designerId":"Main"
   },

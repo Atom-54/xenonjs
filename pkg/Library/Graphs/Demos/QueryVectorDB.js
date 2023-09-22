@@ -3,7 +3,7 @@ const graph = {
     "id":"QueryVectorDB",
     "designerId":"Main",
     "timestamp":1688450897364,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "OpenAIText":{
         "l":576,
