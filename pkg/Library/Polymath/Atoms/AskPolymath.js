@@ -8,7 +8,7 @@ async shouldUpdate({library, query}, state) {
   return library && query;
 },
 async update({library, query}, state, {service, isDirty}) {
-  if (!isDirty('query')) {
+  if (query && !isDirty('query')) {
     log.warn('query came again!')
     return;
   }
