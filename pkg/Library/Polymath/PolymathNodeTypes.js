@@ -19,8 +19,11 @@ export const PolymathNodeTypes = {
     category,
     description: `Ingest new information into a Polymath library`,  
     types: {
-      PolymathLearner$source: 'String',
       PolymathLearner$library: 'PolymathLibrary',
+      PolymathLearner$type: 'LearnerType|String',
+      PolymathLearner$typeValues: ['html'],
+      PolymathLearner$source: 'String',
+      PolymathLearner$content: 'MultilineText',
       PolymathLearner$trigger: 'Nonce'
     },
     type: '$library/Polymath/Nodes/PolymathLearnerNode'
@@ -35,5 +38,15 @@ export const PolymathNodeTypes = {
       AskPolymath$completion: 'MultilineText'
     },
     type: '$library/Polymath/Nodes/AskPolymathNode'
+  },
+  WikipediaContent: {
+    category,
+    description: `Find Wikipedia page content for a query`,  
+    types: {
+      WikipediaContentNode$query: 'MultilineText',
+      WikipediaContentNode$title: 'String',
+      WikipediaContentNode$markup: 'HTML|MultilineText'
+    },
+    type: '$library/Polymath/Nodes/WikipediaContentNode'
   }
 };

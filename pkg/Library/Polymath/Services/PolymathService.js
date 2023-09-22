@@ -15,9 +15,11 @@ export const PolymathService = {
   async Ask(layer, atom, {library, query}) {
     return askLibrary(Resources.get(library), query);
   },
-  async Learn(layer, atom, {library, source}) {
-    const result = ingestWikiQuery(Resources.get(library), source);
-    return null;
+  async Learn(layer, atom, {library, type, source, content}) {
+    return learn(library, type, source, content);
+  },
+  async QueryWikipedia(layer, atom, {query}) {
+    return fetchWikiPage(query);
   }
 };
 
@@ -35,6 +37,12 @@ const askLibrary = async (library, query) => {
   const queryEmbedding = await OpenAI.textEmbed(query);
   const packedResults = await Polymath.askLibrary(library, queryEmbedding);
   return Polymath.generateCompletion(query, packedResults.bits);
+};
+
+const learn = async (library, type, source, content) => {
+  const volume = await ingester('html' /*type*/, source, content);
+  const response = await storeBits(Resources.get(library).path, source, volume);
+  return {ok: response.ok};
 };
 
 const fetchWiki = async endpoint => {
@@ -86,14 +94,14 @@ const fetchLibraryTitles = async store => {
   return response.json();
 };
 
-const ingestWikiQuery = async (library, query) => {
-  const {title, html} = await fetchWikiPage(query);
-  if (title) {
-    const shelf = await ingester('html', title, html);
-    console.log(library.path, shelf);
-    storeBits(library.path, title, shelf);
-  }
-};
+// const ingestWikiQuery = async (library, query) => {
+//   const {title, html} = await fetchWikiPage(query);
+//   if (title) {
+//     const shelf = await ingester('html', title, html);
+//     console.log(library.path, shelf);
+//     storeBits(library.path, title, shelf);
+//   }
+// };
 
 const ingester = async (importerName, source, content) => {
   const library = {

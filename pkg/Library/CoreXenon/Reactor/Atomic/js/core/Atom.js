@@ -149,7 +149,7 @@ export class Atom {
     if (this.implements('update')) {
       doUpdate = 
         !this.implements('shouldUpdate')
-        || await (this.shouldUpdate(this.inputs, this.state))
+        || await (this.shouldUpdate(this.inputs, this.state, this.getTools()))
         ;
     }
     if (doUpdate) {
@@ -169,9 +169,9 @@ export class Atom {
       await this.asyncMethod(this.impl.initialize);
     }
   }
-  async shouldUpdate(inputs, state) {
+  async shouldUpdate(inputs, state, tools) {
     // for this method, "not implemented" is true, if implemented, "true" is true
-    return !this.implements('shouldUpdate') || await this.impl.shouldUpdate(inputs, state);
+    return !this.implements('shouldUpdate') || await this.impl.shouldUpdate(inputs, state, tools);
   }
   update() {
     this.asyncMethod(this.impl?.update);
@@ -203,15 +203,18 @@ export class Atom {
       //this.log(`event handler [${handler}] not found`);
     }
   }
+  getTools() {
+    return {
+      service: async (...args) => this.service(...args),
+      invalidate: () => this.invalidate(),
+      output: async (data) => this.outputData(data),
+      isDirty: inputName => this.isDirty(inputName)
+    };
+  }
   async asyncMethod(asyncMethod, injections) {
     if (asyncMethod) {
       const { inputs, state } = this.internal;
-      const stdlib = {
-        service: async (...args) => this.service(...args),
-        invalidate: () => this.invalidate(),
-        output: async (data) => this.outputData(data),
-        isDirty: inputName => this.isDirty(inputName)
-      };
+      const stdlib = this.getTools();
       const task = asyncMethod.bind(this.impl, inputs, state, { ...stdlib, ...injections });
       this.outputData(await this.try(task));
       if (!this.internal.$busy && this.internal.$validateAfterBusy) {
