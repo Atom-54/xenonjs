@@ -20,11 +20,7 @@ async update({query, graphs}, state, {isDirty}) {
   state.graphs ??= this.initGraphs(graphs);
   if (query && isDirty('query')) {
     state.query = query;
-    let graph = state.graphs.find(({id, description}) => id === query || description === query);
-    if (graph) {
-      return {graph: graph.id, graphJson: null};
-    }
-    graph = await this.queryForGraph(query, state.graphs, state);
+    let graph = await this.findGraphForQuery(query, state.graphs, state);
     if (graph) {
       return {graph: graph.id, graphJson: null};
     }
@@ -96,8 +92,14 @@ makeContext(graphs, query) {
   `;
 },
 
-async queryForGraph(query, graphs, {ai}) {
+async findGraphForQuery(query, graphs, {ai}) {
   if (graphs?.length > 0) {
+    // Compare query to graphs' `id` and `description`.
+    const graph = graphs.find(({id, description}) => id === query.replace(/\s+/g, '') || description === query);
+    if (graph) {
+      return graph;
+    }
+    // Ask OpenAI to find the best suitable graph.
     const response = await ai('', this.makeContext(graphs, query));
     const text = await response.text();
     const graphId = text.trim();
