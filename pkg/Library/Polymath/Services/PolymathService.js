@@ -1,18 +1,42 @@
-import {Polymath} from '../../../third-party/polymath/src/client/main.js';
-import {Ingest} from '../../../third-party/polymath/src/ingest/main.js';
-import {apiKey} from '../../../../other/agents/cloudflare/src/key.js';
+/**
+ * @license
+ * Copyright 2023 NeonFlan LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+import * as OpenAI from "../../OpenAI/OpenAIService.js";
+import * as Polymath from './Polymath.js';
+//import {Ingest} from '../../../third-party/polymath/src/ingest/main.js';
 import {Resources} from '../../Media/Resources.js';
 
 export const PolymathService = {
-  async Ask(layer, atom, {query}) {
-    return await queryLibrary(query);
+  async RegisterLibrary(layer, atom, {name}) {
+    return registerLibrary(name);
   },
-  async IngestWikiQuery(layer, atom, {query}) {
-    return ingestWikiQuery(query);
+  async Ask(layer, atom, {library, query}) {
+    return askLibrary(Resources.get(library), query);
+  },
+  async Learn(layer, atom, {library, query}) {
+    return ingestWikiQuery(Resources.get(library), source);
   }
 };
 
 const polymathStore = `https://xenon-js-default-rtdb.firebaseio.com/polymath`;
+
+const registerLibrary = async (name) => {
+  if (!Polymath.haveFirebaseLibrary(name)) {
+    const library = await Polymath.loadFirebaseLibrary(`${polymathStore}/${name}`);
+    const id = Resources.allocate(library);
+    return {id};
+  }
+};
+
+const askLibrary = async (library, query) => {
+  const queryEmbedding = await OpenAI.textEmbed(query);
+  const packedResults = await Polymath.askLibrary(library, queryEmbedding);
+  return Polymath.generateCompletion(query, packedResults.bits);
+};
+
+const Ingest = null;
 
 const ingester = async args => {
   const library = {
@@ -77,24 +101,24 @@ const fetchLibraryTitles = async store => {
   return response.json();
 };
 
-let wikiPolymath;
+//let wikiPolymath;
 
-const queryLibrary = async query => {
-  wikiPolymath ??= new Polymath({
-    apiKey,
-    firebase: `${polymathStore}.json`
-  });
-  const response = await wikiPolymath.completion(query);
-  return response;
-};
+// const queryLibrary = async query => {
+//   wikiPolymath ??= new Polymath({
+//     apiKey,
+//     firebase: `${polymathStore}.json`
+//   });
+//   const response = await wikiPolymath.completion(query);
+//   return response;
+// };
 
 const ingestWikiQuery = async query => {
   const {title, html} = await fetchWikiPage(query);
   if (title) {
-    const titles = await fetchLibraryTitles(polymathStore);
-    if (titles[title]) {
-      console.log('title', title, 'already exists');
-    } else {
+    // const titles = await fetchLibraryTitles(polymathStore);
+    // if (titles[title]) {
+    //   console.log('title', title, 'already exists');
+    // } else {
       const args = {
         importer: 'html',
         source: title,
@@ -107,6 +131,6 @@ const ingestWikiQuery = async query => {
       storeLibrary(library, title);
       const id = Resources.allocate(library);
       return {id};
-    }
+    //}
   }
 };

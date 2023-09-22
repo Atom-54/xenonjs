@@ -40,6 +40,7 @@ export class DesignerPanel extends DragDrop {
     });
   }
   update({selected, layout, readonly}, state) {
+    state.layer = this.getRootNode().host.id.split('_')[0];
     // TODO(sjmiles): readonly should be on 'this' and in 'inputs', but it's not?
     state.disabled = this.disabled = readonly; //this.hasAttribute('readonly');
     // '' is true for attributes
@@ -73,6 +74,33 @@ export class DesignerPanel extends DragDrop {
       };
       this.structureDebounce = debounce(this.structureDebounce, task, 100);
     }
+  }
+  select(selected) {
+    if (!this.disabled && selected && this.lastSelected !== selected) {
+      // TODO(sjmiles): sometimes there's an atom name on the end :(
+      if (selected.split('$').length === 2) {
+        // remove atom name
+        selected = this.getObjectId(selected);
+      }
+      // the "Slot" here is the designer-panel main slot, where all the 
+      // designable bits are 
+      // selected must work when prefixed by $ (_)
+      // (so no layerId)
+      const elt = this.querySlotById(selected);
+      //
+      if (elt) {
+        this.target = elt;
+        this.updateSelectionBox(elt);
+        this.updateObserved(elt);
+      } else {
+        this.target = null;
+        this.boxer.hidden = true;
+      }
+    } else if (!selected) {
+      this.target = null;
+      this.boxer.hidden = true;
+    }
+    this.lastSelected = selected;
   }
   // onSlotChange() {
   //   this.forceUpdate();
@@ -125,33 +153,6 @@ export class DesignerPanel extends DragDrop {
   }
   getObjectId(id) {
     return id?.split('$').slice(0, -1).join('$');
-  }
-  select(selected) {
-    if (!this.disabled && selected && this.lastSelected !== selected) {
-      // TODO(sjmiles): sometimes there's an atom name on the end :(
-      if (selected.split('$').length === 2) {
-        // remove atom name
-        selected = this.getObjectId(selected);
-      }
-      // the "Slot" here is the designer-panel main slot, where all the 
-      // designable bits are 
-      // selected must work when prefixed by $ (_)
-      // (so no layerId)
-      const elt = this.querySlotById(selected);
-      //
-      if (elt) {
-        this.target = elt;
-        this.updateSelectionBox(elt);
-        this.updateObserved(elt);
-      } else {
-        this.target = null;
-        this.boxer.hidden = true;
-      }
-    } else if (!selected) {
-      this.target = null;
-      this.boxer.hidden = true;
-    }
-    this.lastSelected = selected;
   }
   selectParent() {
     const objectId = this.selected; //this.getObjectId(this.selected);
@@ -320,11 +321,10 @@ export class DesignerPanel extends DragDrop {
     return {dl, dt, dw, dh};
   }
   querySlotById(id) {
-    let child = null;
     const sid = id?.replace(/[$)(:]/g, '_');
-    const selector = `[id*="_${sid}_"]`;
-    // the elements assigned to our slot
+    const selector = `[id*="${this.state.layer}_${sid}_"]`;
     const elts = this.shadowRoot.querySelector('slot').assignedElements({flatten: true});
+    let child = null;
     if (elts) {    
       // any assigned elements match selector directly?
       child = elts.find(elt => elt.matches(selector));
@@ -333,6 +333,20 @@ export class DesignerPanel extends DragDrop {
         elts.some(elt => child = elt.querySelector(selector));
       }
     }
+    // const selector = `[id*="_${sid}_"]`;
+    // // the elements assigned to our slot
+    // const elts = this.shadowRoot.querySelector('slot').assignedElements({flatten: true});
+    // if (elts) {    
+    //   // any assigned elements match selector directly?
+    //   child = elts.find(elt => elt.matches(selector));
+    //   if (!child) {
+    //     // if not, look in the subtree of each assigned element
+    //     elts.some(elt => child = elt.querySelector(selector));
+    //   }
+    // }
+    // if (child !== child0) {
+    //   console.warn(child, child0);
+    // }
     //log(child, sid, elts);
     return child;
   }

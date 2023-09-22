@@ -126,13 +126,15 @@ export class Host extends EventEmitter {
     }
   }
   dirtyCheck(inputs, lastInputs, lastOutput) {
-    const dirtyBits = ([n, v]) => (lastOutput?.[n] && !deepEqual(lastOutput[n], v))
-      || !deepEqual(lastInputs?.[n], v)
+    const dirtyBits = ([n, v]) => 
+      //lastOutput?.[n]  
+        //? !deepEqual(lastOutput[n], v)
+        //: 
+        lastInputs?.[n]
+          ? !deepEqual(lastInputs?.[n], v)
+          : true
       ;
-    return !lastInputs
-      || entries(inputs).length !== this.lastInputsLength(lastInputs)
-      || entries(inputs).some(dirtyBits)
-      ;
+    return entries(inputs).some(dirtyBits);
   }
   lastInputsLength(lastInputs) {
     return keys(lastInputs).filter(key => !this.meta?.staticInputs?.[key] && key !== 'eventlet').length;

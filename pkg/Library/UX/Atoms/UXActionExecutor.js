@@ -32,9 +32,9 @@ async updateEvent(event, defaultResponse, service) {
 },
 async handleEvent({action}, service) {
   if (action.actions?.length > 0) {
-    return Promise.all(action.actions.map(actionI => {
-      return this.handleAction({...action, ...actionI}, service);
-    }));
+    for (let i=0, actionI; (actionI = action.actions[i]); i++) {
+      await this.handleAction({...action, ...actionI}, service);
+    }
   } else {
     return this.handleAction(action, service);
   }

@@ -25,4 +25,4 @@ export {DesignService} from './CoreXenon/Designer/DesignService.js';
 export {jsonrepairService} from './jsonrepair/jsonrepairService.js';
 export {SSEPubSubService as PubSubService} from './PubSub/Services/SSEPubSubService.js';
 export {FormService} from './Fields/Services/FormService.js';
-// export {PolymathService} from './Polymath/Services/PolymathService.js'
+export {PolymathService} from './Polymath/Services/PolymathService.js'

@@ -335,8 +335,13 @@ var Host = class extends EventEmitter {
     }
   }
   dirtyCheck(inputs, lastInputs, lastOutput) {
-    const dirtyBits = ([n, v]) => lastOutput?.[n] && !deepEqual(lastOutput[n], v) || !deepEqual(lastInputs?.[n], v);
-    return !lastInputs || entries2(inputs).length !== this.lastInputsLength(lastInputs) || entries2(inputs).some(dirtyBits);
+    const dirtyBits = ([n, v]) => (
+      //lastOutput?.[n]  
+      //? !deepEqual(lastOutput[n], v)
+      //: 
+      lastInputs?.[n] ? !deepEqual(lastInputs?.[n], v) : true
+    );
+    return entries2(inputs).some(dirtyBits);
   }
   lastInputsLength(lastInputs) {
     return keys(lastInputs).filter((key) => !this.meta?.staticInputs?.[key] && key !== "eventlet").length;

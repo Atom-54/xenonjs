@@ -4,15 +4,15 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async shouldUpdate({query}, state) {
-  return query;
+async shouldUpdate({library, query}, state) {
+  return library && query;
 },
-async update({query}, state, {service, isDirty}) {
+async update({library, query}, state, {service, isDirty}) {
   if (!isDirty('query')) {
     log.warn('query came again!')
     return;
   }
-  const result = await service('PolymathService', 'Ask', {query});
+  const result = await service('PolymathService', 'Ask', {library, query});
   return {query, result, completion: result.completion};
 }
 });
