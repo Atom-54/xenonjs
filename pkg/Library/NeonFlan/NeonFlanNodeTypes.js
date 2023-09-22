@@ -18,5 +18,15 @@ export const NeonFlanNodeTypes = {
   NodeTypesDocNode: {
     category,
     type: '$library/NeonFlan/Nodes/NodeTypesDocNode'
+  },
+  GraphFlanner: {
+    category,
+    types: {
+      GraphFlanner$graph: 'String',
+      GraphFlanner$query: 'String',
+      GraphFlanner$label: 'String'
+    },
+    description: 'Choose the best suitable graph',
+    type: '$library/NeonFlan/Nodes/GraphFlannerNode'
   }
 };

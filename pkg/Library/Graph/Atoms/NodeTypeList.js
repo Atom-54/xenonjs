@@ -6,7 +6,7 @@ export const atom = (log, resolve) => ({
  */
 update(inputs, state) {
   state.groups = this.groupByCategory(inputs);
-  this.updateGraphsCategory(inputs, state);
+  // this.updateGraphsCategory(inputs, state);
 },
 updateGraphsCategory({graphs, search}, state) {
   if (graphs) {
