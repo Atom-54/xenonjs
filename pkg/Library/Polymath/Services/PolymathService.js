@@ -3,10 +3,10 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import * as OpenAI from "../../OpenAI/OpenAIService.js";
-import * as Polymath from './lib/Polymath.js';
-//import {Ingest} from '../../../third-party/polymath/src/ingest/main.js';
 import {Resources} from '../../Media/Resources.js';
+import * as OpenAI from "../../OpenAI/OpenAIService.js";
+import * as Polymath from './lib/polymath.js';
+import {ingest} from './lib/ingest.js';
 
 export const PolymathService = {
   async RegisterLibrary(layer, atom, {name}) {
@@ -15,8 +15,9 @@ export const PolymathService = {
   async Ask(layer, atom, {library, query}) {
     return askLibrary(Resources.get(library), query);
   },
-  async Learn(layer, atom, {library, query}) {
-    return ingestWikiQuery(Resources.get(library), source);
+  async Learn(layer, atom, {library, source}) {
+    const result = ingestWikiQuery(Resources.get(library), source);
+    return null;
   }
 };
 
@@ -34,22 +35,6 @@ const askLibrary = async (library, query) => {
   const queryEmbedding = await OpenAI.textEmbed(query);
   const packedResults = await Polymath.askLibrary(library, queryEmbedding);
   return Polymath.generateCompletion(query, packedResults.bits);
-};
-
-const Ingest = null;
-
-const ingester = async args => {
-  const library = {
-    version: 1,
-    embedding_model: "openai.com:text-embedding-ada-002",
-    bits: [],
-  };
-  (args.options ??= {}).apiKey = apiKey;
-  const ingest = new Ingest();
-  for await (const bit of ingest.run(args)) {
-    library.bits.push(bit);
-  }
-  return library;
 };
 
 const fetchWiki = async endpoint => {
@@ -85,11 +70,11 @@ const fetchWikiPage = async query => {
   }
 };
 
-const storeLibrary = async (library, name) => {
-  return fetch(`${polymathStore}/${name}.json`, {
+const storeBits = async (library, name, bits) => {
+  return fetch(`${library}/${name}.json`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(library)
+    body: JSON.stringify(bits)
   });
 };
 
@@ -112,25 +97,39 @@ const fetchLibraryTitles = async store => {
 //   return response;
 // };
 
-const ingestWikiQuery = async query => {
+const ingestWikiQuery = async (library, query) => {
   const {title, html} = await fetchWikiPage(query);
   if (title) {
     // const titles = await fetchLibraryTitles(polymathStore);
     // if (titles[title]) {
     //   console.log('title', title, 'already exists');
     // } else {
-      const args = {
-        importer: 'html',
-        source: title,
-        options: {
-          html
-        }
-      };
-      const library = await ingester(args);
-      console.log(library);
-      storeLibrary(library, title);
-      const id = Resources.allocate(library);
-      return {id};
+      // const args = {
+      //   importer: 'html',
+      //   source: title,
+      //   options: {
+      //     html
+      //   }
+      // };
+      const shelf = await ingester('html', title, html);
+      console.log(library.path, shelf);
+      storeBits(library.path, title, shelf);
+      //const id = Resources.allocate(shelf);
+      //return {id};
     //}
   }
 };
+
+const ingester = async (importerName, source, content) => {
+  const library = {
+    version: 1,
+    embedding_model: "openai.com:text-embedding-ada-002",
+    bits: [],
+  };
+  const generator = ingest(importerName, source, content);
+  for await (const bit of generator) {
+    library.bits.push(bit);
+  }
+  return library;
+};
+

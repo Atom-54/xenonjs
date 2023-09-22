@@ -20,7 +20,8 @@ export const PolymathNodeTypes = {
     description: `Ingest new information into a Polymath library`,  
     types: {
       PolymathLearner$source: 'String',
-      PolymathLearner$library: 'PolymathLibrary'
+      PolymathLearner$library: 'PolymathLibrary',
+      PolymathLearner$trigger: 'Nonce'
     },
     type: '$library/Polymath/Nodes/PolymathLearnerNode'
   },

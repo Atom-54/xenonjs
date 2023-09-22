@@ -30,7 +30,9 @@ export const askLibrary = async(library, queryEmbedding) => {
 const loadJsonLibrary = async path => {
   const response = await fetch(`${path}.json`);
   const library = await response.json();
-  return loadLibraryBits(library);
+  const bits = await loadLibraryBits(library);
+  bits.path = path;
+  return bits;
 };
 
 const loadLibraryBits = async library => {
@@ -140,6 +142,6 @@ const makePrompt = (query, context) => {
 };
 
 // given the query, add the prompt template and return the encoded total
-const getPromptTokenCount = query => {
+export const getPromptTokenCount = query => {
   return Results.encode(query + promptTemplate).length;
 };

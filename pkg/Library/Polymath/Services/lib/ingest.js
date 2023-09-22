@@ -3,6 +3,9 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+import * as Utils from './utils.js';
+import * as OpenAI from '../../../OpenAI/OpenAIService.js';
+import * as Polymath from './polymath.js';
 
 // NOTE: Dependent on the model we are using with OpenAI, we need to chunk the data in to optimal sizes. 
 // In some cases we might only have one bit for an entire document.
@@ -14,9 +17,9 @@ const GOLDIELOCKS = {
   max: MAX_CHUNK_SIZE + MIN_CHUNK_SIZE,
 };
 
-const ingest = async function* (importerName, source) {
+export const ingest = async function* (importerName, source, content) {
   const importer = await loadImporter(importerName);
-  const sourceStrings = importer.getStringsFromSource(source);
+  const sourceStrings = importer.getStringsFromSource(source, content);
   const chunker = importer.generateChunks || generateChunks;
   //const ingester = (importer instanceof Ingester) ? importer : await createIngester(importer);
   // const polymath = new Polymath({ apiKey, debug });
@@ -27,29 +30,32 @@ const ingest = async function* (importerName, source) {
     }
     const id = generateId(source.trim() + "\n" + chunk.text.trim());
     log(`Id: ${id}`);
-    const tokenCount = polymath.getPromptTokenCount(chunk.text);
+    const tokenCount = Polymath.getPromptTokenCount(chunk.text);
     chunk.id = id;
     chunk.token_count = tokenCount;
-    chunk.embedding = encodeEmbedding(await polymath.generateEmbedding(chunk.text));
+    const embedding = await OpenAI.textEmbed(chunk.text);
+    chunk.embedding = Utils.encodeEmbedding(embedding);
     log(`Token count: ${tokenCount}`);
     yield chunk;
   }
   log("\nDone importing\n\n");
 };
 
+const generateId = input => Math.random(); //createHash("md5").update(input).digest("hex");
+
 export const loadImporter = async name => {
   return import(`./importers/${name}.js`);
 };
 
-export async function *generateChunks(stringSources) {
+async function *generateChunks(stringSources) {
   console.log("[LOG] Generating Chunks");
   // Accumulate the buffer.
   let buffer = "";
   for await (const source of stringSources) {
     console.log(`[LOG] Processing source: ${source.info?.url}`);
     const stringToEncode = source.text || "";
-    const cleanedText = cleanText(stringToEncode);
-    if (cleanText.length == 0) {
+    const cleanedText = stringToEncode; //cleanText(stringToEncode);
+    if (cleanedText.length == 0) {
       continue;
     }
     // Add to the buffer because if it's too large we will break it up anyway.

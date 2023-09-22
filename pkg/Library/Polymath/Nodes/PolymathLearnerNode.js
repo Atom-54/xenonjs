@@ -6,7 +6,7 @@
 export const PolymathLearnerNode = {
   PolymathLearner: {
     type: '$library/Polymath/Atoms/PolymathLearner',
-    inputs: ['library', 'source'],
+    inputs: ['library', 'source', 'trigger'],
     outputs: ['result']
   }
 };
