@@ -294,7 +294,7 @@ async putPublishedGraph(graph, state) {
   return result.ok;
 },
 async removePublishedGraph({id, owner}, state) {
-  return fetch(this.formatPutUrl(id, owner, state), {
+  return fetch(this.formatPutPublishGraphUrl(id, owner, state), {
     method: 'DELETE',
     headers: {'Content-Type': 'application/json'}
   });
