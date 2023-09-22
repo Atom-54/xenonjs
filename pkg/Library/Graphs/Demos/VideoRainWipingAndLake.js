@@ -3,7 +3,7 @@ const graph = {
     "id": "rainwipinglake",
     "timestamp": 1688091151380,
     "designerId": "Main",
-    "owner": "kleiner.masha@gmail.com",
+    "owner": "",
     "graphRects": {
       "PointerPoms": {
         "l": 320,

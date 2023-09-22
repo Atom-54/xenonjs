@@ -3,7 +3,7 @@ const graph = {
     "id":"ImageSearch",
     "designerId":"Main",
     "timestamp":1688449019731,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "Panel":{
         "l":32,

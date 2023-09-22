@@ -3,7 +3,7 @@ const graph = {
     "id":"VideoRain",
     "timestamp":1688082589445,
     "designerId":"Main",
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "FrameCapture":{
         "l":32,

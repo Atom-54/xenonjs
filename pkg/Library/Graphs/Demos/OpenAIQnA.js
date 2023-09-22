@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1694546189843,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "OpenAIText":{
         "l":336,
@@ -58,7 +58,7 @@ const graph = {
         "h":116
       }
     },
-    "description":"voice interface for OpenAI and listen and speak interface and listen and speak interface and listen and speak interface",
+    "description":"voice and text interface for chatting with OpenAI",
     "customLibraries":{
       
     },

@@ -3,7 +3,7 @@ const graph = {
     "id":"VideoFire",
     "timestamp":1687212830239,
     "designerId":"Main",
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "stylized":true,
     "graphRects":{
       "FrameCapture":{

@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1691800188821,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "Echo":{
         "l":528,

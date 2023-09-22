@@ -1,7 +1,7 @@
 const graph = {
   "meta":{
     "timestamp":1691736128740,
-    "owner":"kleiner.masha@gmail.com",
+    "owner":"",
     "graphRects":{
       "SplitPanel":{
         "l":912,
