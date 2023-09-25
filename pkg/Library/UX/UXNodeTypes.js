@@ -14,6 +14,16 @@ export const UXNodeTypes = {
     },
     type: `$library/UX/Nodes/UXToolbarNode`
   },
+  UXActionSet: {
+    category,
+    description: 'Collects UX action definitions for buttons and controls',
+    type: `$library/UX/Nodes/UXActionSetNode`
+  },
+  UXSelectionList: {
+    category,
+    description: 'Renders a list and allows user to select items',
+    type: `$library/UX/Nodes/UXSelectionListNode`
+  },
   ProgressBar: {
     category,
     description: 'Displays progress bar',
@@ -27,14 +37,13 @@ export const UXNodeTypes = {
     },
     type: `$library/UX/Nodes/ProgressBarNode`
   },
-  UXActionSet: {
+  WebPage: {
     category,
-    description: 'Collects UX action definitions for buttons and controls',
-    type: `$library/UX/Nodes/UXActionSetNode`
-  },
-  UXSelectionList: {
-    category,
-    description: 'Renders a list and allows user to select items',
-    type: `$library/UX/Nodes/UXSelectionListNode`
+    description: 'Displays a web page',
+    types: {
+      WebPage$html: 'MultilineString',
+      WebPage$src: 'String'
+    },
+    type: `$library/UX/Nodes/WebPageNode`
   }
 };
