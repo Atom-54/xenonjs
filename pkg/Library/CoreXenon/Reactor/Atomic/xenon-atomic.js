@@ -329,9 +329,7 @@ var Host = class extends EventEmitter {
   set inputs(inputs) {
     if (this.atom && inputs) {
       let lastInputs = this.lastInputs ?? /* @__PURE__ */ Object.create(null);
-      if (this.dirtyCheck(inputs, lastInputs, this.lastOutput)) {
-        this.lastInputs = this.atom.inputs = deepCopy({ ...lastInputs, ...inputs });
-      }
+      this.lastInputs = this.atom.inputs = deepCopy({ ...lastInputs, ...inputs });
     }
   }
   dirtyCheck(inputs, lastInputs, lastOutput) {

@@ -119,10 +119,10 @@ export class Host extends EventEmitter {
     if (this.atom && inputs) {
       //let lastInputs = this.atom.internal.inputs ?? this.meta?.staticInputs ?? Object.create(null);
       let lastInputs = this.lastInputs ?? Object.create(null);
-      if (this.dirtyCheck(inputs, lastInputs, this.lastOutput)) {
+      //f (this.dirtyCheck(inputs, lastInputs, this.lastOutput)) {
         this.lastInputs = this.atom.inputs = deepCopy({...lastInputs, ...inputs});
         //this.fire('inputs-changed');
-      }
+      //}
     }
   }
   dirtyCheck(inputs, lastInputs, lastOutput) {
