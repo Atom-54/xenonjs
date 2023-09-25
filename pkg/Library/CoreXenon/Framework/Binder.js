@@ -3,11 +3,11 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SafeObject} from '../Reactor/safe-object.js';
+import {entries, create, keys, map} from '../Reactor/safe-object.js';
 import * as Id from './Id.js';
+import * as Binder2 from '../Framework2/Binder.js';
 
 // be abrubt
-const {entries, create, keys, map} = SafeObject;
 const {qualifyId: quid} = Id;
 
 // logging
@@ -31,6 +31,7 @@ are matched against `prop`s in `outputBindings` to find the
 const addOutputBinding = (b$, key, prop, binding) => (b$.outputBindings[key] ??= create(null))[prop] = binding;
 
 export const constructBindings = system => {
+  Binder2.constructBindings(system);
   const bindings = {
     // mapping data keys from App-scope to Atom-scope
     inputBindings: create(null),
@@ -87,6 +88,7 @@ export const addConnections = (layerId, connections, inputBindings) => {
 }
 
 export const processOutput = (name, output, outputBindings) => {
+  Binder2.processOutput(name, output, outputBindings);
   // output object contains App-scoped key-value pairs.
   // `outputBindings` shows how to remap property names 
   // from Atom-scope to App-scope.
@@ -116,6 +118,7 @@ const scopeOutput = (output, map) => {
 };
 
 export const processInput = (state, inputBindings/*, persistor*/) => {
+  Binder2.processInput(state, inputBindings);
   return entries(state)
     .flatMap(([key, value]) => processKeyValue(key, value, inputBindings/*, persistor*/))
     .filter(i=>i)
