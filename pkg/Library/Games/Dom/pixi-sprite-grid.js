@@ -133,6 +133,7 @@ export class PixiSpriteGrid extends PixiObject {
   pointerMove(e) {
     const gem = this.dragging;
     if (gem) {
+      e.stopPropagation();
       gem.s.parent.setChildIndex(gem.s, 63);
       let [ol, ot, mol, mot] = this.calcDragOffset(gem, e);
       //console.log(ol, ot, mol, mot);
@@ -163,9 +164,10 @@ export class PixiSpriteGrid extends PixiObject {
   }
   calcDragOffset({l, t}, e) {
     const {x: sx, y: sy} = this.state.app.stage.scale;
+    const {x: bx, y: by} = this.getBoundingClientRect();
     const [px, py] = [e.x / sx, e.y / sy];
     const [x, y] = this.ijToXy(l, t, 0, 0);
-    const [dx, dy] = [px - x, py - y];
+    const [dx, dy] = [px - x - bx/sx, py - y - by/sy];
     const clamp = v => Math.max(Math.min(v, 0.99), -0.99);
     let [ol, ot] = [clamp(dx / siz), clamp(dy / siz)];
     let [mol, mot] = [ol*ol, ot*ot];

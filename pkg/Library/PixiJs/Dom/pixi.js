@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import * as pixiModules from '../../../third-party/pixijs/v7.2.4/pixi.mjs'; 
+import * as pixiModules from '../../../third-party/pixijs/v7.3.1/pixi.mjs'; 
 // import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
 // import {loadScript} from '../../Dom/dom.js';
 
