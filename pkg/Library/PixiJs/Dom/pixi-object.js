@@ -30,11 +30,21 @@ export class PixiObject extends Xen.Async {
     this.state.originHost = this.getRootNode().host;
   }
   update(inputs, state) {
-    if (inputs.app && !state.app) {
-      // register our PixiApp
-      this.updateAppId(inputs, state);
+    if (!state.app) {
+      if (inputs.app && !state.app) {
+        // register our PixiApp
+        this.updateAppId(inputs, state);
+      } else {
+        const app = this.state.originHost?.parentElement?.shadowRoot?.querySelector('pixi-app')?.state?.app;
+        if (app) {
+          state.app = app;
+          this.updateApp(inputs, state);
+        }
+      }
+    } 
+    if (state.app) {
+      this.updateObject(inputs, state);
     }
-    this.updateObject(inputs, state);
   }
   updateObject({x, y, s, r}, state) {
     const {object} = state;
