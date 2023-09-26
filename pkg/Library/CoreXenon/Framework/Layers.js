@@ -6,22 +6,19 @@
 import * as Id from './Id.js';
 import * as Graphs from './Graphs.js';
 import * as Binder from './Binder.js';
-import {SafeObject} from '../Reactor/safe-object.js';
+import {keys, values, entries, assign, map} from '../Reactor/safe-object.js';
 import {deepCopy} from '../Reactor/Atomic/js/utils/object.js';
-
-// be lazy
-const {keys, values, entries, assign, map} = SafeObject;
 
 const log = logf('Layers', '#8f43ee');
 
-// make a Graph into a GraphLayer
+// make a Graph into a Layer
 export const reifyGraphLayer = async (graph, emit, composer, services, name='') => {
   // combine atom specs from all nodes into one 'system'
   const system = await Graphs.graphToAtomSpecs(graph, name);
   // construct bindings from the atom specs
   const bindings = Binder.constructBindings(system);
   // add graph.connections to inputBindings
-  Binder.addConnections(name, graph.connections, bindings.inputBindings);
+  Binder.addConnections(name, graph.connections, bindings);
   // make real atoms from specs
   const atoms = await reifyAtoms(system, emit);
   // this is a layer
@@ -46,7 +43,7 @@ export const invalidate = async layer => Promise.all(Object.values(layer.atoms).
 // outside of a request, validation may be stalled, this will unstall it
 export const revalidate = async layer => Promise.all(Object.values(layer.atoms).map(atom => atom.validate?.()));
 
-export const initializeData = async (layer/*, persistables*/) => {
+export const initializeData = async (layer) => {
   log.groupCollapsed('initializeData');
   // turn all the Atoms "on"
   log('strobing atoms');
@@ -64,9 +61,6 @@ export const initializeData = async (layer/*, persistables*/) => {
   assign(qualifiedState, layer.flan.state)
   // create mutable copy of initial state
   const mutableState = deepCopy(qualifiedState);
-  // restore persisted values
-  //await persist.restoreValues(persistables, mutableState);
-  //app.resetData(mutableState);
   log('computed state', mutableState);
   log.groupEnd();
   return mutableState;

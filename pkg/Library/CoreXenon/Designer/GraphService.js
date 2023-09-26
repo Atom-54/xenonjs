@@ -6,9 +6,9 @@
 import {assign, entries, keys, values, map} from '../Reactor/safe-object.js';
 import {makeCapName} from '../Reactor/Atomic/js/names.js';
 import {TypeMatcher} from '../Framework/TypeMatcher.js';
+import * as Flan from '../Framework/Flan.js';
 import * as Graphs from '../Framework/Graphs.js';
 import * as Nodes from '../Framework/Nodes.js';
-import * as App from '../Framework/App.js';
 import * as Id from '../Framework/Id.js';
 import * as Persist from '../Framework/Persist.js';
 import * as Design from '../Designer/DesignService.js';
@@ -34,14 +34,14 @@ export const GraphService = {
     return createHostedLayer(layer, atom, graph, graphId, designable);
   },
   async DestroyLayer(layer, atom, {layerId, graph}) {
-    return layer.flan.destroyLayer(Resources.get(layerId))
+    return Flan.destroyLayer(Resources.get(layerId))
   },
   // async ComputeLayerIO(layer, atom, {layerId}) {
   //   return computeLayerIO(Resources.get(layerId));
   // },
-  async CreateLayerBinding(layer, atom, {layerId, binding}) {
-    return createLayerBinding(layer, atom, {layerId, binding});
-  },
+  // async CreateLayerBinding(layer, atom, {layerId, binding}) {
+  //   return createLayerBinding(layer, atom, {layerId, binding});
+  // },
   OpenUrl(layer, atom, data) {
     const design = Design.getDesignLayer(layer);
     // consider passing urlParam to RunInRun?
@@ -69,7 +69,7 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable) => {
   const graphSpec = graph || await loadGraph(graphId);
   if (graphSpec) {
     const id = makeCapName();
-    const newLayer = await layer.flan.createLayer(graphSpec, id);
+    const newLayer = await Flan.createLayer(layer.flan, graphSpec, id);
     Resources.set(id, newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
@@ -78,13 +78,13 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable) => {
       }
     });
     if (designable) {
-      App.setUnscoped(newLayer, 'Main$designer$disabled', false);
+      Flan.setUnscoped(newLayer, 'Main$designer$disabled', false);
       const designKey = `${newLayer.name}$Main$designer`;
       const designSelectedKey = `${designKey}$selected`;
       const baseKey = `${layer.name}$NodeGraph$Graph`;
       const baseSelectedKey = `${baseKey}$selected`;
-      layer.bindings.inputBindings[designSelectedKey] = [{id: baseKey, prop: 'selected'}];
-      newLayer.bindings.inputBindings[baseSelectedKey] = [{id: designKey, prop: 'selected'}]
+      layer.bindings.input[designSelectedKey] = [baseSelectedKey];
+      newLayer.bindings.input[baseSelectedKey] = [designSelectedKey];
     }
     return id;
   }
@@ -104,12 +104,12 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable) => {
 //   return {i: inp, o: outp};
 // };
 
-const createLayerBinding = async (layer, atom, {layerId, binding}) => {
-  const childLayer = Resources.get(layerId);
-  binding = `${childLayer.name}$DataNavigator$Form$records`;
-  layer.bindings.inputBindings[binding] = [{id: atom.name, prop: 'data'}];
-  log('createLayerBinding:', binding, " => ", layer.bindings.inputBindings[binding]);
-};
+// const createLayerBinding = async (layer, atom, {layerId, binding}) => {
+//   const childLayer = Resources.get(layerId);
+//   binding = `${childLayer.name}$DataNavigator$Form$records`;
+//   layer.bindings.input[binding] = `${atom.name}$data`;
+//   log('createLayerBinding:', binding, " => ", layer.bindings.input[binding]);
+// };
 
 const localPrefix = 'local:';
 const fbPrefix = 'fb:';

@@ -5,159 +5,103 @@
  */
 import {entries, create, keys, map} from '../Reactor/safe-object.js';
 import * as Id from './Id.js';
-import * as Binder2 from '../Framework2/Binder.js';
-
-// be abrubt
-const {qualifyId: quid} = Id;
 
 // logging
 const log = logf('Binder', 'blueviolet', 'white');
 
-/*
-inputBindings :: {<graphScopeKey>: [{id: <layerScopeAtomKey>, prop: <propertyName>}]}
-
-If `<graphState>.<graphScopeKey>` changes, we
-use `inputBindings` to find the Atom properties to update.
-*/
-const addInputBinding = (b$, key, id, prop) => (b$.inputBindings[key] ??= []).push({id, prop});
-
-/*
-outputBindings :: <layerScopeAtomKey>: {<prop>: <graphScopeKey>}
-
-If Atom `<layerScopeAtomKey>` produces output, the output fields 
-are matched against `prop`s in `outputBindings` to find the
-`<graphScopeKey>`s to update.
-*/
-const addOutputBinding = (b$, key, prop, binding) => (b$.outputBindings[key] ??= create(null))[prop] = binding;
-
 export const constructBindings = system => {
-  Binder2.constructBindings(system);
   const bindings = {
-    // mapping data keys from App-scope to Atom-scope
-    inputBindings: create(null),
-    // mapping data keys from Atom-scope to App-scope
-    outputBindings: create(null)
+    // maps state to atom inputs
+    input: create(null),
+    // maps atom outputs to state
+    output: create(null)
   };
   // system is a map of AtomSpecs, usually prepared from one or more Nodes, that
   // have been disambiguated to fit in one scope
   map(system, (atomId, atomSpec) => addAtomSpecBindings(bindings, atomId, atomSpec));
   // log
-  log.groupCollapsed('bindings:');
+  // log.groupCollapsed('bindings:');
   log(bindings);
-  log.groupEnd();
+  // log.groupEnd();
   // result
   return bindings;
 };
 
 const addAtomSpecBindings = (bindings, atomId, atomSpec) => {
-  // unpack the objectId
-  const objectId = Id.sliceId(atomId, 0, -1);
-  // add bindings from the atom spec
-  map(atomSpec.bindings, (prop, bound) => addBoundProperty(bindings, objectId, atomId, prop, bound));  
-  // inputs
-  atomSpec.inputs?.forEach(prop => addInputBinding(bindings, quid(atomId, prop), atomId, prop));
-  // outputs
-  atomSpec.outputs?.forEach(prop => addOutputBinding(bindings, atomId, prop, quid(atomId, prop)));
-};
-
-const addBoundProperty = (bindings, objectId, atomId, inProp, bound) => {
-  // Array-ify simple-string 'bound' values
-  bound = typeof bound === 'string' ? [bound] : bound;
-  // for each value bound on this atom spec
-  bound?.forEach(binding => {
-    // create mapping from qualified state prop to input prop
-    addInputBinding(bindings, quid(objectId, binding), atomId, inProp);
-    // create mapping from output prop to qualified state prop
-    const [outId, outProp] = Id.splitId(binding);
-    addOutputBinding(bindings, quid(objectId, outId), outProp, quid(objectId, binding));
+  // each atom input receives from a state key
+  atomSpec.inputs?.forEach(prop => {
+    const key = Id.qualifyId(atomId, prop);
+    addBinding(bindings.input, key, key);
+  });
+  // unpack the node id
+  const nodeId = Id.sliceId(atomId, 0, -1);
+  // add input bindings from the atom spec
+  map(atomSpec.bindings, (prop, bounded) => {
+    if (!Array.isArray(bounded)) {
+      bounded = [bounded];
+    }
+    const value = Id.qualifyId(atomId, prop);
+    addBinding(bindings.output, value, value);
+    bounded.forEach(bound => {
+      const key = Id.qualifyId(nodeId, bound);
+      addBinding(bindings.input, key, key);
+      addBinding(bindings.input, key, value);
+    });
+  });
+  // each atom output sends to a state key
+  atomSpec.outputs?.forEach(prop => {
+    const key = Id.qualifyId(atomId, prop);
+    addBinding(bindings.output, key, key);
   });
 };
 
-export const addConnections = (layerId, connections, inputBindings) => {
+const addBinding = (bindings, key, value) => {
+  const bound = bindings[key] ??= [];
+  if (!bound.includes(value)) {
+    bound.push(value);
+  }
+};
+
+export const mapOutputToBindings = (atomId, output, bindings) => {
+  const scoped = {};
+  map(output, (key, value) => {
+    if (value !== undefined) {
+      const propKey = Id.qualifyId(atomId, key);
+      const bound = bindings.output[propKey];
+      if (bound) {
+        bound.forEach(key => scoped[key] = value);
+      }
+    }
+  });
+  //log.group('processOutput:');
+  //log(output);
+  //log('boundOutput:', scoped);
+  //log.groupEnd();
+  return scoped;
+};
+
+export const mapInputToBindings = (input, bindings) => {
+  const scoped = {};
+  map(input, (key, value) => {
+    const bound = bindings.input[key];
+    if (bound) {
+      bound.forEach(key => scoped[key] = value);
+    }
+  });
+  log('boundInput:', scoped, input);
+  return scoped;
+};
+
+export const addConnections = (layerId, connections, bindings) => {
   // update input/outputBindings with cross-node connections
   entries(connections).forEach(([propId, bound]) => {
-    const {id, prop} = Id.parsePropId(propId);
+    //const {id, prop} = Id.parsePropId(propId);
     if (typeof bound === 'string') {
       bound = [bound];
     }
     // for each output target
     bound?.forEach(bound => {
-      addInputBinding({inputBindings}, quid(layerId, bound), quid(layerId, id), prop);
+      addBinding(bindings.input, Id.qualifyId(layerId, bound), Id.qualifyId(layerId, propId));
     });
   });
 }
-
-export const processOutput = (name, output, outputBindings) => {
-  Binder2.processOutput(name, output, outputBindings);
-  // output object contains App-scoped key-value pairs.
-  // `outputBindings` shows how to remap property names 
-  // from Atom-scope to App-scope.
-  const map = outputBindings[name];
-  if (map) {
-    const scoped = scopeOutput(output, map);
-    if (keys(scoped).length) {
-      log('output', keys(output), 'bound to', keys(scoped), 'for', name);
-    }
-    return scoped;
-  }
-};
-
-const scopeOutput = (output, map) => {
-  // convert keys in `output` as specified in `map`
-  // {foo: 3} * {foo: bar} => {bar: 3}
-  return entries(output??0).reduce(
-    (scoped, [key, value]) => {
-      // if key is not in map, it's probably a mistake in the Node
-      if (value !== undefined && map[key]) {
-        scoped[map[key]] = value;
-      }
-      return scoped;
-    }, 
-    create(null)
-  );
-};
-
-export const processInput = (state, inputBindings/*, persistor*/) => {
-  Binder2.processInput(state, inputBindings);
-  return entries(state)
-    .flatMap(([key, value]) => processKeyValue(key, value, inputBindings/*, persistor*/))
-    .filter(i=>i)
-    ;
-};
-
-const processKeyValue = (key, value, inputBindings/*, persistor*/) => {
-  // inputBindings map keys from App-scope to Atom-scope
-  // if there are bindings for this data, map the keys
-  // + and persist the data if flagged 
-  const bindings = inputBindings[key];
-  if (bindings) {
-    // TODO(sjmiles): feels out of place
-    // if (value !== undefined) {
-    //   bindings.map(({persist}) => persist && persistor?.(key, value));
-    // }
-    // restructure binding data
-    const bound = bindings.map(({id, prop}) => ({id, inputs: {[prop]: value}}));
-    if (bound?.length) {
-      log('input', {[key]: value}, 'bound to', bindings.map(({id, prop})=> `${id}.${prop}`));
-    }
-    // provide binding data
-    return bound;
-  }
-};
-
-export const removeBindings = ({inputBindings, outputBindings}, objectId) => {
-  const prefix = Id.qualifyId(objectId, '');
-  const matches = id => id.startsWith(prefix);
-  entries(inputBindings).forEach(([key, bound]) => {
-    if (matches(key)) {
-      delete inputBindings[key];
-    } else {
-      inputBindings[key] = bound.filter(({id}) => !matches(id));
-    }
-  });
-  keys(outputBindings).forEach(key => {
-    if (matches(key)) {
-      delete outputBindings[key];
-    }
-  });
-};
