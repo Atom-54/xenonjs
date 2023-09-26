@@ -78,19 +78,25 @@ export class PixiSpriteGrid extends PixiObject {
       if (gem.pulse) {
         s.scale.x = s.scale.y = Math.sin(frame * 0.08) * 0.2 + 1.3;
       }
-      // random motion effect
-      // if (gem.ol === 0 && gem.ot === 0 && Math.random() < 0.002) {
-      //   gem.ol = (Math.round(Math.random()) * 2 - 1) * 0.99;
-      //   gem.ot = (Math.round(Math.random()) * 2 - 1) * 0.99;
-      // }
     });
-    this.findMatches(gems, object);
-    // random explosion effect
-    //   if (Math.random() < 1e-1) {
-    //     this.explodeGem(gems, object);
-    //   }
+    //
+    const splodables = [...this.findRowMatches(gems, object), ...this.findColMatches(gems, object)];
+    const coords = splodables.map(({i, j}) => `${i},${j}`);
+    const deduped = [...new Set(coords)];
+    deduped.forEach(ij => {
+      const ord = ij.split(',');
+      const i = Number(ord[0]), j = Number(ord[1]);
+      this.explodeGem(gems, object, i, j);
+    });
   }
-  findMatches(gems, object) {
+  findRowMatches(gems, object) {
+    const splodable = [];
+    const splodeRow = (i, c, j) => {
+      for (let ii = i-c-1; ii++, c--; c>0) {
+        splodable.push({i: ii, j});
+        //this.explodeGem(gems, object, ii, j);
+      }
+    };
     for (let j=0; j<rows; j++) {
       let c = 0, k = null;
       for (let i=0; i<cols; i++) {
@@ -100,21 +106,46 @@ export class PixiSpriteGrid extends PixiObject {
           c++;
         } else {
           if (c > 2) {
-            for (let ii = i-c-1; ii++, c--; c>0) {
-              this.explodeGem(gems, object, ii, j);
-            }
+            splodeRow(i, c, j);
           }
           c = 1;
           k = slot.k;
         }
       }
       if (c > 2) {
-        for (let ii = cols-c-1; ii++, c--; c>0) {
-          this.explodeGem(gems, object, ii, j);
-        }
+        splodeRow(cols, c, j);
       }
     }
+    return splodable;
   }
+  findColMatches(gems, object) {
+    const splodable = [];
+    const splodeCol = (i, c, j) => {
+      for (let ji = j-c-1; ji++, c--; c>0) {
+        splodable.push({i, j: ji});
+      }
+    };
+    for (let i=0; i<cols; i++) {
+      let c = 0, k = null;
+      for (let j=0; j<rows; j++) {
+        const key = i + j*cols;
+        const slot = gems[key];
+        if (k === slot.k) {
+          c++;
+        } else {
+          if (c > 2) {
+            splodeCol(i, c, j);
+          }
+          c = 1;
+          k = slot.k;
+        }
+      }
+      if (c > 2) {
+        splodeCol(i, c, rows);
+      }
+    }
+    return splodable;
+  }  
   updateSparkle({s}) {
     if (s.alpha) {
       s.alpha = Math.max(0, s.alpha - 0.1);
@@ -144,6 +175,7 @@ export class PixiSpriteGrid extends PixiObject {
     s.gemdex = l;
     gem.k = k;
     gem.s = s;
+    //
     this.scaleAndPositionGem(gem);
   }
   pointerDown(e, gems) {
