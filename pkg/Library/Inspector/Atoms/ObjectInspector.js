@@ -360,7 +360,7 @@ formatPropValueByType(currentValue, {type: currentType, store}, newValue) {
   if (currentType === 'Boolean') {
     return Boolean(!currentValue);
   } else if (currentType === 'Number') {
-    return Number(newValue);
+    return isNaN(newValue) ? currentValue : Number(newValue);
   }
   const isStringType = ['String', 'MultilineText'].includes(currentType);
   if (!isStringType) { 
