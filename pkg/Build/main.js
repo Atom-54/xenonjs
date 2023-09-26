@@ -5,7 +5,7 @@
  */
 import {assign, keys, values} from 'xenonjs/Library/CoreXenon/Reactor/safe-object.js';
 import {Params} from 'xenonjs/Library/CoreXenon/Reactor/Atomic/js/utils/params.js';
-import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
+import * as Flan from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
 import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
 import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
 import {loadGraph} from 'xenonjs/Library/CoreXenon/Designer/GraphService.js';
@@ -41,9 +41,9 @@ export const main = async (xenon, Composer) => {
     persistations.base$GraphList$graphAgent$selectedMeta = {id, owner, readonly};
   }
   // create main flan
-  const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library, persistations);
+  const flan = globalThis.flan = Flan.createFlan(xenon.emitter, Composer, library, persistations);
   // create base layer
-  const base = await flan.createLayer([BaseGraph, BuildGraph], 'base');
+  const base = await Flan.createLayer(flan, [BaseGraph, BuildGraph], 'base');
   // observe data changes
   base.onvalue = state => state && onValue(state);
   // ready

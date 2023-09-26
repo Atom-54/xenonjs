@@ -5,9 +5,9 @@
  */
 import {assign, keys, nob} from '../Reactor/safe-object.js';
 import {deepCopy} from '../Reactor/Atomic/js/utils/object.js';
-import * as App from '../Framework/App.js';
 import * as Properties from './Properties.js'
 import * as Structure from './Structure.js';
+import * as Flan from '../Framework/Flan.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('Design', 'orange', 'black');
@@ -41,13 +41,13 @@ export const DesignService = {
 
 export const designLayerIdKey = 'base$DesignLayer$Layer$layerId';
 export const simpleLayoutKey = 'Main$designer$layout';
-export const getDesignLayerId = layer => App.get(layer, designLayerIdKey);
+export const getDesignLayerId = layer => Flan.get(layer, designLayerIdKey);
 export const getDesignLayoutKey = layer => `${getDesignLayerId(layer)}\$${simpleLayoutKey}`;
 export const getDesignSelectedKey = layer => `${getDesignLayerId(layer)}$Main$designer$selected`;
 
 // (improperly) used by GraphService
 export const getDesignLayer = layer => layer.flan.layers[getDesignLayerId(layer)];
-const getSelectedObjectId = layer => App.get(layer, getDesignSelectedKey(layer));
+const getSelectedObjectId = layer => Flan.get(layer, getDesignSelectedKey(layer));
 
 const updateProp = (layer, data) => {
   const design = getDesignLayer(layer);
@@ -81,11 +81,11 @@ export const save = layer => {
     }
     log('save graph:', {id: layer.graph.meta.id});
     layer.graph.meta.customLibraries = gatherCustomLibraries(layer);
-    const graphs = App.get(base, 'base$GraphList$graphAgent$graphs');
+    const graphs = Flan.get(base, 'base$GraphList$graphAgent$graphs');
     const newGraph = deepCopy(layer.graph);
     const newGraphs = replaceGraph(graphs, newGraph);
     if (newGraphs) {
-      App.setData(base, {
+      Flan.setData(base, {
         base$GraphList$graphAgent$graph: newGraph,
         base$GraphList$graphAgent$graphs: newGraphs,
         base$NodeTypeList$typeList$graphs: newGraphs
@@ -110,7 +110,7 @@ export const applyStyleToObject = (layer, style, objectId) => {
   if (objectId) {
     const designLayoutKey = getDesignLayoutKey(layer);
     // layout is here
-    const layout = App.get(layer, designLayoutKey) ?? nob();
+    const layout = Flan.get(layer, designLayoutKey) ?? nob();
     // mutatable
     const mod = deepCopy(layout);
     // create/modify entry in layout
@@ -118,7 +118,7 @@ export const applyStyleToObject = (layer, style, objectId) => {
     // retain in designed state
     layer.graph.state[simpleLayoutKey] = mod;
     // update live state
-    App.set(layer, designLayoutKey, mod);
+    Flan.set(layer, designLayoutKey, mod);
   }
 };
 

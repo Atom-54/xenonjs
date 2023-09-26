@@ -3,12 +3,12 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+import * as Id from './Id.js';
 import * as Binder from './Binder.js';
 import * as Graphs from './Graphs.js';
 import * as Layers from './Layers.js';
-import * as Id from './Id.js';
-import {assign, entries, create, keys, map, nob, values} from '../Reactor/safe-object.js';
-import {deepEqual} from '../Reactor/Atomic/js/utils/object.js';
+import * as Flan from './Flan.js';
+import {keys, map} from '../Reactor/safe-object.js';
 
 globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `${v}${strings[i + 1]}`).join('')}`.trim();
 
@@ -16,9 +16,6 @@ globalThis.html = (strings, ...values) => `${strings[0]}${values.map((v, i) => `
 const log = logf('App', 'purple');
 //logf.flags.App = true;
 
-globalThis.layers = create(null);
-
-// init the app with Atom industry `atomEmitter`
 export const createLayer = async (graph, atomEmitter, Composer, services, name='') => {
   log(`createLayer "${name}"`);
   // union graphs if provided more than one
@@ -32,26 +29,17 @@ export const createLayer = async (graph, atomEmitter, Composer, services, name='
   const composer = Composer?.createComposer(); 
   // make a graph layer
   const layer = await Layers.reifyGraphLayer(graph, atomEmitter, composer, services, name);
-  composer.onevent = (atomName, event) => handleAtomEvent(layer, atomName, event);
   // connect Atoms to app listeners
   connectAtoms(layer);
+  composer.onevent = (atomName, event) => handleAtomEvent(layer, atomName, event);
   // strobe for rendering
   await Layers.invalidate(layer);
   // all done
   return layer;
 };
 
-export const handleAtomEvent = (layer, name, event) => {
-  log('handleAtomEvent', name, event);
-  layer.atoms[name]?.handleEvent(event);
-};
-
-const connectServices = (layer, services) => {
-  layer.services = services ?? {};
-};
-
 // connect Atoms to app listeners
-export const connectAtoms = (layer) => {
+const connectAtoms = (layer) => {
   map(layer.atoms, (name, atom) => {
     // TODO(sjmiles): worker output is output.output :( won't work right now
     atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ output));
@@ -60,50 +48,16 @@ export const connectAtoms = (layer) => {
   }); 
 };
 
+export const handleAtomEvent = (layer, name, event) => {
+  log('handleAtomEvent', name, event);
+  layer.atoms[name]?.handleEvent(event);
+};
+
 export const obliterateLayer = layer => {
   // dispose Atoms
   Layers.obliterateGraphLayer(layer);
   // remove state data
   clearData(layer);
-};
-
-// push static layer data into the data stream
-export const initializeData = async (layer, persistedState) => {
-  // get initial graph data
-  const data = await Layers.initializeData(layer);
-  assign(data, persistedState)
-  // apply it to Atoms
-  return setData(layer, data);
-};
-
-export const clearData = (layer, atomIds) => {
-  const ob = layer.bindings.outputBindings;
-  const getAtomPropKeys = atomId => keys(ob[atomId]).map(key => Id.qualifyId(atomId, key));
-  const ids = atomIds ?? keys(layer.atoms);
-  const props = ids.flatMap(atomId => getAtomPropKeys(atomId));
-  const nullify = nob();
-  props.forEach(key => nullify[key] = null);
-  log('clearData built nullification object:', nullify);
-  setData(layer, nullify);
-};
-
-export const get = (layer, scopedKey) => {
-  log('get', scopedKey);
-  return layer.flan.state[scopedKey];
-};
-
-export const set = (layer, scopedKey, value) => {
-  log('set', scopedKey, value);
-  forwardBoundInput(layer, {[scopedKey]: value});
-};
-
-export const setUnscoped = (layer, key, value) => {
-  const scopedKey = Id.qualifyId(layer.name, key);
-  return set(layer, scopedKey, value);
-};
-
-export const setData = async (layer, data) => {
-  forwardBoundInput(layer, data);
 };
 
 const atomRender = ({composer, system}, atomName, atom, packet) => {
@@ -117,47 +71,8 @@ const atomOutput = (layer, atomName, atom, output) => {
   if (keys(output).length) {
     log('atomOutput', atomName, output);
     //layer.onoutput?.(layer, atomName, atom, output);
-    forwardBoundOutput(layer, atomName, output);
+    Flan.forwardBoundOutput(layer, atomName, output);
   }
-};
-
-const forwardBoundOutput = (layer, atomName, output) => {
-  // translate atom output through outputBindings to create boundInput
-  const boundInput = Binder.processOutput(atomName, output, layer.bindings.outputBindings);
-  // feed bindings back as boundInput
-  forwardBoundInput(layer, boundInput);
-};
-
-const forwardBoundInput = (layer, scopedInput) => {
-  // remove output that is unchanged from state
-  const dirtyInput = dirtyCheck(layer.flan.state, scopedInput);
-  //log('assigning dirtyInput:', dirtyInput);
-  // if there is any...
-  if (keys(dirtyInput).length) {
-    // drop input into state
-    assign(layer.flan.state, dirtyInput);
-    // allow layer to intervene
-    layer.onvalue?.(dirtyInput);
-    // send bound inputs to Atoms
-    layer.flan.forwardStateChanges(dirtyInput);
-  }
-};
-
-export const dirtyCheck = (state, data) => {
-  const dirty = create(null);
-  const clean = create(null);
-  entries(data).forEach(([key, value]) => {
-    if (!deepEqual(value, state[key])) {
-      dirty[key] = value;
-    }
-    else {
-      clean[key] = value;
-    }
-  });
-  if (keys(clean).length) {
-    //log.warn('ignoring clean values:', clean);
-  }
-  return dirty;
 };
 
 // push static layer data into the data stream
@@ -219,9 +134,9 @@ const atomServiceHandler = async (layer, atomName, atom, serviceName, methodName
         const key = Id.qualifyId(layer.name, data.stateKey);
         switch (methodName) {
           case 'GetStateValue': 
-            return finish(get(layer, key));
+            return finish(Flan.get(layer, key));
           case 'SetStateValue':
-            return finish(set(layer, key, data.value));
+            return finish(Flan.set(layer, key, data.value));
         }
       }
     }

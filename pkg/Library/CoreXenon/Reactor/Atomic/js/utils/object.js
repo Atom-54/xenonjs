@@ -132,3 +132,20 @@ export const deepUndefinedToNull = (obj) => {
   }
   return obj;
 };
+
+export const dirtyCheck = (state, data) => {
+  const dirty = Object.create(null);
+  //const clean = Object.create(null);
+  Object.entries(data).forEach(([key, value]) => {
+    if (!deepEqual(value, state[key])) {
+      dirty[key] = value;
+    }
+    //else {
+    //  clean[key] = value;
+    //}
+  });
+  //if (Object.keys(clean).length) {
+  //  log.warn('ignoring clean values:', clean);
+  //}
+  return dirty;
+};

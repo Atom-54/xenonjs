@@ -17,7 +17,7 @@ async update({graph, graphJson, data, designable}, state, {service, isDirty, out
   if (!state.layerId && (graph || graphJson)) {
     const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph: graphJson, graphId: graph, designable});
     if (layerId) {
-      await service('GraphService', 'CreateLayerBinding', {layerId});
+      //await service('GraphService', 'CreateLayerBinding', {layerId});
       //const io = await service('GraphService', 'ComputeLayerIO', {layerId});
       //const i = io.i?.map(path => path.replace(/\$/g, '.'));
       return {layerId}; //, io: i};

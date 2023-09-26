@@ -21,9 +21,10 @@ export const loadFirebaseLibrary = async (firebase) => {
 };
 
 export const askLibrary = async(library, queryEmbedding) => {
+  log('askLibrary', library);
   const results = await query(library, queryEmbedding);
-  //log("askLibrary results: " + JSON.stringify(results, null, 2));
   const packed = packResults(results);
+  log('askLibrary results: ', packed);
   return packed;
 };
 
@@ -85,7 +86,7 @@ const packResults = results => {
 };
 
 export const generateCompletion = async (query, bits) => {
-  const goodBits = Results.sortBits(Results.filterBits(bits, 0.8));
+  const goodBits = Results.sortBits(Results.filterBits(bits, 0.1));
   const response = {
     bits: goodBits,
     infos: Results.deduplicateInfo(goodBits)
@@ -138,7 +139,8 @@ Answer:`;
 const makePrompt = (query, context) => {
   return promptTemplate
     .replace("{context}", context)
-    .replace("{query}", query);
+    .replace("{query}", query)
+    ;
 };
 
 // given the query, add the prompt template and return the encoded total
