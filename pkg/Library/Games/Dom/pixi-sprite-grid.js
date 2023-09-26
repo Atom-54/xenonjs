@@ -84,10 +84,36 @@ export class PixiSpriteGrid extends PixiObject {
       //   gem.ot = (Math.round(Math.random()) * 2 - 1) * 0.99;
       // }
     });
+    this.findMatches(gems, object);
     // random explosion effect
     //   if (Math.random() < 1e-1) {
     //     this.explodeGem(gems, object);
     //   }
+  }
+  findMatches(gems, object) {
+    for (let j=0; j<rows; j++) {
+      let c = 0, k = null;
+      for (let i=0; i<cols; i++) {
+        const key = i + j*cols;
+        const slot = gems[key];
+        if (k === slot.k) {
+          c++;
+        } else {
+          if (c > 2) {
+            for (let ii = i-c-1; ii++, c--; c>0) {
+              this.explodeGem(gems, object, ii, j);
+            }
+          }
+          c = 1;
+          k = slot.k;
+        }
+      }
+      if (c > 2) {
+        for (let ii = cols-c-1; ii++, c--; c>0) {
+          this.explodeGem(gems, object, ii, j);
+        }
+      }
+    }
   }
   updateSparkle({s}) {
     if (s.alpha) {
@@ -101,8 +127,8 @@ export class PixiSpriteGrid extends PixiObject {
       s.alpha = 0.85;      
     }
   }
-  explodeGem(gems, object) {
-    let [l, t, dl, dt] = [irand(cols), irand(rows), 0, -1];
+  explodeGem(gems, object, l, t) {
+    let [dl, dt] = [0, -1];
     for (let j=t; j>0; j--) {
       const i = l + j*cols;
       const slot = gems[i];
