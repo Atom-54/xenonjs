@@ -129,6 +129,7 @@ export const reifyObject = async (layer, id) => {
 export const deleteObject = (layer, objectId) => {
   removeObject(layer, objectId);
   App.set(layer, Design.getDesignSelectedKey(layer), null);
+  clearObjectLayout(layer, objectId);
   Design.save(layer);
 };
 
@@ -138,6 +139,15 @@ const removeObject = (layer, objectId) => {
     // any object formerly contained by objectId are now part of node.container
     recontainChildren(layer, objectId);
     layer.graph = deleteObjectFromGraph(layer, objectId);
+  }
+};
+
+const clearObjectLayout = (layer, objectId) => {
+  const designLayoutKey = Design.getDesignLayoutKey(layer);
+  const layout = {...App.get(layer, designLayoutKey)};
+  if (layout) {
+    delete layout[objectId];
+    App.set(layer, designLayoutKey, layout);
   }
 };
 
