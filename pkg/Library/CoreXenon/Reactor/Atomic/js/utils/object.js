@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 /*
 * update the fields of `obj` with the fields of `data`,
 * perturbing `obj` as little as possible (since it might be a magic proxy thing
@@ -11,9 +12,8 @@
 export const shallowUpdate = (obj, data) => {
   let result = data;
   if (!data) {
-    //
-  }
-  else if (Array.isArray(data)) {
+    // noop
+  } else if (Array.isArray(data)) {
     if (!Array.isArray(obj)) {
       // TODO(sjmiles): eek, very perturbing to obj
       obj = [];
@@ -101,7 +101,7 @@ export const deepEqual = (a, b) => {
   if (type !== typeof b) {
     return false;
   }
-  // we are `deep` because we recursively study object types
+  // we are `deep` because we recursively study objects
   if (type === 'object' && a && b) {
     const aProps = Object.getOwnPropertyNames(a);
     const bProps = Object.getOwnPropertyNames(b);
@@ -117,13 +117,12 @@ export const deepUndefinedToNull = (obj) => {
     return null;
   }
   if (obj && (typeof obj === 'object')) {
-    // we are `deep` because we recursively study object types
+    // we are `deep` because we recursively study objects
     const props = Object.getOwnPropertyNames(obj);
     props.forEach(name => {
       const prop = obj[name];
       if (prop === undefined) {
         delete obj[name];
-        //obj[name] = null;
       }
       else {
         deepUndefinedToNull(prop);
@@ -135,17 +134,10 @@ export const deepUndefinedToNull = (obj) => {
 
 export const dirtyCheck = (state, data) => {
   const dirty = Object.create(null);
-  //const clean = Object.create(null);
   Object.entries(data).forEach(([key, value]) => {
     if (!deepEqual(value, state[key])) {
       dirty[key] = value;
     }
-    //else {
-    //  clean[key] = value;
-    //}
   });
-  //if (Object.keys(clean).length) {
-  //  log.warn('ignoring clean values:', clean);
-  //}
   return dirty;
 };
