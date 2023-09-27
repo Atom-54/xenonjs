@@ -16,3 +16,5 @@ export const parsePropId = propId => {
   const id = qualifyId(...ids);
   return {id, prop};
 };
+export const matchesIdPrefix = (id, prefix) => id?.startsWith?.(`${prefix}\$`);
+  

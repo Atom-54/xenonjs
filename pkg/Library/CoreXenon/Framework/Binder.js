@@ -63,6 +63,32 @@ const addBinding = (bindings, key, value) => {
   }
 };
 
+export const addConnections = (layerId, connections, bindings) => {
+  // update input/outputBindings with cross-node connections
+  entries(connections).forEach(([propId, bound]) => {
+    //const {id, prop} = Id.parsePropId(propId);
+    if (typeof bound === 'string') {
+      bound = [bound];
+    }
+    // for each output target
+    bound?.forEach(bound => {
+      addBinding(bindings.input, Id.qualifyId(layerId, bound), Id.qualifyId(layerId, propId));
+    });
+  });
+};
+
+export const removeBindings = (bindings, objectId) => {
+  const remove = bindings => entries(bindings).forEach(([key, bound]) => {
+    if (matches(key)) {
+      delete bindings[key];
+    } else {
+      bindings[key] = bound.filter(id => !Id.matchesIdPrefix(id, objectId));
+    }
+  });
+  remove(bindings.input);
+  remove(bindings.output);
+};
+
 export const mapOutputToBindings = (atomId, output, bindings) => {
   const scoped = {};
   map(output, (key, value) => {
@@ -74,10 +100,7 @@ export const mapOutputToBindings = (atomId, output, bindings) => {
       }
     }
   });
-  //log.group('processOutput:');
-  //log(output);
-  //log('boundOutput:', scoped);
-  //log.groupEnd();
+  log('boundOutput:', scoped, output);
   return scoped;
 };
 
@@ -91,32 +114,4 @@ export const mapInputToBindings = (input, bindings) => {
   });
   log('boundInput:', scoped, input);
   return scoped;
-};
-
-export const addConnections = (layerId, connections, bindings) => {
-  // update input/outputBindings with cross-node connections
-  entries(connections).forEach(([propId, bound]) => {
-    //const {id, prop} = Id.parsePropId(propId);
-    if (typeof bound === 'string') {
-      bound = [bound];
-    }
-    // for each output target
-    bound?.forEach(bound => {
-      addBinding(bindings.input, Id.qualifyId(layerId, bound), Id.qualifyId(layerId, propId));
-    });
-  });
-}
-
-export const removeBindings = (bindings, objectId) => {
-  const prefix = Id.qualifyId(objectId, '');
-  const matches = id => id.startsWith(prefix);
-  const remove = bindings => entries(bindings).forEach(([key, bound]) => {
-    if (matches(key)) {
-      delete bindings[key];
-    } else {
-      bindings[key] = bound.filter(id => !matches(id));
-    }
-  });
-  remove(bindings.input);
-  remove(bindings.output);
 };

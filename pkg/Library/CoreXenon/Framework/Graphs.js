@@ -120,7 +120,7 @@ export const union = graphs => {
 export const recontainObjects = (graph, fromObjectId, toContainer) => {
   const objectIds = [];
   entries(graph.nodes).forEach(([id, node]) => {
-    if (node.container?.startsWith(`${fromObjectId}$`)) {
+    if (Id.matchesIdPrefix(node.container, fromObjectId)) {
       node.container = toContainer;
       objectIds.push(id);
     }
@@ -207,7 +207,7 @@ const changeGraphRectId = ({graphRects}, oldId, newId) => {
 
 const twiddle = (key, oid, newOid) => {
   const fix = key => {
-    if (key.startsWith(`${oid}$`)) {
+    if (Id.matchesIdPrefix(key, oid)) {
       return key.replace(oid, newOid);
     }
     return key;
