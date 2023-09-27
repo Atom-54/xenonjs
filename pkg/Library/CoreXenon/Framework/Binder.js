@@ -107,24 +107,16 @@ export const addConnections = (layerId, connections, bindings) => {
   });
 }
 
-export const removeBindings = ({input, output}, objectId) => {
+export const removeBindings = (bindings, objectId) => {
   const prefix = Id.qualifyId(objectId, '');
   const matches = id => id.startsWith(prefix);
-  // entries(inputBindings).forEach(([key, bound]) => {
-  //   if (matches(key)) {
-  //     delete inputBindings[key];
-  //   } else {
-  //     inputBindings[key] = bound.filter(({id}) => !matches(id));
-  //   }
-  // });
-  keys(input).forEach(key => {
+  const remove = bindings => entries(bindings).forEach(([key, bound]) => {
     if (matches(key)) {
-      delete input[key];
+      delete bindings[key];
+    } else {
+      bindings[key] = bound.filter(id => !matches(id));
     }
   });
-  keys(output).forEach(key => {
-    if (matches(key)) {
-      delete output[key];
-    }
-  });
+  remove(bindings.input);
+  remove(bindings.output);
 };

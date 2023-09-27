@@ -122,6 +122,8 @@ export const reifyObject = async (layer, id) => {
   await initializeNodeState(layer, id, node);
   // select this object
   Flan.set(layer, Design.getDesignSelectedKey(layer), id);
+  // strobe atoms (initialize)
+  values(atoms).forEach(atom => atom.invalidate?.());
 };
 
 export const deleteObject = (layer, objectId) => {

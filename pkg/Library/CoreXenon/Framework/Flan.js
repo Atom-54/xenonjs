@@ -78,19 +78,32 @@ export const forwardBoundInput = ({flan, onvalue}, scopedInput) => {
   }
 };
 
-export const forwardStateChanges = (flan, inputs) => {
+export const forwardStateChanges = (flan, inputs, justTheseNodes) => {
   values(flan.layers).forEach(layer => {
     const boundInput = Binder.mapInputToBindings(inputs, layer.bindings);
-    const inputsByAtom = create(null);
+    let inputsByAtom = create(null);
     map(boundInput, (id, value) => {
       const atomId = Id.sliceId(id, 0, -1);
       const propId = Id.sliceId(id, -1);
       const inputs = (inputsByAtom[atomId] ??= create(null));
       inputs[propId] = value;
     });
+    if (justTheseNodes) {
+      inputsByAtom = filterAtomMapByNodeIds(inputsByAtom, justTheseNodes);
+    }
     const {atoms} = layer;
     map(inputsByAtom, (id, inputs) => atoms[id] && (atoms[id].inputs = inputs));
   }); 
+};
+
+const filterAtomMapByNodeIds = (byAtom, justTheseNodes) => {
+  const filtered = create(null);
+  justTheseNodes.forEach(nodeId => map(byAtom, (id, inputs) => {
+    if (id.startsWith(nodeId)) {
+      filtered[id] = inputs;
+    }
+  }));
+  return filtered;
 };
 
 export const forwardBoundOutput = (layer, atomName, output) => {
