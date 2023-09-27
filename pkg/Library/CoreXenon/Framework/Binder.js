@@ -106,3 +106,25 @@ export const addConnections = (layerId, connections, bindings) => {
     });
   });
 }
+
+export const removeBindings = ({input, output}, objectId) => {
+  const prefix = Id.qualifyId(objectId, '');
+  const matches = id => id.startsWith(prefix);
+  // entries(inputBindings).forEach(([key, bound]) => {
+  //   if (matches(key)) {
+  //     delete inputBindings[key];
+  //   } else {
+  //     inputBindings[key] = bound.filter(({id}) => !matches(id));
+  //   }
+  // });
+  keys(input).forEach(key => {
+    if (matches(key)) {
+      delete input[key];
+    }
+  });
+  keys(output).forEach(key => {
+    if (matches(key)) {
+      delete output[key];
+    }
+  });
+};
