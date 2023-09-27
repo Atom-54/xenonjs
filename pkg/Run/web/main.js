@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Params} from 'xenonjs/Library/CoreXenon/Reactor/Atomic/js/utils/params.js';
-import {Flan} from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
+import * as Flan from 'xenonjs/Library/CoreXenon/Framework/Flan.js';
 import * as Persist from 'xenonjs/Library/CoreXenon/Framework/Persist.js';
 import * as Library from 'xenonjs/Library/CoreXenon/Framework/Library.js'
 import {loadGraph, graphParamForMeta} from 'xenonjs/Library/CoreXenon/Designer/GraphService.js';
@@ -22,7 +22,7 @@ export const main = async (xenon, Composer) => {
   if (graph) {
     const library = await Library.importLibraries(graph.meta.customLibraries ?? {});
     // create main flan
-    const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library);
+    const flan = globalThis.flan = Flan.createFlan(xenon.emitter, Composer, library);
     return reifyGraph(flan, graph);
   } else {
     log(`Graph '${graphId}' not found.`);
@@ -42,7 +42,7 @@ const reifyGraph = async (flan, graph) => {
   };
   //log(graph);
   // create layer
-  await flan.createLayer([baseGraph, graph], 'base');
+  await Flan.createLayer(flan, [baseGraph, graph], 'base');
   // ready;
   log('app is live 🌈');
 };

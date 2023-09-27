@@ -10,6 +10,7 @@ import * as Graphs from '../Framework/Graphs.js';
 import * as Layers from '../Framework/Layers.js';
 import * as App from '../Framework/App.js';
 import * as Design from './DesignService.js';
+import * as Flan from '../Framework/Flan.js';
 
 const defaultLayout = {l: 32, t: 32, w: 132, h: 132};
 const designerId = 'Main';
@@ -97,14 +98,14 @@ const objectChanged = async (layer, id) => {
 export const reifyObject = async (layer, id) => {
   // this graph
   const graph = layer.graph;
-  // this nodes
+  // this node
   const node = graph.nodes[id];
   // create atom specs from node type
   const system = nob();
   await Graphs.nodeTypeToAtomSpecs(layer.name, system, id, node);
   assign(layer.system, system);
   // create atoms from layer objects
-  const atoms = await layer.flan.atomsFactory(system);
+  const atoms = await Layers.reifyAtoms(system, layer.flan.emitter);
   // memoize
   assign(layer.atoms, atoms);
   // connect to listeners
@@ -112,23 +113,20 @@ export const reifyObject = async (layer, id) => {
   // is live
   log('reify made:', node, system, atoms);
   // add object's bindings
-  const {inputBindings, outputBindings} = Binder.constructBindings(system);
-  assign(layer.bindings.inputBindings, inputBindings);
-  assign(layer.bindings.outputBindings, outputBindings);
+  const {input, output} = Binder.constructBindings(system);
+  assign(layer.bindings.input, input);
+  assign(layer.bindings.output, output);
   // add object's connections
   Binder.addConnections(layer.name, connectionsByObjectId(graph, id), layer.bindings.inputBindings);
-  // apply virtualized state to the reified object and the designer object.
-  await App.setAtomsData(layer, [
-    ...atomIdsForObjectId(layer, id),
-    ...atomIdsForObjectId(layer, designerId)
-  ]);
+  // apply Node's static state 
+  await initializeNodeState(layer, id, node);
   // select this object
-  App.set(layer, Design.getDesignSelectedKey(layer), id);
+  Flan.set(layer, Design.getDesignSelectedKey(layer), id);
 };
 
 export const deleteObject = (layer, objectId) => {
   removeObject(layer, objectId);
-  App.set(layer, Design.getDesignSelectedKey(layer), null);
+  Flan.set(layer, Design.getDesignSelectedKey(layer), null);
   clearObjectLayout(layer, objectId);
   Design.save(layer);
 };
@@ -147,7 +145,7 @@ const clearObjectLayout = (layer, objectId) => {
   const layout = {...App.get(layer, designLayoutKey)};
   if (layout) {
     delete layout[objectId];
-    App.set(layer, designLayoutKey, layout);
+    Flan.set(layer, designLayoutKey, layout);
   }
 };
 
@@ -162,9 +160,12 @@ export const rebuildObject = async (layer, id) => {
   return reifyObject(layer, id);
 };
 
-const atomIdsForObjectId = ({name, atoms}, objectId) => {
-  const atomPrefix = Id.qualifyId(name, objectId, '');
-  return keys(atoms).filter(atomId => atomId.startsWith(atomPrefix));
+export const initializeNodeState = async (layer, id, node) => {
+  const state = {};
+  await Graphs.nodeToNodeState(id, node.type, state);
+  assign(layer.graph.state, state);
+  const qualifiedState = Graphs.qualifyState(layer.name, state);
+  Flan.forwardBoundInput(layer, qualifiedState);
 };
 
 const connectionsByObjectId = (graph, id) => {
@@ -188,7 +189,7 @@ const reifyGraphLayout = layer => {
   // this is the layer metadata
   const layout = layer.graph.state[Design.simpleLayoutKey];
   // assign mutable copy of the data to the system key
-  App.set(layer, Design.getDesignLayoutKey(layer), deepCopy(layout));  
+  Flan.set(layer, Design.getDesignLayoutKey(layer), deepCopy(layout));  
 };
 
 const deleteObjectFromGraph = (layer, objectId) => {
