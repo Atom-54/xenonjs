@@ -9,7 +9,7 @@ import * as Layers from '../Framework/Layers.js';
 import * as Flan from '../Framework/Flan.js';
 import * as Design from './DesignService.js';
 
-// rolls over the neighbor's dog! it's log!
+// rolls down stairs, alone or in pairs! it's log!
 const log = logf('Properties', 'darkorange', 'black');
 
 export const updateProp = async (design, {propId, store, value}, objectId) => {
