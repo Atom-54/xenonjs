@@ -10,7 +10,7 @@ import {PixiObject} from '../../PixiJs/Dom/pixi-object.js';
 
 // const log = logf('DOM:PixiSpriteGrid', 'beige', 'black');
 
-const assets = Paths.resolve('$xenon/Library/assets/gems');
+const assets = Paths.resolve('$library/assets/gems');
 
 const [cols, rows] = [8, 8];
 const siz = 65, margin = 8;
