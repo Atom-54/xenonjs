@@ -11,7 +11,6 @@ import * as App from './App.js';
 import * as Id from './Id.js';
 
 const log = logf('Flan', 'purple', '#eeeeee');
-logf.flags.Flan = true;
 
 export const createFlan = (emitter, Composer, library, persistations) => ({
   layers: create(null),
