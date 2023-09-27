@@ -142,7 +142,7 @@ const removeObject = (layer, objectId) => {
 
 const clearObjectLayout = (layer, objectId) => {
   const designLayoutKey = Design.getDesignLayoutKey(layer);
-  const layout = {...App.get(layer, designLayoutKey)};
+  const layout = {...Flan.get(layer, designLayoutKey)};
   if (layout) {
     delete layout[objectId];
     Flan.set(layer, designLayoutKey, layout);

@@ -8,10 +8,6 @@ async shouldUpdate({library, query}, state) {
   return library && query;
 },
 async update({library, query}, state, {service, isDirty}) {
-  if (query && !isDirty('query')) {
-    log.warn('query came again!')
-    return;
-  }
   const result = await service('PolymathService', 'Ask', {library, query});
   return {query, result, completion: result.completion};
 }
