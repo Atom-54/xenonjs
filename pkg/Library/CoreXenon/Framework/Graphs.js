@@ -5,11 +5,8 @@
  */
 import * as Id from './Id.js';
 import * as Nodes from './Nodes.js';
-import {SafeObject} from '../Reactor/safe-object.js';
+import {entries, create} from '../Reactor/safe-object.js';
 import {deepMerge, deepCopy} from '../Reactor/Atomic/js/utils/object.js';
-
-// be lazy
-const {keys, entries, create} = SafeObject;
 
 const log = logf('Graphs', '#8f43ee');
 log.flags.Graphs = true;

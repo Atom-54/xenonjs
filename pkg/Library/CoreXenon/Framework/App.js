@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as Id from './Id.js';
-import * as Binder from './Binder.js';
 import * as Graphs from './Graphs.js';
 import * as Layers from './Layers.js';
 import * as Flan from './Flan.js';
@@ -39,7 +38,7 @@ export const createLayer = async (graph, atomEmitter, Composer, services, name='
 };
 
 // connect Atoms to app listeners
-const connectAtoms = (layer) => {
+export const connectAtoms = (layer) => {
   map(layer.atoms, (name, atom) => {
     // TODO(sjmiles): worker output is output.output :( won't work right now
     atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ output));
@@ -57,7 +56,7 @@ export const obliterateLayer = layer => {
   // dispose Atoms
   Layers.obliterateGraphLayer(layer);
   // remove state data
-  clearData(layer);
+  Flan.clearData(layer);
 };
 
 const atomRender = ({composer, system}, atomName, atom, packet) => {
@@ -73,19 +72,6 @@ const atomOutput = (layer, atomName, atom, output) => {
     //layer.onoutput?.(layer, atomName, atom, output);
     Flan.forwardBoundOutput(layer, atomName, output);
   }
-};
-
-// push static layer data into the data stream
-export const setAtomsData = async (layer, atomIds) => {
-  // get graph data
-  const data = await Layers.initializeData(layer);
-  // apply it to atomIds
-  const boundInput = Binder.processInput(data, layer.bindings.inputBindings);
-  boundInput.forEach(({id, inputs}) => {
-    if (atomIds.find(atomId => atomId === id) && layer.atoms[id]) {
-      layer.atoms[id].inputs = inputs;
-    }
-  });
 };
 
 const atomService = async (layer, atomName, atom, {kind, service, msg, data, resolve}) => {

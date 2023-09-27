@@ -5,7 +5,6 @@
  */
 import {create, values, map} from '../Reactor/safe-object.js';
 import {dirtyCheck} from '../Reactor/Atomic/js/utils/object.js';
-
 import * as Binder from './Binder.js';
 import * as Layers from './Layers.js';
 import * as App from './App.js';
@@ -65,7 +64,7 @@ export const setData = async (layer, data) => {
   forwardBoundInput(layer, data);
 };
 
-const forwardBoundInput = ({flan, onvalue}, scopedInput) => {
+export const forwardBoundInput = ({flan, onvalue}, scopedInput) => {
   // remove output that is unchanged from state
   const dirtyInput = dirtyCheck(flan.state, scopedInput);
   // if there is any...
@@ -102,12 +101,12 @@ export const forwardBoundOutput = (layer, atomName, output) => {
 };
 
 export const clearData = (layer, atomIds) => {
-  const ob = layer.bindings.outputBindings;
+  const ob = layer.bindings.output;
   const getAtomPropKeys = atomId => keys(ob[atomId]).map(key => Id.qualifyId(atomId, key));
   const ids = atomIds ?? keys(layer.atoms);
   const props = ids.flatMap(atomId => getAtomPropKeys(atomId));
   const nullify = create(null);
-  props.forEach(key => nullify[key] = null);
+  props.forEach(key => nullify[key] = undefined);
   log('clearData built nullification object:', nullify);
   setData(layer, nullify);
 };
@@ -126,4 +125,3 @@ export const setUnscoped = (layer, key, value) => {
   const scopedKey = Id.qualifyId(layer.name, key);
   return set(layer, scopedKey, value);
 };
-

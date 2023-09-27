@@ -41,11 +41,12 @@ const addAtomSpecBindings = (bindings, atomId, atomSpec) => {
       bounded = [bounded];
     }
     const value = Id.qualifyId(atomId, prop);
-    addBinding(bindings.output, value, value);
+    //addBinding(bindings.output, value, value);
     bounded.forEach(bound => {
       const key = Id.qualifyId(nodeId, bound);
-      addBinding(bindings.input, key, key);
+      addBinding(bindings.output, key, key);
       addBinding(bindings.input, key, value);
+      //addBinding(bindings.input, key, key);
     });
   });
   // each atom output sends to a state key

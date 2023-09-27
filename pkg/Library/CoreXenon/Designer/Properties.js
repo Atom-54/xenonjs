@@ -3,12 +3,12 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {nob} from '..//Reactor/safe-object.js';
-import * as Id from '..//Framework/Id.js';
-import * as App from '..//Framework/App.js';
-import * as Layers from '..//Framework/Layers.js';
+import {nob} from '../Reactor/safe-object.js';
+import * as Id from '../Framework/Id.js';
+import * as Layers from '../Framework/Layers.js';
 import * as Structure from './Structure.js';
 import * as Design from './DesignService.js';
+import * as Flan from '../Framework/Flan.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('Properties', 'darkorange', 'black');
@@ -47,7 +47,7 @@ const updateDataProp = (design, propId, value) => {
   // this prop is changed in the durable graph state
   (design.graph.state ??= {})[propId] = value;
   // this prop is changed in the live application state
-  App.set(design, Id.qualifyId(design.name, propId), value);
+  Flan.set(design, Id.qualifyId(design.name, propId), value);
 };
 
 const updatePropWithConnection = async (design, objectId, propId, value) => {
