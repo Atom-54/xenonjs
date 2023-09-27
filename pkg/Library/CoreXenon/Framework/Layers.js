@@ -15,14 +15,20 @@ const log = logf('Layers', '#8f43ee');
 export const reifyGraphLayer = async (graph, emit, composer, services, name='') => {
   // combine atom specs from all nodes into one 'system'
   const system = await Graphs.graphToAtomSpecs(graph, name);
+  // make real atoms from specs
+  const atoms = await reifyAtoms(system, emit);
+  // bind
+  const bindings = generateLayerBindings({name, system, graph});
+  // this is a layer
+  return {name, graph, system, atoms, bindings, composer, services}
+};
+
+export const generateLayerBindings = ({name, system, graph}) => {
   // construct bindings from the atom specs
   const bindings = Binder.constructBindings(system);
   // add graph.connections to inputBindings
   Binder.addConnections(name, graph.connections, bindings);
-  // make real atoms from specs
-  const atoms = await reifyAtoms(system, emit);
-  // this is a layer
-  return {name, graph, system, atoms, bindings, composer, services};
+  return bindings;
 };
 
 export const obliterateGraphLayer = async layer => {
@@ -87,8 +93,8 @@ export const recontainSystemObjects = (system, fromObjectId, toContainer) => {
 };
 
 export const atomIdsForObjectId = (layer, objectId) => {
-  const atomPrefix = Id.qualifyId(layer.name, objectId, '');
-  return keys(layer.atoms).filter(atomId => atomId.startsWith(atomPrefix));
+  const atomPrefix = Id.qualifyId(layer.name, objectId);
+  return keys(layer.atoms).filter(atomId => Id.matchesIdPrefix(atomId, atomPrefix));
 };
 
 export const obliterateObject = async (layer, objectId) => {
@@ -111,9 +117,8 @@ export const obliterateObject = async (layer, objectId) => {
 };
 
 export const nullifyConnectedValues = (layer, objectId) => {
-  const objectPrefix = Id.qualifyId(objectId, '');
   const nullify = (key, bound) => {
-    if (bound.startsWith(objectPrefix)) {
+    if (Id.matchesIdPrefix(bound, objectId)) {
       const qualifiedAtomId = Id.qualifyId(layer.name, Id.sliceId(key, 0, -1));
       const prop = Id.sliceId(key, -1);
       layer.atoms[qualifiedAtomId].inputs = {[prop]: undefined};

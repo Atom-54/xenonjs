@@ -51,7 +51,7 @@ const initializeData = async (flan, layer) => {
   const data = await Layers.initializeData(layer);
   // get persisted data
   map(flan.persistations, (name, value) => {
-    if (name.startsWith(layer.name + '$')) {
+    if (Id.matchesIdPrefix(name, layer.name)) {
       data[name] = value;
     }
   });
@@ -98,7 +98,7 @@ export const forwardStateChanges = (flan, inputs, justTheseNodes) => {
 const filterAtomMapByNodeIds = (byAtom, justTheseNodes) => {
   const filtered = create(null);
   justTheseNodes.forEach(nodeId => map(byAtom, (id, inputs) => {
-    if (id.startsWith(nodeId)) {
+    if (Id.matchesIdPrefix(id, nodeId)) {
       filtered[id] = inputs;
     }
   }));

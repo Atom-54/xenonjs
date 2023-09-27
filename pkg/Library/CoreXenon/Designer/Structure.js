@@ -171,9 +171,8 @@ export const initializeNodeState = async (layer, id, node) => {
 };
 
 const connectionsByObjectId = (graph, id) => {
-  const prefix = `${id}\$`;
   const addConn = (connections, key, conn) => {
-    if (key.startsWith(prefix) || conn.startsWith(prefix)) {
+    if (Id.matchesIdPrefix(key, id) || Id.matchesIdPrefix(conn, id)) {
       connections[key] = conn;
     }
   }
@@ -208,16 +207,15 @@ const deleteObjectFromGraph = (layer, objectId) => {
 
 const deleteObjectState = (graph, objectId) => {
   keys(graph.state).forEach(key => {
-    if (key.startsWith(`${objectId}\$`)) {
+    if (Id.matchesIdPrefix(key, objectId)) {
       delete graph.state[key];
     }
   });
 };
 
 const deleteObjectConnections = (graph, objectId) => {
-  const propPrefix = Id.qualifyId(objectId, '');
   const deleteConn = (key, bound) => {
-    if (key.startsWith(propPrefix) || bound.startsWith(propPrefix)) {
+    if (Id.matchesIdPrefix(key, objectId) || Id.matchesIdPrefix(bound, objectId)) {
       delete graph.connections[key];
     }
   }

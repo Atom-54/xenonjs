@@ -5,7 +5,7 @@
  */
 import {nob} from '../Reactor/safe-object.js';
 import * as Id from '../Framework/Id.js';
-import * as Binder from '../Framework/Binder.js';
+import * as Layers from '../Framework/Layers.js';
 import * as Flan from '../Framework/Flan.js';
 import * as Design from './DesignService.js';
 
@@ -50,19 +50,15 @@ const updateDataProp = (design, propId, value) => {
 };
 
 const updatePropWithConnection = async (design, objectId, propId, value) => {
-  const graph = design.graph;
-  const connections = graph.connections ??= nob();
-  const regenerateBindings = () => {
-    design.bindings = Binder.constructBindings(design.system);
-    Binder.addConnections(design.name, connections, design.bindings);
-  };
+  const connections = design.graph.connections ??= nob();
   const connValue = value.connection?.value;
   if (connValue?.length > 0) {
     if (!connectionsEqual(connections[propId], connValue)) {
       log(`connecting '${propId}' to '${connValue?.join?.(',') ?? connValue}'`);
       // change the connection in the graph
       connections[propId] = connValue;
-      regenerateBindings();
+      // rebuild bindings
+      design.bindings = Layers.generateLayerBindings(design);
       // push the newly connected value to object(id)
       const liveValue = design.flan.state[Id.qualifyId(design.name, connValue)];
       const justTheseNodes = [Id.qualifyId(design.name, objectId)];
@@ -72,7 +68,8 @@ const updatePropWithConnection = async (design, objectId, propId, value) => {
     updateDataProp(design, propId, value.property);
     if (connections?.[propId]) {
       delete connections[propId];
-      regenerateBindings();
+      // rebuild bindings
+      design.bindings = Layers.generateLayerBindings(design);
     }
   }
 };
