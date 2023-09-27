@@ -5,10 +5,9 @@
  */
 import {nob} from '../Reactor/safe-object.js';
 import * as Id from '../Framework/Id.js';
-import * as Layers from '../Framework/Layers.js';
-import * as Structure from './Structure.js';
-import * as Design from './DesignService.js';
+import * as Binder from '../Framework/Binder.js';
 import * as Flan from '../Framework/Flan.js';
+import * as Design from './DesignService.js';
 
 // rolls over the neighbor's dog! it's log!
 const log = logf('Properties', 'darkorange', 'black');
@@ -53,20 +52,27 @@ const updateDataProp = (design, propId, value) => {
 const updatePropWithConnection = async (design, objectId, propId, value) => {
   const graph = design.graph;
   const connections = graph.connections ??= nob();
-  if (value.connection?.value?.length > 0) {
-    const connValue = value.connection.value;
+  const regenerateBindings = () => {
+    design.bindings = Binder.constructBindings(design.system);
+    Binder.addConnections(design.name, connections, design.bindings);
+  };
+  const connValue = value.connection?.value;
+  if (connValue?.length > 0) {
     if (!connectionsEqual(connections[propId], connValue)) {
       log(`connecting '${propId}' to '${connValue?.join?.(',') ?? connValue}'`);
+      // change the connection in the graph
       connections[propId] = connValue;
-      // remove old state to avoid dirty checking
-      delete graph.state?.[propId];
-      await rebuildObject(design, objectId);
+      regenerateBindings();
+      // push the newly connected value to object(id)
+      const liveValue = design.flan.state[Id.qualifyId(design.name, connValue)];
+      const justTheseNodes = [Id.qualifyId(design.name, objectId)];
+      Flan.forwardStateChanges(design.flan, {[Id.qualifyId(design.name, propId)]: liveValue}, justTheseNodes);
     }
   } else {
     updateDataProp(design, propId, value.property);
     if (connections?.[propId]) {
       delete connections[propId];
-      await rebuildObject(design, objectId);
+      regenerateBindings();
     }
   }
 };
@@ -77,9 +83,5 @@ const connectionsEqual = (conns1, conns2) => {
   return deepEqual(dedupe(conns1), dedupe(conns2));
 };
 
-const rebuildObject = async (design, id) => {
-  await Layers.obliterateObject(design, id);
-  return Structure.reifyObject(design, id);
-};
 
 
