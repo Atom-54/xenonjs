@@ -9,6 +9,6 @@ async shouldUpdate({library, query}, state) {
 },
 async update({library, query}, state, {service, isDirty}) {
   const result = await service('PolymathService', 'Ask', {library, query});
-  return {query, result, completion: result.completion};
+  return {query, result, completion: result?.completion ?? 'n/a'};
 }
 });
