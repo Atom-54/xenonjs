@@ -45,9 +45,15 @@ export const reifyAtoms = async (atoms, emit) => {
   return system;
 };
 
-export const invalidate = async layer => Promise.all(Object.values(layer.atoms).map(atom => atom.invalidate?.()));
+export const invalidate = async layer => Promise.all(values(layer.atoms).map(atom => atom.invalidate?.()));
 // outside of a request, validation may be stalled, this will unstall it
-export const revalidate = async layer => Promise.all(Object.values(layer.atoms).map(atom => atom.validate?.()));
+export const revalidate = async layer => Promise.all(values(layer.atoms).map(atom => atom.validate?.()));
+
+export const rerender = async layer => {
+  const atoms = values(layer.atoms);
+  atoms.forEach(atom => atom.render({$clear: true}));
+  atoms.forEach(atom => atom.invalidate());
+};
 
 export const initializeData = async (layer) => {
   log.groupCollapsed('initializeData');

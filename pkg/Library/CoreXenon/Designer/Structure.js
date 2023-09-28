@@ -12,7 +12,7 @@ import * as App from '../Framework/App.js';
 import * as Design from './DesignService.js';
 import * as Flan from '../Framework/Flan.js';
 
-const defaultLayout = {l: 32, t: 32, w: 132, h: 132};
+const defaultLayout = {l: 32, t: 32, w: 132, h: 132, width: 'auto'};
 const designerId = 'Main';
 const rootContainer = `${designerId}$panel#Container`;
 
@@ -281,8 +281,19 @@ export const recontain = async (layer, {key: objectId, value}) => {
 const setObjectContainer = async (layer, objectId, container) => {
   const isValidContainer = await validateContainer(layer, container);
   if (isValidContainer) {
+    // TODO(sjmiles): `container` needs clarity, it's on
+    // the Node and the Atom.spec
     layer.graph.nodes[objectId].container = container;
-    await rebuildObject(layer, objectId);
+    const prefix = Id.qualifyId(layer.name, objectId);
+    const qualifiedContainer = Id.qualifyId(layer.name, container);
+    map(layer.system, (key, spec) => {
+      if (Id.matchesIdPrefix(key, prefix)) {
+        spec.container = qualifiedContainer;
+      }
+    });
+    await Layers.rerender(layer);
+    await Layers.invalidate(layer);
+    //await rebuildObject(layer, objectId);
     Design.save(layer);
   }
 };
