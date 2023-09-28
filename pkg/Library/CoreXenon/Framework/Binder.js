@@ -79,7 +79,7 @@ export const addConnections = (layerId, connections, bindings) => {
 
 export const removeBindings = (bindings, objectId) => {
   const remove = bindings => entries(bindings).forEach(([key, bound]) => {
-    if (matches(key)) {
+    if (Id.matchesIdPrefix(key, objectId)) {
       delete bindings[key];
     } else {
       bindings[key] = bound.filter(id => !Id.matchesIdPrefix(id, objectId));
