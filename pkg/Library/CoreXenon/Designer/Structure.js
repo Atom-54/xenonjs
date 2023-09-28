@@ -278,7 +278,7 @@ export const recontain = async (layer, {key: objectId, value}) => {
   }
 };
 
-const setObjectContainer = async (layer, objectId, container) => {
+export const setObjectContainer = async (layer, objectId, container) => {
   const isValidContainer = await validateContainer(layer, container);
   if (isValidContainer) {
     // TODO(sjmiles): `container` needs clarity, it's on

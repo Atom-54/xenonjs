@@ -8,6 +8,7 @@ import * as Id from '../Framework/Id.js';
 import * as Layers from '../Framework/Layers.js';
 import * as Flan from '../Framework/Flan.js';
 import * as Design from './DesignService.js';
+import * as Structure from './Structure.js';
 
 // rolls down stairs, alone or in pairs! it's log!
 const log = logf('Properties', 'darkorange', 'black');
@@ -19,7 +20,7 @@ export const updateProp = async (design, {propId, store, value}, objectId) => {
     } else if (propId === 'OpenStyle') {
       Design.applyStyleToObject(design, value, objectId)
     } else if (propId.endsWith('$Container')) {
-      setObjectContainer(design, objectId, value);
+      Structure.setObjectContainer(design, objectId, value);
     } else if (store.type === 'TypeWithConnection') {
       await updatePropWithConnection(design, objectId, propId, value);
     } else {
@@ -27,20 +28,6 @@ export const updateProp = async (design, {propId, store, value}, objectId) => {
     }
     return true;
   }
-};
-
-const setObjectContainer = async (design, objectId, container) => {
-  const isValidContainer = await validateContainer(design, container);
-  if (isValidContainer) {
-    design.graph.nodes[objectId].container = container;
-    await Design.rebuildObject(design, objectId);
-  }
-};
-
-const validateContainer = async (design, container) => {
-  const atomId = Id.qualifyId(design.name, container.split('#')?.[0]);
-  // TODO: validate the template also has the appropriate slot in it.
-  return design.atoms[atomId]?.hasTemplate();
 };
 
 const updateDataProp = (design, propId, value) => {
@@ -64,6 +51,7 @@ const updatePropWithConnection = async (design, objectId, propId, value) => {
       // push the newly connected value to object(id)
       const liveValue = design.flan.state[Id.qualifyId(design.name, connValue)];
       const justTheseNodes = [Id.qualifyId(design.name, objectId)];
+      updateDataProp(design, propId, undefined);
       Flan.forwardStateChanges(design.flan, {[Id.qualifyId(design.name, propId)]: liveValue}, justTheseNodes);
     }
   } else {
