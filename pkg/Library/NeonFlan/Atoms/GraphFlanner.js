@@ -22,10 +22,10 @@ async update({query, graphs}, state, {isDirty}) {
     state.query = query;
     let graph = await this.findGraphForQuery(query, state.graphs, state);
     if (graph) {
-      return {graph: graph.id, graphJson: null};
+      return {graphId: graph.id, graph: null};
     }
     graph = this.defaultGraph();
-    return {graph: graph.meta.id, graphJson: graph};
+    return {graphId: graph.meta.id, graph};
   }
 },
 
