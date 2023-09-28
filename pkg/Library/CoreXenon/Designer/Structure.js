@@ -117,7 +117,7 @@ export const reifyObject = async (layer, id) => {
   assign(layer.bindings.input, input);
   assign(layer.bindings.output, output);
   // add object's connections
-  Binder.addConnections(layer.name, connectionsByObjectId(graph, id), layer.bindings.inputBindings);
+  Binder.addConnections(layer.name, connectionsByObjectId(graph, id), layer.bindings);
   // apply Node's static state 
   await initializeNodeState(layer, id, node);
   // select this object

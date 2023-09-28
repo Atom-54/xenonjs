@@ -10,7 +10,12 @@ initialize(inputs, state, {isDirty}) {
 async shouldUpdate({library, type, source, content, trigger}, state, {isDirty}) {
   return library && source && content && trigger && isDirty('trigger');
 },
-async update({library, type, source, content}, state, {service}) {
-  return await service('PolymathService', 'Learn', {library, type, source, content});
+async update({library, type, source, content}, state, {service, output}) {
+  output({learning: true});
+  const ok = await service('PolymathService', 'Learn', {library, type, source, content});
+  return {
+    ok,
+    learning: false
+  };
 }
 });
