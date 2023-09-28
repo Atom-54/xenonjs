@@ -14,8 +14,8 @@ export const atom = (log, resolve) => ({
       return {title, markup: html};
     } else {
       return {
-        title: undefined,
-        markup: undefined
+        title: null,
+        markup: null
       }
     }
   }
