@@ -239,18 +239,22 @@ async cloneGraph(meta, graphs, publicGraphs, state) {
   }
 },
 renameGraph({originalId, newId}, graph, graphs, state) {
-  let graphIndex = graphs.findIndex(g => g?.meta?.id === originalId);
-  if (graphIndex < 0) {
-    graphIndex = graphs.findIndex(g => deepEqual(g, graph));
-  }
-  if (graphIndex >= 0) {
-    const modified = graphs[graphIndex];
-    modified.meta ??= {};
-    modified.meta.id = newId;
-    return {
-      graphs,
-      ...this.selectGraph(modified, state)
-    };
+  if (!this.findGraph(newId, graphs)) {
+    let graphIndex = graphs.findIndex(g => g?.meta?.id === originalId);
+    if (graphIndex < 0) {
+      graphIndex = graphs.findIndex(g => deepEqual(g, graph));
+    }
+    if (graphIndex >= 0) {
+      const modified = graphs[graphIndex];
+      modified.meta ??= {};
+      modified.meta.id = newId;
+      return {
+        graphs,
+        ...this.selectGraph(modified, state)
+      };
+    }
+  } else {
+    log.warn(`Graph with name ${newId} already exists`);
   }
 },
 restyleGraph(id, graphs, state) {

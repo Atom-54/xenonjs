@@ -7,7 +7,7 @@ export const GraphFlannerNode = {
   GraphFlanner: {
     type: '$library/NeonFlan/Atoms/GraphFlanner',
     inputs: ['graphs', 'query', 'label'],
-    outputs: ['graph', 'graphJson', 'query']
+    outputs: ['graphId', 'graph', 'query']
   },
 
   state: {

@@ -336,7 +336,7 @@ export const graph = {
   "connections": {
     "GraphList$graphAgent$user": "Auth$Auth$user",
     "GraphList$graphList$user": "Auth$Auth$user",
-    "DesignLayer$Layer$graphJson": "GraphList$graphAgent$graph",
+    "DesignLayer$Layer$graph": "GraphList$graphAgent$graph",
     "UserSettings$settings$user": "Auth$Auth$user",
     //
     "GraphList$graphAgent$graph": "NodeGraph$Graph$graph",
