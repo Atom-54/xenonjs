@@ -36,7 +36,7 @@ async onContain({eventlet}, state, {service}) {
 cacheLayout(disabled, state, service, layout) {
   state.layout = layout;
   if (!disabled) {
-    log('updateLayout', layout);
+    //log('updateLayout', layout);
     service('DesignService', 'LayoutChanged', {layout});
   }
 },

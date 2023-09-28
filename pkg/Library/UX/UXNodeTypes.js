@@ -22,7 +22,17 @@ export const UXNodeTypes = {
   UXSelectionList: {
     category,
     description: 'Renders a list and allows user to select items',
-    type: `$library/UX/Nodes/UXSelectionListNode`
+    type: `$library/UX/Nodes/UXSelectionListNode`,
+  },
+  UXSnackBar: {
+    category,
+    description: 'Renders a message in a temporary popup',
+    types: {
+      UXSnackBar$open: 'Nonce',
+      UXSnackBar$icon: 'String',
+      UXSnackBar$message: 'String',
+    },
+    type: `$library/UX/Nodes/UXSnackBarNode`
   },
   ProgressBar: {
     category,
