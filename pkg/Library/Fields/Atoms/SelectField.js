@@ -30,10 +30,9 @@ template: html`
   }
   [label] {
     background: inherit;
-    font-weight: bold;
     border: none;
-    text-align: right;
-    min-width: var(--field-label-width);
+    max-width: var(--field-label-max-width);
+    text-wrap: pretty;
   }
   [delim] {
     padding-right: 12px;

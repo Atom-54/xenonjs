@@ -28,7 +28,7 @@ export const UXNodeTypes = {
     category,
     description: 'Renders a message in a temporary popup',
     types: {
-      UXSnackBar$open: 'Nonce',
+      UXSnackBar$open: 'Nonce|String',
       UXSnackBar$icon: 'String',
       UXSnackBar$message: 'String',
       UXSnackBar$duration: 'Number'

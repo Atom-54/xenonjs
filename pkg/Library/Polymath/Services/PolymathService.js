@@ -79,7 +79,8 @@ const fetchWikiPage = async query => {
 };
 
 const storeBits = async (library, name, bits) => {
-  return fetch(`${library}/${name}.json`, {
+  const sanitize = name => name?.replace(/[^a-zA-Z0-9\s]/g, '');
+  return fetch(`${library}/${sanitize(name)}.json`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body: JSON.stringify(bits)

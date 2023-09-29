@@ -111,5 +111,15 @@ export const FieldsNodeTypes = {
     types: {
     },  
     type: '$library/Fields/Nodes/DataNavigatorNode'
+  },
+  FileField: {
+    category,
+    description: "Uploads a file (only .txt file supported atm)",
+    types: {
+      FileField$label: 'String',
+      FileField$button: 'String',
+      FileField$accept: 'String'
+    },
+    type: '$library/Fields/Nodes/FileFieldNode'
   }
 };

@@ -54,7 +54,12 @@ renderProp(prop, parent, customInspectors, state) {
     }
   };
 },
-chooseTemplate({store: {type, values, range}, value}, isEditing, customInspectors) {
+primaryType(type) {
+  return type?.split('|')?.[0];
+},
+chooseTemplate({store, value}, isEditing, customInspectors) {
+  const type = this.primaryType(store.type);
+  const {values, range} = store;
   let template = {
     Boolean: 'checkbox_t',
     Nonce: 'nonce_t',
@@ -189,7 +194,7 @@ initCheckedConn(prop, checked) {
   if (checked === undefined) {
     const noValue = ((prop.value.property === null) || (prop.value.property === undefined));
     const hasConnection = (prop.value.connection.value?.length > 0);
-    const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].includes(prop.store.store.type);
+    const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].includes(this.primaryType(prop.store.store.type));
     return {
       checked: (noValue && nonConcreteType) || hasConnection,
       multi: Array.isArray(prop.value.connection.value) && prop.value.connection.value.length > 1

@@ -28,11 +28,9 @@ template: html`
   }
   [label] {
     background: inherit;
-    font-weight: bold;
-    font-size: 75%;
     border: none;
-    text-align: right;
-    min-width: var(--field-label-width);
+    min-width: var(--field-label-min-width);
+    text-wrap: pretty;
   }
   [delim] {
     padding-right: 9px;

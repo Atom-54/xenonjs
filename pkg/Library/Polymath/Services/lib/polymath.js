@@ -17,7 +17,14 @@ export const haveFirebaseLibrary = firebase => {
 };
 
 export const loadFirebaseLibrary = async (firebase) => {
-  return firebases[firebase] ??= await loadJsonLibrary(firebase);
+  let library = firebases[firebase];
+  if (!library) {
+    library = await loadJsonLibrary(firebase);
+    if (!library) {
+      library = await createJsonLibrary(firebase);
+    }
+  }
+  return firebases[firebase] ??= library;
 };
 
 export const askLibrary = async(library, queryEmbedding) => {
@@ -31,22 +38,40 @@ export const askLibrary = async(library, queryEmbedding) => {
 const loadJsonLibrary = async path => {
   const response = await fetch(`${path}.json`);
   const library = await response.json();
-  const bits = await loadLibraryBits(library);
-  bits.path = path;
-  return bits;
+  if (library) {
+    const bits = await loadLibraryBits(library);
+    return formLibrary(path, bits);
+  }
 };
 
 const loadLibraryBits = async library => {
   const libraryBits = [];
   log('loading topics', Object.keys(library));
   Object.entries(library).forEach(([title, topic]) => {
-    const bits = topic.bits.map((bit) => ({
+    const bits = topic.bits?.map((bit) => ({
       ...bit,
       embedding: Utils.decodeEmbedding(bit.embedding || "")
-    }));
+    }))??[];
     libraryBits.push(...bits);
   });
   return libraryBits;
+};
+
+const formLibrary = (path, bits) => {
+  bits.path = path;
+  return bits;
+}
+
+const createJsonLibrary = async path => {
+  const bits = [];
+  const result = await fetch(`${path}.json`, {
+    method: 'PUT',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(bits)
+  });
+  if (result.ok) {
+    return formLibrary(path, bits);
+  }
 };
 
 const query = async (bits, queryEmbedding) => {

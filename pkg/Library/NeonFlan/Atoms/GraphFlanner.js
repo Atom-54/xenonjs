@@ -120,11 +120,7 @@ template: html`
   }
   [label] {
     background: inherit;
-    font-weight: bold;
-    font-size: 75%;
     border: none;
-    text-align: right;
-    min-width: var(--field-label-width);
   }
   [field] {
     padding: 6px 9px;
