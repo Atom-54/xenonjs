@@ -15,9 +15,7 @@ const log = logf('Properties', 'darkorange', 'black');
 
 export const updateProp = async (design, {propId, store, value}, objectId) => {
   if (propId) {
-    if (store?.store?.type === 'Nonce') {
-      Flan.set(design, Id.qualifyId(design.name, propId), value.property);
-    } else if (propId === 'OpenStyle') {
+    if (propId === 'OpenStyle') {
       Design.applyStyleToObject(design, value, objectId)
     } else if (propId.endsWith('$Container')) {
       Structure.setObjectContainer(design, objectId, value);

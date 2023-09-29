@@ -6,6 +6,8 @@ html {
   --xcolor-four: hsla(292, 3%, 20%, 1);
   --button-font-size: 0.75em; 
   --field-label-width: 6em;
+  --field-label-min-width: 4em;
+  --field-label-max-width: 10em;
   --primary-hue: 310;
 }
 html[dark] {

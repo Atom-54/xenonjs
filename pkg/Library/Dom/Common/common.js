@@ -12,6 +12,7 @@ import './draggable-item.js';
 import './drop-target.js';
 import './container-layout.js';
 import './image-upload.js';
+import './file-upload.js';
 //
 import '../../../third-party/weightless/weightless.min.js';
 import '../Weightless/weightless-pages.js';

@@ -10,6 +10,9 @@ async update({graph, selected}, state, {service}) {
     state.graph = graph;
     if (graph) {
       state.graphInfo = await service('GraphService', 'GetGraphInfo', {graph: state.graph});
+    } else {
+      state.graphInfo = null;
+      selected = null;
     }
   }
   if (state.selectedId !== selected) {

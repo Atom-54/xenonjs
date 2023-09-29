@@ -35,7 +35,8 @@ export const PolymathNodeTypes = {
       AskPolymath$library: 'PolymathLibrary',
       AskPolymath$query: 'MultilineText',
       AskPolymath$result: 'PolymathResult',
-      AskPolymath$completion: 'MultilineText'
+      AskPolymath$completion: 'MultilineText',
+      AskPolymath$working: 'Boolean'
     },
     type: '$library/Polymath/Nodes/AskPolymathNode'
   },
