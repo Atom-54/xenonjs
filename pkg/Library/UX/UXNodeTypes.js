@@ -31,6 +31,7 @@ export const UXNodeTypes = {
       UXSnackBar$open: 'Nonce',
       UXSnackBar$icon: 'String',
       UXSnackBar$message: 'String',
+      UXSnackBar$duration: 'Number'
     },
     type: `$library/UX/Nodes/UXSnackBarNode`
   },

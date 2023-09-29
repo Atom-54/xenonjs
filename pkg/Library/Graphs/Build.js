@@ -133,6 +133,10 @@ export const graph = {
     "NodeTypeList": {
       "type": "$library/Graph/Nodes/NodeTypeListNode",
       "container": "NodeTypeListFlyOut$flyOut#Container"
+    },
+    "UxStatusBar": {
+      "type": "$library/UX/Nodes/UXSnackBarNode",
+      "container": "OuterWorkPanel$panel#Container"
     }
   },
   "state": {
@@ -257,6 +261,7 @@ export const graph = {
     "GraphName$echo$style": "text-align: left",
     // "GraphListOptionsSelect$field$label": "Choose Avatar Generator",
     // "GraphListOptionsSelect$field$options": ["SuperBots", "SuperPets","Elders"],
+    "UxStatusBar$UXSnackBar$icon": "info",
     "Main$designer$layout": {
       "RightMainCollapse": {
         "order": "2"
@@ -357,6 +362,9 @@ export const graph = {
     "ObjectInspector$inspector$data": "NodeInspectorAdaptor$adaptor$data",
     "OpenStyleInspector$inspector$data": "NodeInspectorAdaptor$adaptor$data",
     "InfoEcho$echo$html": "NodeInspectorAdaptor$adaptor$info",
-    "InspectorToolbar$UXToolbar$actions": "AtomToolbar$UXToolbar$actions"
+    "InspectorToolbar$UXToolbar$actions": "AtomToolbar$UXToolbar$actions",
+
+    "UxStatusBar$UXSnackBar$message": "GraphList$graphAgent$message",
+    "UxStatusBar$UXSnackBar$open": "GraphList$graphAgent$message"
   }
 };

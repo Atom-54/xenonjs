@@ -17,10 +17,7 @@ async update(inputs, state, {output, isDirty, service}) {
   }
   if (inputs.publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
     state.publishedGraphsUrl = inputs.publishedGraphsUrl;
-    const publicGraphs = await this.loadPublicGraphs(inputs.publishedGraphsUrl);	
-    if (publicGraphs) {
-      output({publicGraphs});
-    }
+    output(await this.loadPublicGraphs(inputs.publishedGraphsUrl));
   }
   const outputs = await this.initGraphs(inputs, state);
   if (outputs) {
@@ -55,7 +52,7 @@ async loadPublicGraphs(publishedGraphsUrl) {
     if (!publicGraphs.every(g => g.meta.readonly)) {
       log.warn(`All public graphs must be readonly`);
     }
-    return publicGraphs;
+    return {publicGraphs};
   }
 },
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
@@ -175,7 +172,7 @@ async handleEvent(inputs, state, {service, output}) {
     case 'Select Graph':
       return this.selectGraphByMeta(event.data.value, inputs, state);
     case 'Delete Graph':
-      return this.deleteGraph(event.data.value, graph, graphs, service);
+      return this.deleteGraph(event.data.value, graph, graphs);
     case 'Clone Graph':
       return this.cloneGraph(event.data.value, graphs, publicGraphs, state);
     case 'Rename Graph':
@@ -198,18 +195,21 @@ setGraphMeta({meta}, graph, graphs) {
     graphs[index].meta = meta;
     return {
       graphs,
-      ...(graph?.meta?.id === meta.id) && {graph: graphs[index]}
+      ...(graph?.meta?.id === meta.id) && {graph: graphs[index]},
+      message: `Updated metadata for graph '${meta.id}'`
     }
   }
 },
-deleteGraph(id, graph, graphs, service) {
+deleteGraph(id, graph, graphs) {
   const index = graphs?.findIndex(g => g.meta.id === id);
   if (index >= 0) {
+    const isSelected = !graph?.meta?.readonly && (id === graph?.meta?.id)
     // TODO(maria): add an 'are you sure?'
     graphs.splice(index, 1);
     return {
       graphs,
-      ...((id === graph?.meta?.id) && {graph: null, selectedMeta: null})
+      ...(isSelected && {graph: null, selectedMeta: null}),
+      message: `Deleted graph '${id}`
     };
   }
 },
@@ -234,7 +234,8 @@ async cloneGraph(meta, graphs, publicGraphs, state) {
     graphs.push(clonedGraph);
     return {
       graphs,
-      ...this.selectGraph(clonedGraph, state)
+      ...this.selectGraph(clonedGraph, state),
+      message: `Graph '${clonedGraph.meta.id}' was cloned from graph '${graph.meta.id}.`
     };
   }
 },
@@ -250,11 +251,13 @@ renameGraph({originalId, newId}, graph, graphs, state) {
       modified.meta.id = newId;
       return {
         graphs,
-        ...this.selectGraph(modified, state)
+        ...this.selectGraph(modified, state),
+        message: `Renamed graph to '${newId}'`
       };
     }
   } else {
     log.warn(`Graph with name ${newId} already exists`);
+    return {message: `Graph with name '${newId}' already exists`};
   }
 },
 restyleGraph(id, graphs, state) {
@@ -275,14 +278,25 @@ async publishGraph(id, graphs, publicGraphs, state) {
     } else {
       publicGraphs.push(publicGraph);  
     }
-    return {publicGraphs};
+    return {
+      publicGraphs,
+      message: `Published graph '${id}'`
+    };
   }
 },
 async unpublishGraph(id, publicGraphs, state) {
   const index = publicGraphs.findIndex(({meta}) => meta.id === id);
-  await this.removePublishedGraph(publicGraphs[index]?.meta, state);
-  publicGraphs.splice(index, 1);
-  return {publicGraphs};
+  if (index >= 0) {
+    const unpublishedMeta = publicGraphs[index].meta;
+    await this.removePublishedGraph(unpublishedMeta, state);
+    publicGraphs.splice(index, 1)?.[0];
+    const isSelected = (unpublishedMeta.id === state.selectedMeta.id) && (unpublishedMeta.owner === state.selectedMeta.owner);
+    return {
+      publicGraphs,
+      ...(isSelected && {graph: null, selectedMeta: null}),
+      message: `Unpublished graph '${id}'`
+    };
+  }
 },
 async putPublishedGraph(graph, state) {
   const {id, owner} = graph.meta;
