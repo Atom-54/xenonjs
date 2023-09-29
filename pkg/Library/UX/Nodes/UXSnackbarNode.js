@@ -6,6 +6,6 @@
 export const UXSnackBarNode = {
   UXSnackBar: {
     type: '$library/UX/Atoms/UXSnackBar',
-    inputs: ['open', 'icon', 'message']
+    inputs: ['open', 'icon', 'message', 'duration']
   }
 };

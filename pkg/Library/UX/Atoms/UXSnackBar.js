@@ -4,15 +4,16 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({open}, state, {isDirty, invalidate}) {
+update({open, duration}, state, {isDirty, invalidate}) {
   if (isDirty('open')) {
     state.open = open;
   }
-  if (state.open) {
+  duration ??= 3000;
+  if (state.open && duration >= 0) {
     timeout(() => {
       state.open = false;
       invalidate();
-    }, 3000);
+    }, duration ?? 3000);
   }
 },
 onDidHide(inputs, state) {
