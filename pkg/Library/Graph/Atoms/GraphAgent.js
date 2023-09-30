@@ -21,7 +21,7 @@ async update(inputs, state, {output, isDirty, service}) {
     const publicGraphs = await this.loadPublicGraphs(publishedGraphsUrl)
     output({publicGraphs});
   }
-  // TODO(maria): refactor `initGraphs` so that return values are explicit.
+  // TODO(maria): refactor `initGraphs` so that it takes explicit inputs and return values are explicit.
   const outputs = await this.initGraphs(inputs, state);
   if (outputs) {
     return outputs;
