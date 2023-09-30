@@ -12,13 +12,16 @@ shouldUpdate({graphs, user}) {
   return graphs;
 },
 async update(inputs, state, {output, isDirty, service}) {
+  const {user, publishedGraphsUrl, event} = inputs;
   if (isDirty('user')) {
-    state.user = inputs.user;
+    state.user = user;
   }
-  if (inputs.publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
-    state.publishedGraphsUrl = inputs.publishedGraphsUrl;
-    output(await this.loadPublicGraphs(inputs.publishedGraphsUrl));
+  if (publishedGraphsUrl && isDirty('publishedGraphsUrl')) {
+    state.publishedGraphsUrl = publishedGraphsUrl;
+    const publicGraphs = await this.loadPublicGraphs(publishedGraphsUrl)
+    output({publicGraphs});
   }
+  // TODO(maria): refactor `initGraphs` so that return values are explicit.
   const outputs = await this.initGraphs(inputs, state);
   if (outputs) {
     return outputs;
@@ -27,7 +30,6 @@ async update(inputs, state, {output, isDirty, service}) {
   //   state.addDefault = false;
   //   this.addFirstDefaultNode(service);
   // }
-  const {event} = inputs;
   if (event && !deepEqual(event, state.event)) {
     // TODO(maria): limit all events, except 'select' to non `readonly`.
     // Consider making 'readonly' property of the event?
@@ -52,7 +54,7 @@ async loadPublicGraphs(publishedGraphsUrl) {
     if (!publicGraphs.every(g => g.meta.readonly)) {
       log.warn(`All public graphs must be readonly`);
     }
-    return {publicGraphs};
+    return publicGraphs;
   }
 },
 formatFetchPublishGraphsUrl(publishedGraphsUrl) {
@@ -179,8 +181,10 @@ async handleEvent(inputs, state, {service, output}) {
       return this.renameGraph(event.data, graph, graphs, state);
     case 'Restyle Graph':
       return this.restyleGraph(event.data.value, graphs, state);
-    case 'Refresh Public Graphs':
-      return this.loadPublicGraphs(inputs.publishedGraphsUrl, state, {output});
+    case 'Refresh Public Graphs': {
+      const publicGraphs = await this.loadPublicGraphs(inputs.publishedGraphsUrl, state, {output});
+      return {publicGraphs};
+    }
     case 'Publish Graph':
       return this.publishGraph(event.data.value, graphs, publicGraphs, state);
     case 'Unpublish Graph':
