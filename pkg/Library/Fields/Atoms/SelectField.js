@@ -42,7 +42,7 @@ template: html`
 <div flex bar>
   <div label>{{label}}</div>
   <span delim></span>
-  <multi-select flex options="{{options}}" selected="{{value}}" selected="{{value}}" multiple="{{multiple}}" on-change="onFieldChange"></multi-select>
+  <multi-select flex options="{{options}}" selected="{{value}}" multiple="{{multiple}}" on-change="onFieldChange"></multi-select>
 </div>
 `
 });

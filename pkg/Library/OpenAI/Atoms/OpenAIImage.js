@@ -18,30 +18,34 @@ initialize(inputs, state, {service}) {
     n: 1
   });
 },
-shouldUpdate({enabled, prompt}) {
-  return enabled && prompt;
+shouldUpdate({/*enabled,*/ prompt}) {
+  return /*enabled &&*/ prompt;
 },
 async update({prompt, options}, state, {output, isDirty}) {
-  if (!isDirty('prompt') && !isDirty('restart') || prompt.startsWith('a moment')) {
-    return {image: null};
-  }
+  // if (!isDirty('prompt') && !isDirty('restart') || prompt.startsWith('a moment')) {
+  //   return {image: null};
+  // }
   log('starting:', prompt);
   state.prompt = prompt;
-  log('output temporary result');
-  output({
-    restart: false, 
+  if (isDirty('restart')) {
+    // log('output temporary result');
+    output({
+      image: null,
+      working: true
+    });
+    // restart: false, 
     // result: `a moment...`
-    working: true
-  });
-  log('query ai', prompt);
-  const response = await state.ai(prompt, options);
-  const info = await response.json();
-  log('got response', info);
-  const top = info?.data?.[0];
-  const url = top?.b64_json ? `data:image/png;base64,${top.b64_json}` : top?.url;
-  return {
-    image: {url},
-    working: false
-  };
+  
+    log('query ai', prompt);
+    const response = await state.ai(prompt, options);
+    const info = await response.json();
+    log('got response', info);
+    const top = info?.data?.[0];
+    const url = top?.b64_json ? `data:image/png;base64,${top.b64_json}` : top?.url;
+    return {
+      image: {url},
+      working: false
+    };
+  }
 }
 });

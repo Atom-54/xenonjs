@@ -6,7 +6,7 @@
 export const OpenAIImageCompletionNode = {
   complete: {
     type: '$library/OpenAI/Atoms/OpenAIImageCompletion',
-    inputs: ['prompt', 'image', 'enabled', 'restart'],
+    inputs: ['prompt', 'image', 'restart'],
     outputs: ['result', 'working']
   }
 };

@@ -46,7 +46,7 @@ const graph = {
         "w":200,
         "h":116
       },
-      "OpenAIImageGen":{
+      "OpenAIImage":{
         "l":256,
         "t":256,
         "w":200,
@@ -92,8 +92,8 @@ const graph = {
       "type":"$library/Media/Nodes/ImageNode",
       "container":"Panel$panel#Container"
     },
-    "OpenAIImageGen":{
-      "type":"$library/OpenAI/Nodes/OpenAIImageGenNode",
+    "OpenAIImage":{
+      "type":"$library/OpenAI/Nodes/OpenAIImageNode",
       "container":"Main$panel#Container"
     },
     "TextField":{
@@ -206,7 +206,7 @@ const graph = {
         "borderRadius":"var(--radius-4)",
         "padding":"var(--size-5)"
       },
-      "OpenAIImageGen":{
+      "OpenAIImage":{
         "l":0,
         "t":0,
         "w":1152,
@@ -262,20 +262,19 @@ const graph = {
     "Panel$panel$center":false,
     "TextField$field$value":"",
     "TextField$field$label":"choose background:",
-    "OpenAIImageGen$OpenAIImage$restart":true,
+    "OpenAIImage$OpenAIImage$restart":true,
     "ProgressBar$bar$interval":100,
-    "ImageComposite$ImageComposite$opD":"destination-atop",
-    "OpenAIImageGen$OpenAIImage$enabled":true
+    "ImageComposite$ImageComposite$opD":"destination-atop"
   },
   "connections":{
     "FrameCapture$FrameCapture$stream":"DeviceUx$defaultStream$stream",
     "SelfieSegmentation$SelfieSegmentation$image":"FrameCapture$FrameCapture$frame",
     "Image2$image$image":"ImageComposite$ImageComposite$output",
-    "ImageComposite$ImageComposite$imageB":"OpenAIImageGen$OpenAIImage$image",
+    "ImageComposite$ImageComposite$imageB":"OpenAIImage$OpenAIImage$image",
     "ImageComposite$ImageComposite$imageC":"SelfieSegmentation$SelfieSegmentation$mask",
-    "OpenAIImageGen$OpenAIImage$prompt":"TextField$field$value",
+    "OpenAIImage$OpenAIImage$prompt":"TextField$field$value",
     "ImageComposite$ImageComposite$imageA":"FrameCapture$FrameCapture$frame",
-    "ProgressBar$bar$inProgress":"OpenAIImageGen$OpenAIImage$working",
+    "ProgressBar$bar$inProgress":"OpenAIImage$OpenAIImage$working",
     "ImageComposite$ImageComposite$imageD":"FrameCapture$FrameCapture$frame"
   }
 };

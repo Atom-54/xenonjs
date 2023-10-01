@@ -38,7 +38,6 @@ export const AINodeTypes = {
     description: 'Requests and renders auto-generated text and image for the current time and selected mood',
     types: {
       AIClock$refresh: 'Nonce',
-      AIClock$enabled: 'Boolean',
       AIClock$mood: 'String',
       AIClock$moodValues: ['Joyful','Thoughtful','Pensive','Angry','Bored','Sad','Tired','Surprised','Sleepy','Enthralled','Calm','Relaxed','Restless','Satisfied','Shocked','Sick','Sympathetic','Cheerful','Blank','Blissful','Accepted','Ashamed','Amused','Envious','Loved','Lonely','Weird','Thankful','Grateful','Gloomy','Frustrated','Peaceful','Optimistic','Excited','Enraged','Energetic','Anxious','Annoyed','Content','Good','Drained','Disappointed','Determined','Curious','Crazy','Grumpy','Cranky','Confused','Cold','Rejected','Refreshed','Mad','Loved','Uncomfortable','Relieved','Rejuvenated','Numb','Giggly','Naughty','Mischievous','Hopeful','Happy','Lethargic','Lazy','Jealous','Irritated','Hyper','Bewildered','Tranquil','Exhausted'],
       OpenAIText$context: 'String',

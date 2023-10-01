@@ -4,12 +4,12 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-shouldUpdate({image, prompt, enabled}) {
-  return image && prompt && enabled;
+shouldUpdate({image, prompt}) {
+  return image && prompt;
 },
 
 async update({prompt, image}, state, {service, output, isDirty}) {
-  if (isDirty('prompt') || isDirty('restart')) {
+  if (isDirty('restart')) {
     state.prompt = prompt;
     output({working: true});
     const result = await service('OpenAIService', 'edits', {prompt, image});
