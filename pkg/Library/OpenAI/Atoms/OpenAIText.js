@@ -10,19 +10,12 @@ initialize(inputs, state, {service}) {
   const post = (url, body) => fetch(url, {method: 'POST', body: JSON.stringify(body)});
   state.ai = (context, prompt) => post(server, `${context ?? ''}${prompt}`);
 },
-shouldUpdate({context, prompt, enabled}) {
-  return context && prompt && enabled;
+shouldUpdate({context, prompt}) {
+  return context && prompt;
 },
 async update({context, prompt}, state, {output, isDirty}) {
-  let promptChanged = false;
-  if (state.prompt !== prompt || state.context !== context) {
-    log('caching prompt', prompt);
-    state.prompt = prompt;
-    state.context = context;
-    promptChanged = true;
-  }
   let completion;
-  if (promptChanged || isDirty('restart')) {
+  if (isDirty('restart')) {
     log('working');
     output({working: true});
     const response = await state.ai(context, prompt);
@@ -41,4 +34,3 @@ simpleFormatter(text) {
 </div>`;
 }
 });
-  

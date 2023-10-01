@@ -1,6 +1,6 @@
 export const graph = {
   "meta":{
-    "timestamp":1695170719418,
+    "timestamp":1696185837279,
     "owner":"",
     "stylized":true,
     "graphRects":{
@@ -298,7 +298,6 @@ export const graph = {
     },
     "ShowPoetry$echo$style":"text-align:center; ",
     "ShowTime$echo$style":"text-align:center;",
-    "OpenAIImage$OpenAIImage$restart":0.2957010889287053,
     "TimezoneSelect$field$label":"My timezone",
     "MoodSelect$field$label":"Mood",
     "MoodSelect$field$options":[
@@ -374,11 +373,8 @@ export const graph = {
       "Exhausted"
     ],
     "StringFormatter$StringFormatter$format":"The time is ${arg0}. My mood is ${arg1}",
-    "OpenAIText$OpenAIText$restart":true,
     "StringFormatter$formatter$format":"The time is ${arg0}. My mood is ${arg1}",
     "MoodSelect$field$value":"Pensive",
-    "OpenAIText$OpenAIText$enabled":true,
-    "OpenAIImage$OpenAIImage$enabled":true,
     "ProgressBar$bar$interval":50
   },
   "connections":{
@@ -397,6 +393,8 @@ export const graph = {
     "ProgressBar$bar$inProgress":[
       "OpenAIText$OpenAIText$working",
       "OpenAIImage$OpenAIImage$working"
-    ]
+    ],
+    "OpenAIText$OpenAIText$restart":"StringFormatter$formatter$result",
+    "OpenAIImage$OpenAIImage$restart":"OpenAIText$OpenAIText$result"
   }
 };

@@ -12,23 +12,10 @@ export const OpenAINodeTypes = {
     types: {
       OpenAIImage$prompt: 'MultilineText',
       Image$image: 'Image',
-      OpenAIImage$enabled: 'Boolean',
-      OpenAIImage$restart: 'Nonce',
+      OpenAIImage$restart: 'Nonce|String',
       OpenAIImage$working: 'Boolean'
     },
     type: '$library/OpenAI/Nodes/OpenAIImageNode'
-  },
-  OpenAIImageGen: {
-    category,
-    description: 'Generates an image for the given prompt using OpenAI',
-    types: {
-      OpenAIImage$prompt: 'MultilineText',
-      Image$image: 'Image',
-      OpenAIImage$enabled: 'Boolean',
-      OpenAIImage$restart: 'Nonce',
-      OpenAIImage$working: 'Boolean'
-    },
-    type: '$library/OpenAI/Nodes/OpenAIImageGenNode'
   },
   OpenAIText: {
     category,
@@ -37,8 +24,7 @@ export const OpenAINodeTypes = {
       OpenAIText$context: 'MultilineText',
       OpenAIText$prompt: 'MultilineText',
       OpenAIText$result: 'String',
-      OpenAIText$enabled: 'Boolean',
-      OpenAIText$restart: 'Nonce',
+      OpenAIText$restart: 'Nonce|String',
       OpenAIText$markup: 'String',
       OpenAIText$working: 'Boolean'
     },
@@ -71,8 +57,7 @@ export const OpenAINodeTypes = {
     types: {
       complete$prompt: 'String',
       complete$image: 'Image',
-      complete$enabled: 'Boolean',
-      complete$restart: 'Nonce',
+      complete$restart: 'Nonce|String',
       complete$result: 'Image',
       complete$working: 'Boolean'
     },
