@@ -52,11 +52,11 @@ export const handleAtomEvent = (layer, name, event) => {
   layer.atoms[name]?.handleEvent(event);
 };
 
-export const obliterateLayer = layer => {
+export const obliterateLayer = async layer => {
   // dispose Atoms
-  Layers.obliterateGraphLayer(layer);
+  await Layers.obliterateGraphLayer(layer);
   // remove state data
-  Flan.clearData(layer);
+  Flan.obliterateData(layer)
 };
 
 const atomRender = ({composer, system}, atomName, atom, packet) => {

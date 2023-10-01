@@ -30,7 +30,7 @@ export const createLayer = async (flan, graphOrGraphs, name) => {
 
 export const destroyLayer = async (layer) => {
   // TODO(sjmiles): explain which comes first and why
-  App.obliterateLayer(layer);
+  await App.obliterateLayer(layer);
   removeLayer(layer.flan, layer);
 };
 
@@ -114,13 +114,22 @@ export const forwardBoundOutput = (layer, atomName, output) => {
 
 export const clearData = (layer, atomIds) => {
   const ob = layer.bindings.output;
-  const getAtomPropKeys = atomId => keys(ob[atomId]).map(key => Id.qualifyId(atomId, key));
+  const getAtomPropKeys = atomId => keys(ob).filter(key => Id.matchesIdPrefix(key, atomId));
   const ids = atomIds ?? keys(layer.atoms);
   const props = ids.flatMap(atomId => getAtomPropKeys(atomId));
   const nullify = create(null);
   props.forEach(key => nullify[key] = undefined);
   log('clearData built nullification object:', nullify);
   setData(layer, nullify);
+};
+
+export const obliterateData = (layer) => {
+  clearData(layer);
+  keys(flan.state).forEach(key => {
+    if (Id.matchesIdPrefix(key, layer.name)) {
+      delete flan.state[key];
+    }
+  });
 };
 
 export const get = (layer, scopedKey) => {
