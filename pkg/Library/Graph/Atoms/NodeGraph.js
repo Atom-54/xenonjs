@@ -4,16 +4,19 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({graph, selected}, state, {service}) {
-  if (!deepEqual(graph, state.graph)) {
+async update({graph, selected}, state, {service, isDirty}) {
+  if (isDirty('graph')) {
     state.graphRects = {};
-    state.graph = graph;
     if (graph) {
-      state.graphInfo = await service('GraphService', 'GetGraphInfo', {graph: state.graph});
+      if (state.graph?.meta?.id !== graph.meta.id) {
+        selected = null;
+      }
+      state.graphInfo = await service('GraphService', 'GetGraphInfo', {graph});
     } else {
       state.graphInfo = null;
       selected = null;
     }
+    state.graph = graph;
   }
   if (state.selectedId !== selected) {
     state.selectedId = selected;

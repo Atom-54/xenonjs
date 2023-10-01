@@ -151,8 +151,7 @@ const graph = {
         "backgroundColor":"var(--xcolor-one)",
         "flex":"",
         "order":"1",
-        "alignItems":"",
-        "fontSize":"var(--font-size-4)"
+        "alignItems":""
       },
       "Button":{
         "l":32,
