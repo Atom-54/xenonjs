@@ -23,13 +23,25 @@ export const reifyGraphLayer = async (graph, emit, composer, services, name='') 
   return {name, graph, system, atoms, bindings, composer, services}
 };
 
-export const generateLayerBindings = ({name, system, graph}) => {
+export const generateLayerBindings = ({name, system, graph, bindings: currentBindings}) => {
   // construct bindings from the atom specs
   const bindings = Binder.constructBindings(system);
+  copyCrossLayerInputs(name, bindings, currentBindings)
   // add graph.connections to inputBindings
   Binder.addConnections(name, graph.connections, bindings);
   return bindings;
 };
+
+// TODO(maria): this is a workaround:
+// cross-layer bindings (used for `selected` node), are not expressed in the graph atm,
+// and need to be carried over, when layerBindings are regenerated.
+const copyCrossLayerInputs = (layerName, {input}, currentBindings) => {
+  entries(currentBindings?.input).forEach(([key, bound]) => {
+    if (!Id.matchesIdPrefix(key, layerName)) {
+      input[key] = [...bound];
+    }
+  });
+}
 
 export const obliterateGraphLayer = async layer => {
   await Promise.all(map(layer.atoms, (name, atom) => atom.dispose()));
