@@ -32,7 +32,7 @@ handleAction(action, state) {
   return {value};
 },
 template: html`
-<wl-button on-click="onClick">{{label}}</wl-button>
+<wl-button inverted="{{inverted}}" on-click="onClick">{{label}}</wl-button>
 `
 
 });
