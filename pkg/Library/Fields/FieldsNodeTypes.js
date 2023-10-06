@@ -85,6 +85,7 @@ export const FieldsNodeTypes = {
     description: 'Displays a button',
     types: {
       button$label: 'String',
+      button$inverted: 'Boolean'
     },  
     type: '$library/Fields/Nodes/ButtonNode'
   },

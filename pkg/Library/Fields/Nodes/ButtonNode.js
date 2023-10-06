@@ -6,7 +6,7 @@
 export const ButtonNode = {
   button: {
     type: '$library/Fields/Atoms/Button',
-    inputs: ['label', 'value', 'action'],
+    inputs: ['label', 'value', 'action', 'inverted'],
     outputs: ['value']
   },
   state: {
