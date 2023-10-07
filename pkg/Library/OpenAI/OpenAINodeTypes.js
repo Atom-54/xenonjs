@@ -12,7 +12,7 @@ export const OpenAINodeTypes = {
     types: {
       OpenAIImage$prompt: 'MultilineText',
       Image$image: 'Image',
-      OpenAIImage$restart: 'Nonce|String',
+      OpenAIImage$restart: 'Nonce:String',
       OpenAIImage$enabled: 'Boolean',
       OpenAIImage$working: 'Boolean'
     },
@@ -26,7 +26,7 @@ export const OpenAINodeTypes = {
       OpenAIText$prompt: 'MultilineText',
       OpenAIText$result: 'String',
       OpenAIText$enabled: 'Boolean',
-      OpenAIText$restart: 'Nonce|String',
+      OpenAIText$restart: 'Nonce:String',
       OpenAIText$markup: 'String',
       OpenAIText$working: 'Boolean'
     },
@@ -60,7 +60,7 @@ export const OpenAINodeTypes = {
       complete$prompt: 'String',
       complete$image: 'Image',
       complete$enabled: 'Boolean',
-      complete$restart: 'Nonce|String',
+      complete$restart: 'Nonce:String',
       complete$result: 'Image',
       complete$working: 'Boolean'
     },

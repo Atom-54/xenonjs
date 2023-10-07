@@ -55,7 +55,7 @@ renderProp(prop, parent, customInspectors, state) {
   };
 },
 primaryType(type) {
-  return type?.split('|')?.[0];
+  return type?.split(':')?.[0];
 },
 chooseTemplate({store, value}, isEditing, customInspectors) {
   const type = this.primaryType(store.type);
