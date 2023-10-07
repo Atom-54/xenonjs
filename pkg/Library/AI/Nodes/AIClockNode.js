@@ -6,8 +6,8 @@
 export const AIClockNode = {
   AIClock: {
     type: '$library/AI/Atoms/AIClock',
-    inputs: [/*'enabled', */'mood', 'refresh'],
-    outputs: [/*'enabled', */'mood', 'displayTime'],
+    inputs: ['enabled', 'mood', 'refresh'],
+    outputs: ['enabled', 'mood', 'displayTime'],
     bindings: {
       text: 'OpenAIText$result',
       image: 'OpenAIImage$image'
@@ -17,7 +17,7 @@ export const AIClockNode = {
     type: '$library/OpenAI/Atoms/OpenAIText',
     inputs: ['context'], 
     bindings: {
-      // enabled: 'AIClock$enabled',
+      enabled: 'AIClock$enabled',
       context: 'AIClock$context',
       prompt: 'AIClock$prompt',
       restart: 'AIClock$refresh'
@@ -27,7 +27,7 @@ export const AIClockNode = {
     type: '$library/OpenAI/Atoms/OpenAIImage',
     inputs: ['options'], 
     bindings: {
-      // enabled: 'AIClock$enabled',
+      enabled: 'AIClock$enabled',
       prompt: 'AIClock$prompt',
       restart: 'AIClock$prompt'
     }

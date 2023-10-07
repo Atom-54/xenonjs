@@ -4,8 +4,8 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-shouldUpdate({image, prompt}) {
-  return image && prompt;
+shouldUpdate({image, prompt, enabled}) {
+  return image && prompt && enabled;
 },
 
 async update({prompt, image}, state, {service, output, isDirty}) {

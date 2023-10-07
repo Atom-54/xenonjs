@@ -13,6 +13,7 @@ export const OpenAINodeTypes = {
       OpenAIImage$prompt: 'MultilineText',
       Image$image: 'Image',
       OpenAIImage$restart: 'Nonce|String',
+      OpenAIImage$enabled: 'Boolean',
       OpenAIImage$working: 'Boolean'
     },
     type: '$library/OpenAI/Nodes/OpenAIImageNode'
@@ -24,6 +25,7 @@ export const OpenAINodeTypes = {
       OpenAIText$context: 'MultilineText',
       OpenAIText$prompt: 'MultilineText',
       OpenAIText$result: 'String',
+      OpenAIText$enabled: 'Boolean',
       OpenAIText$restart: 'Nonce|String',
       OpenAIText$markup: 'String',
       OpenAIText$working: 'Boolean'
@@ -57,6 +59,7 @@ export const OpenAINodeTypes = {
     types: {
       complete$prompt: 'String',
       complete$image: 'Image',
+      complete$enabled: 'Boolean',
       complete$restart: 'Nonce|String',
       complete$result: 'Image',
       complete$working: 'Boolean'

@@ -6,7 +6,7 @@
 export const OpenAIImageNode = {
   OpenAIImage: {
     type: '$library/OpenAI/Atoms/OpenAIImage',
-    inputs: ['prompt', 'restart', /*'enabled',*/ 'options'],
+    inputs: ['prompt', 'restart', 'enabled', 'options'],
     outputs: ['image', 'working']
   }
 };
