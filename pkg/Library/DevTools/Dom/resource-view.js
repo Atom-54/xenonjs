@@ -25,7 +25,8 @@ export class ResourceView extends Xen.Async {
         const notCanvas = res?.localName !== 'canvas';
         const notStream = !(res instanceof MediaStream);
         const notShader = !res?.camera;
-        const notObject = !notCanvas || !notStream || !notShader || !notLayer;
+        const notPixiApp = !res?.stage;
+        const notObject = !notCanvas || !notStream || !notShader || !notLayer || !notPixiApp;
         const json = notObject ? '' : JSON.stringify(res, null, '  ');
         const size = !notLayer
           ? 'Layer'

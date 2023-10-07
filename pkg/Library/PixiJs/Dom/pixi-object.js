@@ -21,13 +21,14 @@ const log = logf('DOM:PixiObject', 'beige', 'black');
 
 export class PixiObject extends Xen.Async {
   static get observedAttributes() {
-    return ['app', 'x', 'y', 's', 'r'];
+    return ['app', 'x', 'y', 's', 'r', 'z'];
   }
   get template() {
     return Xen.html``;
   }  
   _didMount() {
-    this.state.originHost = this.getRootNode().host;
+    this.originHost = this.getRootNode().host;
+    this.originHost.style.pointerEvents = 'none';
   }
   update(inputs, state) {
     if (!state.app) {
@@ -35,7 +36,7 @@ export class PixiObject extends Xen.Async {
         // register our PixiApp
         this.updateAppId(inputs, state);
       } else {
-        const app = this.state.originHost?.parentElement?.shadowRoot?.querySelector('pixi-app')?.state?.app;
+        const app = this.originHost?.parentElement?.shadowRoot?.querySelector('pixi-app')?.state?.app;
         if (app) {
           state.app = app;
           this.updateApp(inputs, state);
@@ -46,8 +47,7 @@ export class PixiObject extends Xen.Async {
       this.updateObject(inputs, state);
     }
   }
-  updateObject({x, y, s, r}, state) {
-    const {object} = state;
+  updateObject({x, y, s, r, z}, {object, app}) {
     if (object) {
       if (x !== undefined) {
         object.x = x;
@@ -61,6 +61,11 @@ export class PixiObject extends Xen.Async {
       if (r !== undefined) {
         object.rotation = r;
       }
+      if (z !== undefined) {
+        object.zIndex = z;
+      }
+      app.stage.sortChildren();
+      //app.stage.updateTransform();
     }
   }
   updateAppId(inputs, state) {
@@ -71,7 +76,7 @@ export class PixiObject extends Xen.Async {
     }
   }
   updateApp(inputs, state) {
-    state.container = new PIXI.Container();
+    //state.container = new PIXI.Container();
     state.app.ticker.add(time => {
       if (state.object) {
         const bounds = state.object.getLocalBounds();
@@ -81,31 +86,34 @@ export class PixiObject extends Xen.Async {
       }
     });
   }
-  updateAnimation({time}, {originHost, app, object, bounds}) {
+  updateAnimation({time}, {app, object, bounds}) {
+    const s = this.s || 1;
     // TODO(sjmiles): measuring bad (caveat emptor)
     // nothing need be done if these haven't actually changed
-    const {offsetLeft: ox, offsetTop: oy, offsetWidth: ow, offsetHeight: oh} = originHost;
-    const {x: sx, y:sy } = app.stage.scale;
-    //
-    // sprite position adjusted for stage scale
-    const [x, y] = [ox / sx, oy / sy];
+    const {offsetLeft: ox, offsetTop: oy, offsetWidth: ow, offsetHeight: oh} = this.originHost;
+    let {x: sx, y:sy } = app.stage.scale;
+    // object position
+    const [x, y] = [ox, oy];
     object.position = {x, y};
-    //
-    // our sprite resolution
-    const {width: tw, height: th} = bounds; //object.getLocalBounds(); //object.texture;
-    const s = Math.min(ow / tw / sx, oh / th / sy);
-    //
-    // our 'automatic' size
+    // object size
+    const {width: tw, height: th} = bounds;
+    // our 'automatic' size for designable DOM element
     Object.assign(this.style, {
       display: `inline-block`,
-      width: `${tw*sx}px`,
-      height: `${th*sy}px`
+      // left: `${x}px`,
+      // top: `${y}px`,
+      width: `${tw*s}px`,
+      height: `${th*s}px`
     });
+    //
     // sprite scale adjusted for aspect ratio and stage scale
-    object.scale = {x: s, y: s};
+    //const ss = Math.min(ow / tw / sx, oh / th / sy) * s;
+    //object.scale = {x: ss, y: ss};
+    object.scale = {x:s, y:s};
     //
     //console.log(this.getBoundingClientRect());
-  }};
+  }
+};
 
 //customElements.define('pixi-sprite', PixiSprite);
 

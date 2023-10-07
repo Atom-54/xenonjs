@@ -60,7 +60,7 @@ export const createLogFactory = () => {
   };
   const consolate = (flags, preamble, format, kind, when, where, args) => {
     const flag = preamble.split(':').shift();
-    if (!flags || flags?.[flag] || importantKinds.includes(kind)) {
+    if (!flags || flags?.[flag] || flags?.[preamble] || importantKinds.includes(kind)) {
       console[kind].apply(console, [...format, ...(args || []), `\t[${where}]`]);
     }
   };

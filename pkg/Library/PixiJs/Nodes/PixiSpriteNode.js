@@ -8,6 +8,6 @@ import '../Dom/pixi-sprite.js';
 export const PixiSpriteNode = {
   PixiSprite: {
     type: '$library/PixiJs/Atoms/PixiSprite',
-    inputs: ['app', 'from', 'reset', /*'x', 'y', 's'*/, 'r']
+    inputs: ['app', 'from', 'reset', 'x', 'y', 's', 'r', 'z']
   }
 };

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Paths} from '../../CoreXenon/Reactor/Atomic/js/utils/paths.js';
-import {PIXI} from '../../PixiJs/Dom/pixi.js';
 import {PixiObject} from './pixi-object.js';
+import {PIXI} from '../../PixiJs/Dom/pixi.js';
 
 const log = logf('DOM:PixiSprite', 'beige', 'black');
 
@@ -13,13 +13,17 @@ const assets = Paths.resolve('$xenon/Library/Assets');
 
 export class PixiSprite extends PixiObject {
   static get observedAttributes() {
-    return ['app', 'from', 'x', 'y', 's', 'r'];
+    return [...PixiObject.observedAttributes, 'from'];
   }
-  update(inputs, state) {
-    super.update(inputs, state);
-    if (state.app) {
-      this.updateSprite(inputs, state);
-    }
+  // update(inputs, state) {
+  //   super.update(inputs, state);
+  //   if (state.app) {
+  //     this.updateSprite(inputs, state);
+  //   }
+  // }
+  updateObject(inputs, state) {
+    this.updateSprite(inputs, state);
+    super.updateObject(inputs, state);
   }
   updateSprite(inputs, state) {
     if (state.from !== inputs.from) {
@@ -35,10 +39,10 @@ export class PixiSprite extends PixiObject {
   }
   makeSprite(from) {
     const ori = {x:0, y:0};
-    const haf = {x:0.5, y:0.5};
+    const center = {x:0.5, y:0.5};
     const uni = {x:1, y:1};
     const sprite = PIXI.Sprite.from(from);
-    sprite.pivot = haf;
+    sprite.pivot = center;
     sprite.anchor = ori;
     sprite.scale = uni;
     sprite.visible = true;

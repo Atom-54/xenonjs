@@ -9,8 +9,8 @@ export const atom = (log, resolve) => ({
   :host {
     display: block;
     position: absolute !important;
-    pointer-events: none;
+    /* pointer-events: none; */
 </style>
-<pixi-sprite-grid app="{{app}}"></pixi-sprite-grid>
+<pixi-sprite-grid app="{{app}}" bundle="{{bundle}}" cols="{{cols}}" rows="{{rows}}" size="{{size}}" margin="{{margin}}" s="{{s}}" z="{{z}}"></pixi-sprite-grid>
   `
   })
