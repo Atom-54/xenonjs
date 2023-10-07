@@ -19,7 +19,6 @@ const {
 } = libp2p;
 
 const WEBRTC_CODE = protocols('webrtc').code
-const WEBRTC_W3C_CODE = protocols('webrtc-w3c').code
 
 const output = document.getElementById("output")
 const sendSection = document.getElementById("send-section")
@@ -116,14 +115,14 @@ node.addEventListener("self:peer:update", (event) => {
 
 const isWebrtc = (ma) => {
   const codes = ma.protoCodes();
-  return codes.includes(WEBRTC_CODE) || codes.includes(WEBRTC_W3C_CODE);
+  return codes.includes(WEBRTC_CODE);
 }
 
 window.connect.onclick = async () => {
   const ma = multiaddr(window.peer.value)
+  console.log(ma.protoCodes().map(c => protocols(c).name));
   appendOutput(`Dialing '${ma}'`)
   const connection = await node.dial(ma)
-
   if (isWebrtc(ma)) {
     const outgoing_stream = await connection.newStream(["/echo/1.0.0"])
     pipe(sender, outgoing_stream, async (src) => {
@@ -132,11 +131,7 @@ window.connect.onclick = async () => {
         appendOutput(`Received message '${clean(response)}'`)
       }
     })
-  } else {
-    console.warn('isNOTWebRtc');
-    console.log(ma.protoCodes().map(c => protocols(c).name));
   }
-
   appendOutput(`Connected to '${ma}'`)
 }
 
