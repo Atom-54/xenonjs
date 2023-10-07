@@ -11,7 +11,7 @@ export const meetStrangers = async (group, nid, meta) => {
   // first get all beacons
   let beacons = await fetchBeacons(root);
   // one-pass gambit: beacons are erased periodically,
-  // so stale beacons do not reappear
+  // so stale beacons do not reappear forever
   if (Math.random() < 0.1) {
     await clearBeacons(root);
   }
