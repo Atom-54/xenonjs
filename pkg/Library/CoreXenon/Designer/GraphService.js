@@ -259,10 +259,8 @@ const constructCandidates = (atomName, {types, inputs}, systemCandidates) => {
 };
 
 const chooseCandidatesForType = (type, candidates) => {
-  const types = type.split('|');
-  const matches = candidateType => types.some(type => TypeMatcher(type, candidateType));
   return entries(candidates)
-      .filter(([candidateType, _]) => matches(candidateType))
+      .filter(([candidateType, _]) => TypeMatcher(type, candidateType))
       .map(([_, candidates]) => candidates)
       .flat();
 };

@@ -20,7 +20,7 @@ export const PolymathNodeTypes = {
     description: `Ingest new information into a Polymath library`,  
     types: {
       PolymathLearner$library: 'PolymathLibrary',
-      PolymathLearner$type: 'LearnerType|String',
+      PolymathLearner$type: 'LearnerType:String',
       PolymathLearner$typeValues: ['html'],
       PolymathLearner$source: 'String',
       PolymathLearner$content: 'MultilineText',
@@ -46,7 +46,7 @@ export const PolymathNodeTypes = {
     types: {
       WikipediaContentNode$query: 'MultilineText',
       WikipediaContentNode$title: 'String',
-      WikipediaContentNode$markup: 'HTML|MultilineText'
+      WikipediaContentNode$markup: 'HTML:MultilineText'
     },
     type: '$library/Polymath/Nodes/WikipediaContentNode'
   }
