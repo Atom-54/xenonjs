@@ -10,7 +10,14 @@ export const GamesNodeTypes = {
     category: 'PixiJs',
     description: 'Pixi gems gaming',
     types: {
-      PixiApp$app: 'PixiAppId'
+      PixiGems$app: 'PixiAppId',
+      PixiGems$bundle: 'PixiSpriteBundle',
+      PixiGems$rows: 'Number',
+      PixiGems$cols: 'Number',
+      PixiGems$size: 'Number',
+      PixiGems$margin: 'Number',
+      PixiGems$s: 'Number',
+      PixiGems$z: 'Number'
     },
     type: '$library/Games/Nodes/PixiGemsNode'
   }

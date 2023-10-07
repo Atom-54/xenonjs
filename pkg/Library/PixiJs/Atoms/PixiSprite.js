@@ -12,6 +12,6 @@ template: html`
     /* display: none; */
   }
 </style>
-<pixi-sprite app="{{app}}" from="{{from}}" x="{{x}}" y="{{y}}" r="{{r}}" s="{{s}}"></pixi-sprite>
+<pixi-sprite app="{{app}}" from="{{from}}" x="{{x}}" y="{{y}}" r="{{r}}" s="{{s}}" z="{{z}}"></pixi-sprite>
 `
 })

@@ -257,7 +257,6 @@ export class DesignerPanel extends DragDrop {
     this.dragStarted = this.dragStarted || Boolean(this.dragRect && dx && dy);
     // give up if no target rect
     if (this.dragRect) {
-      //
       // ... tricky
       const offsetRect = this.calculateDragOffsets(dx, dy, this.dragKind, this.dragFrom);
       //
@@ -392,9 +391,16 @@ export class DesignerPanel extends DragDrop {
     return {l: l+dx/2, t: t+dy/2, w, h};
   }
   getLocalRect(here, there) {
-    // get there's rect in the here's frame
+    // get there's rect in here's frame
     const localFrame = this.getClientRect(here);
-    const targetFrame = this.getBoundingRect(there);
+    let targetFrame = this.getBoundingRect(there);
+    const s = there.__scale;
+    //const s = there.style.zoom;
+    if (s) {
+      let {l, t, w, h} = targetFrame;
+      l *= s, t *= s, w *= s, h *= s;
+      targetFrame = {l, t, w, h};
+    }
     return this.convertFrame(localFrame, targetFrame);
   }
   convertFrame(here, {l, t, w, h}) {

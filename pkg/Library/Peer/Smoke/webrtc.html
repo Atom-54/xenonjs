@@ -1,94 +1,54 @@
 <!DOCTYPE html>
-
-<script type="importmap">{
-  "imports": {
-    "libp2p/": "../../../third-party/libp2p/"
-  }
-}</script>
-
-<script type="module">
-import 'libp2p/index.min.js';
-import 'libp2p/webrtc/index.min.js';
-import 'libp2p/websockets/index.min.js';
-import 'libp2p/mplex/index.min.js';
-import 'libp2p/bootstrap/index.min.js';
-import 'libp2p/chainsafe/libp2p-noise/index.min.js';
-import 'libp2p/chainsafe/libp2p-yamux/index.min.js';
-import 'libp2p/multiformats/multiaddr/index.min.js';
-
-console.log(Object.keys(globalThis.Libp2P));
-console.log(Object.keys(globalThis.Libp2PWebrtc));
-console.log(Object.keys(globalThis.Libp2PWebsockets));
-console.log(Object.keys(globalThis.Libp2PMplex));
-console.log(Object.keys(globalThis.Libp2PBootstrap));
-console.log(Object.keys(globalThis.ChainsafeLibp2PNoise));
-console.log(Object.keys(globalThis.ChainsafeLibp2PYamux));
-console.log(Object.keys(globalThis.MultiformatsMultiaddr));
-
-const {createLibp2p} = globalThis.Libp2P;
-const {webRTC} = globalThis.Libp2PWebrtc;
-const {webSockets, filters} = globalThis.Libp2PWebsockets;
-const {mplex} = globalThis.Libp2PMplex;
-const {bootstrap} = globalThis.Libp2PBootstrap;
-const {noise} = globalThis.ChainsafeLibp2PNoise;
-const {yamux} = globalThis.ChainsafeLibp2PYamux;
-const {multiaddr} = globalThis.MultiformatsMultiaddr;
-
-// Known peers addresses
-const bootstrapMultiaddrs = [
-  '/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb',
-  '/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN'
-];
-
-const node = await createLibp2p({
-  transports: [
-    webSockets({
-      filter: filters.all
-    })
-  ],
-  connectionEncryption: [noise()],
-  streamMuxers: [yamux(), mplex()],
-  relay: {
-    enabled: true,
-    autoRelay: {
-      enabled: true,
-      maxListeners: 2
-    }
-  },
-  connectionGater: {
-    denyDialMultiaddr: () => {
-      // by default we refuse to dial local addresses from the browser since they
-      // are usually sent by remote peers broadcasting undialable multiaddrs but
-      // here we are explicitly connecting to a local node so do not deny dialing
-      // any discovered address
-      return false
-    }
-  }
-});
-
-//await node.start();
-//console.log(node);
-
-console.log(`Node started with id ${node.peerId.toString()}`)
-
-const relayAddr = multiaddr('/ip4/127.0.0.1/tcp/51975/ws/p2p/12D3KooWSDp5xvrgubiKhPPbp5SbgXRpiYB57YmoTSf5yhfMajUs');
-const conn = await node.dial(relayAddr)
-
-console.log(`Connected to the HOP relay ${conn.remotePeer.toString()}`)
-
-// Wait for connection and relay to be bind for the example purpose
-// node.addEventListener('self:peer:update', (evt) => {
-//   // Updated self multiaddrs?
-//   console.log(`Advertising with a relay address of ${node.getMultiaddrs()[0].toString()}`)
-// })
-
-//node.getMultiaddrs().forEach((ma) => console.log(ma.toString()))
-
-// const ma =  multiaddr('/ip4/127.0.0.1/tcp/51975/ws/p2p/12D3KooWSDp5xvrgubiKhPPbp5SbgXRpiYB57YmoTSf5yhfMajUs')
-// const stream = await node.dialProtocol(ma, ['/xen-protocol/1.0.0'])
-
-// const message = `Hello js-libp2p-webrtc\n`
-// const response = await pipe([fromString(message)], stream, async (source) => await first(source))
-// const responseDecoded = toString(response.slice(0, response.length))
-
-</script>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>js-libp2p WebRTC</title>
+    <style>
+      label,
+      button {
+        display: block;
+        font-weight: bold;
+        margin: 5px 0;
+      }
+      div {
+        margin-bottom: 20px;
+      }
+      #send-section {
+        display: none;
+      }
+      input[type="text"] {
+        width: 800px;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="importmap">{
+      "imports": {
+        "libp2p/": "../../../third-party/libp2p/"
+      }
+    }</script>
+    <div id="app">
+      <div>
+        <label for="peer">Remote MultiAddress:</label>
+        <input type="text" id="peer" />
+        <button id="connect">Connect</button>
+      </div>
+      <div id="send-section">
+        <label for="message">Message:</label>
+        <input type="text" id="message" value="hello" />
+        <button id="send">Send</button>
+      </div>
+      <div id="connectionsWrapper">
+        <h3>Active Connections: </h3>
+        <ul id="connections"></ul>
+      </div>
+      <div id="listeningAddressesWrapper">
+        <h3>Listening addresses: </h3>
+        <ul id="multiaddrs"></ul>
+      </div>
+      <div id="output"></div>
+    </div>
+    <script type="module" src="./index.js"></script>
+  </body>
+</html>
