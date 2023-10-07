@@ -10,8 +10,8 @@ initialize(inputs, state, {service}) {
   const post = (url, body) => fetch(url, {method: 'POST', body: JSON.stringify(body)});
   state.ai = (context, prompt) => post(server, `${context ?? ''}${prompt}`);
 },
-shouldUpdate({context, prompt}) {
-  return context && prompt;
+shouldUpdate({context, prompt, enabled}) {
+  return context && prompt && enabled;
 },
 async update({context, prompt}, state, {output, isDirty}) {
   let completion;

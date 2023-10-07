@@ -18,8 +18,8 @@ initialize(inputs, state, {service}) {
     n: 1
   });
 },
-shouldUpdate({/*enabled,*/ prompt}) {
-  return /*enabled &&*/ prompt;
+shouldUpdate({enabled, prompt}) {
+  return enabled && prompt;
 },
 async update({prompt, options}, state, {output, isDirty}) {
   // if (!isDirty('prompt') && !isDirty('restart') || prompt.startsWith('a moment')) {
