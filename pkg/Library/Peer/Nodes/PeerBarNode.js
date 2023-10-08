@@ -6,14 +6,15 @@
 export const PeerBarNode = {
   PeerBar: {
     type: '$library/Peer/Atoms/PeerBar',
-    inputs: ['staticPeers'],
-    outputs: ['peers', 'selectedPeer'],
+    //inputs: ['staticPeers'],
+    outputs: ['selectedPeer'],
     bindings: {
       peers: 'PeerCollector$peers'
     }
   },
   PeerCollector: {
     type: '$library/Peer/Atoms/PeerCollector',
-    inputs: ['peer', 'peers']
+    inputs: ['peer', 'peers'],
+    outputs: ['peers']
   }
 };

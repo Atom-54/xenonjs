@@ -119,7 +119,7 @@ export const clearData = (layer, atomIds) => {
   const props = ids.flatMap(atomId => getAtomPropKeys(atomId));
   const nullify = create(null);
   props.forEach(key => nullify[key] = undefined);
-  log('clearData built nullification object:', nullify);
+  //log('clearData built nullification object:', nullify);
   setData(layer, nullify);
 };
 

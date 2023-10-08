@@ -36,6 +36,7 @@ template: html`
     font-size: 75%;
     overflow: auto !important;
     flex: 1 !important;
+    user-select: text;
   }
 </style>
 <pre flex>{{info}}</pre>

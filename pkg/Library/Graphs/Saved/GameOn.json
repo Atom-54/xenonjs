@@ -1,0 +1,222 @@
+{
+  "meta": {
+    "id": "GameOn",
+    "designerId": "Main",
+    "timestamp": 1695597599229,
+    "customLibraries": {},
+    "graphRects": {
+      "PixiApp": {
+        "l": 32,
+        "t": 144,
+        "w": 200,
+        "h": 76
+      },
+      "PixiGems": {
+        "l": 800,
+        "t": 96,
+        "w": 200,
+        "h": 156
+      },
+      "PixiSprite": {
+        "l": 272,
+        "t": 80,
+        "w": 200,
+        "h": 116
+      },
+      "Panel": {
+        "l": 32,
+        "t": 32,
+        "w": 200,
+        "h": 96
+      },
+      "Data": {
+        "l": 544,
+        "t": 48,
+        "w": 200,
+        "h": 60
+      },
+      "Data2": {
+        "l": 544,
+        "t": 144,
+        "w": 200,
+        "h": 60
+      },
+      "Image": {
+        "l": 288,
+        "t": 240,
+        "w": 200,
+        "h": 76
+      },
+      "PupsBundle": {
+        "l": 544,
+        "t": 224,
+        "w": 200,
+        "h": 60
+      },
+      "KittensBundle": {
+        "l": 544,
+        "t": 128,
+        "w": 200,
+        "h": 60
+      }
+    }
+  },
+  "nodes": {
+    "Main": {
+      "type": "$library/Layout/Nodes/DesignerNode",
+      "container": "root$panel#Container"
+    },
+    "PixiApp": {
+      "type": "$library/PixiJs/Nodes/PixiAppNode",
+      "container": "Panel$panel#Container"
+    },
+    "PixiGems": {
+      "type": "$library/Games/Nodes/PixiGemsNode",
+      "container": "PixiApp$PixiApp#Container"
+    },
+    "PixiSprite": {
+      "type": "$library/PixiJs/Nodes/PixiSpriteNode",
+      "container": "PixiApp$PixiApp#Container"
+    },
+    "Panel": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Main$panel#Container"
+    },
+    "Data": {
+      "type": "$library/Data/Nodes/DataNode",
+      "container": "Main$panel#Container"
+    },
+    "KittensBundle": {
+      "type": "$library/Data/Nodes/DataNode",
+      "container": "Main$panel#Container"
+    },
+    "Image": {
+      "type": "$library/Media/Nodes/ImageNode",
+      "container": "Main$panel#Container"
+    },
+    "PupsBundle": {
+      "type": "$library/Data/Nodes/DataNode",
+      "container": "Main$panel#Container"
+    }
+  },
+  "state": {
+    "Main$designer$disabled": true,
+    "Main$designer$style": "width: auto; height: auto;",
+    "Main$panel$canvasLayout": "column",
+    "PixiGems$PixiGems$cols": 5,
+    "PixiGems$PixiGems$rows": 4,
+    "PixiGems$PixiGems$size": 176,
+    "PixiGems$PixiGems$margin": 1,
+    "Panel$panel$layout": "column",
+    "Main$designer$layout": {
+      "PixiApp": {
+        "l": 16,
+        "t": 80,
+        "w": 753,
+        "h": 513,
+        "flex": "",
+        "width": {},
+        "height": {},
+        "order": "2",
+        "backgroundColor": "",
+        "position": "relative"
+      },
+      "PixiGems": {
+        "l": 208,
+        "t": 32,
+        "w": 469,
+        "h": 487,
+        "flex": "",
+        "width": "auto",
+        "height": "auto",
+        "order": "3",
+        "position": ""
+      },
+      "Main": {
+        "l": 0,
+        "t": 0,
+        "w": 478,
+        "h": 64
+      },
+      "PixiSprite": {
+        "l": 32,
+        "t": 160,
+        "w": 162,
+        "h": 176,
+        "height": {},
+        "width": {},
+        "display": "none"
+      },
+      "Panel": {
+        "l": 0,
+        "t": 0,
+        "w": 969,
+        "h": 647,
+        "flex": "",
+        "width": {},
+        "order": "2",
+        "position": "relative"
+      },
+      "Data": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132,
+        "width": "auto"
+      },
+      "KittensBundle": {
+        "l": 82,
+        "t": 82,
+        "w": 132,
+        "h": 132,
+        "width": "auto"
+      },
+      "PixiSprite2": {
+        "l": 48,
+        "t": 192,
+        "w": 672,
+        "h": 448,
+        "height": "auto",
+        "width": "auto",
+        "display": "",
+        "flex": "",
+        "position": ""
+      },
+      "Image": {
+        "l": 64,
+        "t": 16,
+        "w": 868,
+        "h": 525,
+        "width": {},
+        "position": "absolute"
+      }
+    },
+    "PixiApp$PixiApp$active": true,
+    "PixiSprite$PixiSprite$from": "../Library/Assets/kittens/logo.png",
+    "PixiSprite$PixiSprite$r": 0,
+    "Data$Data$json": {
+      "sprite0": "$library/assets/gems/stone_blue.png",
+      "sprite1": "$library/assets/gems/stone_green.png",
+      "sprite2": "$library/assets/gems/stone_pink.png",
+      "sprite3": "$library/assets/gems/stone_yellow.png"
+    },
+    "KittensBundle$Data$json": {
+      "sprite0": "$library/Assets/kittens/kitten0.png",
+      "sprite1": "$library/Assets/kittens/kitten1.png",
+      "sprite2": "$library/Assets/kittens/kitten2.png",
+      "sprite3": "$library/Assets/kittens/kitten3.png"
+    },
+    "Image$image$image": {
+      "url": "../Library/Assets/pups/dogs.png"
+    },
+    "PupsBundle$Data$json": {
+      "sprite0": "$library/Assets/pups/pup0.png",
+      "sprite1": "$library/Assets/pups/pup1.png",
+      "sprite2": "$library/Assets/pups/pup2.png",
+      "sprite3": "$library/Assets/pups/pup3.png"
+    }
+  },
+  "connections": {
+    "PixiGems$PixiGems$bundle": "PupsBundle$Data$value"
+  }
+}

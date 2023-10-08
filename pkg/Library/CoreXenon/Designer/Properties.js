@@ -46,10 +46,11 @@ const updatePropWithConnection = async (design, objectId, propId, value) => {
       connections[propId] = connValue;
       // rebuild bindings
       design.bindings = Layers.generateLayerBindings(design);
-      // push the newly connected value to object(id)
+      // push the newly connected value to the target
       const liveValue = design.flan.state[Id.qualifyId(design.name, connValue)];
-      const justTheseNodes = [Id.qualifyId(design.name, objectId)];
-      updateDataProp(design, propId, undefined);
+      const connectTarget = Id.sliceId(propId, 0, -2);
+      const justTheseNodes = [Id.qualifyId(design.name, connectTarget)];
+      //updateDataProp(design, propId, undefined);
       Flan.forwardStateChanges(design.flan, {[Id.qualifyId(design.name, propId)]: liveValue}, justTheseNodes);
     }
   } else {

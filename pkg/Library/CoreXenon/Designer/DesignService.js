@@ -44,10 +44,12 @@ export const simpleLayoutKey = 'Main$designer$layout';
 export const getDesignLayerId = layer => Flan.get(layer, designLayerIdKey);
 export const getDesignLayoutKey = layer => `${getDesignLayerId(layer)}\$${simpleLayoutKey}`;
 export const getDesignSelectedKey = layer => `${getDesignLayerId(layer)}$Main$designer$selected`;
+export const baseNodeGraphSelectedKey = `base$NodeGraph$Graph$selected`;
 
 // (improperly) used by GraphService
 export const getDesignLayer = layer => layer.flan.layers[getDesignLayerId(layer)];
-const getSelectedObjectId = layer => Flan.get(layer, getDesignSelectedKey(layer));
+//const getSelectedObjectId = layer => Flan.get(layer, getDesignSelectedKey(layer));
+const getSelectedObjectId = layer => Flan.get(layer, baseNodeGraphSelectedKey);
 
 const updateProp = (layer, data) => {
   const design = getDesignLayer(layer);

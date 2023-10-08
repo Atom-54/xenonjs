@@ -1,0 +1,459 @@
+{
+  "meta": {
+    "id": "ClientDb",
+    "designerId": "Main",
+    "timestamp": 1695407611708,
+    "customLibraries": {},
+    "graphRects": {
+      "Panel": {
+        "l": 16,
+        "t": 176,
+        "w": 200,
+        "h": 96
+      },
+      "Accordion": {
+        "l": 16,
+        "t": 88,
+        "w": 200,
+        "h": 56
+      },
+      "DataNavigator": {
+        "l": 266,
+        "t": 104,
+        "w": 200,
+        "h": 116
+      },
+      "Form": {
+        "l": 16,
+        "t": 304,
+        "w": 200,
+        "h": 136
+      },
+      "TabPages": {
+        "l": 266,
+        "t": 266,
+        "w": 200,
+        "h": 56
+      },
+      "TextField": {
+        "l": 608,
+        "t": 304,
+        "w": 200,
+        "h": 116
+      },
+      "TextField2": {
+        "l": 16,
+        "t": 480,
+        "w": 200,
+        "h": 116
+      },
+      "TextField22": {
+        "l": 266,
+        "t": 460,
+        "w": 200,
+        "h": 116
+      },
+      "TextField222": {
+        "l": 608,
+        "t": 432,
+        "w": 200,
+        "h": 116
+      },
+      "TextField2222": {
+        "l": 16,
+        "t": 638,
+        "w": 200,
+        "h": 116
+      },
+      "TextField22222": {
+        "l": 266,
+        "t": 622,
+        "w": 200,
+        "h": 116
+      },
+      "TextField222222": {
+        "l": 608,
+        "t": 688,
+        "w": 200,
+        "h": 116
+      },
+      "Panel2": {
+        "l": 16,
+        "t": 266,
+        "w": 200,
+        "h": 96
+      },
+      "Calendar": {
+        "l": 266,
+        "t": 104,
+        "w": 200,
+        "h": 56
+      },
+      "DataNavigator2": {
+        "l": 16,
+        "t": 282,
+        "w": 200,
+        "h": 116
+      },
+      "Panel3": {
+        "l": 272,
+        "t": 464,
+        "w": 200,
+        "h": 96
+      },
+      "Panel4": {
+        "l": 608,
+        "t": 560,
+        "w": 200,
+        "h": 96
+      },
+      "TextField3": {
+        "l": 848,
+        "t": 304,
+        "w": 200,
+        "h": 116
+      },
+      "TextField32": {
+        "l": 848,
+        "t": 688,
+        "w": 200,
+        "h": 116
+      },
+      "TextField322": {
+        "l": 848,
+        "t": 560,
+        "w": 200,
+        "h": 116
+      },
+      "TextField3222": {
+        "l": 848,
+        "t": 432,
+        "w": 200,
+        "h": 116
+      }
+    }
+  },
+  "nodes": {
+    "Main": {
+      "type": "$library/Layout/Nodes/DesignerNode",
+      "container": "root$panel#Container"
+    },
+    "Panel": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "TabPages$TabPages#pageContainer"
+    },
+    "TextField": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel2$panel#Container"
+    },
+    "TextField2": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel2$panel#Container"
+    },
+    "TextField22": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Accordion$panels#Container0"
+    },
+    "Accordion": {
+      "type": "$library/Layout/Nodes/AccordionNode",
+      "container": "Panel2$panel#Container"
+    },
+    "TextField222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Accordion$panels#Container0"
+    },
+    "TextField2222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Accordion$panels#Container0"
+    },
+    "TextField22222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Accordion$panels#Container0"
+    },
+    "TextField222222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Accordion$panels#Container0"
+    },
+    "TabPages": {
+      "type": "$library/Layout/Nodes/TabPagesNode",
+      "container": "Main$panel#Container"
+    },
+    "DataNavigator": {
+      "type": "$library/Fields/Nodes/DataNavigatorNode",
+      "container": "Panel$panel#Container"
+    },
+    "Form": {
+      "type": "$library/Fields/Nodes/FormNode",
+      "container": "Main$panel#Container"
+    },
+    "Panel2": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel$panel#Container"
+    },
+    "DataNavigator2": {
+      "type": "$library/Fields/Nodes/DataNavigatorNode",
+      "container": "Panel3$panel#Container"
+    },
+    "Panel3": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "TabPages$TabPages#pageContainer"
+    },
+    "Panel4": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel3$panel#Container"
+    },
+    "TextField3": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "TextField32": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "TextField322": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "TextField3222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "Calendar": {
+      "type": "$library/Calendar/Nodes/CalendarNode",
+      "container": "Panel3$panel#Container"
+    }
+  },
+  "state": {
+    "Main$designer$disabled": true,
+    "Main$designer$style": "width: auto; height: auto;",
+    "Main$panel$canvasLayout": "column",
+    "Panel$panel$layout": "column",
+    "Panel2$panel$layout": "column",
+    "Panel3$panel$layout": "column",
+    "Panel4$panel$layout": "column",
+    "Main$designer$layout": {
+      "Panel": {
+        "l": 0,
+        "t": 39.59375,
+        "w": 638,
+        "h": 493,
+        "flex": "1",
+        "height": "auto",
+        "padding": "var(--size-1)"
+      },
+      "Main": {
+        "l": 0,
+        "t": 0,
+        "w": 638,
+        "h": 533
+      },
+      "TextField": {
+        "l": 3.59375,
+        "t": 61.890625,
+        "w": 631,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto"
+      },
+      "TextField2": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 725,
+        "h": 44,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto"
+      },
+      "TextField22": {
+        "l": 0,
+        "t": 109.09375,
+        "w": 638,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto",
+        "order": "1"
+      },
+      "Accordion": {
+        "l": 3.59375,
+        "t": 120.1875,
+        "w": 866,
+        "h": 83,
+        "width": "auto",
+        "height": "auto",
+        "padding": ""
+      },
+      "TextField222": {
+        "l": 50,
+        "t": 159.09375,
+        "w": 638,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto",
+        "order": "2"
+      },
+      "TextField2222": {
+        "l": 100,
+        "t": 209.09375,
+        "w": 638,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto",
+        "order": "3"
+      },
+      "TextField22222": {
+        "l": 21.59375,
+        "t": 246.8828125,
+        "w": 595,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto"
+      },
+      "TextField222222": {
+        "l": 71.59375,
+        "t": 296.8828125,
+        "w": 595,
+        "h": 58,
+        "width": "auto",
+        "padding": "var(--size-3)",
+        "height": "auto",
+        "order": "9"
+      },
+      "TabPages": {
+        "l": 0,
+        "t": 0,
+        "w": 880,
+        "h": 703,
+        "width": "auto",
+        "flex": "1"
+      },
+      "DataNavigator": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 732,
+        "h": 48,
+        "width": "auto",
+        "height": "auto"
+      },
+      "Form": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "Panel2": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 732,
+        "h": 465,
+        "flex": "1",
+        "height": "auto",
+        "padding": "var(--size-1)",
+        "order": "3"
+      },
+      "Accordion2": {
+        "l": 50,
+        "t": 182,
+        "w": 638,
+        "h": 41,
+        "width": "auto",
+        "height": "auto",
+        "padding": ""
+      },
+      "DataNavigator2": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132,
+        "width": "auto",
+        "height": "auto"
+      },
+      "Panel3": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132,
+        "flex": "1"
+      },
+      "Panel4": {
+        "l": 0,
+        "t": 48.390625,
+        "w": 638,
+        "h": 445,
+        "flex": "1",
+        "padding": "var(--size-1)",
+        "order": "3",
+        "width": {}
+      },
+      "TextField3": {
+        "l": 3.59375,
+        "t": 135.265625,
+        "w": 873,
+        "h": 44,
+        "width": "auto",
+        "height": "auto",
+        "padding": "var(--size-2)"
+      },
+      "TextField32": {
+        "l": 3.59375,
+        "t": 47.484375,
+        "w": 631,
+        "h": 44,
+        "width": "auto",
+        "height": "auto",
+        "padding": "var(--size-2)"
+      },
+      "TextField322": {
+        "l": 3.59375,
+        "t": 91.375,
+        "w": 631,
+        "h": 44,
+        "width": "auto",
+        "height": "auto",
+        "padding": "var(--size-2)"
+      },
+      "TextField3222": {
+        "l": 53.59375,
+        "t": 141.375,
+        "w": 631,
+        "h": 44,
+        "width": "auto",
+        "height": "auto",
+        "padding": "var(--size-2)"
+      },
+      "Calendar": {
+        "l": 0,
+        "t": 48.390625,
+        "w": 638,
+        "h": 188,
+        "width": "auto",
+        "order": "2",
+        "height": {}
+      }
+    },
+    "TextField$field$label": "Client Name",
+    "TextField2$field$label": "Client Email",
+    "TextField22$field$label": "Address (Line 1)",
+    "Accordion$panels$sections": [
+      "Address",
+      "Notes"
+    ],
+    "TextField222$field$label": "Address (Line 2)",
+    "TextField2222$field$label": "City",
+    "TextField22222$field$label": "State/Province",
+    "TextField222222$field$label": "Zip/Post Code",
+    "TabPages$TabPages$tabs": [
+      "Clients",
+      "Appointments"
+    ],
+    "TextField3$field$label": "Client Name",
+    "TextField32$field$label": "Time",
+    "TextField322$field$label": "Type",
+    "TextField3222$field$label": "Provider"
+  },
+  "connections": {}
+}

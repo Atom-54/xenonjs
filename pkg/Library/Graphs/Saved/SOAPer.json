@@ -1,0 +1,606 @@
+{
+  "meta": {
+    "id": "SOAPer",
+    "designerId": "Main",
+    "timestamp": 1695171077372,
+    "customLibraries": {},
+    "graphRects": {
+      "Listen": {
+        "l": 64,
+        "t": 160,
+        "w": 200,
+        "h": 96
+      },
+      "DeviceUx": {
+        "l": 64,
+        "t": 64,
+        "w": 200,
+        "h": 76
+      },
+      "DataCollector": {
+        "l": 320,
+        "t": 160,
+        "w": 200,
+        "h": 76
+      },
+      "JSONata": {
+        "l": 320,
+        "t": 272,
+        "w": 200,
+        "h": 76
+      },
+      "OpenAIText": {
+        "l": 592,
+        "t": 272,
+        "w": 200,
+        "h": 116
+      },
+      "TextArea": {
+        "l": 592,
+        "t": 160,
+        "w": 200,
+        "h": 76
+      },
+      "Echo": {
+        "l": 592,
+        "t": 416,
+        "w": 200,
+        "h": 76
+      },
+      "Calendar": {
+        "l": 592,
+        "t": 48,
+        "w": 200,
+        "h": 60
+      },
+      "Panel": {
+        "l": 64,
+        "t": 320,
+        "w": 200,
+        "h": 96
+      },
+      "Panel2": {
+        "l": 64,
+        "t": 368,
+        "w": 200,
+        "h": 96
+      },
+      "Panel3": {
+        "l": 64,
+        "t": 464,
+        "w": 200,
+        "h": 96
+      },
+      "TabPages": {
+        "l": 320,
+        "t": 384,
+        "w": 200,
+        "h": 60
+      },
+      "TextField": {
+        "l": 416,
+        "t": 512,
+        "w": 200,
+        "h": 116
+      },
+      "TextField2": {
+        "l": 832,
+        "t": 112,
+        "w": 200,
+        "h": 116
+      },
+      "TextField22": {
+        "l": 832,
+        "t": 80,
+        "w": 200,
+        "h": 116
+      },
+      "TextField222": {
+        "l": 832,
+        "t": 48,
+        "w": 200,
+        "h": 116
+      },
+      "JSONata2": {
+        "l": 320,
+        "t": 32,
+        "w": 200,
+        "h": 76
+      },
+      "Panel42": {
+        "l": 64,
+        "t": 416,
+        "w": 200,
+        "h": 96
+      },
+      "Panel422": {
+        "l": 64,
+        "t": 506,
+        "w": 200,
+        "h": 96
+      },
+      "TextField223": {
+        "l": 832,
+        "t": 170,
+        "w": 200,
+        "h": 116
+      },
+      "TextField2232": {
+        "l": 832,
+        "t": 260,
+        "w": 200,
+        "h": 116
+      },
+      "Panel4": {
+        "l": 720,
+        "t": 544,
+        "w": 200,
+        "h": 96
+      }
+    }
+  },
+  "nodes": {
+    "Main": {
+      "type": "$library/Layout/Nodes/DesignerNode",
+      "container": "root$panel#Container"
+    },
+    "Listen": {
+      "type": "$library/Media/Nodes/ListenNode",
+      "container": "Main$panel#Container"
+    },
+    "DeviceUx": {
+      "type": "$library/Media/Nodes/DeviceUxNode",
+      "container": "Panel2$panel#Container"
+    },
+    "DataCollector": {
+      "type": "$library/Data/Nodes/DataCollectorNode",
+      "container": "Main$panel#Container"
+    },
+    "JSONata": {
+      "type": "$library/JSONata/Nodes/JSONataNode",
+      "container": "Main$panel#Container"
+    },
+    "OpenAIText": {
+      "type": "$library/OpenAI/Nodes/OpenAITextNode",
+      "container": "AIClock$panel#Container"
+    },
+    "TextArea": {
+      "type": "$library/Fields/Nodes/TextAreaNode",
+      "container": "Panel2$panel#Container"
+    },
+    "Echo": {
+      "type": "$library/EchoNode",
+      "container": "Panel2$panel#Container"
+    },
+    "TabPages": {
+      "type": "$library/Layout/Nodes/TabPagesNode",
+      "container": "Main$panel#Container"
+    },
+    "Panel": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "TabPages$TabPages#pageContainer"
+    },
+    "Panel2": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "TabPages$TabPages#pageContainer"
+    },
+    "Panel3": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel$panel#Container"
+    },
+    "Calendar": {
+      "type": "$library/Calendar/Nodes/CalendarNode",
+      "container": "Panel$panel#Container"
+    },
+    "TextField": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "TextField2": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel4$panel#Container"
+    },
+    "TextField22": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel42$panel#Container"
+    },
+    "TextField222": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel42$panel#Container"
+    },
+    "JSONata2": {
+      "type": "$library/JSONata/Nodes/JSONataNode",
+      "container": "Main$panel#Container"
+    },
+    "Panel42": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel3$panel#Container"
+    },
+    "Panel422": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel3$panel#Container"
+    },
+    "TextField223": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel422$panel#Container"
+    },
+    "TextField2232": {
+      "type": "$library/Fields/Nodes/TextFieldNode",
+      "container": "Panel422$panel#Container"
+    },
+    "Panel4": {
+      "type": "$library/Layout/Nodes/PanelNode",
+      "container": "Panel3$panel#Container"
+    }
+  },
+  "state": {
+    "Main$designer$disabled": true,
+    "Main$designer$style": "width: auto; height: auto;",
+    "Main$panel$canvasLayout": "column",
+    "Panel$panel$layout": "column",
+    "Panel2$panel$layout": "column",
+    "Panel3$panel$layout": "column",
+    "Panel42$panel$layout": "row",
+    "Panel422$panel$layout": "row",
+    "Panel4$panel$layout": "row",
+    "AIClock$designer$disabled": true,
+    "AIClock$designer$style": "width: auto; height: auto;",
+    "AIClock$panel$canvasLayout": "column",
+    "AIClock$designer$layout": {
+      "Listen": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "DeviceUx": {
+        "l": 0,
+        "t": 0,
+        "w": 132,
+        "h": 34
+      },
+      "Echo": {
+        "l": 0,
+        "t": 264,
+        "w": 704,
+        "h": 270,
+        "width": "auto",
+        "backgroundColor": "var(--xcolor-one)",
+        "order": "6",
+        "padding": "var(--size-3)",
+        "fontSize": "var(--font-size-1)",
+        "flex": "1"
+      },
+      "DataCollector": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "JSONata": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "OpenAIText": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "TextArea": {
+        "l": 0,
+        "t": 34,
+        "w": 704,
+        "h": 230,
+        "width": "auto",
+        "order": "1",
+        "fontSize": "var(--font-size-1)"
+      },
+      "Main": {
+        "backgroundColor": "var(--xcolor-one)",
+        "fontSize": "var(--font-size-0)",
+        "l": 0,
+        "t": 0,
+        "w": 631,
+        "h": 729
+      },
+      "TabPages": {
+        "l": 0,
+        "t": 0,
+        "w": 704,
+        "h": 574,
+        "width": "auto",
+        "flex": "1",
+        "backgroundColor": "",
+        "fontSize": "var(--font-size-1)"
+      },
+      "Panel": {
+        "l": 0,
+        "t": 35.09375,
+        "w": 631,
+        "h": 132,
+        "flex": "1"
+      },
+      "Panel2": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132,
+        "flex": "1"
+      },
+      "Panel3": {
+        "l": 0,
+        "t": 142,
+        "w": 717,
+        "h": 278,
+        "padding": "var(--size-2)",
+        "order": "5",
+        "flex": "1",
+        "fontSize": "var(--font-size-0)"
+      },
+      "Calendar": {
+        "l": 0,
+        "t": 0,
+        "w": 704,
+        "h": 112,
+        "flex": "",
+        "width": "auto",
+        "padding": "var(--size-2)",
+        "fontSize": "var(--font-size-00)"
+      },
+      "TextField": {
+        "l": 235.1875,
+        "t": 3.59375,
+        "w": 232,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "order": "2"
+      },
+      "Panel32": {
+        "l": 50,
+        "t": 50,
+        "w": 743,
+        "h": 222,
+        "padding": "var(--size-3)",
+        "order": "5",
+        "flex": "1"
+      },
+      "TextField2": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 464,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "flex": "1"
+      },
+      "TextField22": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 443,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "flex": ""
+      },
+      "TextField222": {
+        "l": 446.40625,
+        "t": 3.59375,
+        "w": 264,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "flex": "1"
+      },
+      "Data": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "JSONata2": {
+        "l": 32,
+        "t": 32,
+        "w": 132,
+        "h": 132
+      },
+      "Panel4": {
+        "l": 7.1953125,
+        "t": 139.5703125,
+        "w": 729,
+        "h": 35,
+        "flex": "",
+        "height": "auto",
+        "order": "5",
+        "alignItems": "",
+        "width": "auto",
+        "padding": "var(--size-1)"
+      },
+      "Panel42": {
+        "l": 7.1953125,
+        "t": 102.8828125,
+        "w": 714,
+        "h": 37,
+        "flex": "",
+        "height": "auto",
+        "padding": "var(--size-1)",
+        "order": "6",
+        "width": "auto"
+      },
+      "Panel422": {
+        "l": 14.3984375,
+        "t": 95.3984375,
+        "w": 723,
+        "h": 0,
+        "flex": "",
+        "height": "auto",
+        "width": "auto",
+        "padding": "var(--size-1)"
+      },
+      "TextField223": {
+        "l": 3.59375,
+        "t": 3.59375,
+        "w": 457,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "flex": "1"
+      },
+      "TextField2232": {
+        "l": 493.015625,
+        "t": 3.59375,
+        "w": 232,
+        "h": 30,
+        "width": "auto",
+        "height": "auto",
+        "order": "2"
+      }
+    },
+    "DataCollector$Data$data": [],
+    "JSONata$JSONata$expression": "$join($, '\\n')\n",
+    "OpenAIText$OpenAIText$context": "Format the following notes into a SOAP report. SOAP reports have four sections:  Subjective, Objective, Assessment, and Plan. Expand all acronyms. For example, ROM means \"range of motion\".",
+    "OpenAIText$OpenAIText$enabled": true,
+    "TextArea$field$label": "Raw Notes",
+    "TabPages$TabPages$tabs": [
+      "Client",
+      "SOAP"
+    ],
+    "TextField$field$label": "ClientId",
+    "TextField2$field$label": "Client",
+    "TextField22$field$label": "Something",
+    "TextField222$field$label": "Other",
+    "JSONata2$JSONata$json": {},
+    "JSONata2$JSONata$expression": "[{\n  \"title\": \"BodyWork for Scott\",\n  \"start\": $now(),\n  \"end\": $fromMillis($millis() + 60*24*1e3)\n}]",
+    "TextField$field$value": "953-2395",
+    "TextField2$field$value": "Scott",
+    "TextField223$field$label": "Provider",
+    "TextField223$field$value": "Jeffrey",
+    "TextField2232$field$label": "ProviderId",
+    "TextField2232$field$value": "001-00",
+    "TextArea$field$text": "client reports quote I have difficulty buttoning my shirt because of the pain in my thumb\nclient reports 8 out of 10 pain at IP joint\ntreated with paraffin times 15 minutes STM and adaptive strategies for dressing\nfor example buttoning with buttonhook\nissued radial gutter splint with PT education\nI have see times 15 minutes with ice times 5 minutes\npinch right UE 4 lb left UE 10 lb\npatient demonstrates increased ability to type due to increased ROM and thumb\ncontinue with plan of care to increase ROM to crease pain continue implementing adaptive strategies",
+    "OpenAIText$OpenAIText$restart": 0.3181408042893563,
+    "Main$designer$layout": {
+      "TabPages": {
+        "flex": "1",
+        "width": {}
+      },
+      "Panel": {
+        "flex": "1",
+        "width": "auto",
+        "l": 0,
+        "t": 39.59375,
+        "w": 535,
+        "h": 493
+      },
+      "Panel3": {
+        "flex": "1",
+        "l": 0,
+        "t": 131,
+        "w": 759,
+        "h": 362,
+        "order": "2",
+        "padding": "var(--size-2)",
+        "backgroundColor": "white",
+        "width": {}
+      },
+      "Calendar": {
+        "flex": "",
+        "height": {},
+        "l": 0,
+        "t": 0,
+        "w": 638,
+        "h": 131,
+        "backgroundColor": "var(--xcolor-one)",
+        "width": "auto"
+      },
+      "TextField223": {
+        "l": 247.796875,
+        "t": 0,
+        "w": 248,
+        "h": 29,
+        "height": "auto",
+        "flex": "1"
+      },
+      "Panel4": {
+        "padding": "var(--size-2)",
+        "l": 7.1953125,
+        "t": 43.0859375,
+        "w": 624,
+        "h": 43,
+        "height": "auto",
+        "width": "auto"
+      },
+      "Panel42": {
+        "padding": "var(--size-2)",
+        "height": "auto",
+        "l": 7.1953125,
+        "t": -0.3046875,
+        "w": 624,
+        "h": 43,
+        "order": "4",
+        "width": "auto"
+      },
+      "Panel422": {
+        "padding": "var(--size-2)",
+        "height": "auto",
+        "l": 7.1953125,
+        "t": -0.3046875,
+        "w": 624,
+        "h": 44,
+        "width": "auto"
+      },
+      "Panel2": {
+        "flex": "1"
+      },
+      "Echo": {
+        "flex": "1",
+        "order": "7"
+      },
+      "TextArea": {
+        "l": 0,
+        "t": 34,
+        "w": 638,
+        "h": 237
+      },
+      "TextField2232": {
+        "order": "2",
+        "height": "auto"
+      },
+      "TextField": {
+        "l": 7.1953125,
+        "t": 7.1953125,
+        "w": 248,
+        "h": 29,
+        "order": "2",
+        "height": "auto"
+      },
+      "TextField2": {
+        "height": "auto",
+        "flex": "1"
+      },
+      "TextField222": {
+        "height": "auto",
+        "l": 368.8046875,
+        "t": 7.1953125,
+        "w": 248,
+        "h": 30
+      },
+      "TextField22": {
+        "height": "auto",
+        "flex": "1",
+        "width": {}
+      }
+    }
+  },
+  "connections": {
+    "Listen$SpeechRecognizer$mediaDeviceState": "DeviceUx$deviceUx$mediaDeviceState",
+    "DataCollector$Data$datum": "Listen$SpeechRecognizer$transcript",
+    "JSONata$JSONata$json": "DataCollector$Data$data",
+    "OpenAIText$OpenAIText$prompt": "TextArea$field$text",
+    "TextField$echo$html": "OpenAIText$OpenAIText$markup",
+    "Calendar$chart$events": "JSONata2$JSONata$result"
+  }
+}

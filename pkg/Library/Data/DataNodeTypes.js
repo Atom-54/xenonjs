@@ -26,7 +26,7 @@ export const DataNodeTypes = {
     category,
     description: 'Formats given arguments into a string',
     types: {
-      formatter$format: 'String',
+      formatter$format: 'MultilineText',
       formatter$arg0: 'String',
       formatter$arg1: 'String',
       formatter$arg2: 'String',

@@ -1,0 +1,33 @@
+<!doctype html>
+<script type="module" src="./bundle.min.js"></script>
+<!-- <script src="https://jspm.dev/@spectrum-web-components/bundle/elements.js" type="module" async></script> -->
+
+<sp-theme theme="spectrum" scale="medium" color="light">
+  <!-- Insert content requiring theme application here. -->
+  <sp-button id="menu">Options</sp-button>
+  <sp-overlay trigger="menu@click" placement="bottom">
+    <sp-popover open style="position: relative">
+      <sp-menu selects="single">
+        <sp-menu-item>
+            Deselect
+        </sp-menu-item>
+        <sp-menu-item>
+            Select inverse
+        </sp-menu-item>
+        <sp-menu-item>
+            Feather...
+        </sp-menu-item>
+        <sp-menu-item>
+            Select and mask...
+        </sp-menu-item>
+        <sp-menu-item>
+            Save selection
+        </sp-menu-item>
+        <sp-menu-item disabled>
+            Make work path
+        </sp-menu-item>
+      </sp-menu>
+    </sp-popover>
+  </sp-overlay>
+  <!-- End content requiring theme application. -->
+</sp-theme>
