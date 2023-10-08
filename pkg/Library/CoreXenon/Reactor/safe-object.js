@@ -5,7 +5,9 @@
  */
 export const SafeObject = {
   create: Object.create,
-  assign: Object.assign,
+  assign(o, ...args) {
+    return Object.assign(o || {}, ...args);
+  },
   nob() {
     return Object.create(null)
   },

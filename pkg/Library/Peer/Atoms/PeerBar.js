@@ -4,25 +4,33 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({peers, staticPeers}, state, {}) {
-  const all = [...(peers??[]), ...(staticPeers??[])];
-  all.forEach((p, i) => {
-    p.key = i;
-  });
-  state.peers = all;
-  return {peers: all, selectedPeer: state.peers[state.selected||0]};
+shouldUpdate({peers}) {
+  return peers;
 },
-render({}, {peers, selected}) {
-  peers.forEach((p, i) => {
-    p.selected = (i===(selected??0));
-  });
+update({peers, staticPeers}, state, {}) {
+  //const all = [...(peers??[]), ...(staticPeers??[])];
+  //const all = [...(staticPeers??[])];
+  // all.forEach((p, i) => {
+  //   p.key = i;
+  // });
+  //state.peers = all;
+  return {selectedPeer: peers[state.selected||0]};
+},
+render({peers}, {selected}) {
+  const defaultPhotoURL = resolve('$library/Auth/Assets/user.png');
+  const model = peers?.map((p, i) => ({
+    ...p, 
+    key: i,
+    selected: (i===(selected??0)),
+    photoURL: p.photoURL ?? defaultPhotoURL
+  }));
   return {
-    peers
+    peers: model
   };
 },
-onPeerClick({eventlet: {key}}, state) {
-  state.selected = Number(key);
-  return {selectedPeer: state.peers[state.selected]};
+onPeerClick({eventlet: {key}, peers}, state) {
+  state.selected = Number(key) ?? 0;
+  return {selectedPeer: peers?.[state.selected]};
 },
 template: html`
 <style>
@@ -55,12 +63,13 @@ template: html`
     height: 32px;
     border-radius: 50%;
     border: 1px solid black;
+    margin-right: 0.5em;
   }
 </style>
 <div flex column repeat="peer_t">{{peers}}</div>
 <template peer_t>
   <div center row key$="{{key}}" selected$="{{selected}}" on-click="onPeerClick">
-    <img src="{{photoURL}}" referrerpolicy="no-referrer">&nbsp;
+    <img src="{{photoURL}}" referrerpolicy="no-referrer">
     <span flex>{{name}}</span>
   </div>
 </template>

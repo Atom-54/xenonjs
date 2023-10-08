@@ -3,28 +3,44 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {SSEPubSub} from './SSEPubSub.js';
+import * as PubSub from './SSEPubSub.js';
 import * as App from '../../CoreXenon/Framework/App.js';
 
 const log = logf('Services:(SSE)PubSub', 'yellow', 'black');
-//const pubSub = new SSEPubSub(`${globalThis.config?.firebaseConfig?.databaseURL}/pubsub`);
+logf.flags['Services:(SSE)PubSub'] = true;
 
-// TODO(sjmiles): SSEPubSub should handle the multiplexing
-const pubsubs = [];
-const getPubSub = path => pubsubs[path] ??= new SSEPubSub(`${globalThis.config?.firebaseConfig?.databaseURL}/pubsub/${path}`);
+const defaultUrl = globalThis.config?.firebaseConfig?.databaseURL;
+
+const maybeDefaultPath = path => {
+  return path.startsWith('https') ? path : `${defaultUrl}/${path}`;
+};
 
 export const SSEPubSubService = {
-  async Publish(layer, atom, {path, value}) {
+  async Publish(layer, atom, {path, value, auth}) {
     log('Publish', path, value);
-    return getPubSub(path).publish(path, value);
+    if (!path || path.includes('null')) {
+      log('ignoring path with null:', path);
+      return;
+    }
+    if (path) {
+      PubSub.publish(maybeDefaultPath(path), auth, value);
+    }
   },
-  async Subscribe(layer, atom, {path}) {
+  async Subscribe(layer, atom, {path, auth}) {
     log('Subscribe', path);
-    const signal = (value) => {
-      log('Signal', path, value);
-      const event =  {handler: 'onSubscribedValue', data: {value}};
+    if (!path || path.includes('null')) {
+      log('ignoring path with null:', path);
+      return;
+    }
+    const signal = ({type, data}) => {
+      log('Signal', path, type, data);
+      const event =  {handler: 'onSubscribedValue', data: {value: data}};
       App.handleAtomEvent(layer, atom.name, event);
     };
-    return getPubSub(path).subscribe(path, signal);
+    PubSub.subscribe(atom.name, signal, maybeDefaultPath(path), auth);
+  },
+  Unsubscribe(layer, atom, {path}) {
+    log('Unsubscribe', path);
+    PubSub.unsubscribe(atom.name, maybeDefaultPath(path));
   }
 };

@@ -246,7 +246,9 @@ export const cloneObject = async (layer, objectId) => {
   // copy layout
   const layout = graph.state[Design.simpleLayoutKey];
   const objectLayout = deepCopy(layout[objectId]);
-  layout[newId] = assign(objectLayout, {l: objectLayout?.l + 50, t: objectLayout?.t + 50});
+  if (objectLayout) {
+    layout[newId] = assign(objectLayout, {l: objectLayout?.l + 50, t: objectLayout?.t + 50});
+  }
   // copy connections
   entries(graph.connections).forEach(([prop, conn]) => {
     if (Id.sliceId(prop, 0, 1) === objectId) {

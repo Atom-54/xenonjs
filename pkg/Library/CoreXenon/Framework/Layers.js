@@ -23,13 +23,23 @@ export const reifyGraphLayer = async (graph, emit, composer, services, name='') 
   return {name, graph, system, atoms, bindings, composer, services}
 };
 
-export const generateLayerBindings = ({name, system, graph, bindings: currentBindings}) => {
+export const generateLayerBindings = ({name, system, graph, bindings}) => {
   // construct bindings from the atom specs
-  const bindings = Binder.constructBindings(system);
-  copyCrossLayerInputs(name, bindings, currentBindings)
+  const generated = Binder.constructBindings(system);
+  copyCrossLayerInputs(name, bindings, generated)
   // add graph.connections to inputBindings
-  Binder.addConnections(name, graph.connections, bindings);
-  return bindings;
+  Binder.addConnections(name, graph.connections, generated);
+  return generated;
+};
+
+// TODO(maria): cross-layer bindings (used for `selected` node), are not expressed in the graph atm,
+// and need to be carried over, when layerBindings are regenerated.
+const copyCrossLayerInputs = (layerName, currentBindings, newBindings) => {
+  entries(currentBindings?.input).forEach(([key, bound]) => {
+    if (!Id.matchesIdPrefix(key, layerName)) {
+      newBindings.input[key] = [...bound];
+    }
+  });
 };
 
 // TODO(maria): this is a workaround:

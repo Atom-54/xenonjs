@@ -6,7 +6,7 @@
 export const PubSubNode = {
   pubsub: {
     type: '$library/PubSub/Atoms/PubSub',
-    inputs: ['path', 'publishValue'],
+    inputs: ['path', 'publishValue', 'auth'],
     outputs: ['subscribedValue']
   }
 };
