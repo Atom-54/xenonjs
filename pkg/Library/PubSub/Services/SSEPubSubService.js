@@ -9,38 +9,41 @@ import * as App from '../../CoreXenon/Framework/App.js';
 const log = logf('Services:(SSE)PubSub', 'yellow', 'black');
 logf.flags['Services:(SSE)PubSub'] = true;
 
-const defaultUrl = globalThis.config?.firebaseConfig?.databaseURL;
+let source;
+const defaultUrl = `${globalThis.config?.firebaseConfig?.databaseURL}/v1/shared`;
 
-const maybeDefaultPath = path => {
-  return path.startsWith('https') ? path : `${defaultUrl}/${path}`;
-};
+const requireSource = (auth) => source ??= PubSub.createSource(defaultUrl, auth);
 
 export const SSEPubSubService = {
   async Publish(layer, atom, {path, value, auth}) {
     log('Publish', path, value);
-    if (!path || path.includes('null')) {
-      log('ignoring path with null:', path);
+    if (!path || path.includes('null') || String(value) === 'undefined') {
+      log('ignoring request containing null/undefined:', path, value);
       return;
     }
-    if (path) {
-      PubSub.publish(maybeDefaultPath(path), auth, value);
-    }
+    PubSub.publish(`${defaultUrl}${path}`, auth, value);
   },
   async Subscribe(layer, atom, {path, auth}) {
     log('Subscribe', path);
     if (!path || path.includes('null')) {
-      log('ignoring path with null:', path);
+      log('ignoring path containing null:', path);
       return;
     }
-    const signal = ({type, data}) => {
-      log('Signal', path, type, data);
-      const event =  {handler: 'onSubscribedValue', data: {value: data}};
-      App.handleAtomEvent(layer, atom.name, event);
-    };
-    PubSub.subscribe(atom.name, signal, maybeDefaultPath(path), auth);
+    const source = requireSource(auth);
+    const signal = signalHandler(layer, atom, path);
+    PubSub.subscribe(source, path, atom.name, signal);
   },
   Unsubscribe(layer, atom, {path}) {
     log('Unsubscribe', path);
-    PubSub.unsubscribe(atom.name, maybeDefaultPath(path));
+    if (source) {
+      PubSub.unsubscribe(source, path, atom.name);
+    }
   }
 };
+
+const signalHandler = (layer, atom, path) => 
+  ({type, data}) => {
+    log('Signal', path, type, data);
+    const event =  {handler: 'onSubscribedValue', data: {value: data}};
+    App.handleAtomEvent(layer, atom.name, event);
+  };
