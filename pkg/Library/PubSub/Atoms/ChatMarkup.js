@@ -6,22 +6,39 @@ export const atom = (log) => ({
    */
   async update({messages_0, messages_1, messages_2, messages_3}, state, {isDirty}) {
     const messages = [messages_0, messages_1, messages_2, messages_3].reduce((all, msgs) => (msgs?.length && all.push(...msgs), all), []);
-    if (messages.length) {
-      return {
-        markup: this.composeMarkup(messages)
-      };
-    }
+    return {
+      markup: this.composeMarkup(messages)
+    };
   },
   composeMarkup(messages) {
-    const bubblify = (color, name) => `<span style="display: inline-block; font-weight: bold; font-size: 0.8em; padding: 0px 7px 1px; margin-right: 2px; border-radius: 8px; color: white; background-color: ${
-      color};">${name}</span>`;
+    const bubblify = (color, name) => `<span style="background-color: ${color};">${name}</span>`;
     const color = ['#5d96be', '#be855d', '#855dbe', '#b65dbe', '#96be5d', '#5d66be'];
     const styles = {};
-    const markup = messages.map(({role, name, msg}) => {
+    const markup = messages?.filter(({role, name, msg}) => role && name && msg).map(({role, name, msg}) => {
       const style = styles[name] ??= color[keys(styles).length % 6];
-      return `${bubblify(style, name)}<p>${msg}</p>`
+      return `<div bubbly>${bubblify(style, name)}${msg}</div>`
     }).join('');
-    return markup;
+    return `
+<style>
+  div[bubbly] {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.3em;
+  }
+  [bubbly] > span {
+    display: inline-block; 
+    font-weight: bold; 
+    font-size: 0.8em; 
+    padding: 0px 7px 1px; 
+    margin-right: 16px; 
+    border-radius: 8px; 
+    color: white;
+    width: 10em;
+    text-align: center;
+  }
+</style>
+${markup || ''}
+    `
   },
   // buildColorChart(personas) {
   //   const color = ['#5d96be', '#be855d', '#855dbe', '#b65dbe', '#96be5d', '#5d66be'];
