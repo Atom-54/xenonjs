@@ -46,8 +46,8 @@ const loadJsonLibrary = async path => {
 
 const loadLibraryBits = async library => {
   const libraryBits = [];
-  log('loading topics', Object.keys(library));
-  Object.entries(library).forEach(([title, topic]) => {
+  log('loading topics', keys(library));
+  entries(library).forEach(([title, topic]) => {
     const bits = topic.bits?.map((bit) => ({
       ...bit,
       embedding: Utils.decodeEmbedding(bit.embedding || "")
