@@ -1,0 +1,86 @@
+<!doctype html>
+<script type="module">
+import * as odd from "./index.esm.min.js";
+
+const program = await odd.program({
+  // Can also be a string, used as an identifier for caches.
+  // If you're developing multiple apps on the same localhost port,
+  // make sure these differ.
+  namespace: { 
+    creator: "Atom54", 
+    name: "Build" 
+  }
+}).catch(error => {
+  console.error(error);
+  switch (error) {
+    case odd.ProgramError.InsecureContext:
+      // The ODD SDK requires HTTPS
+      break;
+    case odd.ProgramError.UnsupportedBrowser:
+      break;
+  }
+});
+
+let session = program.session;
+console.log('session', session);
+
+if (!session) {
+  const username = 'sjmiles68';
+  // Check if username is valid and available
+  const valid = await program.auth.isUsernameValid(username)
+  console.log('valid', valid);
+  const available = valid && await program.auth.isUsernameAvailable(username)
+  console.log('available', available);
+  if (valid && available) {
+    console.log('registering', username);
+    const {success} = await program.auth.register({username})
+    session = success ? await program.auth.session() : null
+  }
+  console.log('session', session);
+}
+
+// // Do we have an existing session?
+// if (program.session) {
+//   session = program.session
+// } else {
+//   // If not, let's authenticate.
+//   const userChoseToRegister = true;
+
+//   // (a) new user, register a new Fission account
+//   // if (userChoseToRegister) {
+//   //   console.log('registering', username);
+//   //   const {success} = await program.auth.register({username})
+//   //   session = success ? program.auth.session() : null
+//   // } 
+//   // // (b) existing user, link a new device
+//   // else {
+//   //   // On device with existing session:
+//   //   const producer = await program.auth.accountProducer(program.session.username)
+//   //   producer.on("challenge", challenge => {
+//   //     // Either show `challenge.pin` or have the user input a PIN and see if they're equal.
+//   //     if (userInput === challenge.pin) challenge.confirmPin()
+//   //     else challenge.rejectPin()
+//   //   });
+//   //   producer.on("link", ({ approved }) => {
+//   //     if (approved) console.log("Link device successfully")
+//   //   });
+//   //   // On device without session:
+//     //     Somehow you'll need to get ahold of the username.
+//     //     Few ideas: URL query param, QR code, manual input.
+//     const consumer = await program.auth.accountConsumer(username)
+//     consumer.on("challenge", ({ pin }) => {
+//       showPinOnUI(pin)
+//     })
+//     consumer.on("link", async ({ approved, username }) => {
+//       if (approved) {
+//         console.log(`Successfully authenticated as ${username}`)
+//         session = await program.auth.session()
+//       }
+//     })
+// //   }
+// }
+
+//console.log(session ? 'have session' : 'no session');
+//console.log(session);
+
+</script>
