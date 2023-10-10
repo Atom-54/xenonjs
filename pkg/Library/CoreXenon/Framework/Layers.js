@@ -42,17 +42,6 @@ const copyCrossLayerInputs = (layerName, currentBindings, newBindings) => {
   });
 };
 
-// TODO(maria): this is a workaround:
-// cross-layer bindings (used for `selected` node), are not expressed in the graph atm,
-// and need to be carried over, when layerBindings are regenerated.
-const copyCrossLayerInputs = (layerName, {input}, currentBindings) => {
-  entries(currentBindings?.input).forEach(([key, bound]) => {
-    if (!Id.matchesIdPrefix(key, layerName)) {
-      input[key] = [...bound];
-    }
-  });
-}
-
 export const obliterateGraphLayer = async layer => {
   await Promise.all(map(layer.atoms, (name, atom) => atom.dispose()));
 };

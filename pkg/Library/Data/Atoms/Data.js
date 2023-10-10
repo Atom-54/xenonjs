@@ -13,9 +13,10 @@ update({json}) {
       const value = JSON.parse(json);
       return {value};
     } catch(x) {
-      log(x);
+      // gets here if json is a simple (unquoted) string
     }
-  } else if (json) {
+  }
+  if (json) {
     return {value: json};
   }
 }

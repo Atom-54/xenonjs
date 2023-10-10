@@ -5,7 +5,7 @@
  */
 
 const log = logf('SSEPubSub', 'orange', 'black');
-logf.flags.SSEPubSub = true;
+//logf.flags.SSEPubSub = true;
 
 const composeJsonRequestUrl = (url, auth) => {
   return `${url}.json${auth ? `?auth=${auth}` : ''}`;
@@ -24,31 +24,34 @@ export const createSource = (url, auth) => {
 const onEvent = (source, e) => {
   try {
     const info = JSON.parse(e.data);
-    const packet = {type: e.type, data: info.data};
-    notify(source, info.path, packet);
+    const packet = {type: e.type, data: info.data, path: info.path};
+    notify(source, packet);
   } catch(x) {
     log.error(x);
   }
 };
 
-const notify = (source, path, packet) => {
-  log('notify', path, packet);
-  const pathListeners = source.listeners[path];
-  if (pathListeners) {
-    Object.values(pathListeners).forEach(l => l(packet));
-  }
+const notify = (source, packet) => {
+  log('notify', packet);
+  Object.values(source.listeners).forEach(l => l(packet));
+  // const pathListeners = source.listeners[path];
+  // if (pathListeners) {
+  //   Object.values(pathListeners).forEach(l => l(packet));
+  // }
 };
 
-export const subscribe = (source, path, id, signal) => {
-  const pathListeners = (source.listeners[path] ??= {});
-  pathListeners[id] = signal;
+export const subscribe = (source, id, signal) => {
+  source.listeners[id] = signal;
+  //const pathListeners = (source.listeners[path] ??= {});
+  //pathListeners[id] = signal;
 };
 
-export const unsubscribe = (source, path, id) => {
-  const pathListeners = source.listeners[path];
-  if (pathListeners) {
-    delete pathListeners[id];
-  }
+export const unsubscribe = (source, id) => {
+  delete source.listeners[id];
+  // const pathListeners = source.listeners[path];
+  // if (pathListeners) {
+  //   delete pathListeners[id];
+  // }
 };
 
 export const publish = async (path, auth, value) => {
