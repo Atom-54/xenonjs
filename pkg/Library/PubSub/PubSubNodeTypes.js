@@ -6,9 +6,14 @@
 const category = 'PubSub';
 
 export const PubSubNodeTypes = {
+  Publish: {
+    category,
+    description: 'Publish data',
+    type: '$library/PubSub/Nodes/PublishNode'
+  },
   PubSub: {
     category,
-    description: 'Simple Publish/Subscribe interface',
+    description: 'Publish data and subscribe to changes',
     type: '$library/PubSub/Nodes/PubSubNode'
   },
   ChatMarkup: {
