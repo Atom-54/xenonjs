@@ -66,9 +66,10 @@ export class PixiSpriteGrid extends PixiObject {
   }
   updateGems({gems, object}) {
     // global scales
-    const [s0, s1] = scales;
+    //const [s0, s1] = scales;
     // frame count for this `gems`
-    const frame = gems.frame = (gems.frame || 0) + 1;
+    //const frame = gems.frame = (gems.frame || 0) + 1;
+    let gemsInMotion = false;
     // process gems
     gems.forEach((gem) => {
       this.scaleAndPositionGem(gem);
@@ -81,6 +82,7 @@ export class PixiSpriteGrid extends PixiObject {
       //s.position = {x: ix, y: jy};
       // gems in motion have non-zero [ol,ot]
       if (gem.ol || gem.ot) {
+        gemsInMotion = true;
         // gems in motion get scale #1
         //s.scale = {x: s1, y: s1};
         // auto-drifting?
@@ -108,14 +110,19 @@ export class PixiSpriteGrid extends PixiObject {
       // }
     });
     //
-    const splodables = [...this.findRowMatches(gems, object), ...this.findColMatches(gems, object)];
-    const coords = splodables.map(({i, j}) => `${i},${j}`);
-    const deduped = [...new Set(coords)];
-    deduped.forEach(ij => {
-      const ord = ij.split(',');
-      const i = Number(ord[0]), j = Number(ord[1]);
-      this.explodeGem(gems, object, i, j);
-    });
+    if (!gemsInMotion) {
+      const splodables = [...this.findRowMatches(gems, object), ...this.findColMatches(gems, object)];
+      if (splodables.length) {
+        log(splodables);
+        const coords = splodables.map(({i, j}) => `${i},${j}`);
+        const deduped = [...new Set(coords)];
+        deduped.forEach(ij => {
+          const ord = ij.split(',');
+          const i = Number(ord[0]), j = Number(ord[1]);
+          this.explodeGem(gems, object, i, j);
+        });
+      }
+    }
   }
   findRowMatches(gems, object) {
     const {cols, rows} = this;
@@ -123,7 +130,6 @@ export class PixiSpriteGrid extends PixiObject {
     const splodeRow = (i, c, j) => {
       for (let ii = i-c-1; ii++, c--; c>0) {
         splodable.push({i: ii, j});
-        //this.explodeGem(gems, object, ii, j);
       }
     };
     for (let j=0; j<rows; j++) {
@@ -216,7 +222,6 @@ export class PixiSpriteGrid extends PixiObject {
     if (gem) {
       this.dragging = gem;
       gem.manual = true;
-      //gem.s.onpointermove = e => this.pointerMove(e, gems);
       this.pointerMove(e);
     }
   }
@@ -245,7 +250,6 @@ export class PixiSpriteGrid extends PixiObject {
     if (gem) {
       gem.manual = false;
       const [mol, mot] = [gem.ol*gem.ol, gem.ot*gem.ot];
-      //let [ol, ot, mol, mot] = this.calcDragOffset(gem, e);
       if (mol+mot > 0.7) {
         const [dl, dt] = [Math.sign(gem.ol), Math.sign(gem.ot)];
         this.moveGem(gem, dl, dt, gems);
@@ -254,19 +258,27 @@ export class PixiSpriteGrid extends PixiObject {
   }
   calcDragOffset({l, t}, e) {
     const {size} = this;
-    const {x: sx, y: sy} = this.state.app.stage.scale;
-    //const [sx, sy] = [1, 1];
-    const [px, py] = [e.x, e.y];
-    const {x: bx, y: by} = this.getBoundingClientRect();
-    const {x: tx, y: ty} = this.state.object.scale;
-    const [ox, oy] = [(px - bx) * sx * tx, (py - by) * sy * ty];
-    log(ox, oy);
+    // app rect
+    const appRect = this.state.app.view.getBoundingClientRect();
+    // pointer position 
+    const [px, py] = [e.x - appRect.x, e.y - appRect.y];
+    // stage scale
+    const {x: ssx, y: ssy} = this.state.app.stage.scale;
+    // object origin local to appRect (subject to stage scale)
+    const {offsetLeft: ox, offsetTop: oy} = this.offsetParent;
+    // grid-local point 
+    const [lx, ly] = [px-ox*ssx, py-oy*ssy];
+    // object scale
+    const {x: osx, y: osy} = this.state.object.scale;
+    // sprite origin
     const [x, y] = this.ijToXy(l, t, 0, 0);
-    //const [dx, dy] = [px - x - bx/sx, py - y - by/sy];
-    const [dx, dy] = [ox - x*sx*tx, oy - y*sy*ty];
+    // sprite-local point
+    const [slx, sly] = [lx/(osx*ssx) - x, ly/(osy*ssy) - y];
+    //log(slx, sly);
     const clamp = v => Math.max(Math.min(v, 0.99), -0.99);
-    let [ol, ot] = [clamp(dx / size), clamp(dy / size)];
-    let [mol, mot] = [ol*ol, ot*ot];
+    //const [ol, ot] = [clamp(slx*2 / size), clamp(sly*2 / size)];
+    const [ol, ot] = [clamp(slx / size), clamp(sly / size)];
+    const [mol, mot] = [ol*ol, ot*ot];
     return [ol, ot, mol, mot];
   }
   constructSparkle(object) {
@@ -388,4 +400,3 @@ export class PixiSpriteGrid extends PixiObject {
 };
 
 customElements.define('pixi-sprite-grid', PixiSpriteGrid);
-
