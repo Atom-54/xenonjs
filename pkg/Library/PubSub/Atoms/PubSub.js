@@ -34,7 +34,7 @@ onSubscribedValue({eventlet: {basePath, path, value}}, state) {
     let obj = state.value;
     if (typeof obj === 'object') {
       const lastKey = keys.pop();
-      for (let key; (key = keys.shift()); obj = obj[key]);
+      for (let key; (key = keys.shift()); obj = obj[key] || {});
       obj[lastKey] = value;
     }
   }

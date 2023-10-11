@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 export const SendButtonNode = {
-  PeerBar: {
+  SendButton: {
     type: '$library/PubSub/Atoms/SendButton',
     inputs: ['inputString'],
     outputs: ['outputString', 'emptyString']

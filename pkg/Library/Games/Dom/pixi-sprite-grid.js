@@ -15,7 +15,7 @@ const assets = Paths.resolve('$library/Assets/gems');
 
 //const [cols, rows] = [8, 8];
 //const siz = 65, margin = 8;
-const v = 0.03;
+const v = 0.003;
 const scales = [1, 1]; //[1, 1.25];
 
 export class PixiSpriteGrid extends PixiObject {

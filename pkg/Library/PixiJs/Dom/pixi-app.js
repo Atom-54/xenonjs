@@ -30,9 +30,6 @@ export class PixiApp extends Xen.Async {
     this.tabIndex ??= 1;
     this.tabIndex = 1;
     const keys = this.state.keys = {};
-    // this.addEventListener('pixi-hello', e => {
-    //   console.warn(e.type, e);
-    // });
     const emitter = window; //this;
     emitter.addEventListener('keydown', ({key}) => {
       if (!keys[key]) {
@@ -73,6 +70,12 @@ export class PixiApp extends Xen.Async {
     //const [sw, sh] = [width/rw, height/rh]; //Mth.min(width/sw, height/sh);
     const ss = Math.min(width/rw, height/rh);
     app.stage.scale = {x: ss, y: ss};
+    // our stage bounds
+    // const rect = app.stage.getLocalBounds();
+    // // center
+    // app.stage.x = (rw - rect.width) * ss / 2;
+    // app.stage.y = (rh - rect.height) * ss / 2;
+    // console.log(app.stage.x, app.stage.y);
   }
   update({active}, state) {
     if (!state.app) {
