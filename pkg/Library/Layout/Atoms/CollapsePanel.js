@@ -11,6 +11,7 @@ render({side, size, width, collapsed, expanded, style, nubCollapsed, nubExpanded
   const isBottom = (side === 'bottom');
   const ord = isBottom ? 'height' : 'width';
   size ??= width ?? '300px';  
+  const ord2 = isBottom ? 'top' : 'left';
   const nub = (collapsed ? nubCollapsed : nubExpanded) ?? (
     isRight
       //? (collapsed ? '👈' : '👉') 
@@ -25,6 +26,7 @@ render({side, size, width, collapsed, expanded, style, nubCollapsed, nubExpanded
     showNub: String(Boolean(nub)),
     rules: 
 `:host { 
+  ${ord2}: auto !important;
   ${ord}: ${collapsed ? `0px` : size} !important;
 }
 slot::slotted(*) {
