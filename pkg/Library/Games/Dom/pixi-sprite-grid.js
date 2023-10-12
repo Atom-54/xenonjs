@@ -13,45 +13,50 @@ logf.flags['DOM:PixiSpriteGrid'] = true;
 
 const assets = Paths.resolve('$library/Assets/gems');
 
+// animation velocity
+const v = 0.04;
+
 //const [cols, rows] = [8, 8];
 //const siz = 65, margin = 8;
-const v = 0.003;
-const scales = [1, 1]; //[1, 1.25];
+// const scales = [1, 1]; //[1, 1.25];
 
 export class PixiSpriteGrid extends PixiObject {
   static get observedAttributes() {
     return [...PixiObject.observedAttributes, 'cols', 'rows', 'bundle', 'size', 'margin'];
   }
-  // updateApp(inputs, state) {
-  //   super.updateApp(inputs, state);
-  // }
   async updateObject(inputs, state) {
     const {bundle, cols, rows, size, margin} = inputs;
     if (!state.__ready && bundle && cols && rows && size && margin) {
       state.__ready = true;
-      // resolve path macros
-      keys(bundle).forEach(k => bundle[k] = Paths.resolve(bundle[k]));
       // load bundle
-      PIXI.Assets.addBundle('gems', bundle);
-      state.bundle = await PIXI.Assets.loadBundle('gems');
-      state.object = this.initContainer(state.app, state.gems);
-      state.gems = this.constructGems(state.object, state.bundle);
-      state.sparkle = this.constructSparkle(state.object);
-      state.object.onpointerup = e => this.pointerUp(e, state.gems);
-      state.object.onpointerupoutside = e => this.pointerUp(e, state.gems);
-      state.object.onpointermove = e => this.pointerMove(e, state.gems);
+      if (bundle !== state.bundle) {
+        log('new bundle', bundle);
+        if (state.bundle) {
+          await PIXI.Assets.unloadBundle('gems');
+        }
+        // resolve path macros
+        const resolvedBundle = state.resolvedBundle = {};
+        keys(bundle).forEach(k => resolvedBundle[k] = Paths.resolve(bundle[k]));
+        // load assets
+        PIXI.Assets.addBundle('gems', resolvedBundle);
+        state.assets = await PIXI.Assets.loadBundle('gems');
+      }
+      if (!state.object || (bundle !== state.bundle)) {
+        const object = state.object = this.initContainer(state.app);
+        const gems = state.gems = this.constructGems(object, state.assets);
+        state.sparkle = this.constructSparkle(object);
+        object.onpointerup = e => this.pointerUp(e, gems);
+        object.onpointerupoutside = e => this.pointerUp(e, gems);
+        object.onpointermove = e => this.pointerMove(e, gems);
+      }
+      state.bundle = bundle;
     }
     super.updateObject(inputs, state);
   }
   initContainer(app) {
-    //app.renderer.background.color = 0xFFFFFF;
     const container = new PIXI.Container();
     app.stage.addChildAt(container, 0);
     container.eventMode = 'auto';
-    //
-    // const bg = PIXI.Sprite.from(`${assets}/scene.png`)
-    // container.addChild(bg);
-    //
     return container;
   }
   updateAnimation(inputs, state) {
@@ -62,6 +67,19 @@ export class PixiSpriteGrid extends PixiObject {
       // }
       this.updateGems(state);
       this.updateSparkle(state.sparkle);
+    }
+  }
+  updateSparkle({s}) {
+    s.scale = {x: 2.0, y: 2.0};
+    if (s.alpha) {
+      s.alpha = Math.max(0, s.alpha - 0.1);
+    } else if (Math.random() < 0.005) {
+      const i = Math.floor(Math.random() * this.cols);
+      const j = Math.floor(Math.random() * this.rows);
+      const [x,y] = this.ijToXy(i, j, 0, 0);
+      s.position.x = x;
+      s.position.y = y;
+      s.alpha = 0.75;      
     }
   }
   updateGems({gems, object}) {
@@ -110,10 +128,11 @@ export class PixiSpriteGrid extends PixiObject {
       // }
     });
     //
+    //log('updateGems: gemsInMotion=', gemsInMotion);
     if (!gemsInMotion) {
       const splodables = [...this.findRowMatches(gems, object), ...this.findColMatches(gems, object)];
       if (splodables.length) {
-        log(splodables);
+        //log(splodables);
         const coords = splodables.map(({i, j}) => `${i},${j}`);
         const deduped = [...new Set(coords)];
         deduped.forEach(ij => {
@@ -121,6 +140,7 @@ export class PixiSpriteGrid extends PixiObject {
           const i = Number(ord[0]), j = Number(ord[1]);
           this.explodeGem(gems, object, i, j);
         });
+        this.tumbleGems(gems, object);
       }
     }
   }
@@ -182,39 +202,54 @@ export class PixiSpriteGrid extends PixiObject {
     }
     return splodable;
   }  
-  updateSparkle({s}) {
-    s.scale = {x: 2.0, y: 2.0};
-    if (s.alpha) {
-      s.alpha = Math.max(0, s.alpha - 0.1);
-    } else if (Math.random() < 0.005) {
-      const i = Math.floor(Math.random() * this.cols);
-      const j = Math.floor(Math.random() * this.rows);
-      const [x,y] = this.ijToXy(i, j, 0, 0);
-      s.position.x = x;
-      s.position.y = y;
-      s.alpha = 0.75;      
-    }
-  }
   explodeGem(gems, object, l, t) {
-    const {cols} = this;
-    let [dl, dt] = [0, -1];
-    for (let j=t; j>0; j--) {
-      const i = l + j*cols;
-      const slot = gems[i];
-      this.moveGem(slot, dl, dt, gems);
-    }
-    //
-    //gems[l].rotate = true;
-    //gems[l+cols].rotate = false;
-    //
-    const gem = gems[l];
+    const {cols, rows} = this;
+    const idx = l + t*cols;
+    let gem = gems[idx];
     gem.s.destroy();
-    const {k, s} = this.configureGem(l, object);
-    s.gemdex = l;
-    gem.k = k;
-    gem.s = s;
-    //
+    gem.s = this.makeSprite(`${assets}/bag.png`);
+    gem.k = -Math.random();
+    gem.s.gemdex = idx;
+    object.addChild(gem.s);
     this.scaleAndPositionGem(gem);
+  }
+  tumbleGems(gems, container) {
+    const {rows, cols} = this;
+    let more;
+    do {
+      more = false;
+      for (let i=0; i<cols; i++) {
+        for (let j=0; j<rows-1; j++) {
+          let k = i + j*cols;
+          let gem = gems[k];
+          if (gem.k >= 0) {
+            let gemBelow = gems[k + cols];
+            if (gemBelow.k < 0) {
+              gems[k] = gemBelow;
+              gemBelow.s.gemdex = k;
+              gemBelow.t--;
+              gems[k+cols] = gem;
+              gem.s.gemdex = k+cols;
+              gem.t++;
+              gem.ot -= 1;
+              more = true;
+            }
+          }
+        }
+      }
+      for (let i=0; i<cols; i++) {
+        let gem = gems[i];
+        if (gem.k < 0) {
+          gem.s.destroy();
+          const {k, s} = this.configureGem(i, container);
+          gem.k = k;
+          gem.s = s;
+          gem.ot = -1;
+          this.scaleAndPositionGem(gem);
+          more = true;
+        }
+      }
+    } while(more);
   }
   pointerDown(e, gems) {
     //console.log(e.target.gemdex);
@@ -257,13 +292,15 @@ export class PixiSpriteGrid extends PixiObject {
     }
   }
   calcDragOffset({l, t}, e) {
-    const {size} = this;
+    const {size, state: {app}} = this;
     // app rect
-    const appRect = this.state.app.view.getBoundingClientRect();
-    // pointer position 
-    const [px, py] = [e.x - appRect.x, e.y - appRect.y];
+    const appRect = app.view.getBoundingClientRect();
+    // stage position 
+    const [stageX, stageY] = [app.stage.x, app.stage.y]
+    // pointer position in stage frame
+    const [px, py] = [e.x - appRect.x - stageX, e.y - appRect.y - stageY];
     // stage scale
-    const {x: ssx, y: ssy} = this.state.app.stage.scale;
+    const {x: ssx, y: ssy} = app.stage.scale;
     // object origin local to appRect (subject to stage scale)
     const {offsetLeft: ox, offsetTop: oy} = this.offsetParent;
     // grid-local point 
@@ -330,11 +367,11 @@ export class PixiSpriteGrid extends PixiObject {
       }
     }
   }
-  constructGems(container, bundle) {
+  constructGems(container, assets) {
     const {cols, rows} = this;
     const gems = [];
     for (let i=0; i<rows*cols; i++) {
-      const {k, s} = this.configureGem(i, container, bundle);
+      const {k, s} = this.configureGem(i, container, assets);
       gems[i] = this.makeGem(i, k, s);
     }
     return gems;
@@ -344,7 +381,7 @@ export class PixiSpriteGrid extends PixiObject {
     //const k = arand(kinds);
     //const s = this.makeSprite(`${assets}/${k}.png`);
     const k = irand(4);
-    const s = this.makeSprite(this.state.bundle[`sprite${k}`]);
+    const s = this.makeSprite(this.state.assets[`sprite${k}`]);
     const rn = Math.random();
     if (rn < 0.05) {
       //s.filters = [new PIXI.BlurFilter()];
