@@ -25,6 +25,9 @@ template: html`
     width: 0 !important;
     height: 0 !important;
   }
+  wl-icon {
+    padding-top: 3px;
+  }
 </style>
 <wl-snackbar fixed open$="{{open}}" on-didhide="onDidHide">
   <span slot="icon"><wl-icon>{{icon}}</wl-icon></span>

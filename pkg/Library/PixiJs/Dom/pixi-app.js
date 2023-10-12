@@ -71,10 +71,10 @@ export class PixiApp extends Xen.Async {
     const ss = Math.min(width/rw, height/rh);
     app.stage.scale = {x: ss, y: ss};
     // our stage bounds
-    // const rect = app.stage.getLocalBounds();
-    // // center
-    // app.stage.x = (rw - rect.width) * ss / 2;
-    // app.stage.y = (rh - rect.height) * ss / 2;
+    const rect = app.stage.getLocalBounds();
+    // center
+    app.stage.x = (width - rw*ss) / 2;
+    app.stage.y = (height - rh*ss) / 2;
     // console.log(app.stage.x, app.stage.y);
   }
   update({active}, state) {
