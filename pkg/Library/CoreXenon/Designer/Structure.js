@@ -263,10 +263,14 @@ export const cloneObject = async (layer, objectId) => {
 
 export const renameObject = async (layer, objectId, {name: newId}) => {
   if (layer.graph.nodes[objectId]) {
+    // remove slots
+    await Layers.unrender(layer);
     // rename object
     Layers.renameObject(layer, objectId, newId);
     // update layout
     reifyGraphLayout(layer);
+    // render slots
+    await Layers.rerender(layer);
     // save the graph with the new object in it
     Design.save(layer);
   }
@@ -283,6 +287,8 @@ export const recontain = async (layer, {key: objectId, value}) => {
 export const setObjectContainer = async (layer, objectId, container) => {
   const isValidContainer = await validateContainer(layer, container);
   if (isValidContainer) {
+    // remove slots
+    await Layers.unrender(layer);
     // TODO(sjmiles): `container` needs clarity, it's on
     // the Node and the Atom.spec
     layer.graph.nodes[objectId].container = container;
@@ -293,8 +299,9 @@ export const setObjectContainer = async (layer, objectId, container) => {
         spec.container = qualifiedContainer;
       }
     });
+    // render slots
     await Layers.rerender(layer);
-    await Layers.invalidate(layer);
+    //await Layers.invalidate(layer);
     //await rebuildObject(layer, objectId);
     Design.save(layer);
   }

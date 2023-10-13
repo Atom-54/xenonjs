@@ -27,7 +27,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'Displays a text input field',
     types: {
-      field$form: 'String:FormId',
+      field$form: 'FormId:String',
       field$label: 'String',
       field$labelDescription: 'The field label',
       field$value: 'String',
@@ -40,7 +40,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'An input field for icons',
     types: {
-      field$form: 'String:FormId',
+      field$form: 'FormId:String',
       field$label: 'String',
       field$labelDescription: 'The field label',
       field$value: 'String',
@@ -63,6 +63,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'Displays a drop down selection field',
     types: {
+      field$form: 'FormId:String',
       field$label: 'String',
       field$value: 'String',
       field$options: '[String]',
@@ -102,7 +103,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'Formulates a form',
     types: {
-      Form$form: 'String:FormId'
+      Form$form: 'FormId:String'
     },  
     type: '$library/Fields/Nodes/FormNode'
   },
