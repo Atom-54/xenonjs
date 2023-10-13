@@ -7,16 +7,17 @@ export const atom = (log, resolve) => ({
 shouldRender({tabs}) {
   return tabs;
 },
-render({tabs}) {
+render({tabs}, {selectedTab}) {
   return {
-    tabs: tabs.join(',')
+    tabs: tabs.join(','),
+    selectedTab
   };
 },
-onPageSelected() {
-  //
+onPageSelected({eventlet: {value}}, state) {
+  state.selectedTab = value;
 },
 template: html`
-<weightless-pages flex on-selected="onPageSelected" tabs="{{tabs}}">
+<weightless-pages flex tabs="{{tabs}}" selected="{{selectedTab}}" on-selected="onPageSelected">
   <slot name="pageContainer"></slot>
 </weightless-pages>
 `

@@ -60,10 +60,12 @@ export const invalidate = async layer => Promise.all(values(layer.atoms).map(ato
 // outside of a request, validation may be stalled, this will unstall it
 export const revalidate = async layer => Promise.all(values(layer.atoms).map(atom => atom.validate?.()));
 
+export const unrender = async layer => {
+  await Promise.all(values(layer.atoms).map(atom => atom.render({$clear: true})));
+};
+
 export const rerender = async layer => {
-  const atoms = values(layer.atoms);
-  atoms.forEach(atom => atom.render({$clear: true}));
-  atoms.forEach(atom => atom.invalidate());
+  await Promise.all(values(layer.atoms).map(atom => atom.invalidate()));
 };
 
 export const initializeData = async (layer) => {

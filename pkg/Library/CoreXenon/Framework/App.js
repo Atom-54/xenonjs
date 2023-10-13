@@ -41,9 +41,9 @@ export const createLayer = async (graph, atomEmitter, Composer, services, name='
 export const connectAtoms = (layer) => {
   map(layer.atoms, (name, atom) => {
     // TODO(sjmiles): worker output is output.output :( won't work right now
-    atom.listen('output', output => atomOutput(layer, name, atom, /*output?.output ??*/ output));
-    atom.listen('render', packet => atomRender(layer, name, atom, packet?.packet ?? packet));
-    atom.listen('service', request => atomService(layer, name, atom, request));
+    atom.listen('output', output => atomOutput(layer, atom.name, atom, /*output?.output ??*/ output));
+    atom.listen('render', packet => atomRender(layer, atom.name, atom, packet?.packet ?? packet));
+    atom.listen('service', request => atomService(layer, atom.name, atom, request));
   }); 
 };
 

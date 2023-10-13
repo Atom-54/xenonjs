@@ -31,6 +31,7 @@ template: html`
   [label] {
     background: inherit;
     border: none;    
+    min-width: var(--field-label-min-width);
     max-width: var(--field-label-max-width);
     text-wrap: pretty;
   }
