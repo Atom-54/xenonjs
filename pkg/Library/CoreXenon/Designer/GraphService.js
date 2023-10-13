@@ -73,7 +73,7 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable) => {
     Resources.set(id, newLayer);
     const container = `${atom.name}#Container`;
     values(newLayer.system).forEach(spec => {
-      if (spec.container.endsWith('$root$panel#Container')) {
+      if (spec.container?.endsWith('$root$panel#Container')) {
         spec.container = container;
       }
     });

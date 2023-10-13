@@ -263,12 +263,12 @@ export const cloneObject = async (layer, objectId) => {
 
 export const renameObject = async (layer, objectId, {name: newId}) => {
   if (layer.graph.nodes[objectId]) {
-    // remove object
-    await Layers.obliterateObject(layer, objectId);  
     // rename object
     Layers.renameObject(layer, objectId, newId);
-    // reanimate object
-    return objectChanged(layer, newId);
+    // update layout
+    reifyGraphLayout(layer);
+    // save the graph with the new object in it
+    Design.save(layer);
   }
 };
 

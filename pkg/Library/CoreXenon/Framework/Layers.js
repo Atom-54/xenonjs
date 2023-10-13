@@ -96,11 +96,38 @@ export const renameObject = async (layer, objectId, newId) => {
   layer.graph = Graphs.changeObjectId(layer.graph, objectId, newId);
   // fixup references in the live graph
   layer.flan.state = Graphs.changeStateId(layer.flan.state, objectId, newId);
+  // fixup system keys
+  renameSystemObjects(layer.system, objectId, newId);
   // fixup container references in the system 
   recontainSystemObjects(layer.system, objectId, newId);
+  // rename atoms
+  renameAtoms(layer.atoms, objectId, newId);
 };
 
-export const recontainSystemObjects = (system, fromObjectId, toContainer) => {
+const renameAtoms = (atoms, fromObjId, toObjId) => {
+  map(atoms, (name, value) => {
+    const id = Id.splitId(name);
+    if (id[1] === fromObjId) {
+      delete atoms[name];
+      const newId = Id.joinId(id[0], toObjId, id[2]);
+      atoms[newId] = value;
+      value.id = value.name = newId;
+    }
+  });
+};
+
+const renameSystemObjects = (system, fromObjId, toObjId) => {
+  map(system, (name, value) => {
+    const id = Id.splitId(name);
+    if (id[1] === fromObjId) {
+      delete system[name];
+      const newId = Id.joinId(id[0], toObjId, id[2]);
+      system[newId] = value;
+    }
+  });
+};
+
+const recontainSystemObjects = (system, fromObjectId, toContainer) => {
   values(system).forEach(spec => {
     const from = `$${fromObjectId}\$`;
     if (spec.container?.includes(from)) {
@@ -109,7 +136,7 @@ export const recontainSystemObjects = (system, fromObjectId, toContainer) => {
   });
 };
 
-export const atomIdsForObjectId = (layer, objectId) => {
+const atomIdsForObjectId = (layer, objectId) => {
   const atomPrefix = Id.qualifyId(layer.name, objectId);
   return keys(layer.atoms).filter(atomId => Id.matchesIdPrefix(atomId, atomPrefix));
 };
@@ -133,7 +160,7 @@ export const obliterateObject = async (layer, objectId) => {
   nullifyConnectedValues(layer, objectId);
 };
 
-export const nullifyConnectedValues = (layer, objectId) => {
+const nullifyConnectedValues = (layer, objectId) => {
   const nullify = (key, bound) => {
     if (Id.matchesIdPrefix(bound, objectId)) {
       const qualifiedAtomId = Id.qualifyId(layer.name, Id.sliceId(key, 0, -1));
