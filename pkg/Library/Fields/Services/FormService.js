@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {debounce} from '../../CoreXenon/Reactor/Atomic/js/unused/task.js';
-import * as App from '../../CoreXenon/Framework/App.js';
 import * as Id from '../../CoreXenon/Framework/Id.js';
+import * as App from '../../CoreXenon/Framework/App.js';
+import * as Flan from '../../CoreXenon/Framework/Flan.js';
 
 const log = logf('Services:Form', 'lightblue', 'black');
 
@@ -57,7 +58,7 @@ export const FormService = {
       const value = values[field];
       state[stateId] = value;
     });
-    App.setData(layer, state);
+    Flan.setData(layer, state);
   },
   registerForm(layer, atom, {form: formId}) {
     const form = {
