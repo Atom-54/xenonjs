@@ -46,7 +46,7 @@ export class NodeGraph extends Xen.Async {
     // NB: connectors are drawn after, via Canvas. See _didRender.
     state.didRender = {rects: inputs.rects, graph: inputs.graph};
     // complete render model
-    return {selectedKeys, rects, nodes};
+    return {selectedKeys, rects, nodes, zoom: state.zoom};
   }
   validateGraphRects(inputs) {
     inputs.rects = inputs.rects ?? this._rects;
@@ -260,17 +260,17 @@ export class NodeGraph extends Xen.Async {
       this.fire('node-moved');
     }
   }
-  onNodeDblClicked(event) {
-    this.state.textSelectedKey = this.key;
-  }
-  onRenameNode(event){
-    const text = event.target.value.trim();
-    if (text?.length > 0) {
-      this.value = text;
-      this.fire('node-renamed');
-    }
-    delete this.state.textSelectedKey;
-  }
+  // onNodeDblClicked(event) {
+  //   this.state.textSelectedKey = this.key;
+  // }
+  // onRenameNode(event){
+  //   const text = event.target.value.trim();
+  //   if (text?.length > 0) {
+  //     this.value = text;
+  //     this.fire('node-renamed');
+  //   }
+  //   delete this.state.textSelectedKey;
+  // }
   onWheel(event) {
     event.preventDefault();
     let zoom = this.state.zoom ?? 1;
@@ -321,6 +321,7 @@ const template = Xen.Template.html`
   }
   [node][selected] {
     box-shadow: 23px 23px 46px #bebebe08, -23px -23px 46px #dddddd08;
+    /* z-index: 10000 !important; */
   }
   [node]:not([selected]) {
     /* box-shadow:  9px 9px 18px #cecece20, -9px -9px 18px #d2d2d220; */
@@ -389,13 +390,14 @@ const template = Xen.Template.html`
   }
 </style>
 
-<div viewport XtabIndex="0" on-wheel="onWheel">
+<div viewport on-wheel="onWheel">
   <canvas layer1 width="${viewport}" height="${viewport}"></canvas>
   <div layer0 on-mousedown="onNodeUnselect">
     <container-layout
       rects="{{rects}}"
       readonly="true"
       selected="{{selectedKeys}}"
+      zoom="{{zoom}}"
       on-position-changed="onUpdatePosition"
       on-update-box="onUpdateBox"
       on-delete="onNodeDelete"
@@ -407,7 +409,8 @@ const template = Xen.Template.html`
 <template node_t>
   <div node flex column id="{{nodeId}}" key="{{key}}" selected$="{{selected}}" xen:style="{{style}}" on-mousedown="onNodeSelect">
     <div name xen:style="{{nameStyle}}" on-dblclick="onNodeDblClicked">
-      <input xen:style="{{inputStyle}}" disabled$="{{disableRename}}" type="text" value="{{displayName}}" on-change="onRenameNode">
+      <div xen:style="{{inputStyle}}">{{displayName}}</div>
+      <!-- <input xen:style="{{inputStyle}}" disabled$="{{disableRename}}" type="text" value="{{displayName}}" on-change="onRenameNode"> -->
     </div>
     <div flex row>
       <div flex centering column repeat="socket_i_t">{{inputs}}</div>
