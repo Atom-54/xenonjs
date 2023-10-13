@@ -14,7 +14,7 @@ export class ContainerLayout extends DragDrop {
     return [
       'selected',
       'rects',
-      // The color of the boxer.
+      'zoom',
       'color'
     ];
   }
@@ -124,14 +124,15 @@ export class ContainerLayout extends DragDrop {
   updateOrders(target) {
     const particleDivs = this.querySelectorAll('[id]');
     particleDivs.forEach(div => {
-      if (!this.rects?.find(rect => rect.id === div.id)) {
-        //console.warn('wot', div);
-        div.style.zIndex = 98;
-      } else {
+      // if (!this.rects?.find(rect => rect.id === div.id)) {
+      //   //console.warn('wot', div);
+      //   div.style.zIndex = 98;
+      // } else {
         // z is y, so panels always stack neatly
         const z = div.style.transform?.match(/, (\d+)/)?.[1];
-        div.style.zIndex = div === target ? 200 : z;
-      }
+        //div.style.zIndex = z;
+        div.style.zIndex = div === target ? 10000 : z;
+      // }
     });
   }
   // deselect when clicking empty backgroud
@@ -182,6 +183,8 @@ export class ContainerLayout extends DragDrop {
     }
   }
   doDrag({l, t, w, h}, dx, dy, dragKind, dragFrom) {
+    dx /= this.zoom || 1;
+    dy /= this.zoom || 1;
     if (dragKind === 'move') {
       return {l: l+dx, t: t+dy, w, h};
     } else if (dragKind === 'resize') {
@@ -205,6 +208,7 @@ export class ContainerLayout extends DragDrop {
   doUp() {
     if (this.target) {
       this.firePosition(this.target, 'position-changed');
+      this.target.style.zIndex = this.target.style.transform?.match(/, (\d+)/)?.[1];
     }
   }
   //
