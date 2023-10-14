@@ -20,6 +20,7 @@ const template = Xen.Template.html`
     display: flex;
     flex-direction: column;
     font-family: monospace;
+    overflow: hidden;
   }
   .CodeMirror {
     font-size: var(--code-mirror-font-size, inherit);

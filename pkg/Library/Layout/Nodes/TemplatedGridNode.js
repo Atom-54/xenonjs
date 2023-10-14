@@ -5,8 +5,8 @@
  */
 export const TemplatedGridNode = {
   grid: {
-    type: 'Layout/Atoms/TemplatedGrid',
-    inputs: ['items', 'template', 'style', 'events'],
+    type: '$library/Layout/Atoms/TemplatedGrid',
+    inputs: ['items', 'template', 'style'],
     outputs: ['events'],
   }
 };

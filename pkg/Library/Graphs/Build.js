@@ -29,6 +29,10 @@ export const graph = {
       "type": "$library/Layout/Nodes/DesignerNode",
       "container": "root$panel#Container"
     },
+    "LeftMainCollapse": {
+      "type": "$library/Layout/Nodes/CollapsePanelNode",
+      "container": "Main$panel#Container"
+    },
     "RightMainCollapse": {
       "type": "$library/Layout/Nodes/CollapsePanelNode",
       "container": "Main$panel#Container"
@@ -64,16 +68,20 @@ export const graph = {
       "type": "$library/Graph/Nodes/NodeGraphNode",
       "container": "WorkPanel$splitPanel#Container2"
     },
-    "SplitPanel": {
-      "type": "$library/Layout/Nodes/SplitPanelNode",
-      "container": "RightMainCollapse$panel#Container"
-    },
     "FooterToolbar": {
       "type": "$library/NeonFlan/Nodes/FooterNode",
       "container": "RightMainCollapse$panel#Container"
     },
+    "SplitPanel": {
+      "type": "$library/Layout/Nodes/SplitPanelNode",
+      "container": "RightMainCollapse$panel#Container"
+    },
     "NodeInspectorAdaptor": {
       "type": "$library/Inspector/Nodes/NodeInspectorAdaptorNode"
+    },
+    "NodeCatalog": {
+      "type": "$library/Graph/Nodes/LayerNode",
+      "container": "LeftMainCollapse$panel#Container"
     },
     "ObjectInspector": {
       "type": "$library/Inspector/Nodes/ObjectInspectorNode",
@@ -234,6 +242,9 @@ export const graph = {
         },{
           "action": "toggle",
           "stateKey": "RightMainCollapse$panel$collapsed"
+        },{
+          "action": "toggle",
+          "stateKey": "LeftMainCollapse$panel$collapsed"
         }]
       },
       {
@@ -253,8 +264,16 @@ export const graph = {
           false: "right_panel_close",
           undefined: "right_panel_close"
         },
-        "action": "toggle",
-        "stateKey": "RightMainCollapse$panel$collapsed"
+        //"action": "toggle",
+        // TODO(sjmiles): doesn't render without a stateKey (?)
+        "stateKey": "RightMainCollapse$panel$collapsed",
+        "actions": [{
+          "action": "toggle",
+          "stateKey": "RightMainCollapse$panel$collapsed"
+        }, {
+          "action": "toggle",
+          "stateKey": "LeftMainCollapse$panel$collapsed"
+        }]
       }
     ],
     "GetGraphName$JSONata$expression": "meta.id",
@@ -262,7 +281,11 @@ export const graph = {
     // "GraphListOptionsSelect$field$label": "Choose Avatar Generator",
     // "GraphListOptionsSelect$field$options": ["SuperBots", "SuperPets","Elders"],
     "UxStatusBar$UXSnackBar$icon": "info",
+    "NodeCatalog$Layer$graphId": "local:NodeTypeList",
     "Main$designer$layout": {
+      "NodeCatalog": {
+        "flex": "1"
+      },
       "RightMainCollapse": {
         "order": "2"
       },
@@ -297,7 +320,8 @@ export const graph = {
         "flex": "1"
       },
       "ObjectInspector": {
-        "flex": "1"
+        "flex": "1",
+        "order": "2"
       },
       "NodeTree": {
         "flex": "1",

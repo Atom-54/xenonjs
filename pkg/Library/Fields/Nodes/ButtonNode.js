@@ -10,6 +10,7 @@ export const ButtonNode = {
     outputs: ['value']
   },
   state: {
+    button$label: 'Button',
     button$action: 'toggle'
   }
 };

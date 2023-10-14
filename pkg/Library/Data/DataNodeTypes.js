@@ -12,7 +12,8 @@ export const DataNodeTypes = {
     types: {
       Data$jsonDescription: 'is converted to JSON, if a String; otherwise returned as is'
     },
-    type: '$library/Data/Nodes/DataNode'
+    type: '$library/Data/Nodes/DataNode',
+    icon: '$library/Assets/nodes/table.png'
   },
   DataCollector: {
     category,

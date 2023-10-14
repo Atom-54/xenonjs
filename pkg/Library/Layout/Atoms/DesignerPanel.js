@@ -30,6 +30,9 @@ async onLayout({eventlet: {value: layout}, disabled}, state, {service}) {
     return {layout};
   }
 },
+async onAdd({eventlet}, state, {service}) {
+  await service('DesignService', 'AddObject', eventlet);
+},
 async onContain({eventlet}, state, {service}) {
   await service('DesignService', 'Contain', eventlet);
 },
@@ -85,7 +88,9 @@ template: html`
     color="{{color}}" 
     on-select="onSelect" 
     on-layout="onLayout" 
-    on-contain="onContain">
+    on-contain="onContain"
+    on-add="onAdd"
+  >
   <slot name="ToolbarContainer" slot="toolbar"></slot>
   <slot name="Container"></slot>
 </designer-panel>

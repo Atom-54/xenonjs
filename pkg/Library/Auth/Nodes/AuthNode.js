@@ -6,6 +6,6 @@
 export const AuthNode = {
   Auth: {
     type: '$library/Auth/Atoms/Auth',
-    outputs: ['user', 'requireLogin', 'maybeLoggedIn', 'isLoggedIn']
+    outputs: ['user', 'requireLogin', 'maybeLoggedIn', 'isLoggedIn', 'uid', 'displayName', 'email', 'authToken']
   }
 };

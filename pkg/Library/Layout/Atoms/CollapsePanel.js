@@ -29,13 +29,6 @@ render({side, size, width, collapsed, expanded, style, nubCollapsed, nubExpanded
   ${ord2}: auto !important;
   ${ord}: ${collapsed ? `0px` : size} !important;
 }
-slot::slotted(*) {
-  top: auto !important;
-  left: auto !important;
-  width: auto !important;
-  height: auto !important;
-  ${ord}: ${size} !important;
-}
 :host {
   ${style??''}
 }
@@ -52,7 +45,6 @@ template: html`
   display: flex;
   flex-direction: column;
   position: relative;
-  /* overflow: visible !important; */
   opacity: 1;
 }
 [nub] {
@@ -66,10 +58,6 @@ template: html`
   z-index: 100
 }
 [nub][side=right] {
-  /* top: 12px; 
-  left: -12px;
-  width: 24px; 
-  */
   width: 10px;
   top: 12px;
   left: -10px;

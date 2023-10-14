@@ -5,10 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({value}, state) {
-  if (state.value !== value) {
-    state.value = value;
-    return {value};
-  }
+  state.value = value;
 },
 
 onClick({action}, state) {
@@ -26,7 +23,7 @@ handleAction(action, state) {
       value = action.args?.value;
     }
     default: {
-      value = Math.random();
+      value = state.value || Math.random();
     }
   }
   return {value};
