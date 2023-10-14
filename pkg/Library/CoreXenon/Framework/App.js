@@ -83,52 +83,59 @@ const atomService = async (layer, atomName, atom, {kind, service, msg, data, res
 };
 
 const atomServiceHandler = async (layer, atomName, atom, serviceName, methodName, data) => {
+  //const services = [...layer.services, ...AppServices];
+  const services = assign({}, layer.services, AppServices);
   log.group/*Collapsed*/('atomServiceHandler', serviceName, methodName, data ?? '');
   try {
-    const finish = value => {
-      if (value !== undefined) {
-        log(methodName, 'says', value);
-      }
-      return value;
-    };
-    const service = layer.services[serviceName];
+    const service =services[serviceName];
     if (service) {
       const task = service[methodName];
       if (task) {
+        const finish = value => {
+          if (value !== undefined) {
+            log(methodName, 'says', value);
+          }
+          return value;
+        };
         return finish(await task(layer, atom, data));
       } else {
         log.warn(methodName, 'not available in', serviceName);
       }
-      return;
+    } else {
+      log.warn(`found no matching service for ${serviceName}:${methodName}`);
     }
-    switch (serviceName) {
-      case 'SystemService': {
-        switch (methodName) {
-          case 'request-context': 
-            const layers = {};
-            map(layer.flan.state, (key, value) => (layers[Id.sliceId(key, 0, 1)] ??= {})[Id.sliceId(key, 1)] = value);
-            const context = {
-              layers,
-              logs: [] //logf.get()
-            }
-            return finish(context);
-          case 'setResource': 
-            return Resources.set(data.id, data.resource)
-        }
-      }
-      case 'StateService': {
-        const key = Id.qualifyId(layer.name, data.stateKey);
-        switch (methodName) {
-          case 'GetStateValue': 
-            return finish(Flan.get(layer, key));
-          case 'SetStateValue':
-            return finish(Flan.set(layer, key, data.value));
-        }
-      }
-    }
-    log.warn(`found no matching service for ${serviceName}:${methodName}`);
   } finally {
     log.groupEnd();
+  }
+};
+
+const AppServices = {
+  StateService: {
+    GetStateValue(layer, atom, data) {
+      const key = Id.qualifyId(layer.name, data.stateKey);
+      return Flan.get(layer, key);
+    },
+    SetStateValue(layer, atom, data) {
+      const key = Id.qualifyId(layer.name, data.stateKey);
+      return Flan.set(layer, key, data.value);
+    }
+  },
+  SystemService: {
+    'request-context'(layer, atom, data) {
+      const layers = {};
+      map(layer.flan.state, (key, value) => (layers[Id.sliceId(key, 0, 1)] ??= {})[Id.sliceId(key, 1)] = value);
+      const context = {
+        layers,
+        logs: [] //logf.get()
+      }
+      return context;
+    },
+    setResource(layer, atom, data) {
+      return Resources.set(data.id, data.resource)
+    },
+    GetNodeTypes(layer, atom, data) {
+      return layer.flan.library.nodeTypes;
+    }
   }
 };
 

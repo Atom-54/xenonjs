@@ -12,6 +12,9 @@ import * as App from '../Framework/App.js';
 import * as Design from './DesignService.js';
 import * as Flan from '../Framework/Flan.js';
 
+const log = logf('Designer:Structure', 'white', 'gray');
+logf.flags['Designer:Structure'] = true;
+
 const defaultLayout = {l: 32, t: 32, w: 132, h: 132, width: 'auto'};
 const designerId = 'Main';
 const rootContainer = `${designerId}$panel#Container`;
@@ -41,6 +44,22 @@ const createOrReplaceObject = async (layer, objectId, node, type, state, layout)
   return objectChanged(layer, id);
 };
 
+export const createObject = async (layer, {key, value}) => {
+  const container = Id.sliceId(value.replace(/_/g, '$'), 1);
+  const typeName = key.replace(/\s/g, '');
+  const meta = layer.flan.library.nodeTypes[typeName];
+  //log.warn(typeName, meta, container);
+  const {type/*, state, layout*/} = meta;
+  // ensure unique id
+  const id = createUniqueId(layer.graph, type);
+  // here is the object shape
+  const object = createObjectSpec(null, type, container);
+  // reify object
+  addObject(layer, id, object) //, state, layout);
+  // update graph
+  return objectChanged(layer, id);
+};
+
 const createUniqueId = (graph, type) => {
   const name = nameFromType(type);
   return Graphs.uniqueGraphId(graph, name);
@@ -54,10 +73,10 @@ const nameFromType = type => {
   return name;
 };
 
-const createObjectSpec = (node, type) => {
+const createObjectSpec = (node, type, container) => {
   return {      
     type,
-    container: node?.container ?? rootContainer
+    container: container ?? node?.container ?? rootContainer
   };
 };
 

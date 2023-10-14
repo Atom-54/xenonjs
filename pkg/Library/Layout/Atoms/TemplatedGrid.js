@@ -1,36 +1,60 @@
 export const atom = (log, resolve) => ({
-
 /**
  * @license
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
-update({items, template}, state) {
-  state.template = template || '<div center flex column style="{{style}}" key="{{key}}" on-click="onItemClick"><h2>{{name}}</h2></div>';
-  state.items = items;
+update({items, template}, state, {isDirty, output}) {
+  if (isDirty('template')) {
+    state.template = template || '<div center flex column style="{{style}}" key="{{key}}" on-click="onItemClick"><h2>{{name}}</h2></div>';
+    // Xen renderer does not expect template to change, 
+    // so we clear items for an initial render...
+    state.items = [];
+    timeout(() => {
+      // ... and then render the proper items as a second pass
+      state.items = items;
+      output();
+    }, 0);
+  } else {
+    state.items = items;
+  }
 },
 render({style}, {items, template}) {
   const defaults = {
-    thumb: resolve('$library/AI/Assets/delmer.png'),
-    owner: 'scott.miles@gmail.com<br>02/11/23',
-    description: 'An amazing piece of kit. Use it again and again. Even better than "Cats"!'
+    name: 'Unnamed Item'
+    // thumb: resolve('$library/AI/Assets/delmer.png'),
+    // owner: 'scott.miles@gmail.com<br>02/11/23',
+    // description: 'An amazing piece of kit. Use it again and again. Even better than "Cats"!'
   };
-  const std = 'border-radius: 13px; margin: 8px;';
+  const std = ''; //'border-radius: 13px; margin: 8px;';
+  const mapImages = items => items?.map?.(i => {
+    if (typeof i === 'object') {
+      values(i).forEach(ii => mapImages(ii));
+      for (let n of ['thumb', 'icon', 'image']) {
+        if (i[n]) {
+          i[n] = resolve(i[n]);
+        }
+      }
+    }
+    return i;
+  });
+  const models = mapImages(items)?.map?.(i => {
+    return {
+      ...defaults,
+      ...i,
+      style: `${i.selected ? 'border: 1px solid red; ' : ''} ${std}`
+    };
+  });
   return {
     style,
     items: {
       template,
-      models: items?.map(i => ({
-        ...defaults,
-        ...i,
-        style: `${i.selected ? 'border: 1px solid red; ' : ''} ${std}`
-      }))
+      models
     }
   }
 },
 onItemClick({eventlet: {key, value}, events}) {
-  events ??= [];
+  events = [];
   events.push({kind: key, id: value});
   return {events};
 },
@@ -39,7 +63,6 @@ template: html`
   :host {
     flex: 1;
     display: flex;
-    background: #d1d8ec;
     height: 100%;
   }
   * {

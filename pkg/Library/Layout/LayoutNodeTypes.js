@@ -65,11 +65,29 @@ export const LayoutNodeTypes = {
     description: 'Renders a flip card with two sides',
     type: '$library/Layout/Nodes/FlipCardNode'
   },
-  DesignGrid: {
+  GridLayout: {
     category,
-    description: 'Renders a stack grid design layout',
-    type: '$library/Layout/Nodes/DesignGridNode'
+    description: 'A grid-layout container',
+    type: '$library/Layout/Nodes/TemplatedGridNode',
+    types: {
+      grid$template: "MultilineText",
+      grid$style: "MultilineText"
+    }
   },
+  TemplateLayout: {
+    category,
+    description: 'A container that renders items using a template',
+    type: '$library/Layout/Nodes/TemplatedNode',
+    types: {
+      Templated$template: "MultilineText:HTML",
+      Templated$styleRules: "MultilineText:CSSRules"
+    }
+  },
+  // DesignGrid: {
+  //   category,
+  //   description: 'Renders a stack grid design layout',
+  //   type: '$library/Layout/Nodes/DesignGridNode'
+  // },
   TabPages: {
     category,
     description: 'Set of pages with Tabs for navigation',

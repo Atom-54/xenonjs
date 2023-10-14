@@ -12,7 +12,8 @@ export const FieldsNodeTypes = {
     types: {
       StaticText$text: 'String', // or maybe, 'Multitext'?
     },
-    type: '$library/Fields/Nodes/StaticTextNode'
+    type: '$library/Fields/Nodes/StaticTextNode',
+    icon: '$library/Assets/nodes/text.png'
   },
   TextArea: {
     category,
@@ -21,7 +22,8 @@ export const FieldsNodeTypes = {
       field$label: 'String',
       field$text: 'MultilineText'
     },  
-    type: '$library/Fields/Nodes/TextAreaNode'
+    type: '$library/Fields/Nodes/TextAreaNode',
+    icon: '$library/Assets/nodes/text.png'
   },
   TextField: {
     category,
@@ -34,7 +36,8 @@ export const FieldsNodeTypes = {
       field$valueDescription: 'The enterable text value',
       field$options: '[String]'
     },
-    type: '$library/Fields/Nodes/TextFieldNode'
+    type: '$library/Fields/Nodes/TextFieldNode',
+    icon: '$library/Assets/nodes/textfield.png'
   },
   LigatureField: {
     category,
@@ -88,7 +91,8 @@ export const FieldsNodeTypes = {
       button$label: 'String',
       button$inverted: 'Boolean'
     },  
-    type: '$library/Fields/Nodes/ButtonNode'
+    type: '$library/Fields/Nodes/ButtonNode',
+    icon: '$library/Assets/Nodes/button.png'
   },
   ImageField: {
     category,
@@ -105,14 +109,16 @@ export const FieldsNodeTypes = {
     types: {
       Form$form: 'FormId:String'
     },  
-    type: '$library/Fields/Nodes/FormNode'
+    type: '$library/Fields/Nodes/FormNode',
+    icon: '$library/Assets/nodes/table.png'
   },
   DataNavigator: {
     category,
     description: 'UX for navigating a dataset',
     types: {
     },  
-    type: '$library/Fields/Nodes/DataNavigatorNode'
+    type: '$library/Fields/Nodes/DataNavigatorNode',
+    icon: '$library/Assets/nodes/table.png'
   },
   FileField: {
     category,

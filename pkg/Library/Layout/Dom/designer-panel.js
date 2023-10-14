@@ -107,11 +107,15 @@ export class DesignerPanel extends DragDrop {
   // }
   onTargetDrop(e) {
     if (!this.disabled) {
-      const ct = e.currentTarget;
-      this.key = ct.key;
-      this.value = this.findClosestSlot(ct.trigger);
+      const {trigger, key} = e.currentTarget;
+      this.key = key;
+      this.value = this.findClosestSlot(trigger);
       log(this.key, 'was dropped in slot: ', this.value);
-      this.fire('contain');
+      if (trigger.dataTransfer?.getData('node/type') === key) {
+        this.fire('add');
+      } else {
+        this.fire('contain');
+      }
     }
   }
   findClosestSlot(trigger) {

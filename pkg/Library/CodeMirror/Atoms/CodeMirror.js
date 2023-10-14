@@ -6,6 +6,7 @@ export const atom = log => ({
  */
 update({text}, state) {
   state.text = this.stringify(text);
+  return {text: state.text};
 },
 onCodeChanges({eventlet: {value}, text}) {
   text = this.parseString(value, text);

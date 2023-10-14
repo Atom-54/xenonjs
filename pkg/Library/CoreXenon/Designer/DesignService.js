@@ -25,6 +25,10 @@ export const DesignService = {
   DeleteSelectedObject(layer) {
     Structure.deleteObject(getDesignLayer(layer), getSelectedObjectId(layer));
   },
+  AddObject(layer, atom, data) {
+    const design = getDesignLayer(layer);
+    return Structure.createObject(design, data);
+  },
   MorphObject(layer, atom, data) {
     return Structure.morphObject(getDesignLayer(layer), getSelectedObjectId(layer), data);
   },

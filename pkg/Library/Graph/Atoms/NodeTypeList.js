@@ -4,8 +4,8 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update(inputs, state) {
-  state.groups = this.groupByCategory(inputs);
+update({nodeTypes, search, categories}, state) {
+  state.groups = this.groupByCategory({nodeTypes, search, categories});
   // this.updateGraphsCategory(inputs, state);
 },
 updateGraphsCategory({graphs, search}, state) {

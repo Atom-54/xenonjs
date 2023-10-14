@@ -16,6 +16,11 @@ export const GraphNodeTypes = {
     description: 'Manage lists of graphs',
     type: '$library/Graph/Nodes/GraphListDataNode'
   },
+  NodeTypes: {
+    category,
+    description: 'Get information on installed Nodes',
+    type: '$library/Graph/Nodes/NodeTypesNode'
+  },
   NodeTypeList: {
     category,
     description: 'Displays list of node types',

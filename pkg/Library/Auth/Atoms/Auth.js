@@ -16,7 +16,7 @@ async update(inputs, state, {invalidate}) {
   const response = await state.auth('GetUser');
   const user = response;
   if (!deepEqual(user, state.user) && keys(user).length) {
-    log('user changed', user);
+    //log('user changed', user);
     state.user = user;
     this.resetPolling(state, 0);
   }
@@ -28,6 +28,10 @@ async update(inputs, state, {invalidate}) {
   const isLoggedIn = keys(user).length > 0;
   return {
     user, //: state.user,
+    uid: user?.uid,
+    displayName: user?.displayName,
+    email: user?.email,
+    authToken: user?.stsTokenManager?.accessToken,
     requireLogin,
     maybeLoggedIn: !requireLogin,
     isLoggedIn
