@@ -9,7 +9,7 @@ import * as App from '../../CoreXenon/Framework/App.js';
 const log = logf('Services:(SSE)PubSub', 'yellow', 'black');
 //logf.flags['Services:(SSE)PubSub'] = true;
 
-const defaultUrl = `${globalThis.config?.firebaseConfig?.databaseURL}/v1/shared`;
+const defaultUrl = `${globalThis.config?.firebaseConfig?.databaseURL}/v1`;
 
 let sources = {};
 const requireSource = (url, auth) => sources[url] ??= PubSub.createSource(url, auth);

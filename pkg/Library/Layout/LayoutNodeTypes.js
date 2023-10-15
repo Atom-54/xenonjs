@@ -15,7 +15,9 @@ export const LayoutNodeTypes = {
       panel$center: 'Boolean',
       panel$style: 'CSSStyle'
     },
-    type: `$library/Layout/Nodes/PanelNode`
+    type: `$library/Layout/Nodes/PanelNode`,
+    icon: '$library/Assets/nodes/panel.png',
+    ligature: 'select_all'
   },
   SplitPanel: {
     category,
@@ -26,7 +28,8 @@ export const LayoutNodeTypes = {
       splitPanel$layout: 'String',
       splitPanel$layoutValues: ['vertical', 'horizontal']
     },
-    type: `$library/Layout/Nodes/SplitPanelNode`
+    type: `$library/Layout/Nodes/SplitPanelNode`,
+    ligature: 'bottom_sheets'
   },
   CollapsePanel: {
     description: 'Renders a collapsing panel',
@@ -38,7 +41,8 @@ export const LayoutNodeTypes = {
       panel$sideValues: ['right', 'bottom'],
       panel$collapsed: 'Boolean'
     },  
-    type: `$library/Layout/Nodes/CollapsePanelNode`
+    type: `$library/Layout/Nodes/CollapsePanelNode`,
+    ligature: 'side_navigation'
   },
   FlyOut: {
     category,
@@ -48,7 +52,9 @@ export const LayoutNodeTypes = {
       flyOut$side: 'FlyOutSide',
       flyOut$sideValues: ['','top','right','bottom','left'],
     },
-    type: `$library/Layout/Nodes/FlyOutNode`
+    type: `$library/Layout/Nodes/FlyOutNode`,
+    icon: '$library/Assets/nodes/flyout.png',
+    ligature: 'dialogs'
   },
   DesignerPanel: {
     category,
@@ -58,12 +64,14 @@ export const LayoutNodeTypes = {
       panel$canvasLayout: 'DesignerNodeCanvasLayoutString', 
       panel$canvasLayoutValues: ['column','row'],
     },
-    type: '$library/Layout/Nodes/DesignerNode'
+    type: '$library/Layout/Nodes/DesignerNode',
+    ligature: 'resize'
   },
   FlipCard: {
     category,
     description: 'Renders a flip card with two sides',
-    type: '$library/Layout/Nodes/FlipCardNode'
+    type: '$library/Layout/Nodes/FlipCardNode',
+    ligature: 'flip'
   },
   GridLayout: {
     category,
@@ -72,7 +80,9 @@ export const LayoutNodeTypes = {
     types: {
       grid$template: "MultilineText",
       grid$style: "MultilineText"
-    }
+    },
+    icon: '$library/Assets/nodes/grid.png',
+    ligature: 'grid_view'
   },
   TemplateLayout: {
     category,
@@ -81,7 +91,8 @@ export const LayoutNodeTypes = {
     types: {
       Templated$template: "MultilineText:HTML",
       Templated$styleRules: "MultilineText:CSSRules"
-    }
+    },
+    ligature: 'grid_guides'
   },
   // DesignGrid: {
   //   category,
@@ -91,7 +102,9 @@ export const LayoutNodeTypes = {
   TabPages: {
     category,
     description: 'Set of pages with Tabs for navigation',
-    type: '$library/Layout/Nodes/TabPagesNode'
+    type: '$library/Layout/Nodes/TabPagesNode',
+    icon: '$library/Assets/nodes/tabpages.png',
+    ligature: 'tabs'
   },
   Accordion: {
     category,
@@ -99,6 +112,7 @@ export const LayoutNodeTypes = {
     types: {
       panels$sections: '[String]'
     },
-    type: '$library/Layout/Nodes/AccordionNode'
+    type: '$library/Layout/Nodes/AccordionNode',
+    ligature: 'unfold_less'
   }
 };

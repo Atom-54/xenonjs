@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'PixiJs';
+const category = 'Graphics';
 
 export const PixiJsNodeTypes = {
   PixiApp: {

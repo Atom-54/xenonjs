@@ -12,80 +12,92 @@ resetPolling(state, interval) {
   state.pollInterval = interval;
   state.attemptsBeforeRequestLogin = 3;
 },
-async update(inputs, state, {invalidate}) {
+async update({requestLogin, requestLogout}, state, {invalidate, isDirty}) {
   const response = await state.auth('GetUser');
   const user = response;
-  if (!deepEqual(user, state.user) && keys(user).length) {
+  if (keys(user).length && isDirty('user')) {
     //log('user changed', user);
-    state.user = user;
     this.resetPolling(state, 0);
-  }
-  if (state.pollInterval > 0) {
+  } else if (state.pollInterval > 0) {
     state.attemptsBeforeRequestLogin--;
     timeout(invalidate, state.pollInterval);
   }
+  if (requestLogin && isDirty('requestLogin')) {
+    this.requestLogin();
+  } 
+  if (requestLogout && isDirty('requestLogout')) {
+    this.requestLogout();
+  }
   const requireLogin = state.attemptsBeforeRequestLogin <= 0;
   const isLoggedIn = keys(user).length > 0;
+  const {uid, displayName, email, stsTokenManager} = user || 0;
   return {
-    user, //: state.user,
-    uid: user?.uid,
-    displayName: user?.displayName,
-    email: user?.email,
-    authToken: user?.stsTokenManager?.accessToken,
+    user,
+    uid,
+    displayName,
+    email,
+    authToken: stsTokenManager?.accessToken,
     requireLogin,
     maybeLoggedIn: !requireLogin,
     isLoggedIn
-    //isLoggedIn: keys(state.user).length > 0
   };
 },
-render({}, {user}) {
-  return {
-    loggedIn: String(keys(user).length > 0),
-    displayName: user?.displayName ?? 'Guest',
-    email: user?.email ?? 'not logged in',
-    photoURL: user?.photoURL ?? resolve('$library/Auth/Assets/user.png')
-  };
-},
-async onLoginClick(inputs, state, {invalidate}) {
+async requestLogin(state) {
   await state.auth('Login');
   this.resetPolling(state, 500);
-  invalidate();
 },
-async onLogoutClick(inputs, state, {invalidate}) {
+async requestLogout(state) {
   await state.auth('Logout');
-  state.user = null;
-  this.resetPolling(state, 1000);
-  invalidate();
-  return {user: state.user};
+  this.resetPolling(state, 500);
 },
-template: html`
-<style>
-  :host {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--theme-color-fg-1);
-    background-color: var(--xcolor-one);
-    min-height: 350px;
-    ${globalThis.themeRules??''}
-  }
-  img {
-    border-radius: 50%;
-  }
-  button {
-    padding: 5px 20px;
-  }
-</style>
+// render({}, {user}) {
+//   return {
+//     loggedIn: String(keys(user).length > 0),
+//     displayName: user?.displayName ?? 'Guest',
+//     email: user?.email ?? 'not logged in',
+//     photoURL: user?.photoURL ?? resolve('$library/Auth/Assets/user.png')
+//   };
+// },
+// async onLoginClick(inputs, state, {invalidate}) {
+//   await state.auth('Login');
+//   this.resetPolling(state, 500);
+//   invalidate();
+// },
+// async onLogoutClick(inputs, state, {invalidate}) {
+//   await state.auth('Logout');
+//   state.user = null;
+//   this.resetPolling(state, 1000);
+//   invalidate();
+//   return {user: state.user};
+// },
+// template: html`
+// <style>
+//   :host {
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     color: var(--theme-color-fg-1);
+//     background-color: var(--xcolor-one);
+//     min-height: 350px;
+//     ${globalThis.themeRules??''}
+//   }
+//   img {
+//     border-radius: 50%;
+//   }
+//   button {
+//     padding: 5px 20px;
+//   }
+// </style>
 
-<div flex center column>
-  <div bar>
-    <img referrerpolicy="no-referrer" src="{{photoURL}}">
-    <span spacer></span>
-    <h2>{{displayName}}</h2>
-  </div>
-  <h4>{{email}}</h4>
-  <button hide$="{{loggedIn}}" raised on-click="onLoginClick">Login</button>
-  <button show$="{{loggedIn}}" on-click="onLogoutClick">Logout</button>
-</div>
-`
+// <div flex center column>
+//   <div bar>
+//     <img referrerpolicy="no-referrer" src="{{photoURL}}">
+//     <span spacer></span>
+//     <h2>{{displayName}}</h2>
+//   </div>
+//   <h4>{{email}}</h4>
+//   <button hide$="{{loggedIn}}" raised on-click="onLoginClick">Login</button>
+//   <button show$="{{loggedIn}}" on-click="onLogoutClick">Logout</button>
+// </div>
+// `
 });

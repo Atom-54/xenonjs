@@ -21,7 +21,8 @@ update({items, template}, state, {isDirty, output}) {
 },
 render({styleRules}, {items, template, selected}) {
   const defaults = {
-    name: 'Unnamed Item'
+    name: 'Unnamed Item',
+    ligature: 'settings_backup_restore'
     // thumb: resolve('$library/AI/Assets/delmer.png'),
     // owner: 'scott.miles@gmail.com<br>02/11/23',
     // description: 'An amazing piece of kit. Use it again and again. Even better than "Cats"!'

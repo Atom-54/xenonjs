@@ -13,7 +13,8 @@ export const FieldsNodeTypes = {
       StaticText$text: 'String', // or maybe, 'Multitext'?
     },
     type: '$library/Fields/Nodes/StaticTextNode',
-    icon: '$library/Assets/nodes/text.png'
+    icon: '$library/Assets/nodes/text.png',
+    ligature: 'notes'
   },
   TextArea: {
     category,
@@ -23,7 +24,8 @@ export const FieldsNodeTypes = {
       field$text: 'MultilineText'
     },  
     type: '$library/Fields/Nodes/TextAreaNode',
-    icon: '$library/Assets/nodes/text.png'
+    icon: '$library/Assets/nodes/multiline.png',
+    ligature: 'edit_note'
   },
   TextField: {
     category,
@@ -37,7 +39,8 @@ export const FieldsNodeTypes = {
       field$options: '[String]'
     },
     type: '$library/Fields/Nodes/TextFieldNode',
-    icon: '$library/Assets/nodes/textfield.png'
+    icon: '$library/Assets/nodes/textfield.png',
+    ligature: 'match_word'
   },
   LigatureField: {
     category,
@@ -51,7 +54,8 @@ export const FieldsNodeTypes = {
       field$valueDescription: 'The enterable text value',
       field$options: '[String]'
     },
-    type: '$library/Fields/Nodes/LigatureFieldNode'
+    type: '$library/Fields/Nodes/LigatureFieldNode',
+    ligature: 'special_character'
   },
   BooleanField: {
     category,
@@ -60,7 +64,8 @@ export const FieldsNodeTypes = {
       field$label: 'String',
       field$value: 'Boolean'
     },
-    type: '$library/Fields/Nodes/BooleanFieldNode'
+    type: '$library/Fields/Nodes/BooleanFieldNode',
+    ligature: 'check_box'
   },
   SelectField: {
     category,
@@ -73,7 +78,9 @@ export const FieldsNodeTypes = {
       field$multiple: 'Boolean',
       field$size: 'Number'
     },
-    type: '$library/Fields/Nodes/SelectFieldNode'
+    type: '$library/Fields/Nodes/SelectFieldNode',
+    icon: '$library/Assets/nodes/selectfield.png',
+    ligature: 'fact_check'
   },
   TagField: {
     category,
@@ -82,7 +89,8 @@ export const FieldsNodeTypes = {
       field$label: 'String',
       field$value: '[String]'
     },  
-    type: '$library/Fields/Nodes/TagFieldNode'
+    type: '$library/Fields/Nodes/TagFieldNode',
+    ligature: 'sell'
   },
   Button: {
     category,
@@ -92,7 +100,8 @@ export const FieldsNodeTypes = {
       button$inverted: 'Boolean'
     },  
     type: '$library/Fields/Nodes/ButtonNode',
-    icon: '$library/Assets/Nodes/button.png'
+    icon: '$library/Assets/Nodes/button.png',
+    ligature: 'buttons_alt'
   },
   ImageField: {
     category,
@@ -101,7 +110,9 @@ export const FieldsNodeTypes = {
       field$url: 'String',
       field$image: 'Image'
     },  
-    type: '$library/Fields/Nodes/ImageFieldNode'
+    type: '$library/Fields/Nodes/ImageFieldNode',
+    icon: '$library/Assets/nodes/image.png',
+    ligature: 'hallway'
   },
   Form: {
     category,
@@ -110,7 +121,8 @@ export const FieldsNodeTypes = {
       Form$form: 'FormId:String'
     },  
     type: '$library/Fields/Nodes/FormNode',
-    icon: '$library/Assets/nodes/table.png'
+    icon: '$library/Assets/nodes/form.png',
+    ligature: 'ballot'
   },
   DataNavigator: {
     category,
@@ -118,16 +130,18 @@ export const FieldsNodeTypes = {
     types: {
     },  
     type: '$library/Fields/Nodes/DataNavigatorNode',
-    icon: '$library/Assets/nodes/table.png'
+    icon: '$library/Assets/nodes/uxtoolbar.png',
+    ligature: 'source_notes'
   },
   FileField: {
     category,
-    description: "Uploads a file (only .txt file supported atm)",
+    description: "Uploads a .text file",
     types: {
       FileField$label: 'String',
       FileField$button: 'String',
       FileField$accept: 'String'
     },
-    type: '$library/Fields/Nodes/FileFieldNode'
+    type: '$library/Fields/Nodes/FileFieldNode',
+    ligature: 'upload_file'
   }
 };

@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+
 // What's great for a snack, and fits on your back? It's log, log, log
 const log = logf('ChromecastService', '#ff006e', 'white');
 log.flags.ChromecastService = true;

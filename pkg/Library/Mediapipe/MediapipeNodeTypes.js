@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'Mediapipe';
+const category = 'AI';
 
 export const MediapipeNodeTypes = {
   // PoseNode: {
@@ -21,7 +21,8 @@ export const MediapipeNodeTypes = {
       FaceMesh$image: 'Image',
       FaceMesh$data: 'FaceMeshData'
     },
-    type: `$library/Mediapipe/Nodes/FaceMeshNode`
+    type: `$library/Mediapipe/Nodes/FaceMeshNode`,
+    ligature: 'face 5'
   },
   FaceMeshDisplay: {
     category,
@@ -30,7 +31,8 @@ export const MediapipeNodeTypes = {
       FaceMeshDisplay$image: 'Image',
       FaceMeshDisplay$data: 'FaceMeshData'
     },
-    type: `$library/Mediapipe/Nodes/FaceMeshDisplayNode`
+    type: `$library/Mediapipe/Nodes/FaceMeshDisplayNode`,
+    ligature: 'face 5'
   },
   SelfieSegmentation: {
     category,
@@ -39,7 +41,8 @@ export const MediapipeNodeTypes = {
       SelfieSegmentation$image: 'Image',
       SelfieSegmentation$mask: 'Image'
     },
-    type: `$library/Mediapipe/Nodes/SelfieSegmentationNode`
+    type: `$library/Mediapipe/Nodes/SelfieSegmentationNode`,
+    ligature: 'background_replace'
   },
   Holistic: {
     category,
@@ -49,7 +52,8 @@ export const MediapipeNodeTypes = {
       holistic$mask: 'Image',
       holistic$results: 'HolisticResults'
     },
-    type: `$library/Mediapipe/Nodes/HolisticNode`
+    type: `$library/Mediapipe/Nodes/HolisticNode`,
+    ligature: 'frame_person'
   },
   BodyPoseDisplay: {
     category,
@@ -58,7 +62,8 @@ export const MediapipeNodeTypes = {
       BodyPoseDisplay$image: 'Image',
       BodyPoseDisplay$data: 'HolisticResults'
     },
-    type: `$library/Mediapipe/Nodes/BodyPoseDisplayNode`
+    type: `$library/Mediapipe/Nodes/BodyPoseDisplayNode`,
+    ligature: 'hand_bones'
   },
   FingerPaint: {
     category,
@@ -69,7 +74,8 @@ export const MediapipeNodeTypes = {
       FingerPaint$penSize: 'Number',
       FingerPaint$eraserSize: 'Number'
     },
-    type: `$library/Mediapipe/Nodes/FingerPaintNode`
+    type: `$library/Mediapipe/Nodes/FingerPaintNode`,
+    ligature: 'gesture'
   },
   VirtualPointer: {
     category,
@@ -78,7 +84,8 @@ export const MediapipeNodeTypes = {
       VirtualPointer$results: 'HolisticResults',
       VirtualPointer$tracking: 'VirtualPointerTracking'
     },
-    type: `$library/Mediapipe/Nodes/VirtualPointerNode`
+    type: `$library/Mediapipe/Nodes/VirtualPointerNode`,
+    ligature: 'pan_tool_alt'
   },
   PointerPoms: {
     category,
@@ -90,6 +97,7 @@ export const MediapipeNodeTypes = {
       PointerPoms$eraserSize: 'Number',
       PointerPoms$erase: 'Boolean'
     },
-    type: `$library/Mediapipe/Nodes/PointerPomsNode`
+    type: `$library/Mediapipe/Nodes/PointerPomsNode`,
+    ligature: 'touch_app'
   }
 };
