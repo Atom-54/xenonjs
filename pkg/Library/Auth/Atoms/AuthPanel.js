@@ -13,10 +13,10 @@ render({user}, {}) {
   };
 },
 async onLoginClick(inputs, state, {invalidate}) {
-  return {loginRequest: Math.random()};
+  return {requestLogin: Math.random()};
 },
 async onLogoutClick(inputs, state, {invalidate}) {
-  return {logoutRequest: Math.random()};
+  return {requestLogout: Math.random()};
 },
 template: html`
 <style>

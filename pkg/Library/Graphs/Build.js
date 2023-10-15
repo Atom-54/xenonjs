@@ -9,6 +9,9 @@ export const graph = {
     "designerId": "Main"
   },
   "nodes": {
+    "Auth": {
+      "type": "$library/Auth/Nodes/AuthNode"
+    },
     "Main": {
       "type": "$library/Layout/Nodes/DesignerNode",
       "container": "root$panel#Container"
@@ -43,7 +46,6 @@ export const graph = {
     },
     "UXToolbar": {
       "type": "$library/UX/Nodes/UXToolbarNode",
-      ///"container": "Main$panel#Container"
       "container": "OuterWorkPanel$panel#Container"
     },
     "GetGraphName": {
@@ -293,7 +295,7 @@ export const graph = {
     // "GraphListOptionsSelect$field$label": "Choose Avatar Generator",
     // "GraphListOptionsSelect$field$options": ["SuperBots", "SuperPets","Elders"],
     "UxStatusBar$UXSnackBar$icon": "info",
-    "NodeCatalog$Layer$graphId": "local:NodeTypeList",
+    "NodeCatalog$Layer$graphId": "fb:scottmiles/NodeTypeList",
     "Main$designer$layout": {
       "NodeCatalog": {
         "flex": "1"
@@ -378,6 +380,7 @@ export const graph = {
     "GraphList$graphAgent$user": "Auth$Auth$user",
     "GraphList$graphList$user": "Auth$Auth$user",
     "UserSettings$settings$user": "Auth$Auth$user",
+    "AuthPanel$Panel$user": "Auth$Auth$user",
     "Auth$Auth$requestLogin": "AuthPanel$Panel$requestLogin",
     "Auth$Auth$requestLogout": "AuthPanel$Panel$requestLogout",
     "DesignLayer$Layer$graph": "GraphList$graphAgent$graph",
