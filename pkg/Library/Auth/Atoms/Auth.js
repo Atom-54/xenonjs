@@ -49,55 +49,5 @@ async requestLogin(state) {
 async requestLogout(state) {
   await state.auth('Logout');
   this.resetPolling(state, 500);
-},
-// render({}, {user}) {
-//   return {
-//     loggedIn: String(keys(user).length > 0),
-//     displayName: user?.displayName ?? 'Guest',
-//     email: user?.email ?? 'not logged in',
-//     photoURL: user?.photoURL ?? resolve('$library/Auth/Assets/user.png')
-//   };
-// },
-// async onLoginClick(inputs, state, {invalidate}) {
-//   await state.auth('Login');
-//   this.resetPolling(state, 500);
-//   invalidate();
-// },
-// async onLogoutClick(inputs, state, {invalidate}) {
-//   await state.auth('Logout');
-//   state.user = null;
-//   this.resetPolling(state, 1000);
-//   invalidate();
-//   return {user: state.user};
-// },
-// template: html`
-// <style>
-//   :host {
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     color: var(--theme-color-fg-1);
-//     background-color: var(--xcolor-one);
-//     min-height: 350px;
-//     ${globalThis.themeRules??''}
-//   }
-//   img {
-//     border-radius: 50%;
-//   }
-//   button {
-//     padding: 5px 20px;
-//   }
-// </style>
-
-// <div flex center column>
-//   <div bar>
-//     <img referrerpolicy="no-referrer" src="{{photoURL}}">
-//     <span spacer></span>
-//     <h2>{{displayName}}</h2>
-//   </div>
-//   <h4>{{email}}</h4>
-//   <button hide$="{{loggedIn}}" raised on-click="onLoginClick">Login</button>
-//   <button show$="{{loggedIn}}" on-click="onLogoutClick">Logout</button>
-// </div>
-// `
+}
 });
