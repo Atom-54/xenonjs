@@ -23,10 +23,10 @@ async update({requestLogin, requestLogout}, state, {invalidate, isDirty}) {
     timeout(invalidate, state.pollInterval);
   }
   if (requestLogin && isDirty('requestLogin')) {
-    this.requestLogin();
+    this.requestLogin(state);
   } 
   if (requestLogout && isDirty('requestLogout')) {
-    this.requestLogout();
+    this.requestLogout(state);
   }
   const requireLogin = state.attemptsBeforeRequestLogin <= 0;
   const isLoggedIn = keys(user).length > 0;
