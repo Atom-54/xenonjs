@@ -15,7 +15,8 @@ export const AINodeTypes = {
       PersonaChat$restart: 'Boolean',
       PersonaChat$rounds: 'Number'
     },
-    type: `$library/AI/Nodes/PersonaChatNode`
+    type: `$library/AI/Nodes/PersonaChatNode`,
+    ligature: 'speaker_notes'
   },
   DelmerBot: {
     category,
@@ -23,15 +24,18 @@ export const AINodeTypes = {
       OpenAIText$prompt: 'String',
       OpenAIText$result: 'String'
     },
-    type: `$library/AI/Nodes/DelmerBotNode`
+    type: `$library/AI/Nodes/DelmerBotNode`,
+    ligature: 'robot_2'
   },
   ActionInterpreter: {
     category,
-    type: `$library/AI/Nodes/ActionInterpreterNode`
+    type: `$library/AI/Nodes/ActionInterpreterNode`,
+    ligature: 'translate'
   },
   ActionHandler: {
     category,
-    type: `$library/AI/Nodes/ActionHandlerNode`
+    type: `$library/AI/Nodes/ActionHandlerNode`,
+    ligature: 'bolt'
   },
   AIClock: {
     category,
@@ -47,7 +51,8 @@ export const AINodeTypes = {
         'You are the Great Wizard Gandalf, incant a spell about the given time.'
       ]
     },
-    type: `$library/AI/Nodes/AIClockNode`
+    type: `$library/AI/Nodes/AIClockNode`,
+    ligature: 'nest_clock_farsight_digital'
   },
   AIChat: {
     category,
@@ -57,9 +62,11 @@ export const AINodeTypes = {
       AIChat$messages: '[Message]',
       AIChat$result: 'Pojo'
     },
-    type: '$library/AI/Nodes/AIChatNode'
+    type: '$library/AI/Nodes/AIChatNode',
+    ligature: 'forum'
   },
   VectorCompare: {
     category,
-    type: '$library/AI/Nodes/VectorCompareNode'
+    type: '$library/AI/Nodes/VectorCompareNode',
+    ligature: 'polyline'
   }};

@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'CodeMirror';
+const category = 'UX';
 
 export const CodeMirrorNodeTypes = {
   CodeMirror: {
@@ -12,6 +12,7 @@ export const CodeMirrorNodeTypes = {
     types: {
       text$text: 'MultilineText'
     },  
-    type: `$library/CodeMirror/Nodes/CodeMirrorNode`
+    type: `$library/CodeMirror/Nodes/CodeMirrorNode`,
+    icon: '$library/Assets/nodes/codemirror.png'
   }
 };

@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'Mail';
+const category = 'Communication';
 
 export const MailNodeTypes = {
   IMap: {
@@ -15,6 +15,7 @@ export const MailNodeTypes = {
       IMap$password: 'Password',
       IMap$messages: '[Message]'
     },
-    type: '$library/Mail/Nodes/IMapNode'
+    type: '$library/Mail/Nodes/IMapNode',
+    ligature: 'local_post_office'
   }
 };

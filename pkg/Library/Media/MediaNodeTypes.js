@@ -89,7 +89,8 @@ export const MediaNodeTypes = {
       image$image: 'Image',
       image$selfie: 'Boolean'
     },
-    type: `$library/Media/Nodes/ImageNode`
+    type: `$library/Media/Nodes/ImageNode`,
+    ligature: 'image'
   },
   DeviceUx: {
     category,
@@ -98,7 +99,8 @@ export const MediaNodeTypes = {
       defaultStream$streamId: 'String',
       defaultStream$stream: 'Stream'
     },
-    type: `$library/Media/Nodes/DeviceUxNode`
+    type: `$library/Media/Nodes/DeviceUxNode`,
+    ligature: 'camera_video'
   },
   Stream: {
     category,
@@ -106,7 +108,8 @@ export const MediaNodeTypes = {
     types: {
       Stream$stream: 'Stream'
     },
-    type: `$library/Media/Nodes/StreamNode`
+    type: `$library/Media/Nodes/StreamNode`,
+    ligature: 'stream'
   },
   VideoStream: {
     category,
@@ -115,7 +118,8 @@ export const MediaNodeTypes = {
       VideoStream$src: 'String',
       VideoStream$stream: 'Stream'
     },
-    type: `$library/Media/Nodes/VideoStreamNode`
+    type: `$library/Media/Nodes/VideoStreamNode`,
+    ligature: 'smart_display'
   },
   FrameCapture: {
     category,
@@ -125,7 +129,8 @@ export const MediaNodeTypes = {
       FrameCapture$frame: 'Image',
       FrameCapture$fps: 'Number'
     },
-    type: `$library/Media/Nodes/FrameCaptureNode`
+    type: `$library/Media/Nodes/FrameCaptureNode`,
+    ligature: 'screenshot_frame'
   },
   FrameStream: {
     category,
@@ -134,7 +139,8 @@ export const MediaNodeTypes = {
       FrameStream$frame: 'Image',
       FrameStream$stream: 'Stream'
     },
-    type: `$library/Media/Nodes/FrameStreamNode`
+    type: `$library/Media/Nodes/FrameStreamNode`,
+    ligature: 'capture'
   },
   ImageComposite: {
     category,
@@ -154,7 +160,8 @@ export const MediaNodeTypes = {
       ImageComposite$imageD: 'Image',
       ImageComposite$output: 'Image'
     },
-    type: `$library/Media/Nodes/ImageCompositeNode`
+    type: `$library/Media/Nodes/ImageCompositeNode`,
+    ligature: 'tune'
   },
   VideoSender: {
     category,
@@ -162,7 +169,8 @@ export const MediaNodeTypes = {
     types: {
       VideoSender$frame: 'Image'
     },
-    type: '$library/media/Nodes/VideoSenderNode'
+    type: '$library/media/Nodes/VideoSenderNode',
+    ligature: 'screen_share'
   },
   Listen: {
     category,
@@ -171,7 +179,8 @@ export const MediaNodeTypes = {
       SpeechRecognizer$transcript: 'String',
       SpeechRecognizer$interimTranscript: 'String'
     },
-    type: `$library/Media/Nodes/ListenNode`
+    type: `$library/Media/Nodes/ListenNode`,
+    ligature: 'hearing'
   },
   Speak: {
     category,
@@ -181,10 +190,12 @@ export const MediaNodeTypes = {
       SpeechSynthesizer$voice: 'String',
       SpeechSynthesizer$voiceValues: speechSynthesizerVoices
     },
-    type: `$library/Media/Nodes/SpeakNode`
+    type: `$library/Media/Nodes/SpeakNode`,
+    ligature: 'voice_selection'
   },
   Masking: {
     category,
-    type: `$library/Media/Nodes/MaskingNode`
+    type: `$library/Media/Nodes/MaskingNode`,
+    ligature: 'domino_mask'
   }
 };

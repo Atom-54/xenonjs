@@ -9,6 +9,10 @@ export const graph = {
     "designerId": "Main"
   },
   "nodes": {
+    "Main": {
+      "type": "$library/Layout/Nodes/DesignerNode",
+      "container": "root$panel#Container"
+    },
     "AuthFlyOut": {
       "type": "$library/Layout/Nodes/FlyOutNode",
       "container": "Main$panel#Container"
@@ -17,17 +21,13 @@ export const graph = {
       "type": "$library/Layout/Nodes/PanelNode",
       "container": "AuthFlyOut$flyOut#Container"
     },
-    "Auth": {
-      "type": "$library/Auth/Nodes/AuthNode",
+    "AuthPanel": {
+      "type": "$library/Auth/Nodes/AuthPanelNode",
       "container": "UserPanel$panel#Container"
     },
     "UserSettings": {
       "type": "$library/Auth/Nodes/UserSettingsNode",
       "container": "UserPanel$panel#Container"
-    },
-    "Main": {
-      "type": "$library/Layout/Nodes/DesignerNode",
-      "container": "root$panel#Container"
     },
     "LeftMainCollapse": {
       "type": "$library/Layout/Nodes/CollapsePanelNode",
@@ -43,6 +43,7 @@ export const graph = {
     },
     "UXToolbar": {
       "type": "$library/UX/Nodes/UXToolbarNode",
+      ///"container": "Main$panel#Container"
       "container": "OuterWorkPanel$panel#Container"
     },
     "GetGraphName": {
@@ -111,10 +112,6 @@ export const graph = {
       "type": "$library/Graph/Nodes/NodeStatusNode",
       "container": "SplitSplitPanel$splitPanel#Container2"
     },
-    // "AtomToolbar": {
-    //   "type": "$library/UX/Nodes/UXToolbarNode",
-    //   "container": "design$Main$designer#ToolbarContainer"
-    // },
     "GraphListFlyOut": {
       "type": "$library/Layout/Nodes/FlyOutNode",
       "container": "Main$panel#Container"
@@ -123,17 +120,6 @@ export const graph = {
       "type": "$library/Graph/Nodes/GraphListNode",
       "container": "GraphListFlyOut$flyOut#Container"
     },
-    // "GraphStylizer": {
-    //   "type": "$library/Graph/Nodes/GraphStylizerNode"
-    // },
-    // "GraphListOptionsCollapse": {
-    //   "type": "$library/Layout/Nodes/CollapsePanelNode",
-    //   "container": "GraphList$graphList#settings"
-    // },
-    // "GraphListOptionsSelect": {
-    //   "type": "$library/Fields/Nodes/SelectFieldNode",
-    //   "container": "GraphListOptionsCollapse$panel#Container"
-    // },
     "NodeTypeListFlyOut": {
       "type": "$library/Layout/Nodes/FlyOutNode",
       "container": "root$panel#Container"
@@ -159,32 +145,6 @@ export const graph = {
     "ObjectInspector$inspector$customInspectors": {
       "OpenStyle": true
     },
-    "AtomToolbar$UXToolbar$actions": [
-      {
-        "name": "Clone Object",
-        "ligature": "content_copy",
-        "action": "service",
-        "args": {
-          "kind": "DesignService",
-          "msg": "CloneObject"
-        }
-      },
-      {
-        "name": "Morph Object", 
-        "ligature": "shapes",
-        "action": "toggle",
-        "stateKey": "NodeTypeListFlyOut$flyOut$show"
-      },
-      {
-        "name": "Delete Object", 
-        "ligature": "delete",
-        "action": "service",
-        "args": {
-          "kind": "DesignService",
-          "msg": "DeleteSelectedObject"
-        }
-      }
-    ],
     "UXToolbar$UXToolbar$actions": [
       {
         "name": "Graphs Menu",
@@ -276,6 +236,58 @@ export const graph = {
         }]
       }
     ],
+    "InspectorToolbar$UXToolbar$actions": [
+      {
+        "name": "Clone Object",
+        "ligature": "content_copy",
+        "action": "service",
+        "args": {
+          "kind": "DesignService",
+          "msg": "CloneObject"
+        }
+      },
+      {
+        "name": "Morph Object", 
+        "ligature": "shapes",
+        "action": "toggle",
+        "stateKey": "NodeTypeListFlyOut$flyOut$show"
+      },
+      {
+        "name": "Delete Object", 
+        "ligature": "delete",
+        "action": "service",
+        "args": {
+          "kind": "DesignService",
+          "msg": "DeleteSelectedObject"
+        }
+      }
+    ],
+    "AtomToolbar$UXToolbar$actions": [
+      {
+        "name": "Clone Object",
+        "ligature": "content_copy",
+        "action": "service",
+        "args": {
+          "kind": "DesignService",
+          "msg": "CloneObject"
+        }
+      },
+      {
+        "name": "Morph Object", 
+        "ligature": "shapes",
+        "action": "toggle",
+        "stateKey": "NodeTypeListFlyOut$flyOut$show"
+      },
+      {
+        "name": "Delete Object", 
+        "ligature": "delete",
+        "action": "service",
+        "args": {
+          "kind": "DesignService",
+          "msg": "DeleteSelectedObject"
+        }
+      }
+    ],
     "GetGraphName$JSONata$expression": "meta.id",
     "GraphName$echo$style": "text-align: left",
     // "GraphListOptionsSelect$field$label": "Choose Avatar Generator",
@@ -346,7 +358,7 @@ export const graph = {
         "border": "1px solid var(--xcolor-two)",
         "backgroundColor": "var(--xcolor-one)"
       },
-      "Auth": {
+      "AuthPanel": {
         "order": "1",
         "flex": "1",
         "border": "1px solid var(--xcolor-two)",
@@ -365,30 +377,26 @@ export const graph = {
   "connections": {
     "GraphList$graphAgent$user": "Auth$Auth$user",
     "GraphList$graphList$user": "Auth$Auth$user",
-    "DesignLayer$Layer$graph": "GraphList$graphAgent$graph",
     "UserSettings$settings$user": "Auth$Auth$user",
-    //
+    "Auth$Auth$requestLogin": "AuthPanel$Panel$requestLogin",
+    "Auth$Auth$requestLogout": "AuthPanel$Panel$requestLogout",
+    "DesignLayer$Layer$graph": "GraphList$graphAgent$graph",
     "GraphList$graphAgent$graph": "NodeGraph$Graph$graph",
     "NodeGraph$Graph$graph": "GraphList$graphAgent$graph",
     "NodeInspectorAdaptor$adaptor$graph": "GraphList$graphAgent$graph",
     "NodeTree$NodeTree$graph": "GraphList$graphAgent$graph",
     "GraphStatus$GraphStatus$graph": "GraphList$graphAgent$graph",
     "NodeStatus$NodeStatus$graph": "GraphList$graphAgent$graph",
-    //
     "GetGraphName$JSONata$json": "GraphList$graphAgent$graph",
     "GraphName$echo$html": "GetGraphName$JSONata$result",
-    //
     "NodeGraph$Graph$selected": "NodeTree$NodeTree$selected",
     "NodeInspectorAdaptor$adaptor$selected": "NodeGraph$Graph$selected",
     "NodeStatus$NodeStatus$selected": "NodeGraph$Graph$selected",
     "NodeTree$NodeTree$selected": "NodeGraph$Graph$selected",
-    //
     "OpenStyleInspector$inspector$key": "NodeGraph$Graph$selected",
     "ObjectInspector$inspector$data": "NodeInspectorAdaptor$adaptor$data",
     "OpenStyleInspector$inspector$data": "NodeInspectorAdaptor$adaptor$data",
     "InfoEcho$echo$html": "NodeInspectorAdaptor$adaptor$info",
-    "InspectorToolbar$UXToolbar$actions": "AtomToolbar$UXToolbar$actions",
-
     "UxStatusBar$UXSnackBar$message": "GraphList$graphAgent$message",
     "UxStatusBar$UXSnackBar$open": "GraphList$graphAgent$message"
   }

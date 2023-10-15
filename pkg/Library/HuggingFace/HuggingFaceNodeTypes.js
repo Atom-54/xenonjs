@@ -3,7 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'HuggingFace';
+const category = 'AI';
 
 export const HuggingFaceNodeTypes = {
   HuggingFaceImage: {

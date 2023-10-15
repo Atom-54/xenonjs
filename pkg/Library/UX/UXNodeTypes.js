@@ -12,17 +12,21 @@ export const UXNodeTypes = {
     types: {
       UXActionExecutor$readonly: 'Boolean'
     },
-    type: `$library/UX/Nodes/UXToolbarNode`
+    type: `$library/UX/Nodes/UXToolbarNode`,
+    icon: '$library/Assets/nodes/uxtoolbar.png',
+    ligature: 'toolbar'
   },
   UXActionSet: {
     category,
     description: 'Collects UX action definitions for buttons and controls',
-    type: `$library/UX/Nodes/UXActionSetNode`
+    type: `$library/UX/Nodes/UXActionSetNode`,
+    ligature: 'bolt'
   },
   UXSelectionList: {
     category,
     description: 'Renders a list and allows user to select items',
     type: `$library/UX/Nodes/UXSelectionListNode`,
+    ligature: 'fact_check'
   },
   UXSnackBar: {
     category,
@@ -33,7 +37,8 @@ export const UXNodeTypes = {
       UXSnackBar$message: 'String',
       UXSnackBar$duration: 'Number'
     },
-    type: `$library/UX/Nodes/UXSnackBarNode`
+    type: `$library/UX/Nodes/UXSnackBarNode`,
+    ligature: 'call_to_action'
   },
   ProgressBar: {
     category,
@@ -46,7 +51,8 @@ export const UXNodeTypes = {
       bar$inProgress: 'Boolean',
       bar$interval: 'Number',
     },
-    type: `$library/UX/Nodes/ProgressBarNode`
+    type: `$library/UX/Nodes/ProgressBarNode`,
+    ligature: 'sliders'
   },
   WebPage: {
     category,
@@ -55,6 +61,7 @@ export const UXNodeTypes = {
       WebPage$html: 'MultilineString',
       WebPage$src: 'String'
     },
-    type: `$library/UX/Nodes/WebPageNode`
+    type: `$library/UX/Nodes/WebPageNode`,
+    ligature: 'web'
   }
 };

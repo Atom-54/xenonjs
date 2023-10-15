@@ -13,7 +13,8 @@ export const PolymathNodeTypes = {
       PolymathLibrary$name: 'String',
       PolymathLibrary$library: 'PolymathLibrary'
     },
-    type: '$library/Polymath/Nodes/PolymathLibraryNode'
+    type: '$library/Polymath/Nodes/PolymathLibraryNode',
+    ligature: 'library_books'
   },
   PolymathLearner: {
     category,
@@ -26,7 +27,8 @@ export const PolymathNodeTypes = {
       PolymathLearner$content: 'MultilineText',
       PolymathLearner$trigger: 'Nonce'
     },
-    type: '$library/Polymath/Nodes/PolymathLearnerNode'
+    type: '$library/Polymath/Nodes/PolymathLearnerNode',
+    ligature: 'library_add'
   },
   AskPolymath: {
     category,
@@ -38,7 +40,8 @@ export const PolymathNodeTypes = {
       AskPolymath$completion: 'MultilineText',
       AskPolymath$working: 'Boolean'
     },
-    type: '$library/Polymath/Nodes/AskPolymathNode'
+    type: '$library/Polymath/Nodes/AskPolymathNode',
+    ligature: 'local_library'
   },
   WikipediaContent: {
     category,
@@ -48,6 +51,7 @@ export const PolymathNodeTypes = {
       WikipediaContentNode$title: 'String',
       WikipediaContentNode$markup: 'HTML:MultilineText'
     },
-    type: '$library/Polymath/Nodes/WikipediaContentNode'
+    type: '$library/Polymath/Nodes/WikipediaContentNode',
+    ligature: 'book'
   }
 };
