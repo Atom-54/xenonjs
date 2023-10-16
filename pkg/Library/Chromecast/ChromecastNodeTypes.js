@@ -8,11 +8,12 @@ const category = 'Communication';
 export const ChromecastNodeTypes = {
   ChromecastLauncher: {
     category,
-    description: 'Connection to Chromecast device',
+    description: 'Displays and edits source code',
     types: {
-      Launcher$composer: 'ComposerId:String'
+      text$text: 'MultilineText'
     },  
     type: '$library/Chromecast/Nodes/ChromecastLauncherNode',
+    icon: '$library/Assets/nodes/codemirror.png',
     ligature: 'cast'
   }
 };
