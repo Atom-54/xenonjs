@@ -60,7 +60,7 @@ export const obliterateLayer = async layer => {
 };
 
 const atomRender = ({composer, system}, atomName, atom, packet) => {
-  if (composer && packet) {
+if (composer && packet) {
     packet.container = system[atomName]?.container ?? packet.container;
     composer.render(packet);
   }

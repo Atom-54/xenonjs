@@ -140,6 +140,7 @@ export const graph = {
     "Main$panel$canvasLayout": "row",
     "UserPanel$panel$layout": "row",
     "Main$designer$disabled": true,
+    "LeftMainCollapse$panel$size": "240px",
     "BottomWorkCollapse$panel$collapsed": true,
     "BottomWorkCollapse$panel$size": "320px",
     "BottomWorkCollapse$panel$side": "bottom",

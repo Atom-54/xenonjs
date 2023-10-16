@@ -33,6 +33,7 @@ import {MailNodeTypes} from './Mail/MailNodeTypes.js';
 import {PubSubNodeTypes} from './PubSub/PubSubNodeTypes.js';
 import {PeerNodeTypes} from './Peer/PeerNodeTypes.js';
 import {CalendarNodeTypes} from './Calendar/CalendarNodeTypes.js';
+import { ChromecastNodeTypes } from './Chromecast/ChromecastNodeTypes.js';
 
 const nodeTypes = {
   Echo: {
@@ -72,7 +73,8 @@ const nodeTypes = {
   ...MailNodeTypes,
   ...PubSubNodeTypes,
   ...PeerNodeTypes,
-  ...CalendarNodeTypes
+  ...CalendarNodeTypes,
+  ...ChromecastNodeTypes
 };
 
 globalThis.nodeTypes = nodeTypes;

@@ -26,3 +26,4 @@ export {jsonrepairService} from './jsonrepair/jsonrepairService.js';
 export {SSEPubSubService as PubSubService} from './PubSub/Services/SSEPubSubService.js';
 export {FormService} from './Fields/Services/FormService.js';
 export {PolymathService} from './Polymath/Services/PolymathService.js'
+export {ChromecastService} from './Chromecast/Services/ChromecastService.js';
