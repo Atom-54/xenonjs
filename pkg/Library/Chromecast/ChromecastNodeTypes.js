@@ -8,9 +8,9 @@ const category = 'Communication';
 export const ChromecastNodeTypes = {
   ChromecastLauncher: {
     category,
-    description: 'Displays and edits source code',
+    description: 'Connection to Chromecast device',
     types: {
-      text$text: 'MultilineText'
+      Launcher$composer: 'ComposerId:String'
     },  
     type: '$library/Chromecast/Nodes/ChromecastLauncherNode',
     icon: '$library/Assets/nodes/codemirror.png',

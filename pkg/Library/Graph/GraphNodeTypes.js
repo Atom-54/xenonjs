@@ -40,6 +40,7 @@ export const GraphNodeTypes = {
     category,
     type: '$library/Graph/Nodes/LayerNode',
     types: {
+      Layer$composer: 'ComposerId:String',
       Layer$designable: 'Boolean',
       Layer$graph: 'String'
     }

@@ -59,10 +59,11 @@ export const obliterateLayer = async layer => {
   Flan.obliterateData(layer)
 };
 
-const atomRender = ({composer, system}, atomName, atom, packet) => {
-if (composer && packet) {
+const atomRender = ({composer, composer2, system}, atomName, atom, packet) => {
+  if (packet) {
     packet.container = system[atomName]?.container ?? packet.container;
-    composer.render(packet);
+    composer?.render(packet);
+    composer2?.render(packet);
   }
 };
 

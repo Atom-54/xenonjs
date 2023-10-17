@@ -37,9 +37,9 @@ async update({mood, text}, state, {output, invalidate}) {
     return {displayTime, mood, prompt};
   }
 },
-shouldRender({}, {text}) {
-  return Boolean(text);
-},
+// shouldRender({}, {text}) {
+//   return Boolean(text);
+// },
 render({image}, {displayTime, text}) {
   return {image, displayTime, text};
 },

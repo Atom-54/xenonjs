@@ -21,9 +21,8 @@ export class Composer {
     }
   }
   render(packet) {
-    const {content: {model, template}, ...etc} = packet;
-    log({...etc, model})
-    const {id, container} = etc;
+    const {id, container, content: {model, template}} = packet;
+    log({id, container, model})
     const cacheId = id;
     if (model?.$clear) {
       this._clearSlot(cacheId);

@@ -7,13 +7,14 @@ import {assign, entries, keys, values, map} from '../Reactor/safe-object.js';
 import {makeCapName} from '../Reactor/Atomic/js/names.js';
 import {TypeMatcher} from '../Framework/TypeMatcher.js';
 import * as Flan from '../Framework/Flan.js';
+import * as Layers from '../Framework/Layers.js';
+import * as App from '../Framework/Flan.js';
 import * as Graphs from '../Framework/Graphs.js';
 import * as Nodes from '../Framework/Nodes.js';
 import * as Id from '../Framework/Id.js';
 import * as Persist from '../Framework/Persist.js';
 import * as Design from '../Designer/DesignService.js';
 import {Resources} from '../../Media/Resources.js';
-import {Composer} from '../../Chromecast/ChromecastComposer.js';
 
 // it's better than bad, it's good! it's log!
 const log = logf('Services: GraphService', 'orangered');
@@ -33,6 +34,9 @@ export const GraphService = {
   },
   async CreateLayer(layer, atom, {graph, graphId, designable}) {
     return createHostedLayer(layer, atom, graph, graphId, designable);
+  },
+  async SetLayerComposer(layer, atom, {layerId, composerId}) {
+    return setLayerComposer(Resources.get(layerId), Resources.get(composerId));
   },
   async DestroyLayer(layer, atom, {layerId, graph}) {
     return Flan.destroyLayer(Resources.get(layerId))
@@ -71,15 +75,9 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable, compos
   if (graphSpec) {
     const id = makeCapName();
     const tempFlan = {...layer.flan};
-    if (layer.name !== 'base') {
-      tempFlan.Composer = Composer;
-    }
     const newLayer = await Flan.createLayer(tempFlan, graphSpec, id);
     Resources.set(id, newLayer);
     let container = `${atom.name}#Container`;
-    if (layer.name !== 'base') {
-      container = 'root';
-    }
     values(newLayer.system).forEach(spec => {
       if (spec.container?.endsWith('$root$panel#Container')) {
         spec.container = container;
@@ -96,6 +94,13 @@ const createHostedLayer = async (layer, atom, graph, graphId, designable, compos
     }
     return id;
   }
+};
+
+const setLayerComposer = async (layer, Composer) => {
+  const onevent = (atomName, event) => App.handleAtomEvent(layer, atomName, event);
+  layer.composer2 = new Composer();
+  layer.composer2.onevent = onevent;
+  Layers.rerender(layer);  
 };
 
 // const computeLayerIO = async layer => {
