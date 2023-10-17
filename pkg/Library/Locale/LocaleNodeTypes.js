@@ -61,6 +61,8 @@ export const LocaleNodeTypes = {
       translate$text: 'String',
       translate$inLang: 'String',
       translate$outLang: 'String',
+      translate$enabled: 'Boolean',
+      translate$trigger: 'Nonce',
       translate$translation: 'String',
       translate$working: 'Boolean'
     },

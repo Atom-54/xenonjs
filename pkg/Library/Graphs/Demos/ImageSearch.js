@@ -1,13 +1,11 @@
 const graph = {
   "meta":{
-    "id":"ImageSearch",
-    "designerId":"Main",
-    "timestamp":1688449019731,
+    "timestamp":1697230502612,
     "owner":"",
     "graphRects":{
       "Panel":{
         "l":32,
-        "t":176,
+        "t":256,
         "w":200,
         "h":96
       },
@@ -15,17 +13,34 @@ const graph = {
         "l":32,
         "t":64,
         "w":200,
-        "h":76
+        "h":116
       },
       "Pixabay":{
         "l":432,
         "t":64,
         "w":200,
-        "h":76
+        "h":96
+      },
+      "Panel2":{
+        "l":32,
+        "t":304,
+        "w":200,
+        "h":96
+      },
+      "Button":{
+        "l":32,
+        "t":144,
+        "w":200,
+        "h":116
       }
     },
     "description":"query Pixabay for images",
-    "readonly":true
+    "readonly":true,
+    "customLibraries":{
+      
+    },
+    "id":"ImageSearch",
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
@@ -38,17 +53,28 @@ const graph = {
     },
     "TextField":{
       "type":"$library/Fields/Nodes/TextFieldNode",
-      "container":"Panel$panel#Container"
+      "container":"Panel2$panel#Container"
     },
     "Pixabay":{
       "type":"$library/Pixabay/Nodes/PixabayNode",
       "container":"Panel$panel#Container"
+    },
+    "Panel2":{
+      "type":"$library/Layout/Nodes/PanelNode",
+      "container":"Panel$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Panel2$panel#Container"
     }
   },
   "state":{
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
+    "Panel$panel$layout":"column",
+    "Panel2$panel$layout":"row",
+    "Button$button$action":"toggle",
     "Main$designer$layout":{
       "Panel":{
         "l":24,
@@ -64,7 +90,7 @@ const graph = {
         "color":"var(--xcolor-two)",
         "padding":"var(--size-4)",
         "order":"1",
-        "width":null
+        "width":"auto"
       },
       "TextField":{
         "l":32,
@@ -78,7 +104,8 @@ const graph = {
         "padding":"var(--size-2)",
         "color":"var(--xcolor-four)",
         "width":"auto",
-        "borderRadius":"var(--radius-3)"
+        "borderRadius":"var(--radius-3)",
+        "flex":"1"
       },
       "Main":{
         "padding":"var(--size-5)",
@@ -96,13 +123,33 @@ const graph = {
         "flex":"1",
         "width":"auto",
         "height":null
+      },
+      "Panel2":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "flex":""
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":null,
+        "height":"auto",
+        "order":"2",
+        "padding":"var(--size-2)"
       }
     },
     "Panel$panel$center":false,
-    "Panel$panel$layout":"column",
-    "TextField$field$label":"find an image:"
+    "TextField$field$label":"find an image:",
+    "Button$button$label":"Find"
   },
   "connections":{
-    "Pixabay$pixabay$query":"TextField$field$value"
+    "Pixabay$pixabay$query":"TextField$field$value",
+    "Pixabay$pixabay$trigger":"Button$button$value"
   }
 };

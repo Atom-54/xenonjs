@@ -1,19 +1,19 @@
 const graph = {
   "meta":{
-    "timestamp":1688761063637,
+    "timestamp":1697240267014,
     "owner":"",
     "graphRects":{
       "TextField":{
         "l":16,
         "t":48,
         "w":200,
-        "h":96
+        "h":116
       },
       "SelectField":{
         "l":16,
-        "t":144,
+        "t":96,
         "w":200,
-        "h":116
+        "h":136
       },
       "ProgressBar":{
         "l":544,
@@ -32,11 +32,21 @@ const graph = {
         "t":80,
         "w":200,
         "h":96
+      },
+      "Button":{
+        "l":16,
+        "t":144,
+        "w":200,
+        "h":116
       }
     },
+    "description":"generate an image using a HuggingFace model of your choice",
+    "readonly":true,
+    "customLibraries":{
+      
+    },
     "id":"ImageGeneration",
-    "designerId":"Main",
-    "description":"generate an image using a HuggingFace model of your choice"
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
@@ -62,6 +72,10 @@ const graph = {
     "HuggingFaceImage":{
       "type":"$library/HuggingFace/Nodes/HuggingFaceImageNode",
       "container":"Main$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Main$panel#Container"
     }
   },
   "state":{
@@ -69,6 +83,7 @@ const graph = {
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
     "ProgressBar$bar$height":3,
+    "Button$button$action":"toggle",
     "Main$designer$layout":{
       "HuggingFace":{
         "l":32,
@@ -123,7 +138,7 @@ const graph = {
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"3",
+        "order":"4",
         "height":"auto",
         "backgroundColor":"",
         "color":"var(--xcolor-three)",
@@ -136,7 +151,7 @@ const graph = {
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"4",
+        "order":"5",
         "flex":"1",
         "height":"auto",
         "width":"auto",
@@ -149,6 +164,16 @@ const graph = {
         "h":132,
         "borderWidth":"var(--border-size-2)",
         "borderStyle":"solid"
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "alignItems":"center",
+        "order":"3"
       }
     },
     "TextField$field$label":"make an image:",
@@ -158,12 +183,14 @@ const graph = {
       "stabilityai/stable-diffusion-2",
       "prompthero/openjourney-v4"
     ],
-    "ProgressBar$bar$interval":100
+    "ProgressBar$bar$interval":100,
+    "Button$button$label":"Generate"
   },
   "connections":{
     "HuggingFaceImage$HuggingFace$prompt":"TextField$field$value",
     "HuggingFaceImage$HuggingFace$textToImageModel":"SelectField$field$value",
     "Image$image$image":"HuggingFaceImage$HuggingFace$image",
-    "ProgressBar$bar$inProgress":"HuggingFaceImage$HuggingFace$working"
+    "ProgressBar$bar$inProgress":"HuggingFaceImage$HuggingFace$working",
+    "HuggingFaceImage$HuggingFace$trigger":"Button$button$value"
   }
 };

@@ -6,7 +6,7 @@
 export const HuggingFaceImageNode = {
   HuggingFace: {
     type: '$library/HuggingFace/Atoms/HuggingFaceImage',
-    inputs: ['prompt', 'textToImageModel', 'options'],
+    inputs: ['prompt', 'textToImageModel', 'options', 'trigger'],
     outputs: ['image', 'working']
   }
 };

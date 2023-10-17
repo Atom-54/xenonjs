@@ -1,6 +1,6 @@
 const graph = {
   "meta":{
-    "timestamp":1691302217280,
+    "timestamp":1697524024989,
     "owner":"",
     "graphRects":{
       "Panel":{
@@ -10,8 +10,8 @@ const graph = {
         "h":96
       },
       "Translate":{
-        "l":304,
-        "t":176,
+        "l":320,
+        "t":144,
         "w":200,
         "h":96
       },
@@ -23,54 +23,59 @@ const graph = {
       },
       "toLang":{
         "l":48,
-        "t":208,
+        "t":176,
         "w":200,
-        "h":116
+        "h":136
       },
       "fromLang":{
-        "l":112,
-        "t":0,
+        "l":48,
+        "t":32,
         "w":200,
-        "h":116
+        "h":136
       },
       "Languages":{
-        "l":16,
-        "t":384,
+        "l":48,
+        "t":352,
         "w":200,
         "h":60
       },
       "TranslationRes":{
-        "l":320,
-        "t":320,
+        "l":544,
+        "t":32,
         "w":200,
         "h":76
       },
-      "TextPrompt":{
-        "l":416,
-        "t":16,
-        "w":200,
-        "h":96
-      },
       "ProgressBar":{
-        "l":560,
-        "t":224,
+        "l":576,
+        "t":304,
         "w":200,
         "h":156
+      },
+      "Button":{
+        "l":48,
+        "t":432,
+        "w":200,
+        "h":116
+      },
+      "Text":{
+        "l":288,
+        "t":32,
+        "w":200,
+        "h":76
       }
     },
     "description":"text translation for selected languages",
+    "readonly":true,
+    "customLibraries":{
+      
+    },
     "id":"Translate",
-    "designerId":"Main",
-    "readonly":true
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
       "type":"$library/Layout/Nodes/DesignerNode",
       "container":"root$panel#Container"
-    },
-    "TextPrompt":{
-      "type":"$library/Fields/Nodes/TextFieldNode",
-      "container":"Panel2$panel#Container"
     },
     "fromLang":{
       "type":"$library/Fields/Nodes/SelectFieldNode",
@@ -103,29 +108,25 @@ const graph = {
     "ProgressBar":{
       "type":"$library/UX/Nodes/ProgressBarNode",
       "container":"Panel2$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Panel2$panel#Container"
+    },
+    "Text":{
+      "type":"$library/Fields/Nodes/TextAreaNode",
+      "container":"Panel2$panel#Container"
     }
   },
   "state":{
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
+    "Panel$panel$layout":"row",
+    "Panel2$panel$layout":"column",
     "ProgressBar$bar$height":2,
+    "Button$button$action":"toggle",
     "Main$designer$layout":{
-      "TextPrompt":{
-        "l":64,
-        "t":80,
-        "w":451,
-        "h":99,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"3",
-        "flex":"",
-        "height":"auto",
-        "padding":"var(--size-3)",
-        "fontSize":"var(--font-size-3)",
-        "color":"var(--xcolor-four)",
-        "width":"auto"
-      },
       "fromLang":{
         "l":64,
         "t":32,
@@ -160,7 +161,7 @@ const graph = {
         "h":58,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"2",
+        "order":"1",
         "height":"auto",
         "padding":"var(--size-3)",
         "color":"var(--xcolor-four)",
@@ -173,9 +174,11 @@ const graph = {
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"4",
+        "order":"5",
         "flex":"1",
-        "width":"auto"
+        "width":"auto",
+        "color":"var(--xcolor-four)",
+        "padding":""
       },
       "Main":{
         "backgroundColor":"var(--xcolor-two)",
@@ -212,7 +215,7 @@ const graph = {
         "color":"violet",
         "padding":"",
         "borderRadius":"var(--radius-4)",
-        "width":null
+        "width":"auto"
       },
       "ProgressBar":{
         "l":32,
@@ -222,14 +225,34 @@ const graph = {
         "borderWidth":"",
         "borderStyle":"solid",
         "height":"auto",
-        "order":"2",
+        "order":"4",
         "width":"auto"
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "order":"3",
+        "alignItems":"center",
+        "padding":"var(--size-2)"
+      },
+      "Text":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "order":"2",
+        "color":"var(--xcolor-four)",
+        "padding":"",
+        "flex":"1"
       }
     },
-    "TextPrompt$field$label":"text for translation",
-    "fromLang$field$label":"from",
-    "toLang$field$label":"to",
-    "Panel$panel$layout":"row",
+    "fromLang$field$label":"From",
+    "toLang$field$label":"To",
     "Languages$Data$json":[
       {
         "key":"en",
@@ -270,15 +293,20 @@ const graph = {
     ],
     "fromLang$field$value":"en",
     "toLang$field$value":"es",
-    "ProgressBar$bar$interval":200
+    "ProgressBar$bar$interval":200,
+    "Button$button$label":"Translate",
+    "Text$field$label":"Text",
+    "TranslationRes$field$label":"Translation",
+    "Translate$translate$enabled":true
   },
   "connections":{
     "fromLang$field$options":"Languages$Data$value",
     "toLang$field$options":"Languages$Data$value",
-    "Translate$translate$text":"TextPrompt$field$value",
     "Translate$translate$inLang":"fromLang$field$value",
     "Translate$translate$outLang":"toLang$field$value",
     "TranslationRes$field$text":"Translate$translate$translation",
-    "ProgressBar$bar$inProgress":"Translate$translate$working"
+    "ProgressBar$bar$inProgress":"Translate$translate$working",
+    "Translate$translate$text":"Text$field$text",
+    "Translate$translate$trigger":"Button$button$value"
   }
 };

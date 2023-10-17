@@ -54,7 +54,7 @@ const graph = {
         "h":116
       }
     },
-    "readonly":false,
+    "readonly":true,
     "owner":"",
     "id":"PolyLearnWiki",
     "designerId":"Main"

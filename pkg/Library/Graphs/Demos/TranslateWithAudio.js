@@ -1,6 +1,6 @@
 const graph = {
   "meta":{
-    "timestamp":1691430795052,
+    "timestamp":1697524695862,
     "owner":"",
     "graphRects":{
       "Panel":{
@@ -13,7 +13,7 @@ const graph = {
         "l":464,
         "t":176,
         "w":200,
-        "h":96
+        "h":116
       },
       "Panel2":{
         "l":752,
@@ -25,13 +25,13 @@ const graph = {
         "l":48,
         "t":288,
         "w":200,
-        "h":96
+        "h":136
       },
       "fromLang":{
         "l":48,
         "t":176,
         "w":200,
-        "h":96
+        "h":136
       },
       "Languages":{
         "l":48,
@@ -45,12 +45,6 @@ const graph = {
         "w":200,
         "h":76
       },
-      "TextPrompt":{
-        "l":496,
-        "t":16,
-        "w":200,
-        "h":96
-      },
       "ProgressBar":{
         "l":800,
         "t":320,
@@ -58,7 +52,7 @@ const graph = {
         "h":156
       },
       "Speak":{
-        "l":416,
+        "l":464,
         "t":368,
         "w":200,
         "h":116
@@ -74,20 +68,35 @@ const graph = {
         "t":32,
         "w":200,
         "h":76
+      },
+      "TextArea":{
+        "l":496,
+        "t":16,
+        "w":200,
+        "h":96
+      },
+      "Button":{
+        "l":144,
+        "t":448,
+        "w":200,
+        "h":116
       }
     },
     "description":"text translation for selected languages with voice in/out interface",
+    "readonly":true,
+    "customLibraries":{
+      
+    },
     "id":"TranslateWithAudio",
-    "designerId":"Main",
-    "readonly":true
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
       "type":"$library/Layout/Nodes/DesignerNode",
       "container":"root$panel#Container"
     },
-    "TextPrompt":{
-      "type":"$library/Fields/Nodes/TextFieldNode",
+    "TextArea":{
+      "type":"$library/Fields/Nodes/TextAreaNode",
       "container":"Panel2$panel#Container"
     },
     "fromLang":{
@@ -133,15 +142,22 @@ const graph = {
     "Speak":{
       "type":"$library/Media/Nodes/SpeakNode",
       "container":"Main$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Panel2$panel#Container"
     }
   },
   "state":{
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
+    "Panel$panel$layout":"row",
+    "Panel2$panel$layout":"column",
     "ProgressBar$bar$height":2,
+    "Button$button$action":"toggle",
     "Main$designer$layout":{
-      "TextPrompt":{
+      "TextArea":{
         "l":64,
         "t":80,
         "w":451,
@@ -149,10 +165,10 @@ const graph = {
         "borderWidth":"0",
         "borderStyle":"solid",
         "order":"3",
-        "flex":"",
+        "flex":"1",
         "height":"auto",
-        "padding":"var(--size-3)",
-        "fontSize":"var(--font-size-3)",
+        "padding":"",
+        "fontSize":"",
         "color":"var(--xcolor-four)",
         "width":"auto"
       },
@@ -203,9 +219,10 @@ const graph = {
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"4",
+        "order":"6",
         "flex":"1",
-        "width":"auto"
+        "width":"auto",
+        "color":"var(--xcolor-four)"
       },
       "Main":{
         "backgroundColor":"var(--xcolor-two)",
@@ -253,7 +270,7 @@ const graph = {
         "borderWidth":"",
         "borderStyle":"solid",
         "height":"auto",
-        "order":"2",
+        "order":"5",
         "width":"auto"
       },
       "DeviceUx":{
@@ -264,7 +281,9 @@ const graph = {
         "borderWidth":"0",
         "borderStyle":"solid",
         "width":"auto",
-        "height":"auto"
+        "height":"auto",
+        "order":"1",
+        "color":"var(--xcolor-four)"
       },
       "Listen":{
         "l":32,
@@ -281,12 +300,21 @@ const graph = {
         "h":132,
         "borderWidth":"var(--border-size-2)",
         "borderStyle":"solid"
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "order":"4",
+        "alignItems":"center",
+        "padding":"var(--size-2)"
       }
     },
-    "TextPrompt$field$label":"text for translation",
     "fromLang$field$label":"from",
     "toLang$field$label":"to",
-    "Panel$panel$layout":"row",
     "Languages$Data$json":[
       {
         "key":"en",
@@ -327,21 +355,26 @@ const graph = {
     ],
     "fromLang$field$value":"en",
     "toLang$field$value":"es",
-    "ProgressBar$bar$interval":100
+    "ProgressBar$bar$interval":100,
+    "TranslationRes$field$label":"Translation",
+    "TextArea$field$label":"Text",
+    "Button$button$label":"Translate",
+    "Translate$translate$enabled":true
   },
   "connections":{
     "fromLang$field$options":"Languages$Data$value",
     "toLang$field$options":"Languages$Data$value",
-    "Translate$translate$text":"TextPrompt$field$value",
     "Translate$translate$inLang":"fromLang$field$value",
     "Translate$translate$outLang":"toLang$field$value",
     "TranslationRes$field$text":"Translate$translate$translation",
     "ProgressBar$bar$inProgress":"Translate$translate$working",
     "Speak$SpeechSynthesizer$mediaDeviceState":"DeviceUx$deviceUx$mediaDeviceState",
     "Listen$SpeechRecognizer$mediaDeviceState":"DeviceUx$deviceUx$mediaDeviceState",
-    "TextPrompt$field$value":"Listen$SpeechRecognizer$transcript",
     "Speak$SpeechSynthesizer$transcript":"Translate$translate$translation",
     "Speak$SpeechSynthesizer$lang":"toLang$field$value",
-    "DeviceUx$deviceUx$mediaDeviceState":"Speak$SpeechSynthesizer$mediaDeviceState"
+    "DeviceUx$deviceUx$mediaDeviceState":"Speak$SpeechSynthesizer$mediaDeviceState",
+    "Translate$translate$trigger":"Button$button$value",
+    "TextArea$field$text":"Listen$SpeechRecognizer$transcript",
+    "Translate$translate$text":"TextArea$field$text"
   }
 };

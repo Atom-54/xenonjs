@@ -6,7 +6,7 @@
 export const PixabayNode = {
   pixabay: {
     type: '$library/Pixabay/Atoms/Pixabay',
-    inputs: ['query', 'index'],
+    inputs: ['query', 'index', 'trigger'],
     outputs: ['image']
   }
 };

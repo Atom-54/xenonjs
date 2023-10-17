@@ -21,19 +21,20 @@ initialize(inputs, state, {service}) {
 shouldUpdate({enabled, prompt}) {
   return enabled && prompt;
 },
-async update({prompt, options}, state, {output, isDirty}) {
+async update({prompt, options, restart}, state, {output, isDirty}) {
   // if (!isDirty('prompt') && !isDirty('restart') || prompt.startsWith('a moment')) {
   //   return {image: null};
   // }
-  log('starting:', prompt);
-  state.prompt = prompt;
   if (isDirty('restart')) {
+    state.restart = restart;
+    log('starting:', prompt);
+    state.prompt = prompt;
     // log('output temporary result');
     output({
       image: null,
       working: true
     });
-    // restart: false, 
+      // restart: false, 
     // result: `a moment...`
   
     log('query ai', prompt);

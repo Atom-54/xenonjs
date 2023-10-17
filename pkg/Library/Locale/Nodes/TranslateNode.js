@@ -6,7 +6,7 @@
 export const TranslateNode = {
   translate: {
     type: '$library/Locale/Atoms/Translate',
-    inputs: ['text', 'inLang', 'outLang'],
+    inputs: ['text', 'inLang', 'outLang', 'enabled', 'trigger'],
     outputs: ['translation', 'working']
   }
 };

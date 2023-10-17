@@ -48,7 +48,7 @@ template: html`
 <div flex bar>
   <div label>{{label}}</div>
   <span delim></span>
-  <input flex field value="{{value}}" on-change="onFieldChange" list="options">
+  <input flex field value="{{value}}" on-input="onFieldChange" xon-change="onFieldChange" list="options">
   <datalist id="options" repeat="option_t">{{options}}</datalist>
 </div>
 

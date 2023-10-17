@@ -6,7 +6,7 @@
 export const AskPolymathNode = {
   AskPolymath: {
     type: '$library/Polymath/Atoms/AskPolymath',
-    inputs: ['library', 'query'],
+    inputs: ['library', 'query', 'enabled', 'trigger'],
     outputs: ['result', 'completion', 'query', 'working']
   }
 };

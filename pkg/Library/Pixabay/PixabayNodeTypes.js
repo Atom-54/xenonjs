@@ -12,6 +12,7 @@ export const PixabayNodeTypes = {
     types: {
       pixabay$query: 'String',
       pixabay$image: 'Image',
+      pixabay$trigger: 'Nonce',
       pixabay$index: 'Number'
     },
     type: '$library/Pixabay/Nodes/PixabayNode'
