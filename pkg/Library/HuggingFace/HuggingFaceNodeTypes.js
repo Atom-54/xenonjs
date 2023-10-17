@@ -19,7 +19,9 @@ export const HuggingFaceNodeTypes = {
       ],
       HuggingFace$image: 'Image',
       HuggingFace$working: 'Boolean'
-    }
+    },
+    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    ligature: 'image'
   },
   HuggingFaceText: {
     category,
@@ -29,7 +31,9 @@ export const HuggingFaceNodeTypes = {
       HuggingFace$prompt: 'MultilineString',
       HuggingFace$model: 'String',
       HuggingFace$working: 'Boolean'
-    }
+    },
+    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    ligature: 'edit_note'
   },
   HuggingFaceOcr: {
     category,
@@ -48,7 +52,9 @@ export const HuggingFaceNodeTypes = {
       ],
       ocr$working: 'Boolean',
       ocr$text: 'String'
-    }
+    },
+    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    ligature: 'read_more'
   },
   HuggingFaceImageToText: {
     category,
@@ -66,7 +72,9 @@ export const HuggingFaceNodeTypes = {
       toText$customModel: 'String',
       toText$working: 'Boolean',
       toText$text: 'String'
-    }
+    },
+    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    ligature: 'image'
   },
   HuggingFaceImageToImage: {
     category,
@@ -83,6 +91,8 @@ export const HuggingFaceNodeTypes = {
       HuggingFace$active: 'Boolean',
       HuggingFace$working: 'Boolean',
       HuggingFace$outputImage: 'Image'
-    }
+    },
+    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    ligature: 'image'
   }
 };

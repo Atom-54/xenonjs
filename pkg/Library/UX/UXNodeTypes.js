@@ -13,7 +13,6 @@ export const UXNodeTypes = {
       UXActionExecutor$readonly: 'Boolean'
     },
     type: `$library/UX/Nodes/UXToolbarNode`,
-    icon: '$library/Assets/nodes/uxtoolbar.png',
     ligature: 'toolbar'
   },
   UXActionSet: {
@@ -58,7 +57,7 @@ export const UXNodeTypes = {
     category,
     description: 'Displays a web page',
     types: {
-      WebPage$html: 'MultilineString',
+      WebPage$html: 'MultilineText',
       WebPage$src: 'String'
     },
     type: `$library/UX/Nodes/WebPageNode`,

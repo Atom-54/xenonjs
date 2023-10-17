@@ -16,7 +16,9 @@ export const OpenAINodeTypes = {
       OpenAIImage$enabled: 'Boolean',
       OpenAIImage$working: 'Boolean'
     },
-    type: '$library/OpenAI/Nodes/OpenAIImageNode'
+    type: '$library/OpenAI/Nodes/OpenAIImageNode',
+    icon: '$library/Assets/nodes/openai-logomark.png',
+    ligature: 'image',
   },
   OpenAIText: {
     category,
@@ -30,15 +32,19 @@ export const OpenAINodeTypes = {
       OpenAIText$markup: 'String',
       OpenAIText$working: 'Boolean'
     },
-    type: '$library/OpenAI/Nodes/OpenAITextNode'
+    type: '$library/OpenAI/Nodes/OpenAITextNode',
+    icon: '$library/Assets/nodes/openai-logomark.png',
+    ligature: 'edit_note'
   },
   OpenAIChat: {
     category,
-    description: 'Generates an image for the given prompt using the newer OpenAI API',
+    description: 'Prompts the OpenAI chat interface',
     types: {
       OpenAIChat$messages: '[Message]'
     },
-    type: '$library/OpenAI/Nodes/OpenAIChatNode'
+    type: '$library/OpenAI/Nodes/OpenAIChatNode',
+    icon: '$library/Assets/nodes/openai-logomark.png',
+    ligature: 'sms'
   },
   OpenAISimpleChat: {
     category,
@@ -51,7 +57,9 @@ export const OpenAINodeTypes = {
       OpenAISimpleChat$result: 'String',
       OpenAISimpleChat$working: 'Boolean'
     },
-    type: '$library/OpenAI/Nodes/OpenAISimpleChatNode'
+    type: '$library/OpenAI/Nodes/OpenAISimpleChatNode',
+    icon: '$library/Assets/nodes/openai-logomark.png',
+    ligature: 'chat'
   },
   OpenAIImageCompletion: {
     category,
@@ -64,6 +72,8 @@ export const OpenAINodeTypes = {
       complete$result: 'Image',
       complete$working: 'Boolean'
     },
-    type: '$library/OpenAI/Nodes/OpenAIImageCompletionNode'
+    type: '$library/OpenAI/Nodes/OpenAIImageCompletionNode',
+    icon: '$library/Assets/nodes/openai-logomark.png',
+    ligature: 'image'
   }
 };

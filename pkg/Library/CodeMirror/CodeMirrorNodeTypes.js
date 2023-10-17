@@ -12,7 +12,6 @@ export const CodeMirrorNodeTypes = {
     types: {
       text$text: 'MultilineText'
     },  
-    type: `$library/CodeMirror/Nodes/CodeMirrorNode`,
-    icon: '$library/Assets/nodes/codemirror.png'
+    type: `$library/CodeMirror/Nodes/CodeMirrorNode`
   }
 };
