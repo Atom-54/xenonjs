@@ -48,7 +48,7 @@ I'll give you a list of places names, and I would like you to reply with a sub s
 ${state.locations.map(({name}) => name).join(', ')}
 Start your answer with the string '${state.pending}:' and then follow by ONLY a comma-separated list of places names! not a full sentence, no enumeration, just the names
 `;
-    await output({request, restart: true, locations: [], location: {}});
+    await output({request, restart: Math.random(), locations: [], location: {}});
   },
 
   async processFilteringResults(result, state, {output}) {

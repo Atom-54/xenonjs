@@ -185,7 +185,7 @@ export const graph = {
         "borderWidth":"0",
         "borderStyle":"solid",
         "color":"var(--xcolor-four)",
-        "order":"6",
+        "order":"5",
         "padding":"var(--size-2)",
         "height":"auto",
         "flex":"none",
@@ -212,7 +212,7 @@ export const graph = {
         "h":77,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"3",
+        "order":"2",
         "height":"auto",
         "padding":"var(--size-2)",
         "width":"auto"
@@ -232,7 +232,7 @@ export const graph = {
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"4",
+        "order":"3",
         "height":"auto",
         "padding":"var(--size-2)",
         "width":"auto"
@@ -262,7 +262,7 @@ export const graph = {
         "h":132,
         "borderWidth":"",
         "borderStyle":"solid",
-        "order":"7",
+        "order":"6",
         "width":"auto",
         "height":null,
         "flex":"1"
@@ -375,7 +375,9 @@ export const graph = {
     "StringFormatter$StringFormatter$format":"The time is ${arg0}. My mood is ${arg1}",
     "StringFormatter$formatter$format":"The time is ${arg0}. My mood is ${arg1}",
     "MoodSelect$field$value":"Pensive",
-    "ProgressBar$bar$interval":50
+    "ProgressBar$bar$interval":50,
+    "OpenAIText$OpenAIText$enabled":true,
+    "OpenAIImage$OpenAIImage$enabled":true
   },
   "connections":{
     "ShowPoetry$echo$html":"OpenAIText$OpenAIText$result",
