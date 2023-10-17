@@ -105,7 +105,7 @@ const graph = {
       }
     },
     "owner":"",
-    "readonly":false,
+    "readonly":true,
     "timestamp":1691959626310,
     "id":"KnowledgeSpace",
     "designerId":"Main",

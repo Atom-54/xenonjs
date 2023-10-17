@@ -9,7 +9,7 @@ export const HuggingFaceNodeTypes = {
   HuggingFaceImage: {
     category,
     description: 'Generates an image using one of the HuggingFace models',
-    type: `$library/HuggingFace/Nodes/HuggingFaceImageNode`,
+    type: '$library/HuggingFace/Nodes/HuggingFaceImageNode',
     types: {
       HuggingFace$textToImageModel: 'String',
       HuggingFace$textToImageModelValues: [
@@ -18,13 +18,14 @@ export const HuggingFaceNodeTypes = {
         'prompthero/openjourney-v4'
       ],
       HuggingFace$image: 'Image',
+      HuggingFace$trigger: 'Nonce',
       HuggingFace$working: 'Boolean'
     }
   },
   HuggingFaceText: {
     category,
     description: 'Generates text using one of the HuggingFace models',
-    type: `$library/HuggingFace/Nodes/HuggingFaceTextNode`,
+    type: '$library/HuggingFace/Nodes/HuggingFaceTextNode',
     types: {
       HuggingFace$prompt: 'MultilineString',
       HuggingFace$model: 'String',
@@ -34,7 +35,7 @@ export const HuggingFaceNodeTypes = {
   HuggingFaceOcr: {
     category,
     description: 'Recognizes written of printed text form an image using one of the HuggingFace trOCR models (https://huggingface.co/models?other=trocr)',
-    type: `$library/HuggingFace/Nodes/HuggingFaceOcrNode`,
+    type: '$library/HuggingFace/Nodes/HuggingFaceOcrNode',
     types: {
       // ocr$prompt: 'Image' or 'String',
       ocr$model: 'String',
@@ -53,7 +54,7 @@ export const HuggingFaceNodeTypes = {
   HuggingFaceImageToText: {
     category,
     description: 'Generates text using one of the HuggingFace models',
-    type: `$library/HuggingFace/Nodes/HuggingFaceImageToTextNode`,
+    type: '$library/HuggingFace/Nodes/HuggingFaceImageToTextNode',
     types: {
       // toText$prompt: 'Image' or 'String',
       toText$model: 'String',
@@ -71,7 +72,7 @@ export const HuggingFaceNodeTypes = {
   HuggingFaceImageToImage: {
     category,
     description: 'Generates images from images, using one of the HuggingFace models',
-    type: `$library/HuggingFace/Nodes/HuggingFaceImageToImageNode`,
+    type: '$library/HuggingFace/Nodes/HuggingFaceImageToImageNode',
     types: {
       HuggingFace$prompt: 'String',
       HuggingFace$image: 'Image',

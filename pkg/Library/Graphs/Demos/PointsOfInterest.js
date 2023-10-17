@@ -77,7 +77,7 @@ const graph = {
       }
     },
     "description":"find local attractions for selected location",
-    "readonly":false,
+    "readonly":true,
     "id":"myPointsOfInterest",
     "designerId":"Main",
     "customLibraries":{

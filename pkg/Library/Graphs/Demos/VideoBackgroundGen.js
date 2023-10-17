@@ -1,6 +1,6 @@
 const graph = {
   "meta":{
-    "timestamp":1695170112371,
+    "timestamp":1697482304888,
     "owner":"",
     "stylized":true,
     "graphRects":{
@@ -42,30 +42,42 @@ const graph = {
       },
       "TextField":{
         "l":16,
-        "t":288,
+        "t":304,
         "w":200,
         "h":116
       },
       "OpenAIImage":{
-        "l":256,
-        "t":256,
+        "l":368,
+        "t":320,
         "w":200,
         "h":116
       },
       "ProgressBar":{
-        "l":528,
+        "l":656,
         "t":256,
         "w":200,
         "h":156
+      },
+      "Button":{
+        "l":16,
+        "t":368,
+        "w":200,
+        "h":116
+      },
+      "Panel2":{
+        "l":16,
+        "t":272,
+        "w":200,
+        "h":96
       }
     },
     "description":"OpenAI-generated background for video stream",
-    "readonly":false,
-    "id":"VideoBackgroundGen",
-    "designerId":"Main",
+    "readonly":true,
     "customLibraries":{
       
-    }
+    },
+    "id":"VideoBackgroundGen",
+    "designerId":"Main"
   },
   "nodes":{
     "Main":{
@@ -98,7 +110,7 @@ const graph = {
     },
     "TextField":{
       "type":"$library/Fields/Nodes/TextFieldNode",
-      "container":"Panel$panel#Container"
+      "container":"Panel2$panel#Container"
     },
     "Panel":{
       "type":"$library/Layout/Nodes/PanelNode",
@@ -107,6 +119,14 @@ const graph = {
     "ProgressBar":{
       "type":"$library/UX/Nodes/ProgressBarNode",
       "container":"Panel$panel#Container"
+    },
+    "Panel2":{
+      "type":"$library/Layout/Nodes/PanelNode",
+      "container":"Panel$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Panel2$panel#Container"
     }
   },
   "state":{
@@ -116,6 +136,8 @@ const graph = {
     "FrameCapture$FrameCapture$fps":30,
     "Panel$panel$layout":"column",
     "ProgressBar$bar$height":3,
+    "Panel2$panel$layout":"row",
+    "Button$button$action":"toggle",
     "Image2$image$image":{
       "alt":"no image"
     },
@@ -180,13 +202,15 @@ const graph = {
         "padding":""
       },
       "Panel2":{
-        "l":544,
-        "t":80,
+        "l":32,
+        "t":32,
         "w":132,
         "h":132,
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"2"
+        "order":"2",
+        "width":"auto",
+        "height":"auto"
       },
       "Image3":{
         "l":32,
@@ -223,8 +247,8 @@ const graph = {
         "borderWidth":"0",
         "borderStyle":"solid",
         "height":"auto",
-        "flex":"none",
-        "order":"2",
+        "flex":"1",
+        "order":"1",
         "color":"var(--xcolor-four)",
         "width":"auto"
       },
@@ -240,7 +264,9 @@ const graph = {
         "padding":"var(--size-3)",
         "backgroundColor":"var(--xcolor-two)",
         "color":"var(--xcolor-two)",
-        "borderRadius":"var(--radius-5)"
+        "borderRadius":"var(--radius-5)",
+        "width":"auto",
+        "height":"auto"
       },
       "ProgressBar":{
         "l":32,
@@ -253,6 +279,15 @@ const graph = {
         "height":"auto",
         "padding":"var(--size-2)",
         "width":"auto"
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "order":"2"
       }
     },
     "ImageComposite$ImageComposite$opA":"source-over",
@@ -262,9 +297,11 @@ const graph = {
     "Panel$panel$center":false,
     "TextField$field$value":"",
     "TextField$field$label":"choose background:",
-    "OpenAIImage$OpenAIImage$restart":true,
     "ProgressBar$bar$interval":100,
-    "ImageComposite$ImageComposite$opD":"destination-atop"
+    "ImageComposite$ImageComposite$opD":"destination-atop",
+    "OpenAIImage$OpenAIImage$enabled":true,
+    "Button$button$label":"Generate",
+    "Button$button$inverted":false
   },
   "connections":{
     "FrameCapture$FrameCapture$stream":"DeviceUx$defaultStream$stream",
@@ -275,6 +312,7 @@ const graph = {
     "OpenAIImage$OpenAIImage$prompt":"TextField$field$value",
     "ImageComposite$ImageComposite$imageA":"FrameCapture$FrameCapture$frame",
     "ProgressBar$bar$inProgress":"OpenAIImage$OpenAIImage$working",
-    "ImageComposite$ImageComposite$imageD":"FrameCapture$FrameCapture$frame"
+    "ImageComposite$ImageComposite$imageD":"FrameCapture$FrameCapture$frame",
+    "OpenAIImage$OpenAIImage$restart":"Button$button$value"
   }
 };

@@ -6,37 +6,43 @@ const graph = {
     },
     "graphRects":{
       "AskPolymath":{
-        "l":368,
-        "t":176,
+        "l":304,
+        "t":64,
         "w":200,
         "h":116
       },
       "StaticText":{
-        "l":704,
-        "t":192,
+        "l":608,
+        "t":80,
         "w":200,
         "h":60
       },
       "TextArea":{
         "l":32,
-        "t":240,
+        "t":128,
         "w":200,
         "h":76
       },
       "PolymathLibrary":{
         "l":32,
-        "t":144,
+        "t":48,
         "w":200,
         "h":60
       },
       "ProgressBar":{
-        "l":704,
-        "t":272,
+        "l":608,
+        "t":160,
         "w":200,
         "h":156
+      },
+      "Button":{
+        "l":32,
+        "t":224,
+        "w":200,
+        "h":116
       }
     },
-    "readonly":false,
+    "readonly":true,
     "owner":"",
     "id":"PolyAsk",
     "designerId":"Main"
@@ -65,6 +71,10 @@ const graph = {
     "ProgressBar":{
       "type":"$library/UX/Nodes/ProgressBarNode",
       "container":"Main$panel#Container"
+    },
+    "Button":{
+      "type":"$library/Fields/Nodes/ButtonNode",
+      "container":"Main$panel#Container"
     }
   },
   "state":{
@@ -72,6 +82,7 @@ const graph = {
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
     "ProgressBar$bar$height":3,
+    "Button$button$action":"toggle",
     "Main$designer$layout":{
       "GraphAgent":{
         "l":32,
@@ -101,7 +112,7 @@ const graph = {
         "w":132,
         "h":132,
         "width":"auto",
-        "order":"3",
+        "order":"4",
         "borderWidth":"var(--border-size-1)",
         "flex":"1",
         "fontSize":"var(--font-size-4)",
@@ -126,16 +137,31 @@ const graph = {
         "width":"auto",
         "order":"2",
         "height":"auto"
+      },
+      "Button":{
+        "l":32,
+        "t":32,
+        "w":132,
+        "h":132,
+        "width":"auto",
+        "height":"auto",
+        "order":"2",
+        "alignItems":"center",
+        "padding":"var(--size-2)"
       }
     },
+    "WebPage$field$label":"Ask me:",
+    "PolymathLibrary$PolymathLibrary$name":"NewDemo",
+    "ProgressBar$bar$interval":10,
     "TextArea$field$label":"Ask me:",
-    "PolymathLibrary$PolymathLibrary$name":"Demo",
-    "ProgressBar$bar$interval":10
+    "Button$button$label":"Answer",
+    "AskPolymath$AskPolymath$enabled":true
   },
   "connections":{
     "AskPolymath$AskPolymath$library":"PolymathLibrary$PolymathLibrary$library",
     "AskPolymath$AskPolymath$query":"TextArea$field$text",
     "StaticText$StaticText$text":"AskPolymath$AskPolymath$completion",
-    "ProgressBar$bar$inProgress":"AskPolymath$AskPolymath$working"
+    "ProgressBar$bar$inProgress":"AskPolymath$AskPolymath$working",
+    "AskPolymath$AskPolymath$trigger":"Button$button$value"
   }
 };

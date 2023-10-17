@@ -81,7 +81,7 @@ export const graph = {
     "customLibraries":{
       
     },
-    "readonly":false,
+    "readonly":true,
     "id":"AIClock",
     "designerId":"Main"
   },

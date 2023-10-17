@@ -62,7 +62,7 @@ const graph = {
     "customLibraries":{
       
     },
-    "readonly":false,
+    "readonly":true,
     "id":"OpenAIQnA",
     "designerId":"Main"
   },

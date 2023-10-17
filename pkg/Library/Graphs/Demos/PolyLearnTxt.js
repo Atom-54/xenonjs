@@ -66,7 +66,7 @@ const graph = {
         "h":76
       }
     },
-    "readonly":false,
+    "readonly":true,
     "owner":"",
     "id":"PolyLearn",
     "designerId":"Main"
