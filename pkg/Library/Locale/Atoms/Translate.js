@@ -10,9 +10,6 @@ shouldUpdate({text, enabled}) {
 async update({text, inLang, outLang}, state, {service, output, isDirty}) {
   inLang ??= 'en';
   outLang ??= 'en';
-  // const textChanged = isDirty('text');
-  // const languageChanged = isDirty('inLang') || isDirty('outLang'); 
-  // if (text && (inLang !== outLang) && (textChanged || languageChanged)) {
   if (isDirty('trigger')) {
     output({translation: '', working: true});
     const result = await service('HuggingFaceService', 'textInference', {

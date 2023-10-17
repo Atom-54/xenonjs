@@ -12,7 +12,7 @@ export const POIFinderNode = {
   },
   filter: {
     type: '$library/OpenAI/Atoms/OpenAIText',
-    inputs: ['context', 'prompt', 'enabled', 'restart'],
+    inputs: ['context', 'prompt', 'enabled'],
     outputs: ['working'],
     bindings: {
       prompt: 'poi$request',
@@ -22,7 +22,6 @@ export const POIFinderNode = {
   state: {
     filter$context: `Given a list of places, please answer questions about them.
       You should reply with a simple "yes", "no" or "don't know" about each place`,
-    filter$restart: false,
     filter$enabled: true
   }
 };
