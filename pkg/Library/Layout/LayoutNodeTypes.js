@@ -16,7 +16,6 @@ export const LayoutNodeTypes = {
       panel$style: 'CSSStyle'
     },
     type: `$library/Layout/Nodes/PanelNode`,
-    icon: '$library/Assets/nodes/panel.png',
     ligature: 'select_all'
   },
   SplitPanel: {
@@ -53,7 +52,6 @@ export const LayoutNodeTypes = {
       flyOut$sideValues: ['','top','right','bottom','left'],
     },
     type: `$library/Layout/Nodes/FlyOutNode`,
-    icon: '$library/Assets/nodes/flyout.png',
     ligature: 'dialogs'
   },
   DesignerPanel: {
@@ -81,7 +79,6 @@ export const LayoutNodeTypes = {
       grid$template: "MultilineText",
       grid$style: "MultilineText"
     },
-    icon: '$library/Assets/nodes/grid.png',
     ligature: 'grid_view'
   },
   TemplateLayout: {
@@ -103,7 +100,6 @@ export const LayoutNodeTypes = {
     category,
     description: 'Set of pages with Tabs for navigation',
     type: '$library/Layout/Nodes/TabPagesNode',
-    icon: '$library/Assets/nodes/tabpages.png',
     ligature: 'tabs'
   },
   Accordion: {

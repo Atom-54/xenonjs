@@ -13,7 +13,6 @@ export const FieldsNodeTypes = {
       StaticText$text: 'String', // or maybe, 'Multitext'?
     },
     type: '$library/Fields/Nodes/StaticTextNode',
-    icon: '$library/Assets/nodes/text.png',
     ligature: 'notes'
   },
   TextArea: {
@@ -24,7 +23,6 @@ export const FieldsNodeTypes = {
       field$text: 'MultilineText'
     },  
     type: '$library/Fields/Nodes/TextAreaNode',
-    icon: '$library/Assets/nodes/multiline.png',
     ligature: 'edit_note'
   },
   TextField: {
@@ -39,7 +37,6 @@ export const FieldsNodeTypes = {
       field$options: '[String]'
     },
     type: '$library/Fields/Nodes/TextFieldNode',
-    icon: '$library/Assets/nodes/textfield.png',
     ligature: 'match_word'
   },
   LigatureField: {
@@ -79,7 +76,6 @@ export const FieldsNodeTypes = {
       field$size: 'Number'
     },
     type: '$library/Fields/Nodes/SelectFieldNode',
-    icon: '$library/Assets/nodes/selectfield.png',
     ligature: 'fact_check'
   },
   TagField: {
@@ -100,7 +96,6 @@ export const FieldsNodeTypes = {
       button$inverted: 'Boolean'
     },  
     type: '$library/Fields/Nodes/ButtonNode',
-    icon: '$library/Assets/Nodes/button.png',
     ligature: 'buttons_alt'
   },
   ImageField: {
@@ -111,7 +106,6 @@ export const FieldsNodeTypes = {
       field$image: 'Image'
     },  
     type: '$library/Fields/Nodes/ImageFieldNode',
-    icon: '$library/Assets/nodes/image.png',
     ligature: 'hallway'
   },
   Form: {
@@ -121,7 +115,6 @@ export const FieldsNodeTypes = {
       Form$form: 'FormId:String'
     },  
     type: '$library/Fields/Nodes/FormNode',
-    icon: '$library/Assets/nodes/form.png',
     ligature: 'ballot'
   },
   DataNavigator: {
@@ -130,7 +123,6 @@ export const FieldsNodeTypes = {
     types: {
     },  
     type: '$library/Fields/Nodes/DataNavigatorNode',
-    icon: '$library/Assets/nodes/uxtoolbar.png',
     ligature: 'source_notes'
   },
   FileField: {

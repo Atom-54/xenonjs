@@ -22,7 +22,8 @@ export const MediapipeNodeTypes = {
       FaceMesh$data: 'FaceMeshData'
     },
     type: `$library/Mediapipe/Nodes/FaceMeshNode`,
-    ligature: 'face 5'
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
+    ligature: 'face_5'
   },
   FaceMeshDisplay: {
     category,
@@ -32,7 +33,8 @@ export const MediapipeNodeTypes = {
       FaceMeshDisplay$data: 'FaceMeshData'
     },
     type: `$library/Mediapipe/Nodes/FaceMeshDisplayNode`,
-    ligature: 'face 5'
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
+    ligature: 'face_5'
   },
   SelfieSegmentation: {
     category,
@@ -42,6 +44,7 @@ export const MediapipeNodeTypes = {
       SelfieSegmentation$mask: 'Image'
     },
     type: `$library/Mediapipe/Nodes/SelfieSegmentationNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'background_replace'
   },
   Holistic: {
@@ -53,6 +56,7 @@ export const MediapipeNodeTypes = {
       holistic$results: 'HolisticResults'
     },
     type: `$library/Mediapipe/Nodes/HolisticNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'frame_person'
   },
   BodyPoseDisplay: {
@@ -63,6 +67,7 @@ export const MediapipeNodeTypes = {
       BodyPoseDisplay$data: 'HolisticResults'
     },
     type: `$library/Mediapipe/Nodes/BodyPoseDisplayNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'hand_bones'
   },
   FingerPaint: {
@@ -75,6 +80,7 @@ export const MediapipeNodeTypes = {
       FingerPaint$eraserSize: 'Number'
     },
     type: `$library/Mediapipe/Nodes/FingerPaintNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'gesture'
   },
   VirtualPointer: {
@@ -85,6 +91,7 @@ export const MediapipeNodeTypes = {
       VirtualPointer$tracking: 'VirtualPointerTracking'
     },
     type: `$library/Mediapipe/Nodes/VirtualPointerNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'pan_tool_alt'
   },
   PointerPoms: {
@@ -98,6 +105,7 @@ export const MediapipeNodeTypes = {
       PointerPoms$erase: 'Boolean'
     },
     type: `$library/Mediapipe/Nodes/PointerPomsNode`,
+    icon: '$library/Assets/nodes/mediapipe-logo.png',
     ligature: 'touch_app'
   }
 };
