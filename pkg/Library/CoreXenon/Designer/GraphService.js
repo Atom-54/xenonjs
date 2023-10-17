@@ -15,7 +15,6 @@ import * as Id from '../Framework/Id.js';
 import * as Persist from '../Framework/Persist.js';
 import * as Design from '../Designer/DesignService.js';
 import {Resources} from '../../Media/Resources.js';
-import {Composer} from '../../Chromecast/ChromecastComposer.js';
 
 // it's better than bad, it's good! it's log!
 const log = logf('Services: GraphService', 'orangered');
