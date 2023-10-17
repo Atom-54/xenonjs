@@ -5,6 +5,7 @@
  */
  export const ChromecastLauncherNode = {
   Launcher: {
-    type: '$library/Chromecast/Atoms/ChromecastLauncher'
+    type: '$library/Chromecast/Atoms/ChromecastLauncher',
+    outputs: ['composer']
   }
 };

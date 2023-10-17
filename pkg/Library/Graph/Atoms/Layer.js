@@ -4,7 +4,7 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({graphId, graph, data, designable}, state, {service, isDirty, output}) {
+async update({graphId, graph, data, designable, composer}, state, {service, isDirty, output}) {
   if (isDirty('data')) {
     output({data});
   }
@@ -23,9 +23,10 @@ async update({graphId, graph, data, designable}, state, {service, isDirty, outpu
       return {layerId}; //, io: i};
     }
   }
+  if (state.layerId && composer) {
+    await service('GraphService', 'SetLayerComposer', {layerId: state.layerId, composerId: composer});
+  }
 },
-// TODO(maria): this is duplicate code, should be factored.
-localPrefix: 'local:',
 getFullId(graph) {
   if (graph) {
     const {meta} = graph;
@@ -36,11 +37,10 @@ getFullId(graph) {
         return meta.id;
       }
     } else {
-      return `${this.localPrefix}${meta.id}`;
+      return `local:${meta.id}`;
     }
   }
 },
-
 template: html`
 <style>
   ::slotted(*) {
