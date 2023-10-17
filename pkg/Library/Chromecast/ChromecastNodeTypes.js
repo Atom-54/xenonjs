@@ -13,7 +13,6 @@ export const ChromecastNodeTypes = {
       Launcher$composer: 'ComposerId:String'
     },  
     type: '$library/Chromecast/Nodes/ChromecastLauncherNode',
-    icon: '$library/Assets/nodes/codemirror.png',
     ligature: 'cast'
   }
 };
