@@ -22,6 +22,10 @@ export const DesignService = {
   LayoutChanged(layer, atom, {layout}) {
     layoutChanged(layer, layout);
   },
+  GetLayoutObject(layer, atom, {objectId}) {
+    const design = getDesignLayer(layer);
+    return design && getLayoutObject(design, objectId);
+  },
   DeleteSelectedObject(layer) {
     Structure.deleteObject(getDesignLayer(layer), getSelectedObjectId(layer));
   },
@@ -52,7 +56,6 @@ export const baseNodeGraphSelectedKey = `base$NodeGraph$Graph$selected`;
 
 // (improperly) used by GraphService
 export const getDesignLayer = layer => layer.flan.layers[getDesignLayerId(layer)];
-//const getSelectedObjectId = layer => Flan.get(layer, getDesignSelectedKey(layer));
 const getSelectedObjectId = layer => Flan.get(layer, baseNodeGraphSelectedKey);
 
 const updateProp = (layer, data) => {
@@ -111,20 +114,35 @@ const replaceGraph = (graphs, graph) => {
   }
 };
 
+const getLayout = (layer) => {
+  const designLayoutKey = getDesignLayoutKey(layer);
+  const layout = Flan.get(layer, designLayoutKey);
+  return layout ?? nob();
+};
+
+const getLayoutObject = (layer, objectId) => {
+  return getLayout(layer)[objectId] ?? nob();
+};
+
+const setLayout = (layer, layout) => {
+  const designLayoutKey = getDesignLayoutKey(layer);
+  // retain in designed state
+  layer.graph.state[simpleLayoutKey] = layout;
+  // update live state
+  Flan.set(layer, designLayoutKey, layout);
+};
+
 export const applyStyleToObject = (layer, style, objectId) => {
   // sanity check
   if (objectId) {
-    const designLayoutKey = getDesignLayoutKey(layer);
-    // layout is here
-    const layout = Flan.get(layer, designLayoutKey) ?? nob();
+    // get layout
+    const layout = getLayout(layer);
     // mutatable
     const mod = deepCopy(layout);
     // create/modify entry in layout
     assign(mod[objectId] ??= nob(), style);
-    // retain in designed state
-    layer.graph.state[simpleLayoutKey] = mod;
-    // update live state
-    Flan.set(layer, designLayoutKey, mod);
+    // set layout
+    setLayout(layer, mod);
   }
 };
 

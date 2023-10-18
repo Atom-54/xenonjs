@@ -12,6 +12,8 @@ export const TensorFlowNodeTypes = {
     types: {
       ObjectDetector$image: 'Image'
     },
-    type: `$library/TensorFlow/Nodes/ObjectDetectorNode`
+    type: `$library/TensorFlow/Nodes/ObjectDetectorNode`,
+    icon: '$library/Assets/nodes/tensorflow-logo.png',
+    ligature: 'detector'
   }
 };
