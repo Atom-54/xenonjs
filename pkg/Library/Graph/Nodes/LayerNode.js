@@ -6,7 +6,7 @@
 export const LayerNode = {
   Layer: {
     type: '$library/Graph/Atoms/Layer',
-    inputs: ['graphId', 'graph', 'designable', 'composer'],
-    outputs: ['layerId', 'io', 'data', 'graphId']
+    inputs: ['graphId', 'graph', 'selectedProps', 'designable', 'composer', 'outputs'],
+    outputs: ['layerId', 'io', 'data', 'outputs']
   }
 };

@@ -23,17 +23,17 @@ export const GraphService = {
   MakeName(layer, atom, data) {
     return makeCapName();
   },
+  GetGraphInfo(layer, atom, data) {
+    return getGraphInfo(Design.getDesignLayer(layer), data.graph);
+  },
+  GetNodeInfo(layer, atom, data) {
+    return getNodeInfo(Design.getDesignLayer(layer), data.objectId);
+  },
+  FetchNodeMeta(layer, atom, data) {
+    return getNodeMeta(data.type);
+  },
   async CreateLayer(layer, atom, {graph, graphId, designable}) {
     return createHostedLayer(layer, atom, graph, graphId, designable);
-  },
-  async GetLayerGraph(layer, atom, {layerId}) {
-    return Resources.get(layerId)?.graph;
-  },
-  GetLayerIO(layer, atom, {layerId}) {
-    const designLayer = Design.getDesignLayer(layer);
-    return computeAllProperties(designLayer);
-    //const realLayer = Resources.get(layerId);
-    //return computeAllProperties(realLayer);
   },
   async SetLayerComposer(layer, atom, {layerId, composerId}) {
     return setLayerComposer(Resources.get(layerId), Resources.get(composerId));
@@ -41,20 +41,12 @@ export const GraphService = {
   async DestroyLayer(layer, atom, {layerId, graph}) {
     return Flan.destroyLayer(Resources.get(layerId))
   },
-  GetGraphInfo(layer, atom, data) {
-    return getGraphInfo(Design.getDesignLayer(layer), data.graph);
+  async ComputeLayerIO(layer, atom, {layerId}) {
+    return computeLayerIO(Resources.get(layerId));
   },
-  GetNodeInfo(layer, atom, data) {
-    const designLayer = Design.getDesignLayer(layer);
-    //computeAllProperties(designLayer);
-    return getNodeInfo(designLayer, data.objectId);
-  },
-  FetchNodeMeta(layer, atom, data) {
-    return getNodeMeta(data.type);
-  },
-  getNodeTypeMetas(layer, atom, data) {
-    return getNodeTypeMetas(layer);
-  },
+  // async CreateLayerBinding(layer, atom, {layerId, binding}) {
+  //   return createLayerBinding(layer, atom, {layerId, binding});
+  // },
   OpenUrl(layer, atom, data) {
     const design = Design.getDesignLayer(layer);
     // consider passing urlParam to RunInRun?
@@ -72,6 +64,9 @@ export const GraphService = {
       }
       window.open(`${url}/${params}`);
     }
+  },
+  getNodeTypeMetas(layer, atom, data) {
+    return getNodeTypeMetas(layer);
   }
 };
 
@@ -107,6 +102,27 @@ const setLayerComposer = async (layer, Composer) => {
   layer.composer2.onevent = onevent;
   Layers.rerender(layer);  
 };
+
+const computeLayerIO = async layer => {
+  const inp = keys(layer.bindings.inputBindings).map(key => {
+    const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
+    const simpleKey = Id.joinId(nodeId, atomId, propertyId);
+    return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
+  }).filter(i=>i);
+  const outp = map(layer.bindings.outputBindings, (key, value) => {
+    const id = Id.sliceId(key, 1);
+    const props = keys(value);
+    return {id, props};
+  }).filter(i=>i);
+  return {i: inp, o: outp};
+};
+
+// const createLayerBinding = async (layer, atom, {layerId, binding}) => {
+//   const childLayer = Resources.get(layerId);
+//   binding = `${childLayer.name}$DataNavigator$Form$records`;
+//   layer.bindings.input[binding] = `${atom.name}$data`;
+//   log('createLayerBinding:', binding, " => ", layer.bindings.input[binding]);
+// };
 
 const localPrefix = 'local:';
 const fbPrefix = 'fb:';
@@ -179,21 +195,12 @@ const findFbGraph = async (firebaseUrl, id) => {
   }
 };
 
-// TODO(sjmiles): name is confusing ... is a very specific tranche of data
-// used in NodeGraph
 const getGraphInfo = async (layer, graph) => {
-  // is graph is null, use layer graph
   graph ??= layer?.graph;
-  // get mapped atom specs
   const system = graph ? await Graphs.graphToAtomSpecs(graph, '') : {};
-  // meta fixup
-  entries(system).forEach(([atomId, meta]) => {
-    // snatch out the object name <layer><object>[<atom>]
-    const objectId = Id.sliceId(atomId, 1, 2);
-    // TODO(sjmiles): redundant calculations
-    const node = graph.nodes[objectId];
-    // merge the nodeType record to the atom meta
-    assign(meta, getNodeType(node.type));
+  entries(system).forEach(([id, meta]) => {
+    const objectId = Id.sliceId(id, 1, 2);
+    assign(meta, getNodeType(graph.nodes[objectId].type));
   });
   return {system};
 };
@@ -220,134 +227,53 @@ const getNodeTypeMetas = async (layer) => {
   return specs;
 };
 
-// TODO(sjmiles): name is confusing ... is a very specific tranche of data
-// used in NodeInspectorAdaptor
 const getNodeInfo = async (layer, objectId) => {
-  // result object
-  const info = {
-    atoms: {}, 
-    objectInfo: {}
-  };
-  // if there's a layer at all
+  const info = {atoms: {}, objectInfo: {}};
   if (layer) {
-    // get all the property and type info for layer
-    const io = computeAllProperties(layer);
-    const objectPrefix = Id.joinId(layer.name, objectId);
-    const node = layer.graph.nodes[objectId];
-    const nodeType = info.objectInfo.nodeType = getNodeType(node.type);
+    const {atoms, graph} = layer;
+    // this 'system' is not the same as layer.system, because graph has changed
+    // surgically and system is not updated
+    const system = graph ? await Graphs.graphToAtomSpecs(graph, layer.name) : {};
+    const systemCandidates = {};
     for (let qualifiedAtomId of keys(layer.atoms)) {
-      if (Id.startsWithId(qualifiedAtomId, objectPrefix)) {
-        // atom meta from local system
-        const atomInfo = layer.system[qualifiedAtomId];
-        // unqualified atomId   
-        const atomId = Id.sliceId(qualifiedAtomId, 1);
-        // actual atom
-        const atom = layer.atoms[qualifiedAtomId];
-        info.objectInfo.hasTemplate ||= Boolean(atom.template);
-        info.atoms[atomId] = {
-          ...atomInfo,
-          ...nodeType
-        };
+      const atomId = Id.sliceId(qualifiedAtomId, 1);
+      const atomName = Id.sliceId(atomId, 1);
+      const atomObjectId = Id.objectIdFromAtomId(atomId);
+      const atomInfo = system[qualifiedAtomId];
+      const nodeType = getNodeType(graph.nodes[atomObjectId].type);
+      system[qualifiedAtomId].outputs?.forEach(name => {
+        const type = nodeType?.types?.[Id.qualifyId(atomName, name)] || 'Pojo';
+        (systemCandidates[type] ??= []).push({name, objectId: atomObjectId, atomId, key: Id.qualifyId(atomId, name), type});
+      });
+
+      if (objectId === atomObjectId) {
+        info.atoms[atomId] = {...atomInfo, ...nodeType};
+        // capture atom:hasTemplate() into objectInfo.objectId map
+        (info.objectInfo[objectId]??= {}).hasTemplate ||= await (atoms[qualifiedAtomId]?.hasTemplate());
       }
     }
-    // post-process info.atoms
     entries(info.atoms).forEach(([atomId, atomInfo]) => {
-      atomInfo.candidates = io.t; //constructCandidates(atomName, atomInfo, systemCandidates);
+      const atomName = Id.sliceId(atomId, 1);
+      atomInfo.candidates = constructCandidates(atomName, atomInfo, systemCandidates);
     });
   }
   return info;
 };
 
-const computeAllProperties = layer => {
-  //log.debug('computeAllProperties for', layer.name);
-  // Collate type data
-  const types = collectAllTypes(layer);
-  //log.debug(types);
-  // Standard props
-  const props = {
-    outputs: keys(layer.bindings.output), 
-    inputs: keys(layer.bindings.input)
-  };
-  // More props may be hidden inside LayerNodes
-  const sublayerPropStratified = map(layer.graph.nodes, (name, node) => {
-    if (node.type.endsWith('LayerNode')) {
-      const requalify = keys => keys.map(key => Id.joinId(`[${name}]`, Id.sliceId(key, 1)));
-      const sublayer = fetchIndirectLayer(layer, name);
-      return {
-        outputs: requalify(keys(sublayer.bindings.output)), 
-        inputs: requalify(keys(sublayer.bindings.input))
-      };
-    }
-  });
-  // combine sublayer props with standard props
-  sublayerPropStratified.filter(i=>i).forEach(strata => {
-    props.outputs.push(...strata.outputs);
-    props.inputs.push(...strata.inputs);
-  });
-  // map property names to types, memoize untyped props
-  const pojoProps = [];
-  const typeify = propset => propset.reduce((io, prop) => {
-    const layer = Id.sliceId(prop, 0, 1);
-    let simplified = Id.sliceId(prop, 1);
-    if (layer[0] === '[') {
-      simplified = `${layer.slice(1, -1)}_${simplified}`;
-    }
-    let type = types[simplified];
-    if (!type) {
-      pojoProps.push(simplified);
-      type = 'Pojo';
-    }
-    io[simplified] = type;
-    return io;
-  }, {});
-  // map types to property names
-  const propsByType = entries(types).reduce((propsByType, [name, type]) => {
-    (propsByType[type] ??= []).push(name);
-    return propsByType;
-  }, {});
-  // this information assists with building connections
-  const io = {
-    i: typeify(props.inputs),
-    o: typeify(props.outputs),
-    t: propsByType
-  };
-  propsByType.Pojo = pojoProps;
-  //log.debug(io);
-  return io;
-};
-
-const collectAllTypes = layer => {
-  let allTypes = {};
-  map(layer.graph.nodes, (nodeId, node) => {
-    const nodeType = getNodeType(node.type);
-    // add nodeTypes
-    map(nodeType?.types, (name, value) => {
-      if (!name.endsWith('Values')) {
-        allTypes[Id.joinId(nodeId, name)] = value;
-      }
+const constructCandidates = (atomName, {types, inputs}, systemCandidates) => {
+  const candidates = {};
+  if (systemCandidates) {
+    inputs?.forEach(prop => {
+      const propType = types?.[Id.qualifyId(atomName, prop)] || 'Pojo';
+      candidates[propType] ??= chooseCandidatesForType(propType, systemCandidates);
     });
-    // add sublayer types
-    if (node.type.endsWith('LayerNode')) {
-      const layerIdProp = Id.joinId(layer.name, nodeId, 'Layer', 'layerId');
-      const layerId = Flan.get(layer, layerIdProp);
-      const sublayer = flan.layers[layerId];
-      for (let [subNodeName, subNode] of entries(sublayer.graph.nodes)) {
-        const nodeTypes = getNodeType(subNode.type)?.types || {};
-        map(nodeTypes, (name, value) => {
-          if (!name.endsWith('Values')) {
-            const key = Id.joinId(`${nodeId}_${subNodeName}`, name);
-            allTypes[key] = value;
-          }
-        });
-      }
-    }
-  });
-  return allTypes;
+  }
+  return candidates;
 };
 
-const fetchIndirectLayer = (hostLayer, layerNodeName) => {
-  const targetLayerIdProp = Id.joinId(hostLayer.name, layerNodeName, 'Layer', 'layerId');
-  const targetLayerId = hostLayer.flan.state[targetLayerIdProp];
-  const targetLayer = Resources.get(targetLayerId);
-  return targetLayer;
+const chooseCandidatesForType = (type, candidates) => {
+  return entries(candidates)
+      .filter(([candidateType, _]) => TypeMatcher(type, candidateType))
+      .map(([_, candidates]) => candidates)
+      .flat();
 };
