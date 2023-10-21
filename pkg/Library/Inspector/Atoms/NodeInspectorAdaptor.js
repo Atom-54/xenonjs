@@ -8,35 +8,44 @@ shouldUpdate({graph}) {
   return graph;
 },
 async update({graph, selected}, state, {service, isDirty}) {
-  if (isDirty('graph') || isDirty('selected')) {
-    return this.updateData({graph, selected}, service);
-  }
-},
-async updateData({graph, selected}, service) {
-  const ids = selected?.split('$');
-  // TODO(sjmiles): sometimes has 'atomName' on end, sometimes does not
-  if (ids?.length > 1) {
-    ids.pop();
-  }
-  const objectId = ids?.join('$');
-  // put graph-object type info into inspector info
-  const object = this.getObject(graph, objectId);
-  const info = object?.type.split('/').pop();
-  if (!info) {
-    //log('inspect: could not get info for id', objectId);
+  if (!selected) {
     return {data: null, info: null};
   }
-  const graphInfo = await service('GraphService', 'GetNodeInfo', {objectId});
+  //if (isDirty('graph') || isDirty('selected')) {
+    return this.updateData({graph, selected}, service);
+  //}
+},
+async updateData({graph, selected}, service) {
+  if (selected.includes('$')) {
+    log.error('"selected" contains "$"', selected);
+    return;
+  }
+  //const ids = selected?.split('$');
+  // log.debug(ids);
+  // TODO(sjmiles): sometimes has 'atomName' on end, sometimes does not
+  // if (ids?.length > 1) {
+  //   ids.pop();
+  // }
+  //const objectId = ids?.join('$');
+  const objectId = selected;
+  // fetch node spec
+  const object = graph.nodes[objectId]; 
+  // implicit simple-type name at end of path (?)
+  const typeName = object?.type.split('/').pop();
+  // if (!info) {
+  //   return {data: null, info: null};
+  // }
+  const nodeInfo = await service('GraphService', 'GetNodeInfo', {objectId});
   return {
-    data: this.constructData(objectId, graph, graphInfo),
-    info
+    data: this.constructData(graph, objectId, object, nodeInfo),
+    info: typeName
   };      
 },
-getObject(graph, objectId) {
-  return graph.nodes[objectId];
-  //return graph.nodes[objectId === 'DesignMain' ? 'Main' : objectId];
-},
-constructData(objectId, graph, {atoms, objectInfo}) {
+// getObject(graph, objectId) {
+//   return graph.nodes[objectId];
+//   //return graph.nodes[objectId === 'DesignMain' ? 'Main' : objectId];
+// },
+constructData(graph, objectId, object, {atoms, objectInfo}) {
   // gather props from bindings
   let props = this.enpropenate(graph, objectId, atoms);
   if (objectInfo[objectId]?.hasTemplate) {
@@ -55,7 +64,7 @@ constructData(objectId, graph, {atoms, objectInfo}) {
       visible: true
     });
     // virtual property
-    const {container} = this.getObject(graph, objectId);
+    const {container} = object;
     props.push({
       name: 'Container',
       propId: `${objectId}$Container`,
@@ -81,10 +90,8 @@ constructData(objectId, graph, {atoms, objectInfo}) {
 },
 enpropenate({state, connections}, objectId, atoms) {
   const props = [];
-  // TODO(sjmiles): warning bug prone because of the closure (bad scoping)
   const rename = ({key, name, objectId, separator}) => ({
     key,
-    // name: `${objectId} (${system[atomId].type.split('/').pop()})-${name}`
     name: `${objectId}-${name}`,
     separator
   });
@@ -125,7 +132,6 @@ formCandidates(candidates, objectId, prop, propConns) {
   });
   return selected;
 },
-
 sortCandidates(propConns, name, type, {key: p1, type: t1, name: n1}, {key: p2, type: t2, name: n2}) {
   // Sorting order:
   // - selected candidates come first,
@@ -137,9 +143,9 @@ sortCandidates(propConns, name, type, {key: p1, type: t1, name: n1}, {key: p2, t
     ?? this.compareCandidateProp(type, t1, t2)
     ?? this.compareCandidateProp(name, n1, n2)
     ?? this.compareCandidateProp('Pojo', t2, t1)
-    ?? p1.localeCompare(p2);
+    ?? p1.localeCompare(p2)
+    ;
 },
-
 compareConnectedProps(propConns, p1, p2) {
   const hasP1 = propConns?.includes(p1);
   const hasP2 = propConns?.includes(p2);
@@ -150,7 +156,6 @@ compareConnectedProps(propConns, p1, p2) {
     return 1; // 'p2' comes first
   }
 },
-
 compareCandidateProp(value, v1, v2) {
   if (v1 === value && v2 !== value) {
     return -1; // 'v1' comes first
@@ -158,7 +163,6 @@ compareCandidateProp(value, v1, v2) {
     return 1; // 'v2' comes first
   }
 },
-
 makeProp(atomId, propName, types, state) {
   const propId = `${atomId}$${propName}`;
   const atomPropId = propId.split('$').slice(1).join('$');

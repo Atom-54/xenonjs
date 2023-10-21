@@ -72,11 +72,11 @@ export class DesignerPanel extends DragDrop {
         this.updateAtomLayout(this.state.layout);
         this.select(selected);
       };
-      this.structureDebounce = debounce(this.structureDebounce, task, 100);
+      this.structureDebounce = debounce(this.structureDebounce, task, 10);
     }
   }
   select(selected) {
-    if (!this.disabled && selected && this.lastSelected !== selected) {
+    if (!this.disabled && selected /*&& this.lastSelected !== selected*/) {
       // TODO(sjmiles): sometimes there's an atom name on the end :(
       if (selected.split('$').length === 2) {
         // remove atom name
@@ -107,7 +107,7 @@ export class DesignerPanel extends DragDrop {
   // }
   onTargetDrop(e) {
     if (!this.disabled) {
-      const {trigger, key} = e.currentTarget;
+      const {trigger, value: key} = e.currentTarget;
       this.key = key;
       this.value = this.findClosestSlot(trigger);
       log(this.key, 'was dropped in slot: ', this.value);

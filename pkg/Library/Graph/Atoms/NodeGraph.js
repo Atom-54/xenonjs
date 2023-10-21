@@ -33,28 +33,29 @@ render(inputs, {graph, selectedId, graphInfo}) {
 },
 
 renderGraph(graph, selectedId, graphInfo) {
+  const graphEdges = this.renderGraphEdges(graph);
   return {
     name: graph?.meta?.id,
-    graphNodes: this.renderGraphNodes(graph, selectedId, graphInfo),
-    graphEdges: this.renderGraphEdges(graph)
+    graphNodes: this.renderGraphNodes(graph, selectedId, graphInfo, graphEdges),
+    graphEdges
   };
 },
 
-renderGraphNodes(graph, selectedId, graphInfo) {
+renderGraphNodes(graph, selectedId, graphInfo, graphEdges) {
   const renderNode = id => {
     return {
       key: id,
       name: id,
       displayName: id,
       selected: selectedId === id,
-      ...this.renderIO(id, graphInfo)
+      ...this.renderIO(id, graphInfo, graphEdges)
     }
   };
   return keys(graph?.nodes).filter(i=>i!='Main').map(id => renderNode(id));
 },
 
 renderGraphEdges(graph) {
-  const mapEdges = ([to, from]) => {
+  const mapEdges = (to, from) => {
     const toTokens = to.split('$');
     const toConn = {
       id: toTokens.shift(),
@@ -74,24 +75,27 @@ renderGraphEdges(graph) {
       };
     });
   };
-  return entries(graph?.connections).map(mapEdges).flat();
+  return map(graph?.connections, mapEdges).flat();
 },
 
-renderIO(id, graphInfo) {
+renderIO(id, graphInfo, graphEdges) {
   const atoms = this.getAtomsByPrefix(id, graphInfo);
   return {
-    inputs: atoms.flatMap(atom => this.renderDataChannel(atom, atom.inputs??[])),
+    inputs: atoms.flatMap(atom => this.renderDataChannel(atom, atom.inputs??[], graphEdges)),
     outputs: atoms.flatMap(atom => this.renderDataChannel(atom, atom.outputs??[]))
   };
 },
 
-renderDataChannel(atom, channel) {
+renderDataChannel(atom, channel, graphEdges) {
   //const n = atom.id.replace('_', '-');
-  return channel.map(i => ({
-    //name: `${n}-${i}`, 
-    name: i,
-    type: atom.types?.[`${atom.id}$${i}`] ?? 'Pojo'
-  }))
+  return channel
+    .filter(i => !graphEdges || graphEdges.some(({to: {id, storeName}}) => i === storeName))
+    .map(i => ({
+      //name: `${n}-${i}`, 
+      name: i,
+      type: atom.types?.[`${atom.id}$${i}`] ?? 'Pojo'
+    }))
+  ;
 },
 
 getAtomsByPrefix(id, graphInfo) {
@@ -123,6 +127,10 @@ onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
       graph: {...graph, meta}
     }
   }
+},
+
+async onNodeTypeDropped({eventlet: {value}}, state, {service}) {
+  await service('DesignService', 'AddObject', {key: value});
 },
 
 template: html`

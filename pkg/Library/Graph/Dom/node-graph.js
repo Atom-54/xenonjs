@@ -64,7 +64,7 @@ export class NodeGraph extends Xen.Async {
         }
         // - calc a height based on # of connection points
         const autoHeight = (Math.max(n?.inputs.length, n?.outputs.length) || 2) * 20 + 36;
-        rects[n.key].h = Math.max(autoHeight, rects[n.key].h);
+        rects[n.key].h = autoHeight; //Math.max(autoHeight, rects[n.key].h);
         // - memoize selected node
         if (n.selected) {
           selected = n;

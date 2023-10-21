@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "HORNETS Extension",
+  "description": "HORNETS Extension (Manifest v3)",
+  "version": "0.0.0",
+  "action": {
+    "default_icon": {
+      "32": "assets/H_O_R_N_E_T_-Storage-2nd-logo-final-32.png",
+      "128": "assets/H_O_R_N_E_T_-Storage-2nd-logo-final.png"
+    },
+    "default_title": "Open Tools",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "sandbox": "sandbox allow-scripts; worker-src blob:; camera 'self';"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ]
+}

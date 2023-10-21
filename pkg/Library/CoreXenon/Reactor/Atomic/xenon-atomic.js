@@ -137,6 +137,15 @@ var deepUndefinedToNull = (obj) => {
   }
   return obj;
 };
+var dirtyCheck = (state, data) => {
+  const dirty = /* @__PURE__ */ Object.create(null);
+  Object.entries(data).forEach(([key, value]) => {
+    if (!deepEqual(value, state[key])) {
+      dirty[key] = value;
+    }
+  });
+  return dirty;
+};
 
 // js/utils/rand.js
 var { floor, pow, random } = Math;
@@ -370,6 +379,7 @@ __export(utils_exports, {
   deepEqual: () => deepEqual,
   deepMerge: () => deepMerge,
   deepUndefinedToNull: () => deepUndefinedToNull,
+  dirtyCheck: () => dirtyCheck,
   makeId: () => makeId,
   shallowMerge: () => shallowMerge,
   shallowUpdate: () => shallowUpdate
