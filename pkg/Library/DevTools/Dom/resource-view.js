@@ -27,11 +27,11 @@ export class ResourceView extends Xen.Async {
         const notShader = !res?.camera;
         const notPixiApp = !res?.stage;
         const notObject = !notCanvas || !notStream || !notShader || !notLayer || !notPixiApp;
-        const json = (notObject ? '' : JSON.stringify(res, null, '  ') || '');
+        const json = (notObject ? '' : JSON.stringify(res, null, '  ')) || '';
         const size = !notLayer
           ? 'Layer'
           : !notObject 
-            ? `${json?.length} bytes`
+            ? `${json.length} bytes`
             : !notShader
               ? 'Shader' 
               : !notCanvas 

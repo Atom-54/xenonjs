@@ -4,8 +4,8 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({query, index, trigger}, state, {isDirty}) {
-  if (query && isDirty('trigger')) {
+async update({query, index}, state, {isDirty}) {
+  if (query && (isDirty('query') || isDirty('trigger'))) {
     state.image = await this.requestImage(query, index);
     return {image: state.image};
   }
