@@ -36,6 +36,18 @@ export const DesignService = {
   MorphObject(layer, atom, data) {
     return Structure.morphObject(getDesignLayer(layer), getSelectedObjectId(layer), data);
   },
+  // SimpleContain(layer, atom, {objectId, container}) {
+  //   const design = getDesignLayer(layer);
+  //   const target = design.graph.nodes[container];
+  //   log.warn('SimpleContain', target);
+  //   //return Structure.recontain(getDesignLayer(layer), data);
+  // },
+  OrderBefore(layer, atom, {objectId, before}) {
+    return Properties.orderBefore(getDesignLayer(layer), objectId, before);
+  },
+  OrderAfter(layer, atom, {objectId, after}) {
+    //
+  },
   Contain(layer, atom, data) {
     return Structure.recontain(getDesignLayer(layer), data);
   },

@@ -45,7 +45,7 @@ const createOrReplaceObject = async (layer, objectId, node, type, state, layout)
 };
 
 export const createObject = async (layer, {key, value}) => {
-  const container = Id.sliceId(value.replace(/_/g, '$'), 1);
+  const container = value ? Id.sliceId(value.replace(/_/g, '$'), 1) : rootContainer;
   const typeName = key.replace(/\s/g, '');
   const meta = layer.flan.library.nodeTypes[typeName];
   //log.warn(typeName, meta, container);

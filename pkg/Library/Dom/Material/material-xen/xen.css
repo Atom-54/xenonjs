@@ -3,11 +3,16 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+:host {
+  --xen-pad: 8px;
+  --cell-margin: var(--xen-pad) var(--xen-pad) 0 0;
+  --cell-pad: var(--xen-pad);
+}
 * {
   box-sizing: border-box;
 }
-:host {
-  --xen-pad: 8px;
+img:not([src]) {
+  display: none;
 }
 [rows], [column], [columns], [row], [bar], [toolbar] {
   display: flex;
@@ -59,10 +64,10 @@
   margin-right: 0;
 }
 [fullbleed] {
+  height: 100%;
+  width: 100%;
   height: 100dvh;
   width: 100dvw;
-  /* height: 100%;
-  width: 100%; */
   margin: 0;
   overflow: hidden;
 }

@@ -20,7 +20,7 @@ async projectContainerTree(graph, service) {
   for (let id of ids) {
     await this.addObjectToTree(graph, tree, id, service);
   }
-  log('projectContainerTree', ids, tree);
+  //log('projectContainerTree', ids, tree);
   return tree;
 },
 async addObjectToTree(graph, tree, id, service) {
@@ -94,6 +94,21 @@ select(selected, state) {
   }
   state.selected = selected;
   return {selected};
+},
+async onDropBefore({eventlet: {key, value}}, state, {service}) {
+  log('onDropBefore: from:', value, 'to:', key);
+  return service('DesignService', 'OrderBefore', {objectId: value, before: key});
+},
+async onDrop({eventlet: {key, value}}, state, {service}) {
+  // const [objectId, container] = [value, key];
+  // log('onDrop:', objectId, 'to:', container);
+  // await service('DesignService', 'SimpleContain', {objectId, container});
+  // TODO(sjmiles): fix key/value inversion downstream
+  //await service('DesignService', 'Contain', {key: value, value: key});
+},
+async onDropAfter({eventlet: {key, value}}, state, {service}) {
+  log('onDropAfter: from:', value, 'to:', key);
+  return service('DesignService', 'OrderAfter', {objectId: value, after: key});
 },
 template: html`
 <style>
@@ -171,19 +186,18 @@ template: html`
 
 <template node_t>
   <div node key="{{id}}" on-click="onNodeSelect">
-    <!-- <draggable-item atom selected$="{{selected}}" row key="{{id}}" name="{{displayName}}"></draggable-item> -->
     <drag-able object selected$="{{selected}}" key="{{id}}" name="{{displayName}}">
       <!-- <svg style="height: 28px; width: 16px;" viewBox="0 0 16 28" xmlns="http://www.w3.org/2000/svg">
         <line x1="12" y1="14" x2="16" y2="14" stroke="var(--xcolor-hi-one)" stroke-dasharray="1"/>
         <line x1="12" y1="14" x2="12" y2="28" stroke="var(--xcolor-hi-one)" stroke-dasharray="1"/>
       </svg> -->
-      <drop-target before on-target-over="onTargetOverBefore"></drop-target>
-      <drop-target item on-target-over="onTargetOver">
+      <drop-target before key="{{id}}" on-target-drop="onDropBefore"></drop-target>
+      <drop-target disabled item key="{{id}}" on-target-drop="onDrop">
         <icon>{{icon}}</icon>
         <span style="padding: 0 0 1px 6px;">{{displayName}}</span>
         &nbsp;(<span>{{order}}</span>)
       </drop-target>
-      <drop-target after on-target-over="onTargetOverAfter"></drop-target>
+      <drop-target after key="{{id}}" on-target-drop="onDropAfter"></drop-target>
     </drag-able>
     <div inner-nodes flex repeat="node_t">{{nodes}}</div>
   </div>

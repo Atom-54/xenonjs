@@ -69,5 +69,14 @@ const connectionsEqual = (conns1, conns2) => {
   return deepEqual(dedupe(conns1), dedupe(conns2));
 };
 
-
+export const orderBefore = (layer, objectId, beforeId) => {
+  const {nodes} = layer.graph;
+  const [src, target] = [nodes[objectId], nodes[beforeId]];
+  if (src && target) {
+    const {container} = target;
+    const refLayout = Design.DesignService.GetLayoutObject(layer, null, {objectId: beforeId});
+    const beforeOrder = (refLayout.order - 1) || 0;
+    log.debug('request to move', src, 'to before', target, 'in container', [container], 'to position', beforeOrder);
+  }
+};
 

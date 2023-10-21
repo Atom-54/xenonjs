@@ -4,8 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 // log methods we support
-export const logKinds = ['log', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd'];
-export const importantKinds = ['warn', 'error'];
+export const logKinds = ['log', 'warn', 'error', 'group', 'groupCollapsed', 'groupEnd', 'debug'];
+export const importantKinds = ['debug', 'warn', 'error'];
+
+// invent console.debug
+console.debug = console.log.bind(console);
 
 // pretty!
 const formatter = (preamble, bg, color) => {

@@ -6,6 +6,11 @@
 import {Xen} from '../Xen/xen-async.js';
 
 Xen.DropTarget = class extends Xen.Async {
+  _setValueFromAttribute(name, value) {
+    if (name === 'disabled') {
+      this[name] = value || (value === '');
+    }
+  }
   enableDrop() {
     this.addEventListener('dragenter', e => this.onDragEnter(e));
     this.addEventListener('dragleave', e => this.onDragLeave(e));
@@ -17,26 +22,29 @@ Xen.DropTarget = class extends Xen.Async {
   }
   onDragEnter(e) {
     e.preventDefault();
-    if (this.contains(e.target)) {
+    if (!this.disabled && this.contains(e.target)) {
       this.setAttribute('over', '');
       this.fireEvent(e, 'target-enter');
     }
   }
   onDragLeave(e) {
     e.preventDefault();
-    if (!this.contains(e.relatedTarget)) {
+    if (!this.disabled && !this.contains(e.relatedTarget)) {
       this.removeAttribute('over');
       this.fireEvent(e, 'target-leave');
     }
   }
   onDrop(e) {
     e.preventDefault();
-    this.fireEvent(e, 'target-drop');
+    if (!this.disabled) {
+      this.fireEvent(e, 'target-drop');
+      this.removeAttribute('over');
+    }
   }
   fireEvent(e, name) {
-    this.key = e.dataTransfer?.getData('text/plain');
     this.trigger = e;
-    if (this.key) {
+    this.value = e.dataTransfer?.getData('text/plain');
+    if (this.value) {
       this.fire(name);
     }
   }
@@ -48,7 +56,7 @@ const template = Xen.Template.html`
 
 export class DropTarget extends Xen.DropTarget {
   static get observedAttributes() {
-    return ['accepts'];
+    return ['accepts', 'disabled'];
   }
   get template() {
     return template;

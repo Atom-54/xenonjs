@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+  "name": "XenonJs Extension",
+  "description": "XenonJs Extension Manifest v2",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs8wiwzvpbAdK5eMfIofO0aKo9lOZ0XUOdzOGJzgvVs0EWavUvzhu5BQwT4yr4+RmjSog2GVMnVnYA0pz2V5TMuZzxt9VD9FLRKL/IBM2GImnmKmBgee0jRVmJkGXvxyy9g9ruj/0TfE4S4GzEwD6ckT85mWEmY1eUuH2Z+LNScBvtj7ckpSeA98sc7MhRBBFJdcrlG+AAvf4MyYzJyswoUt6MSyJybu3nyNQLeNvPbntWxwOwokfxZ8YHZQUzdMfm7VDAV8LVGbmwYFTWnSXxkj4wkmRn2uIqzDr9Dnb7NxySFLFiZGx+mf9vrXtVx6vAs+7AvocK8r+lAUghGLcfQIDAQAB",
+  "version": "0.0.0",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "background": {
+    "page": "background.html",
+    "persistent": true
+  },
+  "browser_action": {
+    "default_icon": "assets/logo_32x32.png",
+    "default_title": "XenonJs"
+  },
+  "icons": {
+    "32": "assets/logo_32x32.png"
+  },
+  "content_scripts": [{
+    "matches": [
+      "https://*/*",
+      "http://*/*"
+    ],
+    "js": ["content.js"],
+    "run_at": "document_start"
+  }],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' http://localhost:9871/; object-src 'self'",
+  "web_accessible_resources": [
+  ]
+}

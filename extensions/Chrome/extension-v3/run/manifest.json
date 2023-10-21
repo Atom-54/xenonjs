@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "XenonJs Extension",
+  "description": "XenonJs Extension (Manifest v3)",
+  "version": "0.0.0",
+  "action": {
+    "default_icon": {
+      "32": "assets/icon-32.png"
+    },
+    "default_title": "Open Tools",
+    "default_popup": "popup.html"
+  },
+  "content_security_policy": {
+    "sandbox": "sandbox allow-scripts; worker-src blob:; camera 'self';"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage"
+  ]
+}

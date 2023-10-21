@@ -41,9 +41,9 @@ export const GraphService = {
   async DestroyLayer(layer, atom, {layerId, graph}) {
     return Flan.destroyLayer(Resources.get(layerId))
   },
-  // async ComputeLayerIO(layer, atom, {layerId}) {
-  //   return computeLayerIO(Resources.get(layerId));
-  // },
+  async ComputeLayerIO(layer, atom, {layerId}) {
+    return computeLayerIO(Resources.get(layerId));
+  },
   // async CreateLayerBinding(layer, atom, {layerId, binding}) {
   //   return createLayerBinding(layer, atom, {layerId, binding});
   // },
@@ -103,19 +103,19 @@ const setLayerComposer = async (layer, Composer) => {
   Layers.rerender(layer);  
 };
 
-// const computeLayerIO = async layer => {
-//   const inp = keys(layer.bindings.inputBindings).map(key => {
-//     const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
-//     const simpleKey = Id.joinId(nodeId, atomId, propertyId);
-//     return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
-//   }).filter(i=>i);
-//   const outp = map(layer.bindings.outputBindings, (key, value) => {
-//     const id = Id.sliceId(key, 1);
-//     const props = keys(value);
-//     return {id, props};
-//   }).filter(i=>i);
-//   return {i: inp, o: outp};
-// };
+const computeLayerIO = async layer => {
+  const inp = keys(layer.bindings.inputBindings).map(key => {
+    const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
+    const simpleKey = Id.joinId(nodeId, atomId, propertyId);
+    return (atomId !== 'panel' && nodeId !== 'Main') ? simpleKey : null;
+  }).filter(i=>i);
+  const outp = map(layer.bindings.outputBindings, (key, value) => {
+    const id = Id.sliceId(key, 1);
+    const props = keys(value);
+    return {id, props};
+  }).filter(i=>i);
+  return {i: inp, o: outp};
+};
 
 // const createLayerBinding = async (layer, atom, {layerId, binding}) => {
 //   const childLayer = Resources.get(layerId);
