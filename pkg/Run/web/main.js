@@ -12,6 +12,8 @@ import {graph as baseGraph} from 'xenonjs/Library/Graphs/Base.js';
 
 // it rolls down stairs, alone or in pairs! it's log!
 const log = logf('Main', 'indigo');
+// debug access to API(s)
+globalThis.Flan = Flan;
 
 export const main = async (xenon, Composer) => {
   await xenon.industrialize();

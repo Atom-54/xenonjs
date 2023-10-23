@@ -15,10 +15,10 @@ resetPolling(state, interval) {
 async update({requestLogin, requestLogout}, state, {invalidate, isDirty}) {
   const response = await state.auth('GetUser');
   const user = response;
-  if (keys(user).length && isDirty('user')) {
-    //log('user changed', user);
+  if (keys(user).length) {
     this.resetPolling(state, 0);
-  } else if (state.pollInterval > 0) {
+  }
+  if (state.pollInterval > 0) {
     state.attemptsBeforeRequestLogin--;
     timeout(invalidate, state.pollInterval);
   }

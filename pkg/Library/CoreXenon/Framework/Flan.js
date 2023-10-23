@@ -79,7 +79,8 @@ export const forwardBoundInput = ({flan, onvalue}, scopedInput) => {
 
 export const forwardStateChanges = (flan, inputs, justTheseNodes) => {
   values(flan.layers).forEach(layer => {
-    const boundInput = Binder.mapInputToBindings(inputs, layer.bindings);
+    const sublayers = computeSublayerMap(layer);
+    const boundInput = Binder.mapInputToBindings(inputs, layer.bindings, sublayers);
     let inputsByAtom = create(null);
     map(boundInput, (id, value) => {
       const atomId = Id.sliceId(id, 0, -1);
@@ -106,10 +107,25 @@ const filterAtomMapByNodeIds = (byAtom, justTheseNodes) => {
 };
 
 export const forwardBoundOutput = (layer, atomName, output) => {
+  const sublayers = computeSublayerMap(layer);
   // translate atom output through outputBindings to create boundInput
-  const boundInput = Binder.mapOutputToBindings(atomName, output, layer.bindings);
-  // feed bindings back as boundInput
+  const boundInput = Binder.mapOutputToBindings(atomName, output, layer.bindings, sublayers);
+  // feed-foward (push) the boundInput data
   forwardBoundInput(layer, boundInput);
+};
+
+const computeSublayerMap = layer => {
+  const sublayers = {};
+  map(layer.system, (key, atomSpec) => {
+    if (atomSpec.type.endsWith('Layer')) {
+      const layerIdPropKey = Id.joinId(key, 'layerId');
+      const layerIdPropValue = layer.flan.state[layerIdPropKey];
+      const layerIdObjectId = Id.sliceId(key, 1, 2);
+      log.debug(layerIdObjectId, layerIdPropValue);
+      sublayers[layerIdObjectId] = layerIdPropValue;
+    }
+  });
+  return sublayers;
 };
 
 export const clearData = (layer, atomIds) => {

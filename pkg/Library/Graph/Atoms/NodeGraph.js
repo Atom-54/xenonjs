@@ -125,7 +125,7 @@ onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
   if (JSON.stringify(graphRects[key]) !== JSON.stringify(value)) {
     graphRects[key] = value;
     const meta = {...graph.meta, graphRects};
-    service('DesignService', 'SetGraphMeta', meta);
+    //service('DesignService', 'SetGraphMeta', meta);
     return {
       graph: {...graph, meta}
     }
@@ -142,7 +142,7 @@ template: html`
     display: flex;
     flex: 1 !important;
     /* height: 100%; */
-    position: relative;
+    /* position: relative; */
     font-size: 12px;
     color: black;
     background-color: var(--theme-color-bg-1);

@@ -63,7 +63,7 @@ const addBinding = (bindings, key, value) => {
   }
 };
 
-export const addConnections = (layerId, connections, bindings) => {
+export const addConnections = (layerId, connections, bindings/*, sublayers*/) => {
   // update input/outputBindings with cross-node connections
   entries(connections).forEach(([propId, bound]) => {
     //const {id, prop} = Id.parsePropId(propId);
@@ -72,7 +72,17 @@ export const addConnections = (layerId, connections, bindings) => {
     }
     // for each output target
     bound?.forEach(bound => {
-      addBinding(bindings.input, Id.qualifyId(layerId, bound), Id.qualifyId(layerId, propId));
+      let effectiveBound = bound;
+      let effectiveLayerId = layerId;
+      // if (bound.includes('_')) {
+      //   const [layerKey, _effectiveBound] = bound.split('_');
+      //   effectiveBound = _effectiveBound;
+      //   effectiveLayerId = sublayers[layerKey];
+      // }
+      addBinding(bindings.input, 
+        Id.qualifyId(effectiveLayerId, effectiveBound), 
+        Id.qualifyId(effectiveLayerId, propId)
+      );
     });
   });
 };
@@ -89,14 +99,14 @@ export const removeBindings = (bindings, objectId) => {
   remove(bindings.output);
 };
 
-export const mapOutputToBindings = (atomId, output, bindings) => {
+export const mapOutputToBindings = (atomId, output, bindings, sublayers) => {
   const scoped = {};
   map(output, (key, value) => {
     if (value !== undefined) {
       const propKey = Id.qualifyId(atomId, key);
       const bound = bindings.output[propKey];
       if (bound) {
-        bound.forEach(key => scoped[key] = value);
+        bound.forEach(key => scoped[expandSublayerBinding(key, sublayers)] = value);
       }
     }
   });
@@ -104,12 +114,42 @@ export const mapOutputToBindings = (atomId, output, bindings) => {
   return scoped;
 };
 
-export const mapInputToBindings = (input, bindings) => {
+const expandSublayerBinding = (key, sublayers) => {
+  if (!key.includes('_')) {
+    return key;
+  }
+  const [layerKey, effectiveKey] = key.split('_');
+  const expandedKey = Id.joinId(sublayers?.[layerKey], effectiveKey);
+  log.debug('Expanded key', key, 'to', expandedKey);
+  return expandedKey;
+};
+
+// if (bound.includes('_')) {
+//   const [layerKey, _effectiveBound] = bound.split('_');
+//   effectiveBound = _effectiveBound;
+//   effectiveLayerId = sublayers[layerKey];
+// }
+
+export const mapInputToBindings = (input, bindings, sublayers) => {
   const scoped = {};
   map(input, (key, value) => {
-    const bound = bindings.input[key];
+    const expandedInputs = entries(bindings.input).reduce((expanded, [key, binding]) => {
+      expanded[expandSublayerBinding(key, sublayers)] = binding;
+      return expanded;
+    }, {});
+    //const expandedInputs = bindings.input.map(key => expandSublayerBinding(key, sublayers));
+    // if (key.includes('_')) {
+    //   log.debug('layer bound key:', key);
+    // }
+    //const bound = bindings.input[key];
+    const bound = expandedInputs[key];
     if (bound) {
-      bound.forEach(key => scoped[key] = value);
+      bound.forEach(key => {
+        // if (key.includes('_')) {
+        //   log.debug('layer bound key:', key);
+        // }
+        scoped[key] = value
+      });
     }
   });
   log('boundInput:', scoped, input);
