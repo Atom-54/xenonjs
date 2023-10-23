@@ -4,8 +4,11 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({graph, selected}, state, {service, isDirty}) {
-  if (isDirty('graph')) {
+async update({layerId, graph, selected}, state, {service, isDirty}) {
+  if (isDirty('layerId') || isDirty('graph')) {
+    if (layerId) {
+      graph = await service('GraphService', 'GetLayerGraph', {layerId});
+    }
     state.graphRects = {};
     if (graph) {
       if (state.graph?.meta?.id !== graph.meta.id) {

@@ -6,7 +6,7 @@
 export const NodeTreeNode = {
   NodeTree: {
     type: '$library/Graph/Atoms/NodeTree',
-    inputs: ['graph', 'selected'],
+    inputs: ['layerId', 'graph', 'selected'],
     outputs: ['selected']
   }
 };

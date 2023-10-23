@@ -6,7 +6,7 @@
 export const NodeInspectorAdaptorNode = {
   adaptor: {
     type: '$library/Inspector/Atoms/NodeInspectorAdaptor',
-    inputs: ['graph', 'selected'],
+    inputs: ['layerId', 'graph', 'selected'],
     outputs: ['data', 'info']
   }
 };

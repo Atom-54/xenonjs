@@ -4,8 +4,10 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-/* global keys, values */
-async update({graph, selected}, state, {service}) {
+async update({layerId, graph, selected}, state, {service}) {
+  if (layerId) {
+    graph = await service('GraphService', 'GetLayerGraph', {layerId});
+  }
   state.tree = await this.projectContainerTree(graph, service);
   if (state.selected !== selected) {
     return this.select(selected, state);
@@ -27,7 +29,7 @@ async addObjectToTree(graph, tree, id, service) {
   // this graph object
   const object = graph?.nodes[id];
   // has this layout
-  const layout = graph.state.Main$designer$layout[id];
+  const layout = graph.state?.Main$designer$layout[id];
   const meta = await service('GraphService', 'FetchNodeMeta', {type: object?.type});
   // has this container-id
   const oid = this.getObjectId(object?.container);
@@ -90,7 +92,7 @@ onNodeSelect({eventlet: {key}}, state) {
 },
 select(selected, state) {
   if (selected?.includes('$')) {
-    log.warn(`THIS SHOULD NEVER HAPPEN: selected '${selected}' SHOULD NOT CONTAIN $`);
+    log.warn(`selected '${selected}' SHOULD NOT CONTAIN $`);
   }
   state.selected = selected;
   return {selected};
