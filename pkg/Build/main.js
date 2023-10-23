@@ -42,6 +42,8 @@ export const main = async (xenon, Composer) => {
   }
   // create main flan
   const flan = globalThis.flan = Flan.createFlan(xenon.emitter, Composer, library, persistations);
+  // debug access to API
+  globalThis.Flan = Flan;
   // create base layer
   const base = await Flan.createLayer(flan, [BaseGraph, BuildGraph], 'base');
   // observe data changes

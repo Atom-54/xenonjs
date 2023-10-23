@@ -83,6 +83,7 @@ enpropenate({state, connections}, objectId, atoms) {
   const props = entries(atoms)
     .map(perInfoEntry)
     .flat()
+    .filter(i=>i)
     ;
   return props;
 },
@@ -123,7 +124,7 @@ makeProp(atomId, propName, types, state) {
 formatCandidateList(candidates, objectId, prop, propConns) {
   const selected = [];
   const type = prop.store.type;
-  const typedCandidates = candidates[type] ?? [];
+  const typedCandidates = [...new Set(candidates[type] ?? [])];
   // candidate = {key, type, name}
   const sorter = (c1, c2) => this.sortCandidates(propConns, prop.name, type, c1, c2);
   typedCandidates.sort(sorter);
@@ -166,7 +167,7 @@ sortCandidates(propConns, name, type, n1, n2) { //{key: p1, type: t1, name: n1},
     //?? this.compareCandidateProp(type, t1, t2)
     //?? this.compareCandidateProp(name, n1, n2)
     //?? this.compareCandidateProp('Pojo', t2, t1)
-    //?? p1.localeCompare(p2)
+    ?? n1.localeCompare(n2)
     ;
 },
 compareConnectedProps(propConns, p1, p2) {

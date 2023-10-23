@@ -55,18 +55,6 @@ export const GraphService = {
   getNodeTypeMetas(layer, atom, data) {
     return getNodeTypeMetas(layer);
   },
-  // async ComputeLayerIO(layer, atom, {objectId}) {
-  //   const design = Design.getDesignLayer(layer);
-  //   const layerIdProp = Id.joinId(design.name, objectId, 'layerId');
-  //   const sublayerId = Flan.get(layer, layerIdProp); 
-  //   log.debug(layerIdProp, sublayerId);
-  //   //Flan.get(layer, get()
-  //   //design.nodes[objecI]
-  //   //return computeLayerIO(, objectId);
-  // },
-  // async CreateLayerBinding(layer, atom, {layerId, binding}) {
-  //   return createLayerBinding(layer, atom, {layerId, binding});
-  // },
   OpenUrl(layer, atom, data) {
     const design = Design.getDesignLayer(layer);
     // consider passing urlParam to RunInRun?
@@ -90,10 +78,7 @@ export const GraphService = {
 const createHostedLayer = async (layer, atom, graph, graphId, designable, composerId) => {
   const graphSpec = graph || await loadGraph(graphId);
   if (graphSpec) {
-    //const id = Id.sliceId(atom.name, 1).replace(/\$/g, '');
     const id = makeCapName();
-    //const id = makeCapName() + atom.name.replace(/\$/g, '');
-    //const id = 'GiggleBox' + atom.name.replace(/\$/g, '');
     const tempFlan = {...layer.flan};
     const newLayer = await Flan.createLayer(tempFlan, graphSpec, id);
     Resources.set(id, newLayer);
@@ -122,13 +107,6 @@ const setLayerComposer = async (layer, Composer) => {
   layer.composer2.onevent = onevent;
   Layers.rerender(layer);  
 };
-
-// const createLayerBinding = async (layer, atom, {layerId, binding}) => {
-//   const childLayer = Resources.get(layerId);
-//   binding = `${childLayer.name}$DataNavigator$Form$records`;
-//   layer.bindings.input[binding] = `${atom.name}$data`;
-//   log('createLayerBinding:', binding, " => ", layer.bindings.input[binding]);
-// };
 
 const localPrefix = 'local:';
 const fbPrefix = 'fb:';
@@ -254,59 +232,9 @@ const getNodeInfo = async (layer, objectId) => {
   if (layer) {
     // get all the property and type info for layer
     const io = computeAllProperties(layer);
-    // connection candidates
-    const systemCandidates = {};
-    // for layer atoms
-    // entries(layer.atoms)
-    //   // skip this one
-    //   .filter(([key]) => !key.startsWith('Main$panel'))
-    //   // find candidates by type
-    //   .map(([atomId, atom]) => {
-    //     const atomSpec = layer.system[atomId];
-    //     const simpleId = Id.sliceId(atomId, 1);
-    //     atomSpec.inputs?.forEach(prop => {
-    //       const id = Id.joinId(simpleId, prop);
-    //       const type = io.i[id];
-    //       const candidates = chooseCandidatesForType(type, io.t);
-    //       log.debug(id, type, candidates);
-    //     });
-    //   })
-    //   ;
-    //
-    const {atoms, graph} = layer;
-    const node = graph.nodes[objectId];
-    const nodeType = getNodeType(node.type);
-    info.objectInfo.nodeType = nodeType;
-    const propTypes = nodeType?.types ?? {};
-    // this 'system' is not the same as layer.system, because 
-    // graph has changed surgically and system is not updated
-    // TODO(sjmiles): ^ what?
-    //const system = graph ? await Graphs.graphToAtomSpecs(graph, layer.name) : {};
-    // connection candidates
-    // const systemCandidates = {};
-    // find connection candidates in Layer
-    // keys(layer.atoms)
-    //   .filter(key => !key.startsWith('Main$panel'))
-    //   .map(atomId => {})
-    //   ;
-    // log.debug()
-    // map(layer.atoms, (atomId, atom) => {
-    //   if (!(atomId === 'panel' && nodeId === 'Main')) {
-    //     log.debug(atomId, atom);
-    //   }
-    // });
-    // for *all* atoms in layer (all atoms are iterated to find all candidates)
-    // for (let qualifiedAtomId of keys(layer.atoms)) {
-    //   // atom meta from local system
-    //   const atomInfo = system[qualifiedAtomId];
-    //   // unqualified atomId
-    //   const atomId = Id.sliceId(qualifiedAtomId, 1);
-    //   // actual atom
-    //   const atom = atoms[qualifiedAtomId];
-    //   // blerf
-    //   await thngTheQual(layer, objectId, info, qualifiedAtomId, atom, atomInfo, atomId, propTypes, systemCandidates);
-    // }
     const objectPrefix = Id.joinId(layer.name, objectId);
+    const node = layer.graph.nodes[objectId];
+    const nodeType = info.objectInfo.nodeType = getNodeType(node.type);
     for (let qualifiedAtomId of keys(layer.atoms)) {
       if (Id.startsWithId(qualifiedAtomId, objectPrefix)) {
         // atom meta from local system
@@ -314,132 +242,27 @@ const getNodeInfo = async (layer, objectId) => {
         // unqualified atomId   
         const atomId = Id.sliceId(qualifiedAtomId, 1);
         // actual atom
-        const atom = atoms[qualifiedAtomId];
+        const atom = layer.atoms[qualifiedAtomId];
         info.objectInfo.hasTemplate ||= Boolean(atom.template);
         info.atoms[atomId] = {
           ...atomInfo,
           ...nodeType
         };
-        // blerf
-        //await thngTheQual(layer, objectId, info, qualifiedAtomId, atom, atomInfo, atomId, propTypes, systemCandidates);
       }
     }
     // post-process info.atoms
     entries(info.atoms).forEach(([atomId, atomInfo]) => {
-      //const atomName = Id.sliceId(atomId, 1);
       atomInfo.candidates = io.t; //constructCandidates(atomName, atomInfo, systemCandidates);
     });
-    log.debug('getNodeInfo', layer.name, objectId);
-    log.debug(info);
   }
   return info;
 };
 
-// const constructCandidates = (atomName, {types, inputs}, systemCandidates) => {
-//   const candidates = {};
-//   if (systemCandidates) {
-//     inputs?.forEach(prop => {
-//       const propType = types?.[Id.qualifyId(atomName, prop)] || 'Pojo';
-//       candidates[propType] ??= chooseCandidatesForType(propType, systemCandidates);
-//     });
-//   }
-//   return candidates;
-// };
-
-// const chooseCandidatesForType = (type, candidates) => {
-//   return entries(candidates)
-//     .filter(([candidateType, _]) => TypeMatcher(type, candidateType))
-//     .map(([_, candidates]) => candidates)
-//     .flat()
-//     ;
-// };
-
-// const thngTheQual = async (layer, objectId, info, qualifiedAtomId, atom, atomInfo, atomId, propTypes, systemCandidates) => {
-//   // id parts
-//   const [atomObjectId, atomName] = Id.splitId(atomId);
-//   // map atom outputs as connection candidates by type
-//   atomInfo.outputs?.forEach(name => {
-//     // property name
-//     const propName = Id.qualifyId(atomName, name);
-//     const type = propTypes?.[propName] || 'Pojo';
-//     const candidates = (systemCandidates[type] ??= []);
-//     candidates.push({
-//       name, 
-//       type,
-//       atomId, 
-//       objectId: atomObjectId, 
-//       key: Id.qualifyId(atomId, name)
-//     });
-//   });
-//   let io;
-//   const isLayerAtom = atomInfo.type.endsWith('Layer');
-//   if (isLayerAtom) {
-//     const layerIdProp = Id.joinId(qualifiedAtomId, 'layerId');
-//     const layerId = Flan.get(layer, layerIdProp);
-//     const sublayer = flan.layers[layerId];
-//     io = await computeLayerIO(sublayer);
-//     // build types for properties which are stored with the nodes
-//     //const newInfo = info.atoms[atomId]
-//     const nodes = sublayer.graph.nodes;
-//     for (let [id, node] of entries(nodes)) {
-//       const nodeTypes = getNodeType(node.type)?.types || {};
-//       map(nodeTypes, (name, value) => {
-//         const key = Id.joinId(atomObjectId, Id.splitId(name).join('::'));
-//         propTypes[key] = value;
-//       });
-//     }
-//     //const [atomId, atom] = entries(nodeInfo.atoms)[0];
-//     io.o.forEach(name => {
-//       // property name
-//       const propName = Id.splitId(Id.sliceId(name, 1)).join('::');
-//       const type = propTypes?.[propName] || 'Pojo';
-//       const candidates = (systemCandidates[type] ??= []);
-//       candidates.push({
-//         name: propName, 
-//         type,
-//         atomId, 
-//         objectId: atomObjectId, 
-//         key: Id.qualifyId(atomObjectId, propName)
-//       });
-//     });
-//     // for (let output of io.o) {
-//     //   const bits = input.split('$').slice(1);
-//     //   const name = bits.join('::');
-//     //   const prop = this.newProp(objectId, graph.connections, atomId, atom, name, graph.state);
-//     //   props.push(prop);
-//     // }
-//   }
-//   // if this atom belongs to objectId
-//   if (objectId === atomObjectId) {
-//     //info.objectInfo.io = io;
-//     // capture atom:hasTemplate() into objectInfo
-//     info.objectInfo.hasTemplate ||= await (atom?.hasTemplate());
-//     // store atom info
-//     /*const newInfo =*/ info.atoms[atomId] = {...atomInfo, ...info.objectInfo.nodeType};
-//     //if (isLayerAtom) {
-//       //log.debug('getNodeInfo on LayerAtom');
-//       //log.debug('layerid is ', layerId);
-//       //log.debug('io is', io);
-//     //}
-//   }
-// };
-
-// const computeLayerIO = async layer => {
-//   const computeIO = io => keys(io).map(key => {
-//     const [layerId, nodeId, atomId, propertyId] = Id.splitId(key);
-//     const simpleKey = Id.joinId(nodeId, atomId, propertyId);
-//     return !(atomId === 'panel' && nodeId === 'Main') ? simpleKey : null;
-//   }).filter(i=>i);
-//   const i = computeIO(layer.bindings.input);
-//   const o = computeIO(layer.bindings.output);
-//   return {i, o};
-// };
-
 const computeAllProperties = layer => {
-  log.debug('computeAllProperties for', layer.name);
+  //log.debug('computeAllProperties for', layer.name);
   // Collate type data
   const types = collectAllTypes(layer);
-  log.debug(types);
+  //log.debug(types);
   // Standard props
   const props = {
     outputs: keys(layer.bindings.output), 
@@ -464,13 +287,17 @@ const computeAllProperties = layer => {
   // map property names to types, memoize untyped props
   const pojoProps = [];
   const typeify = propset => propset.reduce((io, prop) => {
-    const simplifed = Id.sliceId(prop, 1);
-    let type = types[simplifed];
+    const layer = Id.sliceId(prop, 0, 1);
+    let simplified = Id.sliceId(prop, 1);
+    if (layer[0] === '[') {
+      simplified = `${layer.slice(1, -1)}_${simplified}`;
+    }
+    let type = types[simplified];
     if (!type) {
-      pojoProps.push(simplifed);
+      pojoProps.push(simplified);
       type = 'Pojo';
     }
-    io[simplifed] = type;
+    io[simplified] = type;
     return io;
   }, {});
   // map types to property names
@@ -485,7 +312,7 @@ const computeAllProperties = layer => {
     t: propsByType
   };
   propsByType.Pojo = pojoProps;
-  log.debug(io);
+  //log.debug(io);
   return io;
 };
 
@@ -504,11 +331,11 @@ const collectAllTypes = layer => {
       const layerIdProp = Id.joinId(layer.name, nodeId, 'Layer', 'layerId');
       const layerId = Flan.get(layer, layerIdProp);
       const sublayer = flan.layers[layerId];
-      for (let node of values(sublayer.graph.nodes)) {
-        const nodeTypes = getNodeType(node.type)?.types || {};
+      for (let [subNodeName, subNode] of entries(sublayer.graph.nodes)) {
+        const nodeTypes = getNodeType(subNode.type)?.types || {};
         map(nodeTypes, (name, value) => {
           if (!name.endsWith('Values')) {
-            const key = Id.joinId(`[${nodeId}]`, name);
+            const key = Id.joinId(`${nodeId}_${subNodeName}`, name);
             allTypes[key] = value;
           }
         });

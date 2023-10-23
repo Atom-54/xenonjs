@@ -32,8 +32,9 @@ export const generateLayerBindings = ({name, system, graph, bindings}) => {
   return generated;
 };
 
-// TODO(maria): cross-layer bindings (used for `selected` node), are not expressed in the graph atm,
-// and need to be carried over, when layerBindings are regenerated.
+// TODO(maria): cross-layer bindings (e.g. as used for `selected` node), 
+// are not expressed in the graph atm, and need to be carried over, 
+// when layerBindings are regenerated.
 const copyCrossLayerInputs = (layerName, currentBindings, newBindings) => {
   entries(currentBindings?.input).forEach(([key, bound]) => {
     if (!Id.matchesIdPrefix(key, layerName)) {
