@@ -6,7 +6,7 @@
 export const NodeGraphNode = {
   Graph: {
     type: '$library/Graph/Atoms/NodeGraph',
-    inputs: ['selected', 'graph'],
-    outputs: ['selected', 'graph'],
+    inputs: ['layerId', 'graph', 'selected'],
+    outputs: ['selected'],
   }
 };

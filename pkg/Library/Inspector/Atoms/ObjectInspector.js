@@ -24,7 +24,11 @@ async refreshRendering(state, output) {
 render({data, customInspectors}, state) {
   if (state.shouldClear) {
     return {title: '', props: []};
+  } else {
+    return this.renderData(data, customInspectors || {}, state);
   }
+},
+renderData(data, customInspectors, state) {
   let title = data?.title || 'Nothing to inspect.';
   const readonly = Boolean(data?.readonly);
   state.renderedProps = this.renderProps(data, customInspectors, state);
@@ -41,11 +45,12 @@ renderProps(data, customInspectors, state) {
     data.props
       .filter(prop => prop.visible)
       .map(prop => this.renderProp(prop, undefined, customInspectors, state))
-    ;
+      ;
 },
 renderProp(prop, parent, customInspectors, state) {
   const key = `${parent ? `${parent}:` : ''}${prop.name}`;
-  const $template = this.chooseTemplate(prop, state.editedKey === key, customInspectors);
+  //const isEditing = (state.editedKey === key);
+  const $template = this.chooseTemplate(prop.store, customInspectors);
   const model = this.constructPropModel(key, prop, parent, $template, state);
   return {
     prop: {
@@ -54,12 +59,25 @@ renderProp(prop, parent, customInspectors, state) {
     }
   };
 },
-primaryType(type) {
-  return type?.split(':')?.[0];
+chooseTemplate(store, customInspectors) {
+  let template;
+  const types = store.type.split(':');
+  for (let type of types) {
+    if (customInspectors[type]) {
+      template = 'custom_t';
+    } else {
+      template = this.templateForType(type, store);
+    }
+    if (template !== 'unimpl_t') {
+      break;
+    }
+  }
+  if (template === 'unimpl_t') {
+    template = 'edit_object_as_json_t';
+  }
+  return template;
 },
-chooseTemplate({store, value}, isEditing, customInspectors) {
-  const type = this.primaryType(store.type);
-  const {values, range} = store;
+templateForType(type, {values, range}) {
   let template = {
     Boolean: 'checkbox_t',
     Nonce: 'nonce_t',
@@ -74,15 +92,11 @@ chooseTemplate({store, value}, isEditing, customInspectors) {
     MultilineText: 'textarea_t',
     TypeWithConnection: 'prop_with_conn_t'
   }[type] ?? 'unimpl_t';
-  if (customInspectors?.[type]) {
-    template = 'custom_t';
-  } else if (type === 'Number' && ['min', 'max', 'step'].every(key => keys(range || {}).some(k => k === key))) {
+  if (type === 'Number' && ['min', 'max', 'step'].every(key => keys(range || {}).some(k => k === key))) {
     template = 'range_t';
   } else if (['unimpl_t', 'text_t'].includes(template) && Array.isArray(values)) {
     template = 'select_t';
-  } else if (template === 'unimpl_t') {
-    template = 'edit_object_as_json_t';
-  }
+  } 
   return template;
 },
 constructPropModel(key, prop, parent, template, state) {
@@ -103,7 +117,6 @@ constructPropModel(key, prop, parent, template, state) {
       break;
     }
     case 'imageupload_t': {
-      // model.value ||= 'assets/icon.png';
       model.value = model.value?.url ?? '';
       model.hidden = Boolean(!model.value);
       break;
@@ -194,7 +207,9 @@ initCheckedConn(prop, checked) {
   if (checked === undefined) {
     const noValue = ((prop.value.property === null) || (prop.value.property === undefined));
     const hasConnection = (prop.value.connection.value?.length > 0);
-    const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].includes(this.primaryType(prop.store.store.type));
+    const type = prop.store.store.type;
+    const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].some(value => type.includes(value));
+    //const nonConcreteType = !['String', 'Number', 'Boolean', 'Nonce'].includes(this.primaryType(prop.store.store.type));
     return {
       checked: (noValue && nonConcreteType) || hasConnection,
       multi: Array.isArray(prop.value.connection.value) && prop.value.connection.value.length > 1

@@ -33,7 +33,7 @@ export const GraphNodeTypes = {
   NodeGraph: {
     category,
     description: 'Displays graph nodes and connections',
-    type: '$library/Graph/Nodes/NodeTreeNode',
+    type: '$library/Graph/Nodes/NodeGraphNode',
     ligature: 'schema'
   },
   NodeTree: {

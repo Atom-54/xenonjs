@@ -20,7 +20,7 @@ async update({graphId, graph, data, designable, composer}, state, {service, isDi
       //await service('GraphService', 'CreateLayerBinding', {layerId});
       //const io = await service('GraphService', 'ComputeLayerIO', {layerId});
       //const i = io.i?.map(path => path.replace(/\$/g, '.'));
-      return {layerId}; //, io: i};
+      return {layerId, graphId}; //, io: i};
     }
   }
   if (state.layerId && composer) {
