@@ -14,7 +14,10 @@ const log = logf('Design', 'orange', 'black');
 
 export const DesignService = {
   SetGraphMeta(layer, atom, data) {
-    return setGraphMeta(layer, data);
+    //log.debug('SetGraphMeta', layer, design);
+    if (layer.name === 'base') {
+      return setGraphMeta(layer, data);
+    }
   },
   UpdateProp(layer, atom, data) {
     updateProp(layer, data);

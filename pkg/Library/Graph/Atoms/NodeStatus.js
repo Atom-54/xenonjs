@@ -4,7 +4,10 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({selected}, state, {service}) {
+async update({layerId, selected}, state, {service}) {
+  // if (layerId) {
+  //   graph = await service('GraphService', 'GetLayerGraph', {layerId});
+  // }
   state.context = await service('SystemService', 'request-context');
 },
 render({selected}, {context}) {
@@ -14,8 +17,10 @@ render({selected}, {context}) {
   values(context.layers)
     .flatMap(layerState => keys(layerState)
       .forEach(key => {
-        if (key?.startsWith(prefix)) {
-          const displayKey = key.slice(prefix).replace(/\$/g, '.');
+        const [layerName, objectName, propName] = key.split('$');
+        if (objectName === selected) {
+          //const displayKey = key.slice(prefix).replace(/\$/g, '.');
+          const displayKey = [objectName, propName].join('.');
           info[displayKey] = layerState[key];
         }
       })

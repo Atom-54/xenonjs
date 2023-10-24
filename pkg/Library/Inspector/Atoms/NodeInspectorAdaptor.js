@@ -39,8 +39,10 @@ async updateData({layerId, graph, selected}, service) {
   //   return {data: null, info: null};
   // }
   //const layerIO = await service('GraphService', 'GetLayerIO', {layerId})
-  const nodeInfo = await service('GraphService', 'GetNodeInfo', {objectId});
+  const nodeInfo = await service('GraphService', 'GetNodeInfo', {layerId, objectId});
   return {
+    // whatever we want to display
+    // TODO(sjmiles): s/info/displayInfo
     info: typeName,
     data: this.constructInspectorData(graph, objectId, nodeInfo)
   };      
@@ -83,6 +85,7 @@ enpropenate({state, connections}, objectId, atoms) {
   const props = entries(atoms)
     .map(perInfoEntry)
     .flat()
+    .filter(i=>i)
     ;
   return props;
 },
@@ -93,14 +96,7 @@ newProp(objectId, connections, atomId, atom, name, state) {
   // sort, lift, and separate
   const candidateList = this.formatCandidateList(atom.candidates, objectId, prop, propConnection);
   if (candidateList?.length > 0) {
-    const blerf = item => {
-      //if ()
-    };
-    // maps a candidate to another format
-    //const rename = ({key, name, objectId, ...dross}) => ({key, name: `${objectId}-${name}`, ...dross});
-    //const reformattedCandidates = candidateList.map(rename);
     // remake the prop into a connection prop
-    //return this.makeConnectionProp(prop, reformattedCandidates, connections);
     return this.makeConnectionProp(prop, candidateList, connections);
   }
   // return different prop structure
@@ -121,13 +117,12 @@ makeProp(atomId, propName, types, state) {
   };
 },
 formatCandidateList(candidates, objectId, prop, propConns) {
-  const selected = [];
   const type = prop.store.type;
-  const typedCandidates = candidates[type] ?? [];
+  const typedCandidates = [...new Set([...(candidates[type] ?? []), ...candidates.String, ...candidates.Pojo])];
   // candidate = {key, type, name}
   const sorter = (c1, c2) => this.sortCandidates(propConns, prop.name, type, c1, c2);
   typedCandidates.sort(sorter);
-  //const typedCandidates = candidates[type]?.sort((candidate1, candidate2) => this.sortCandidates(propConns, prop.name, type, candidate1, candidate2)) ?? [];
+  // insert separator(s)
   let separators = {};
   const isSeparator = (type, kind) => {
     if (!separators[kind]) {
@@ -136,6 +131,8 @@ formatCandidateList(candidates, objectId, prop, propConns) {
       }
     }
   };
+  // build select list
+  const selected = [];
   typedCandidates.forEach(candidate => {
     const [objectId, atomName, propName] = candidate.split('$');
     if (!propName) {
@@ -166,7 +163,7 @@ sortCandidates(propConns, name, type, n1, n2) { //{key: p1, type: t1, name: n1},
     //?? this.compareCandidateProp(type, t1, t2)
     //?? this.compareCandidateProp(name, n1, n2)
     //?? this.compareCandidateProp('Pojo', t2, t1)
-    //?? p1.localeCompare(p2)
+    ?? n1.localeCompare(n2)
     ;
 },
 compareConnectedProps(propConns, p1, p2) {

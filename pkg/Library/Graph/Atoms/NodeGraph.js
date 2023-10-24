@@ -125,7 +125,7 @@ onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
   if (JSON.stringify(graphRects[key]) !== JSON.stringify(value)) {
     graphRects[key] = value;
     const meta = {...graph.meta, graphRects};
-    //service('DesignService', 'SetGraphMeta', meta);
+    service('DesignService', 'SetGraphMeta', meta);
     return {
       graph: {...graph, meta}
     }

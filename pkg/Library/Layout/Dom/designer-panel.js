@@ -38,6 +38,7 @@ export class DesignerPanel extends DragDrop {
         this.selectParent();
       }
     });
+    setInterval(() => !this.dragging && this.lastSelected && this.select(this.lastSelected), 100);
   }
   update({selected, layout, readonly}, state) {
     state.layer = this.getRootNode().host.id.split('_')[0];
