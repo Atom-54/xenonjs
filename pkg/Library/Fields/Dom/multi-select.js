@@ -9,11 +9,9 @@ export class MultiSelect extends Xen.Async {
   static get observedAttributes() {
     return ['disabled', 'selected', 'multiple', 'size', 'options'];
   }
-
   _didMount() {
     this.selector = this._dom.$('select');
   }
-
   update(inputs, state) {
     Object.assign(state, inputs);
     const {options, multiple, selected, disabled} = inputs;
@@ -37,7 +35,6 @@ export class MultiSelect extends Xen.Async {
       state.options?.splice(0, 0, {key: '', name: '', selected: true});
     }
   }
-  
   chooseSize({multiple, size, options}) {
     if (multiple) {
       if (options?.length > 0) {
@@ -46,7 +43,6 @@ export class MultiSelect extends Xen.Async {
       return 1;
     }
   }
-
   onChange() {
     const values = [];
     for (const option of this.selector.options) {
@@ -57,11 +53,9 @@ export class MultiSelect extends Xen.Async {
     this.value = this.state.multiple ? values : values?.[0];
     this.fire('change');
   }
-
   onClick(e) {
     e.stopPropagation();
   }
-
   get template() {
     return Xen.Template.html`
 <style>
@@ -69,17 +63,14 @@ export class MultiSelect extends Xen.Async {
     font-size: 12px;
     width: 100%;
     height: 100%;
-    border: 1px solid var(--theme-color-fg-0);
-    border-radius: 4px;
-    padding: 4px;    
+    border: 1px solid var(--multi-select-color, --theme-color-fg-0);
+    border-radius: var(--multi-select-radius, 4px);
+    padding: var(--multi-select-padding, 6px 9px);    
   }
   [options][multiple] {
-    /* height: 200px; */
     height: auto;
   }
 </style>
-
-<!-- size="{{size}}" -->
 <select 
   options 
   disabled="{{disabled}}" 

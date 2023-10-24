@@ -13,8 +13,9 @@ globalThis.config = {
   paths: {
     // as needed
     $library: `${xenonPath}/Library`,
-    // next two paths only needed if using workers
-    //$xenon: xenonPath,
+    // used for image resolution and for workers
+    $xenon: xenonPath,
+    // used for workers
     //$boot: `${xenonPath}/Run/web/xenon.js`,
   },
   logFlags: {

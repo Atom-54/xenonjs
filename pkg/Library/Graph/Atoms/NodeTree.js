@@ -139,7 +139,7 @@ template: html`
     align-items: center;
     border-radius: 6px;
     padding: 2 6px;
-    background-color: var(--xcolor-one);
+    /* background-color: var(--xcolor-one); */
   }
   [selected][object] {
     /* color: var(--xcolor-two); */
