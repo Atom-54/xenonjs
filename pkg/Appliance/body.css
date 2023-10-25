@@ -9,6 +9,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+/**/
 .grid-stack {
   background: rgba(64, 224, 208, 0.278);
 }
@@ -25,12 +26,15 @@ body {
   width: 100%;
   height: 100%;
 }
+/**/
+
 .lm_content {
   display: flex;
 }
 .lm_root {
   flex: 1;
 }
+/**/
 [flex] {
   flex: 1;
   /* border: 6px solid orange; */

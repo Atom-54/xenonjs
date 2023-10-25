@@ -168,7 +168,10 @@ const nullifyConnectedValues = (layer, objectId) => {
     if (Id.matchesIdPrefix(bound, objectId)) {
       const qualifiedAtomId = Id.qualifyId(layer.name, Id.sliceId(key, 0, -1));
       const prop = Id.sliceId(key, -1);
-      layer.atoms[qualifiedAtomId].inputs = {[prop]: undefined};
+      const atom = layer.atoms[qualifiedAtomId];
+      if (atom) {
+        atom.inputs = {[prop]: undefined};
+      }
     }
   };
   entries(layer.graph.connections).forEach(([key, bound]) => {

@@ -285,10 +285,12 @@ const computeAllProperties = layer => {
     if (node.type.endsWith('LayerNode')) {
       const requalify = keys => keys.map(key => Id.joinId(`[${name}]`, Id.sliceId(key, 1)));
       const sublayer = fetchIndirectLayer(layer, name);
-      return {
-        outputs: requalify(keys(sublayer.bindings.output)), 
-        inputs: requalify(keys(sublayer.bindings.input))
-      };
+      if (sublayer) {
+        return {
+          outputs: requalify(keys(sublayer.bindings.output)), 
+          inputs: requalify(keys(sublayer.bindings.input))
+        };
+      }
     }
   });
   // combine sublayer props with standard props
@@ -343,14 +345,16 @@ const collectAllTypes = layer => {
       const layerIdProp = Id.joinId(layer.name, nodeId, 'Layer', 'layerId');
       const layerId = Flan.get(layer, layerIdProp);
       const sublayer = flan.layers[layerId];
-      for (let [subNodeName, subNode] of entries(sublayer.graph.nodes)) {
-        const nodeTypes = getNodeType(subNode.type)?.types || {};
-        map(nodeTypes, (name, value) => {
-          if (!name.endsWith('Values')) {
-            const key = Id.joinId(`${nodeId}_${subNodeName}`, name);
-            allTypes[key] = value;
-          }
-        });
+      if (sublayer) {
+        for (let [subNodeName, subNode] of entries(sublayer.graph.nodes)) {
+          const nodeTypes = getNodeType(subNode.type)?.types || {};
+          map(nodeTypes, (name, value) => {
+            if (!name.endsWith('Values')) {
+              const key = Id.joinId(`${nodeId}_${subNodeName}`, name);
+              allTypes[key] = value;
+            }
+          });
+        }
       }
     }
   });

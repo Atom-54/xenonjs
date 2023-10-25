@@ -21,7 +21,10 @@ async update({index, count, records, submittedRecord}, state, {isDirty}) {
     };
   }
   if (records && (isDirty('records') || indexDirty)) {
-    return this.returnRecord(state.index, records);
+    return {
+      ...this.returnRecord(state.index, records),
+      records
+    };
   }
 },
 validateCount(count, records) {

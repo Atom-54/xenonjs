@@ -39,6 +39,20 @@ export const FieldsNodeTypes = {
     type: '$library/Fields/Nodes/TextFieldNode',
     ligature: 'match_word'
   },
+  DateField: {
+    category,
+    description: 'Displays a date input field',
+    types: {
+      field$form: 'FormId:String',
+      field$label: 'String',
+      field$labelDescription: 'The field label',
+      field$value: 'String',
+      field$valueDescription: 'Date in text format',
+      field$options: '[String]'
+    },
+    type: '$library/Fields/Nodes/DateFieldNode',
+    ligature: 'clock'
+  },
   LigatureField: {
     category,
     description: 'An input field for icons',
@@ -102,6 +116,7 @@ export const FieldsNodeTypes = {
     category,
     description: 'Uploads an image or captures image URL',
     types: {
+      field$form: 'FormId:String',
       field$url: 'String',
       field$image: 'Image'
     },  
