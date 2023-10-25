@@ -14,6 +14,15 @@ export const DataNodeTypes = {
     },
     type: '$library/Data/Nodes/DataNode',
   },
+  Gate: {
+    category,
+    description: 'Serves as a triggered passthrough for JSON data',
+    types: {
+      Gate$trigger: 'Nonce',
+      Gate$jsonDescription: 'is converted to JSON, if a String; otherwise returned as is'
+    },
+    type: '$library/Data/Nodes/GateNode',
+  },
   DataCollector: {
     category,
     description: 'Collect records',

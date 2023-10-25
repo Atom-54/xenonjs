@@ -7,7 +7,7 @@
 export const ImageFieldNode = {
   field: {
     type: '$library/Fields/Atoms/ImageField',
-    inputs: ['image', 'url'],
-    outputs: ['image']
+    inputs: ['form', 'image', 'value'],
+    outputs: ['value', 'image']
   }
 };

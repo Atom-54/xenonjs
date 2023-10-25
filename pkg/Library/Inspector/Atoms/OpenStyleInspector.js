@@ -60,6 +60,7 @@ initialize(inputs, state) {
     {value: 'var(--size-9)', name: 'Nine'},
     {value: 'var(--size-10)', name: 'Ten'},
   ];
+  state.margins = [...state.paddings];
   state.orders = [
     '',
     {name: 'default', value: 'default'},
@@ -96,7 +97,14 @@ initialize(inputs, state) {
     {name: 'two', value: 'var(--shadow-2)'},
     {name: 'three', value: 'var(--shadow-3)'},
     {name: 'four', value: 'var(--shadow-4)'}
-  ]
+  ];
+  state.overflows = [
+    {name: '', value: ''},
+    {name: 'visible', value: 'visible'},
+    {name: 'hidden', value: 'hidden'},
+    {name: 'auto', value: 'auto'},
+    {name: 'scroll', value: 'scroll'}
+  ];
 },
 shouldUpdate({data, key}) {
   return (data && key);
@@ -107,11 +115,13 @@ shouldRender({data, key}) {
 render({data, propName}, state) {
   const prop = this.propByName(data.props, propName)
   if (prop?.value) {
-    const {flex, fontSize, borderWidth, borderRadius, position, padding, height, width, order, color, backgroundColor, display, alignItems, boxShadow} = prop.value;
+    const {flex, fontSize, borderWidth, borderRadius, overflow, position, margin, padding, height, width, order, color, backgroundColor, display, alignItems, boxShadow} = prop.value;
     return {
       flexes: this.renderOptions(state.flexes, flex),
       fontSizes: this.renderOptions(state.fontSizes, fontSize),
+      overflows: this.renderOptions(state.overflows, overflow),
       paddings: this.renderOptions(state.paddings, padding),
+      margins: this.renderOptions(state.margins, margin),
       borderWidths: this.renderOptions(state.borderWidths, borderWidth),
       borderRadiuses: this.renderOptions(state.borderRadiuses, borderRadius),
       positions: this.renderOptions(state.positions, position),
@@ -248,6 +258,16 @@ template: html`
   <div cell>
     <div label>Padding</div>
     <select repeat="option_t" on-change="onPropChange" key="padding">{{paddings}}</select>
+  </div>
+
+  <div cell>
+    <div label>Margin</div>
+    <select repeat="option_t" on-change="onPropChange" key="margin">{{margins}}</select>
+  </div>
+
+  <div cell>
+    <div label>Overflow</div>
+    <select repeat="option_t" on-change="onPropChange" key="overflow">{{overflows}}</select>
   </div>
 
   <div cell>

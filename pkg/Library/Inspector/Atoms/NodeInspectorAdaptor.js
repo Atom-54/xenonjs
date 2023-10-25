@@ -118,11 +118,12 @@ makeProp(atomId, propName, types, state) {
 },
 formatCandidateList(candidates, objectId, prop, propConns) {
   const type = prop.store.type;
-  const typedCandidates = [...new Set([...(candidates[type] ?? []), ...candidates.String, ...candidates.Pojo])];
+  const stretchTypeNames = [type, 'Pojo', 'String', 'MultilineText'];
+  const stretchTypeCandidates = stretchTypeNames.map(n => candidates[n]).filter(i=>i).flat();
+  const uniqueCandidates = [...new Set(stretchTypeCandidates)];
+  //const typedCandidates = [...new Set([...(candidates[type] ?? []), ...(candidates.String ?? []), ...(candidates.Pojo ?? [])])];
   // candidate = {key, type, name}
-  const sorter = (c1, c2) => this.sortCandidates(propConns, prop.name, type, c1, c2);
-  typedCandidates.sort(sorter);
-  // insert separator(s)
+  // separator support
   let separators = {};
   const isSeparator = (type, kind) => {
     if (!separators[kind]) {
@@ -131,9 +132,12 @@ formatCandidateList(candidates, objectId, prop, propConns) {
       }
     }
   };
+  // sort by whatever
+  const sorter = (c1, c2) => this.sortCandidates(propConns, prop.name, type, c1, c2);
+  uniqueCandidates.sort(sorter);
   // build select list
   const selected = [];
-  typedCandidates.forEach(candidate => {
+  uniqueCandidates.forEach(candidate => {
     const [objectId, atomName, propName] = candidate.split('$');
     if (!propName) {
       log.debug('candidate weirdness:', candidate);

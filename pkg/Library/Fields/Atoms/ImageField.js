@@ -4,18 +4,20 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({image, url}, state, {isDirty}) {
-  if (isDirty('url')) {
-    return {image: {url}};
+update({form, image, value}, state, {isDirty, service}) {
+  service('FormService', 'registerField', {form});
+  if (isDirty('value')) {
+    return {image: {url: value}, value};
   }
   if (image && isDirty('image')) {
-    return {image};
+    return {image, value};
   }
 },
 
 onImage({eventlet: {value}}) {
   return {
-    image: {url: value}
+    image: {url: value},
+    value
   };
 },
 

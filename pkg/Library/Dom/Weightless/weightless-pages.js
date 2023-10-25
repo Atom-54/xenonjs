@@ -10,6 +10,7 @@ const template = Xen.Template.html`
   :host {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     background-color: var(--theme-color-bg-2);
   }
 </style>
@@ -39,7 +40,8 @@ export class WeightlessPages extends Xen.Async {
     //   console.log('<slot> has these assignedElements:', slot.assignedElements());
     // }
     //this.commandeerTabControl();
-    this.childrenChanged();
+    // TODO(sjmiles): client order is not correct with asynchrony
+    setTimeout(() => this.childrenChanged(), 100);
   }
   update({tabs, selected, disabletabs}, state) {
     this.childrenChanged();
@@ -63,7 +65,7 @@ export class WeightlessPages extends Xen.Async {
     };
   }
   _didRender({}, {children}) {
-    children.sort((a, b) => (a?.style?.order ?? 1) - (b?.style?.order ?? 1));
+    children.sort((a, b) => (Number(a?.style?.order) || 0) - (Number(b?.style?.order) || 0));
     children?.forEach((c, i) => c.style.display = (i === this.key) ? null : 'none');
   }
   onTabChange(e) {
