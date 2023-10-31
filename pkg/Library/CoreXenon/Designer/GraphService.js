@@ -64,7 +64,7 @@ export const GraphService = {
       'RunInRun': '../Run',
       'ContactUs': 'https://discord.gg/PFsHCJHJdN',
       'Email': 'mailto:info@xenonjs.com',
-      'BugReport': 'https://github.com/Atom54/xenonjs/issues/new'
+      'BugReport': 'https://github.com/Atom-54/xenonjs/issues/new'
     };
     const url = urls[data?.url];
     if (url) {
