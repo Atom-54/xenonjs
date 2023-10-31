@@ -81,11 +81,11 @@ export const createLogFactory = () => {
   return logf;
 };
 
-if (globalThis.logf) {
-  console.warn('attempted global logf overwrite');
-} else {
+// if (globalThis.logf) {
+//   console.warn('attempted global logf overwrite');
+// } else {
   // create a default factory
   globalThis.logf = createLogFactory();
-}
+// }
 
 export const logf = globalThis.logf;

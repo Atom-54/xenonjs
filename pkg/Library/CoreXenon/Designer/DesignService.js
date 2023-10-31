@@ -23,7 +23,9 @@ export const DesignService = {
     updateProp(layer, data);
   },
   LayoutChanged(layer, atom, {layout}) {
-    layoutChanged(layer, layout);
+    if (layer.id === 'baseLayer') {
+      layoutChanged(layer, layout);
+    }
   },
   GetLayoutObject(layer, atom, {objectId}) {
     const design = getDesignLayer(layer);

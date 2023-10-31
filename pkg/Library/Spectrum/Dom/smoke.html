@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<script type="module" src="./spectrum-tab-panels.js"></script>
+
+<style>
+  spectrum-tab-panels {
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+    border: 1px solid blue;
+    padding: 8px;
+  }
+  div {
+    padding-top: 32px;
+  }
+</style>
+
+<sp-theme theme="spectrum" scale="medium" color="light">
+
+  <sp-tabs>
+    <sp-tab label="Tab 1" value="1"></sp-tab>
+    <sp-tab label="Tab 2" value="2"></sp-tab>
+    <sp-tab label="Tab 3" value="3"></sp-tab>
+    <sp-tab label="Tab 3" value="4"></sp-tab>
+    <sp-tab-panel value="1"></sp-tab-panel>
+  </sp-tabs>
+
+  <br><hr><br>
+
+  <spectrum-tab-panels selected="1" id="panels">
+    <div slot="Container">Foo Content!</div>
+    <div slot="Container2">Bar Content</div>
+  </spectrum-tab-panels>
+</sp-theme>
+
+<script type="module">
+  panels.tabs = [{
+    label: "Foo", 
+    value: 1
+  },{
+    label: "Bar",
+    value: 2
+  }];
+</script>
+

@@ -9,18 +9,19 @@ async update({graphId, graph, data, designable, composer}, state, {service, isDi
     output({data});
   }
   const fullId = graphId ?? this.getFullId(graph);
-  if (state.layerId && state.fullId !== fullId) {
+  if (state.layerId && (state.fullId !== fullId || (graph && isDirty('graph')))) {
     await service('GraphService', 'DestroyLayer', {layerId: state.layerId});
     state.layerId = null;
   }
   state.fullId = fullId;
-  if (!state.layerId && (graphId || graph)) {
+  if (!state.layerId && (graphId || (graph?.nodes))) {
     const layerId = state.layerId = await service('GraphService', 'CreateLayer', {graph, graphId, designable});
     if (layerId) {
+      //const graph = await service('GraphService', 'GetLayerGraph', {layerId})
       //await service('GraphService', 'CreateLayerBinding', {layerId});
       //const io = await service('GraphService', 'ComputeLayerIO', {layerId});
       //const i = io.i?.map(path => path.replace(/\$/g, '.'));
-      return {layerId, graphId}; //, io: i};
+      return {layerId, graphId}; //, graph}; //, io: i};
     }
   }
   if (state.layerId && composer) {
@@ -28,7 +29,7 @@ async update({graphId, graph, data, designable, composer}, state, {service, isDi
   }
 },
 getFullId(graph) {
-  if (graph) {
+  if (graph && graph.meta) {
     const {meta} = graph;
     if (meta.readonly) {
       if (meta.ownerId) {
