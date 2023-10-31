@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {UXToolbarNode} from '../../UX/Nodes/UXToolbarNode.js';
@@ -13,7 +13,7 @@ export const FooterNode = {
         "flex": 1
       }, {
         "name": "name",
-        "label": "© 2023 NeonFlan, LLC",
+        "label": "© 2023 Atom54, LLC",
         "style": "font-size: 0.6em; color: var(--xcolor-three);"
       }, {
         "name": "spanner",

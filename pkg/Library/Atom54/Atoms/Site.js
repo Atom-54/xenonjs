@@ -1,15 +1,15 @@
 export const atom = (log, resolve) => ({
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update(inputs, state) {
 },
 render() {
   return {
-    demo1: resolve('$library/NeonFlan/Assets/demo1.png'),
-    demo2: resolve('$library/NeonFlan/Assets/demo2.png'),
+    demo1: resolve('$library/Atom54/Assets/demo1.png'),
+    demo2: resolve('$library/Atom54/Assets/demo2.png'),
     sections: [
       {title: 'one', contents: 'one one one'},
       {title: 'two', contents: '2 2 2 2 2 2 2'}

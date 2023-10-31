@@ -1,7 +1,7 @@
 export const atom = (log, resolve) => ({
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update(inputs, state, {service}) {
@@ -102,7 +102,7 @@ template: html`
   }
 
 </style>
-<h1>All XenonJs and NeonFlan node types information:</h1>
+<h1>All XenonJs and Atom54 node types information:</h1>
 
 <div categories repeat="category_t">{{categories}}</div>
 

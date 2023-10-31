@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as pixiModules from '../../../third-party/pixijs/v7.3.1/pixi.mjs'; 

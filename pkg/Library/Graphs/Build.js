@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 export const graph = {
@@ -72,7 +72,7 @@ export const graph = {
       "container": "WorkPanel$splitPanel#Container2"
     },
     "FooterToolbar": {
-      "type": "$library/NeonFlan/Nodes/FooterNode",
+      "type": "$library/Atom54/Nodes/FooterNode",
       "container": "RightMainCollapse$panel#Container"
     },
     "SplitPanel": {

@@ -1,32 +1,28 @@
 export const atom = (log, resolve) => ({
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 initialize(inputs, state, {service}) {
   state.chat = body => service('OpenAIService', 'chat', body);
-  // TODO(sjmiles): shouldn't be hardcoded, um, obvs
-  // const server = `https://openai.iamthearchitect.workers.dev`;
-  // const post = (url, body) => fetch(url, {method: 'POST', body});
-  // state.chat = body => post(`${server}/chat`, body);
 },
-shouldUpdate({user}) {
-  return user;
+shouldUpdate({user}, state, {isDirty}) {
+  return Boolean(user) && isDirty('go');
 },
-async update({on, ...inputs}, state, {isDirty, output}) {
-  const dirtyOn = isDirty('on');
-  if (on && dirtyOn) {
-    state.result = null;
-  }
-  if (on && !state.result) {
-    output({working: true, result: state.result});
-    const result = state.result = await this.updateResult(inputs, state);
+async update({go, ...inputData}, state, {isDirty, output}) {
+  // const dirtyOn = isDirty('on');
+  // if (on && dirtyOn) {
+  state.result = null;
+  // }
+  //if (go && !state.result) {
+    output({working: true, result: null});
+    const result = /*state.result =*/ await this.updateResult(inputData, state);
     return {result, working: false};
-  }
-  if (dirtyOn) {
-    return {working: on};
-  }
+  //}
+  //if (dirtyOn) {
+  //  return {working: on};
+  //}
 },
 async updateResult({system, assistant, user}, state) {
   const messages = [];
@@ -39,7 +35,7 @@ async updateResult({system, assistant, user}, state) {
     messages: JSON.stringify(messages),
     model: 'gpt-3.5-turbo-16k',
     //model: 'gpt-4',
-    max_tokens: 15*1024,
+    max_tokens: 5*1024,
     temperature: 0.8,
     frequency_penalty: 0
 };

@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Params} from 'xenonjs/Library/CoreXenon/Reactor/Atomic/js/utils/params.js';
@@ -39,9 +39,10 @@ const reifyGraph = async (flan, graph) => {
   }
   graph.state.Main$designer$disabled = true;
   graph.nodes.footer = {
-    type: '$library/NeonFlan/Nodes/FooterNode',
-    container: 'root$panel#Container'
+    type: '$library/Atom54/Nodes/FooterNode',
+    container: 'base$Main$panel#Container'
   };
+  graph.state.Main$designer$layout.footer = {order: 100};
   //log(graph);
   // create layer
   await Flan.createLayer(flan, [baseGraph, graph], 'base');

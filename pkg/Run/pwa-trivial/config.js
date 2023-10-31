@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const xenonPath = 'http://localhost:9871/latest'

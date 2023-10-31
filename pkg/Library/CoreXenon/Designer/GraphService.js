@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {assign, entries, keys, values, map} from '../Reactor/safe-object.js';
@@ -64,7 +64,7 @@ export const GraphService = {
       'RunInRun': '../Run',
       'ContactUs': 'https://discord.gg/PFsHCJHJdN',
       'Email': 'mailto:info@xenonjs.com',
-      'BugReport': 'https://github.com/NeonFlan/xenonjs/issues/new'
+      'BugReport': 'https://github.com/Atom54/xenonjs/issues/new'
     };
     const url = urls[data?.url];
     if (url) {

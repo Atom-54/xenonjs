@@ -1,7 +1,7 @@
 export const atom = (log) => ({
   /**
    * @license
-   * Copyright 2023 NeonFlan LLC
+   * Copyright 2023 Atom54 LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
   async update({messages_0, messages_1, messages_2, messages_3}, state, {isDirty}) {
