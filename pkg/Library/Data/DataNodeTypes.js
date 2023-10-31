@@ -12,7 +12,12 @@ export const DataNodeTypes = {
     types: {
       Data$jsonDescription: 'is converted to JSON, if a String; otherwise returned as is'
     },
-    type: '$library/Data/Nodes/DataNode',
+    type: '$library/Data/Nodes/DataNode'
+  },
+  CsvData: {
+    category,
+    description: 'Parse CSV text',
+    type: '$library/Data/Nodes/CsvDataNode'
   },
   Gate: {
     category,
@@ -21,7 +26,7 @@ export const DataNodeTypes = {
       Gate$trigger: 'Nonce',
       Gate$jsonDescription: 'is converted to JSON, if a String; otherwise returned as is'
     },
-    type: '$library/Data/Nodes/GateNode',
+    type: '$library/Data/Nodes/GateNode'
   },
   DataCollector: {
     category,

@@ -18,6 +18,10 @@ async update({context, prompt}, state, {output, isDirty}) {
   if (isDirty('restart')) {
     log('working');
     output({working: true});
+    if (typeof prompt === 'object') {
+      prompt = JSON.stringify(prompt);
+      log.debug(prompt);
+    }
     const response = await state.ai(context, prompt);
     const text = await response.text();
     completion = text.trim() || '(unintelligible)';

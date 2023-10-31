@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<!-- -->
+<script type="importmap">{
+  "imports": {
+    "xenonjs/": "../"
+  }
+}</script>
+<!-- page info -->
+<!-- <link rel="icon" href="../Library/Assets/icons/favicon.png"> -->
+<title>Anew</title>
+<!-- icon font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<!-- flavor -->
+<!-- web-fonts (optional) -->
+<!-- <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> -->
+<!-- <link rel="stylesheet" href="../Library/Common/body.css"> -->
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap" rel="stylesheet">
+<!-- -->
+<style>
+  body {
+    margin: 0;
+  }
+  [flex] {
+    flex: 1 0 0;
+  }
+  [atom] {
+    display: block;
+    /* margin: 8px; */
+  }
+  #one, #inspector, #catalog, #schema {
+    padding: 8px;
+    margin: 8px;
+    border: 1px dotted black;
+    flex-shrink: 0;
+  }
+  #schema {
+    display: flex;
+    flex-direction: column;
+    font-size: 50%;
+    font-family: monospace;
+    /* overflow: hidden; */
+  }
+  #schema > * {
+    flex: 1 0 0;
+  }
+  #one {
+    width: 20em;
+  }
+  [tools] {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 22em;
+    display: flex;
+    flex-direction: column;
+  }
+  button-atom {
+    margin: 8px 0;
+  }
+  tabpanels-atom {
+    height: 200px;
+  }
+</style>
+
+<sp-theme theme="spectrum" scale="medium" color="light">
+
+  <div style="display: flex;">
+    <div id="one"></div>
+  </div>
+  <div tools>
+    <div id="inspector" flex></div>
+    <div id="schema" flex></div>
+    <div id="catalog" flex></div>
+  </div>
+
+</sp-theme>
+
+<!-- application -->
+<script type="module" src="./a001.js"></script>
+</html>

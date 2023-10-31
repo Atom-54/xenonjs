@@ -3,6 +3,7 @@
  * Copyright 2023 NeonFlan LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+import '../../CoreXenon/Reactor/Atomic/js/logf.js';
 import {Composer} from '../../CoreXenon/Reactor/Atomic/js/core/Composer.js';
 import {Xen} from '../Xen/xen-async.js';
 import {IconsCss} from '../Material/material-icon-font/icons.css.js';
@@ -72,7 +73,7 @@ export class XenComposer extends Composer {
     node.addEventListener(type, e => {
       // TODO(sjmiles): just added this 6/2020 for no bubbling; would have sworn there was already no bubbling
       e.stopPropagation();
-      e.preventDefault();
+      //e.preventDefault();
       const data = {key: null, value: null};
       // walk up the event path to find the topmost key/value data
       const branch = e.composedPath();
@@ -92,6 +93,8 @@ export class XenComposer extends Composer {
             data.value = elt.value;
           } else if (elt.hasAttribute('value')) {
             data.value = elt.getAttribute('value');
+          } else if ('selected' in elt) {
+            data.value = elt.selected;
           }
         }
         if (e.currentTarget === elt || data.key || data.value) {

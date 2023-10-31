@@ -28,17 +28,18 @@ template: html`
     flex-direction: column;
   }
   [bar] > * {
-    padding: 0 10px;
+    padding: 0 4px;
   }
   input {
+    min-width: 120px;
     max-width: 500px;
   }
 </style>
 
 <div bar>
-  <span>Enter image url:</span>
-  <input flex x5 type="text" on-change="onImage">
-  <span flex>or</span>
+  <span>Image url:</span>
+  <input flex type="text" on-change="onImage">
+  <span>or</span>
   <image-upload on-image="onImage" accept="image/*">
     <button>Upload</button>
   </image-upload>
