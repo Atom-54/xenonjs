@@ -66,7 +66,7 @@ It is also easy to run `Build` and `Run` locally:
 
 Clone the repo:
 ```
-git clone https://github.com/Atom54/xenonjs.git -b 0.7
+git clone https://github.com/Atom-54/xenonjs.git -b 0.7
 
 cd xenonjs
 ```
@@ -98,7 +98,7 @@ By default, the Graph that was last open in `Build` will be run. To choose a dif
 We spend most of our time writing code and, unfortunately, this means that our documentation is incomplete or lags behind. We are working on it!  
   
 In the meantime, if you have any questions, ideas or feedback, please, don't hesitate to reach out:
-* either by filing an [GitHub issue](https://github.com/Atom54/xenonjs/issues/new) 
+* either by filing an [GitHub issue](https://github.com/Atom-54/xenonjs/issues/new) 
 * or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
 
 
@@ -134,4 +134,4 @@ Computation ideally occurs locally, and data egress is constrained.
 ---
   
   
-This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom-54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).

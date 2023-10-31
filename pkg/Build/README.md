@@ -26,7 +26,7 @@ or you can run it locally, as described in [How to run XenonJs locally](../../RE
 To read a more detailed `Build/` tutorial, please, take a look at [Build HowTo](https://docs.google.com/presentation/d/1UbfIxy5RaawlqpX4s04EUrB79Yoium-iYEkV1hk0IgA/edit#slide=id.p).
 
 
-**Fun fact**: the Build/ app is a XenonJs [Graph](https://github.com/Atom54/xenonjs/blob/main/pkg/Graphs/Build.js), and can be edited inside itself!
+**Fun fact**: the Build/ app is a XenonJs [Graph](https://github.com/Atom-54/xenonjs/blob/main/pkg/Graphs/Build.js), and can be edited inside itself!
 
 
 ### Node types
@@ -35,7 +35,7 @@ To add a new node, or to morph an existing one, you will select a node type:
 ![Node types](./assets/readme/node-types.png)
 
 The XenonJs engine supports running arbitrary Nodes (no compilation or registration steps involved). Today the UX supports selecting a Node type for the existing collection only.
-If you would like to add custom Nodes, refer to this [sample PR](https://github.com/Atom54/xenonjs/pull/114), and read the Nodes types [readme](../Library/README.md).
+If you would like to add custom Nodes, refer to this [sample PR](https://github.com/Atom-54/xenonjs/pull/114), and read the Nodes types [readme](../Library/README.md).
   
 
 ## Custom Libraries
@@ -56,4 +56,4 @@ Here you can find detailed codelabs for authoring your own components: [Atoms](.
 ---
   
   
-This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom-54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
