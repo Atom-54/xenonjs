@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const category = 'AI';
@@ -50,10 +50,10 @@ export const OpenAINodeTypes = {
     category,
     description: 'Prompts the OpenAI chat interface',
     types: {
+      OpenAISimpleChat$go: 'Nonce',
       OpenAISimpleChat$system: 'String',
       OpenAISimpleChat$assistant: 'String',
       OpenAISimpleChat$user: 'String',
-      OpenAISimpleChat$on: 'Boolean',
       OpenAISimpleChat$result: 'String',
       OpenAISimpleChat$working: 'Boolean'
     },

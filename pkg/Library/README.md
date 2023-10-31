@@ -40,7 +40,7 @@ For example:
 })
 ```
 
-Here is an example [TextField](https://github.com/NeonFlan/xenonjs/blob/main/pkg/Library/Fields/Atoms/TextField.js) atom that receives a `label` and an initial `value` as inputs, renders an input text and outputs a `value` that is being entered by the user. 
+Here is an example [TextField](https://github.com/Atom-54/xenonjs/blob/main/pkg/Library/Fields/Atoms/TextField.js) atom that receives a `label` and an initial `value` as inputs, renders an input text and outputs a `value` that is being entered by the user. 
 
 
 <i>Note: in this example the template is DOM, but it doesn't have to be.</i>  
@@ -53,7 +53,7 @@ For more information see [Atom.md](./Atom.md).
 Node is a possible declaration (or instructions) of how the an Atom (or Atoms) could be reified and used in a Graph.
 Node is expressed as a simple JSON object.
 
-Referencing the `TextField` example above, here is a corresponding [TextFieldNode](https://github.com/NeonFlan/xenonjs/blob/main/pkg/Library/Fields/Nodes/TextFieldNode.js):
+Referencing the `TextField` example above, here is a corresponding [TextFieldNode](https://github.com/Atom-54/xenonjs/blob/main/pkg/Library/Fields/Nodes/TextFieldNode.js):
 ```
 {
   field: {
@@ -105,7 +105,7 @@ TextField: {
   type: '$library/Fields/Nodes/TextFieldNode'
 }
 ```
-More examples [here](https://github.com/NeonFlan/xenonjs/blob/main/pkg/Library/Fields/FieldsNodeTypes.js).
+More examples [here](https://github.com/Atom-54/xenonjs/blob/main/pkg/Library/Fields/FieldsNodeTypes.js).
 
 For more information see [NodeType.md](./NodeType.md).
 
@@ -145,4 +145,4 @@ We use JSON format to serialize graphs. For example, the Demo graph above looks 
 ---
   
   
-This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/NeonFlan/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom-54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).

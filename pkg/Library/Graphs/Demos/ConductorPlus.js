@@ -83,7 +83,7 @@ const graph = {
       "container":"Main$panel#Container"
     },
     "GraphFlanner":{
-      "type":"$library/NeonFlan/Nodes/GraphFlannerNode",
+      "type":"$library/Atom54/Nodes/GraphFlannerNode",
       "container":"Main$panel#Container"
     },
     "GraphAgent":{

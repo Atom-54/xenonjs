@@ -1,23 +1,23 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'NeonFlan';
+const category = 'Atom54';
 
-export const NeonFlanNodeTypes = {
+export const Atom54NodeTypes = {
   UXSchemaNode: {
     // TODO: move types here?
     category,
-    type: '$library/NeonFlan/Nodes/UXSchemaNode'
+    type: '$library/Atom54/Nodes/UXSchemaNode'
   },
   SiteNode: {
     category,
-    type: '$library/NeonFlan/Nodes/SiteNode'
+    type: '$library/Atom54/Nodes/SiteNode'
   },
   NodeTypesDocNode: {
     category,
-    type: '$library/NeonFlan/Nodes/NodeTypesDocNode'
+    type: '$library/Atom54/Nodes/NodeTypesDocNode'
   },
   GraphFlanner: {
     category,
@@ -27,6 +27,6 @@ export const NeonFlanNodeTypes = {
       GraphFlanner$label: 'String'
     },
     description: 'Choose the best suitable graph',
-    type: '$library/NeonFlan/Nodes/GraphFlannerNode'
+    type: '$library/Atom54/Nodes/GraphFlannerNode'
   }
 };

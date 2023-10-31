@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Params} from '../Library/Xenon/Utils/params.js';
@@ -42,7 +42,7 @@ const reifyGraph = async (flan, graph) => {
   }
   graph.state[`Main$designer$disabled`] = true;
   graph.nodes['footer'] = {
-    type: "$library/NeonFlan/Nodes/FooterNode",
+    type: "$library/Atom54/Nodes/FooterNode",
     container: "root$panel#Container"
   };
   //log(graph);

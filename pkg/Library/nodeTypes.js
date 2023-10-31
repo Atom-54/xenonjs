@@ -1,6 +1,6 @@
 /**
  * @license
- * Copyright 2023 NeonFlan LLC
+ * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 // xenonjs
@@ -28,7 +28,7 @@ import {TensorFlowNodeTypes} from './TensorFlow/TensorFlowNodeTypes.js';
 import {GamesNodeTypes} from './Games/GamesNodeTypes.js';
 import {LocalStorageNodeTypes} from './LocalStorage/LocalStorageNodeTypes.js';
 import {LocaleNodeTypes} from './Locale/LocaleNodeTypes.js';
-import {NeonFlanNodeTypes} from './NeonFlan/NeonFlanNodeTypes.js';
+import {Atom54NodeTypes} from './Atom54/Atom54NodeTypes.js';
 import {MailNodeTypes} from './Mail/MailNodeTypes.js';
 import {PubSubNodeTypes} from './PubSub/PubSubNodeTypes.js';
 import {PeerNodeTypes} from './Peer/PeerNodeTypes.js';
@@ -67,7 +67,7 @@ const nodeTypes = {
   ...StorageNodeTypes,
   ...DateTimeTypes,
   ...CodeMirrorNodeTypes,
-  ...NeonFlanNodeTypes,
+  ...Atom54NodeTypes,
   ...GamesNodeTypes,
   ...LocalStorageNodeTypes,
   ...LocaleNodeTypes,
