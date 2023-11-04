@@ -2,13 +2,13 @@ const graph = {
   "meta":{
     "graphRects":{
       "CollapsePanel":{
-        "h":136,
+        "h":76,
         "l":80,
         "t":464,
         "w":200
       },
       "ColumnNata":{
-        "h":76,
+        "h":56,
         "l":896,
         "t":32,
         "w":200
@@ -17,73 +17,73 @@ const graph = {
         "l":352,
         "t":48,
         "w":200,
-        "h":60
+        "h":56
       },
       "Echo":{
-        "h":76,
         "l":624,
         "t":624,
-        "w":200
+        "w":200,
+        "h":56
       },
       "Echo2":{
         "l":896,
         "t":624,
         "w":200,
-        "h":76
+        "h":60
       },
-      "Grid":{
+      "Table":{
         "l":1152,
         "t":32,
         "w":200,
-        "h":96
+        "h":76
       },
       "KnowledgeSpace":{
         "l":80,
         "t":176,
         "w":200,
-        "h":76
+        "h":56
       },
       "LocalStorage":{
-        "h":76,
-        "l":352,
+        "l":368,
         "t":624,
-        "w":200
+        "w":200,
+        "h":56
       },
       "OpenAISimpleChat":{
         "l":624,
         "t":448,
         "w":200,
-        "h":116
+        "h":76
       },
       "Panel":{
-        "h":96,
         "l":80,
-        "t":528,
-        "w":200
+        "t":560,
+        "w":200,
+        "h":76
       },
       "PromptNata":{
         "l":352,
         "t":336,
         "w":200,
-        "h":76
+        "h":56
       },
       "RowNata":{
         "l":896,
         "t":336,
         "w":200,
-        "h":76
+        "h":56
       },
       "StringFormatter":{
         "l":352,
         "t":144,
         "w":200,
-        "h":156
+        "h":76
       },
       "StringFormatter2":{
         "l":896,
         "t":144,
         "w":200,
-        "h":156
+        "h":76
       },
       "TagField":{
         "l":80,
@@ -92,24 +92,27 @@ const graph = {
         "h":76
       },
       "ProgressBar":{
-        "l":896,
-        "t":432,
+        "l":912,
+        "t":464,
         "w":200,
-        "h":156
+        "h":56
       },
       "Button":{
         "l":624,
         "t":272,
         "w":200,
-        "h":96
+        "h":56
       }
     },
     "owner":"",
-    "readonly":true,
-    "timestamp":1691959626310,
+    "readonly":false,
+    "timestamp":1699048384873,
+    "description":"query OpenAI and get structured responses",
+    "customLibraries":{
+      
+    },
     "id":"KnowledgeSpace",
-    "designerId":"Main",
-    "description":"query OpenAI and get structured responses"
+    "designerId":"Main"
   },
   "nodes":{
     "CollapsePanel":{
@@ -132,7 +135,7 @@ const graph = {
       "container":"CollapsePanel$panel#Container",
       "type":"$library/EchoNode"
     },
-    "Grid":{
+    "Table":{
       "container":"Panel$panel#Container",
       "type":"$library/Data/Nodes/TableNode"
     },
@@ -186,12 +189,15 @@ const graph = {
     }
   },
   "state":{
-    "Grid$chart$options":{},
+    "Table$Table$options":{
+      
+    },
     "Main$designer$disabled":false,
     "Main$designer$style":"width: auto; height: auto;",
     "Main$panel$canvasLayout":"column",
     "Panel$panel$layout":"column",
     "ProgressBar$bar$height":2,
+    "Button$button$label":"Search",
     "Button$button$action":"toggle",
     "CollapsePanel$panel$collapsed":true,
     "CollapsePanel$panel$side":"right",
@@ -266,7 +272,7 @@ const graph = {
         "t":203.6953125,
         "w":928
       },
-      "Grid":{
+      "Table":{
         "borderStyle":"solid",
         "borderWidth":"0",
         "flex":"1",
@@ -277,14 +283,6 @@ const graph = {
         "w":813,
         "width":"auto",
         "height":"auto"
-      },
-      "GridData":{
-        "borderStyle":"solid",
-        "borderWidth":"var(--border-size-2)",
-        "h":132,
-        "l":32,
-        "t":32,
-        "w":132
       },
       "KnowledgeSpace":{
         "borderStyle":"solid",
@@ -331,7 +329,7 @@ const graph = {
         "t":0,
         "w":653,
         "height":null,
-        "width":null
+        "width":"auto"
       },
       "PromptNata":{
         "borderStyle":"solid",
@@ -413,16 +411,15 @@ const graph = {
     "StringFormatter2$formatter$format":"{\"rows\": ${arg0}, \"cols\": ${arg1}}",
     "TagField$field$label":"Facts to Gather",
     "TagField$field$value":"Name, Location, Cost, Attraction",
-    "ProgressBar$bar$interval":100,
-    "Button$button$label":"Search"
+    "ProgressBar$bar$interval":100
   },
   "connections":{
     "ColumnNata$JSONata$json":"StringFormatter$formatter$result",
     "Data$Data$json":"TagField$field$json",
     "Echo$echo$html":"OpenAISimpleChat$OpenAISimpleChat$result",
     "Echo2$echo$html":"StringFormatter$formatter$result",
-    "Grid$chart$columns":"ColumnNata$JSONata$result",
-    "Grid$chart$data":"RowNata$JSONata$result",
+    "Table$Table$columns":"ColumnNata$JSONata$result",
+    "Table$Table$data":"RowNata$JSONata$result",
     "LocalStorage$LocalStorage$storeValue":"KnowledgeSpace$field$text",
     "OpenAISimpleChat$OpenAISimpleChat$user":"PromptNata$JSONata$result",
     "PromptNata$JSONata$json":"StringFormatter$formatter$result",
@@ -430,9 +427,10 @@ const graph = {
     "StringFormatter$formatter$arg0":"Data$Data$value",
     "StringFormatter$formatter$arg1":"KnowledgeSpace$field$text",
     "StringFormatter2$formatter$arg0":"OpenAISimpleChat$OpenAISimpleChat$result",
-    "StringFormatter2$formatter$arg1":"TagField$field$value",
+    "StringFormatter2$formatter$arg1":"TagField$field$json",
     "ProgressBar$bar$inProgress":"OpenAISimpleChat$OpenAISimpleChat$working",
     "Button$button$value":"OpenAISimpleChat$OpenAISimpleChat$working",
-    "OpenAISimpleChat$OpenAISimpleChat$on":"Button$button$value"
+    "OpenAISimpleChat$OpenAISimpleChat$on":"Button$button$value",
+    "OpenAISimpleChat$OpenAISimpleChat$go":"Button$button$value"
   }
 };

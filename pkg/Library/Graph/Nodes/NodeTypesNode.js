@@ -6,6 +6,7 @@
 export const NodeTypesNode = {
   NodeTypes: {
     type: '$library/Graph/Atoms/NodeTypes',
+    inputs: ['query'],
     outputs: ['nodeTypes']
   }
 };

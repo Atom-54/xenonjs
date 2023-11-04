@@ -50,6 +50,7 @@ const updatePropWithConnection = async (design, objectId, propId, value) => {
       const liveValue = design.flan.state[Id.qualifyId(design.name, connValue)];
       const connectTarget = Id.sliceId(propId, 0, -2);
       const justTheseNodes = [Id.qualifyId(design.name, connectTarget)];
+      // Just curious, why did you comment this out? the old property value is maintained...
       //updateDataProp(design, propId, undefined);
       Flan.forwardStateChanges(design.flan, {[Id.qualifyId(design.name, propId)]: liveValue}, justTheseNodes);
     }
