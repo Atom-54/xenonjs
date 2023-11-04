@@ -57,5 +57,16 @@ export const GraphNodeTypes = {
       Layer$graph: 'String'
     },
     ligature: 'layers'
+  },
+  QueryBar: {
+    category,
+    type: '$library/Graph/Nodes/QueryBarNode',
+    types: {
+      QueryBar$query: 'String',
+      QueryBar$placeholder: 'String',
+      QueryBar$icon: 'String',
+      QueryBar$reactive: 'Boolean'
+    },
+    ligature: 'match_word'
   }
 };

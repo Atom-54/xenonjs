@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({query, index}, state, {isDirty}) {
-  if (query && (isDirty('query') || isDirty('trigger'))) {
+  if (query && isDirty('trigger')) {
     state.image = await this.requestImage(query, index);
     return {image: state.image};
   }

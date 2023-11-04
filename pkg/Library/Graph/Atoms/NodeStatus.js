@@ -18,7 +18,7 @@ render({selected}, {context}) {
     .flatMap(layerState => keys(layerState)
       .forEach(key => {
         const [layerName, objectName, propName] = key.split('$');
-        if (objectName === selected) {
+        if (layerName === selected) {
           //const displayKey = key.slice(prefix).replace(/\$/g, '.');
           const displayKey = [objectName, propName].join('.');
           info[displayKey] = layerState[key];
