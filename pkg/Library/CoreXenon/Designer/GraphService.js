@@ -29,12 +29,12 @@ export const GraphService = {
   async GetLayerGraph(layer, atom, {layerId}) {
     return Resources.get(layerId)?.graph;
   },
-  GetLayerIO(layer, atom, {layerId}) {
-    const designLayer = Design.getDesignLayer(layer);
-    return computeAllProperties(designLayer);
-    //const realLayer = Resources.get(layerId);
-    //return computeAllProperties(realLayer);
-  },
+  // GetLayerIO(layer, atom, {layerId}) {
+  //   const designLayer = Design.getDesignLayer(layer);
+  //   return computeAllProperties(designLayer);
+  //   //const realLayer = Resources.get(layerId);
+  //   //return computeAllProperties(realLayer);
+  // },
   async SetLayerComposer(layer, atom, {layerId, composerId}) {
     return setLayerComposer(Resources.get(layerId), Resources.get(composerId));
   },
@@ -264,7 +264,7 @@ const getNodeInfo = async (layer, nodeName) => {
     }
     // post-process info.atoms
     entries(info.atoms).forEach(([_, atomInfo]) => {
-      atomInfo.candidates = io.t; 
+      atomInfo.candidates = io.ot; 
     });
   }
   return info;
@@ -315,28 +315,36 @@ const computeAllProperties = layer => {
     return io;
   }, {});
   // map types to property names
-  const propsByType = entries(types).reduce((propsByType, [name, type]) => {
+  const propsByType = types => entries(types).reduce((propsByType, [name, type]) => {
     (propsByType[type] ??= []).push(name);
     return propsByType;
   }, {});
+  const outputTypes = {};
+  props.outputs.forEach(prop => {
+    const simplified = Id.sliceId(prop, 1);
+    outputTypes[simplified] = types[simplified] ?? 'Pojo';
+  });
+
   // this information assists with building connections
   const io = {
     i: typeify(props.inputs),
     o: typeify(props.outputs),
-    t: propsByType
+    t: propsByType(types),
+    ot: propsByType(outputTypes)
   };
-  propsByType.Pojo = pojoProps;
+  io.t.Pojo = pojoProps;
   //log.debug(io);
   return io;
 };
 
 const collectAllTypes = layer => {
   let allTypes = {};
+  const isTypeKey = name => !name.endsWith('Values') && !name.endsWith('Description');
   map(layer.graph.nodes, (nodeId, node) => {
     const nodeType = getNodeType(node.type);
     // add nodeTypes
     map(nodeType?.types, (name, value) => {
-      if (!name.endsWith('Values')) {
+      if (isTypeKey(name)) { //!name.endsWith('Values') && !name.endsWith('Description')) {
         allTypes[Id.joinId(nodeId, name)] = value;
       }
     });
@@ -349,7 +357,7 @@ const collectAllTypes = layer => {
         for (let [subNodeName, subNode] of entries(sublayer.graph.nodes)) {
           const nodeTypes = getNodeType(subNode.type)?.types || {};
           map(nodeTypes, (name, value) => {
-            if (!name.endsWith('Values')) {
+            if (isTypeKey(name)) { //!name.endsWith('Values') && !name.endsWith('Description')) {
               const key = Id.joinId(`${nodeId}_${subNodeName}`, name);
               allTypes[key] = value;
             }

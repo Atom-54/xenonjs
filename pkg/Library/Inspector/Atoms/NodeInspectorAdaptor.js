@@ -116,7 +116,7 @@ makeProp(atomId, propName, types, state) {
     visible: true
   };
 },
-formatCandidateList(candidates, objectId, prop, propConns) {
+formatCandidateList(candidates, targetObjectId, prop, propConns) {
   const type = prop.store.type;
   const stretchTypeNames = [type, 'Pojo', 'String', 'MultilineText'];
   const stretchTypeCandidates = stretchTypeNames.map(n => candidates[n]).filter(i=>i).flat();
@@ -145,7 +145,7 @@ formatCandidateList(candidates, objectId, prop, propConns) {
       if (isSeparator(type, 'Pojo') && (selected?.length > 0)) {
         selected.push({separator: true});
       }
-      if (candidate.objectId !== objectId) {
+      if (objectId !== targetObjectId) {
         selected.push({
           key: candidate,
           name: `${objectId}-${propName}`,
