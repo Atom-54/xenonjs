@@ -2,19 +2,20 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-import * as Pcb from '../framework/Pcb.js';
 import * as Graphs from './graphs.js';
 
 export const onservice = async (host, request) => {
-  const {kind, msg, data} = request;
+  const {kind, msg, data, resolve} = request;
   const service = services[kind];
   if (service) {
     const task = service[msg];
     if (task) {
-      return task(host, data);
+      const value = await task(host, data);
+      resolve(value);
     }
+  } else {
+    log.debug('onservice: no service for', host, request);
   }
-  log.debug('onservice: no service for', host, request);
 };
 
 const LayerService = {
@@ -24,30 +25,20 @@ const LayerService = {
       const {layer} = host;
       const {controller} = layer;
       const name = `${layer.name}$${host.name}`;
-      const sublayer = await Pcb.reifyLayer(controller, layer.layers, name, graph, host);
-      sublayer.root = layer.root || layer.name;
+      return controller.reifySublayer(layer, name, graph, host);
     }
   },
   async GetAtomInfo(host, data) {
-    let {layers} = host.layer.controller;
-    return getAtomInfo(layers);
+    return getAtomInfo(host.layer.controller);
   }
 };
 
-const getAtomInfo = layers => {
-  const result = [];
-  for (let layer of Object.values(layers)) {
-    for (let [id, atom] of Object.entries(layer.atoms)) {
-      result.push({
-        id,
-        type: atom.type.split('/').pop(),
-        container: atom.container
-      });
-    }
-    if (layer.layers) {
-      result.push(...getAtomInfo(layer.layers));
-    }
-  }
+const getAtomInfo = controller => {
+  const result = Object.entries(controller.atoms).map(([id, atom]) => ({
+    id,
+    type: atom.type.split('/').pop(),
+    container: atom.container
+  }));
   return result;
 };
 

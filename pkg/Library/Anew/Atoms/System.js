@@ -7,6 +7,7 @@ export const atom = (log, resolve) => ({
 async update({graphId}, state, {isDirty, service}) {
   if (isDirty('graphId')) {
     await service('LayerService', 'CreateLayer', {id: graphId});
+    log('LayerService::CreateLayer completed for', graphId);
   }
 },
 template: html`

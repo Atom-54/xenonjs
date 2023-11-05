@@ -56,6 +56,7 @@ template: html`
   [repeat] {
     flex: 1;
     display: flex;
+    align-content: start;
     justify-content: space-evenly;
     flex-wrap: wrap;
   }
@@ -64,20 +65,11 @@ template: html`
     flex-direction: column;
     padding: 0.3em 0;
     padding-right: 0.5em;
-    /* 
-    border: 1px solid silver;
-    margin: 0.25em; 
-    align-items: center; 
-    */
   }
   span {
     width: 10em;
     font-size: 0.75em;
     margin-bottom: 0.1em;
-    /* 
-    margin-right: 1em;
-    text-align: left; 
-    */
   }
   input {
     width: 15em;

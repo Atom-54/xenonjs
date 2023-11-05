@@ -27,65 +27,33 @@
     height: 100dvh;
     display: flex;
     flex-direction: column;
+    font-size: 10px;
   }
   [flex] {
-    flex: 1 0 0;
-  }
-  [atom] {
-    display: block;
-    overflow: hidden;
-  }
-  #main, #inspector, #catalog, #schema, #tree {
-    padding: 8px;
-    margin: 8px;
-    border: 1px dotted black;
-    flex: 1 0 0;
-  }
-  #schema {
-    display: flex;
-    flex-direction: column;
-    font-size: 50%;
-    font-family: monospace;
-    /* overflow: hidden; */
-  }
-  #schema > * {
     flex: 1 0 0;
   }
   sp-theme {
     flex: 1 0 0;
     display: flex;
+    flex-direction: column;
     align-items: stretch;
   }
-  [main] {
+  [atom] {
+    overflow: hidden;
+    /* */
     display: flex;
     flex-direction: column;
     flex: 1 0 0;
-  } 
-  [tools] {
-    width: 22em;
-    display: flex;
-    flex-direction: column;
-  }
-  button-atom {
-    margin: 8px 0;
-  }
-  tabpanels-atom {
-    flex: 1 0 0 ;
+    /* */
+    /* border: 1px dotted silver;
+    outline-offset: -1px; */
   }
 </style>
 
 <sp-theme theme="spectrum" scale="medium" color="light">
-  <div main>
-    <div id="main"></div>
-  </div>
-  <div tools>
-    <div id="inspector" flex></div>
-    <div id="schema" flex></div>
-    <div id="tree" flex></div>
-    <div id="catalog" flex></div>
-  </div>
+  <div id="root" atom></div>
 </sp-theme>
 
-<script type="module" src="./a002.js"></script>
+<script type="module" src="./index.js"></script>
 
 </html>
