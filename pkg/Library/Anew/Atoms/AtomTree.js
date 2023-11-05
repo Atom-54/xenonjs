@@ -10,7 +10,7 @@ async update({}, state, {service}) {
     name: 'root',
     atoms: this.atomsInContainer(allAtoms, 'root')
   };
-  root.atoms.forEach(atom => atom.name = atom.id.replace('$', '.'));
+  allAtoms.forEach(atom => atom.name = atom.id.replace(/\$/g, '.'));
   //
   const stratify = containerNode => {
     containerNode.atoms.forEach(atom => {
@@ -18,8 +18,9 @@ async update({}, state, {service}) {
       const containers = [...new Set(atoms.map(({container}) => container.split('#').pop()))];
       atom.containers = containers.map(name => {
         const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);
-        contained.forEach(atom => atom.name = atom.id.replace('$', '.'));
-        return {name, atoms: contained}
+        const node = {name, atoms: contained};
+        stratify(node);
+        return node;
       });
     });
   };
@@ -39,7 +40,14 @@ template: html`
     font-size: 70%;
   }
   [atoms], [container] {
-    padding-left: 12px;
+    padding-left: 0.4em;
+  }
+  [label] {
+    white-space: nowrap;
+  }
+  icon {
+    width: 10px;
+    height: 10px;
   }
 </style>
 
@@ -47,14 +55,14 @@ template: html`
 
 <template container_t>
   <div container>
-    <div><icon>folder</icon>&nbsp;<span>{{name}}</span></div>
+    <div label><icon>folder</icon>&nbsp;<span>{{name}}</span></div>
     <div atoms repeat="atom_t">{{atoms}}</div>
   </div>
 </template>
 
 <template atom_t>
   <div>
-    <div><icon>settings</icon>&nbsp;<span>{{name}}</span></div>
+    <div label><icon>settings</icon>&nbsp;<span>{{name}}</span></div>
     <div repeat="container_t">{{containers}}</div>
   </div>
 </template>

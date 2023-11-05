@@ -21,6 +21,23 @@ export class XenComposer extends Composer {
     this.useShadowRoot = useShadowRoot;
     this.onevent = onevent;
   }
+  applyModel(slot, model) {
+    slot.set(model);
+    if (typeof model?.style === 'object') {
+      Object.assign(slot.root.host.style, model.style);
+      // if (model.style.order) {
+      //   const host = slot.root.host;
+      //   let sibling = host.previousSibling;
+      //   while (Number(sibling?.style.order) > model.style.order) {
+      //     sibling = sibling.previousSibling;
+      //   }
+      //   if (sibling !== host.previousSibling) {
+      //     console.warn('order monkey: moving', host, 'before', sibling);
+      //     host.parentElement.insertBefore(host, sibling);
+      //   }
+      // }
+    }
+  }
   setRoot(root) {
     this.root = root;
     this.processPendingPackets();

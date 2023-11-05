@@ -34,6 +34,9 @@ export class Composer {
       }
       if (!slot) {
         slot = this.maybeGenerateSlot(packet);
+        if (!slot) {
+          this.pendingPackets.push(packet);
+        }
       }
       if (slot) {
         this.renderSlot(slot, packet);
@@ -42,7 +45,7 @@ export class Composer {
   }
   renderSlot(slot, {container, content: {model}}) {
     this.maybeReattachSlot(slot, container);
-    slot.set(model);
+    this.applyModel(slot, model);
     this.processPendingPackets();
   }
   maybeGenerateSlot(packet) {
@@ -61,7 +64,6 @@ export class Composer {
       return slot;
     }
     // packet has no slot (yet)
-    this.pendingPackets.push(packet);
     log(`container [${container}] unavailable for slot [${cacheId}]`);
     // if ((++packet['pendCount'] % 1e4) === 0) {
     //   log.warn(`container [${container}] unavailable for slot [${cacheId}] (x1e4)`);

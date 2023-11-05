@@ -1,69 +1,38 @@
-export const graphOne = {
-  Tabs: {
-    type: '$library/Spectrum/Atoms/SpectrumTabs'
-  },
-  TabPanels: {
-    type: '$library/Spectrum/Atoms/SpectrumTabPanels'
-  },
-  Card: {
-    container: 'main$GraphOne$TabPanels#Container',
-    type: '$library/Spectrum/Atoms/SpectrumCard',
-    state: {
-      heading: 'Cards for Fun',
-      subheading: 'just trying stuff'
-    },
-  },
-  Card2: {
-    type: '$library/Spectrum/Atoms/SpectrumCard',
-    state: {
-      //size: 's',
-      asset: 'file',
-      heading: 'File Card',
-      subheading: 'somefile.js',
-      description: '3kb'
-      //horizontal: true
-    }
-  },
-  Card3: {
-    type: '$library/Spectrum/Atoms/SpectrumCard',
-    state: {
-      imageSrc: '$library/Assets/dogs.png',
-      heading: 'Dogs!'
-    }
-  },
-  GraphThree: {
+export const Build = {
+  Layout: {
     type: '$library/Anew/Atoms/System',
     state: {
-      graphId: 'graphThree'
+      graphId: 'BuildLayout'
     }
-  }
-};
-
-export const inspectorGraph = {
-  Echo: {
-    type: '$library/Echo'
   },
   Inspector: {
-    type: '$library/Anew/Atoms/Inspect'
-  }
-};
-
-export const echoGraph = {
-  Echo: {
-    type: '$library/Echo'
-  }
-};
-
-export const treeGraph = {
+    type: '$library/Anew/Atoms/System',
+    container: 'Layout$BodyRight#Container2',
+    state: {
+      graphId: 'inspectorGraph',
+      style: {
+        order: 1,
+        borderBottom: '1px solid #cccccc'
+      }
+    }
+  },
   AtomTree: {
-    type: '$library/Graph/Atoms/AtomTree'
-  }
-};
-
-export const catalogGraph = {
+    type: '$library/Anew/Atoms/AtomTree',
+    container: 'Layout$BodyRight#Container2',
+    state: {
+      style: {
+        padding: '0.6rem',
+        order: 2
+      }
+    }
+  },
   Catalog: {
     type: '$library/Layout/Atoms/Templated',
+    container: 'Layout$BodyLeft#Container',
     state: {
+      style: {
+        padding: '0.6rem'
+      },
       items: [{
         category: "Atoms",
         items: [{
@@ -89,54 +58,80 @@ export const catalogGraph = {
 </div>
       `
     }
-  }
-};
-
-export const graphTwo = {
-  Button: {
-    type: '$library/Spectrum/Atoms/SpectrumButton',
-    state: {
-      label: 'GraphTwo!'
-    }
   },
-  GraphOne: {
-    type: '$library/Anew/Atoms/System',
-    state: {
-      graphId: 'graphOne'
-    }
-  }
-};
-
-export const graphThree = {
-  Button: {
-    type: '$library/Spectrum/Atoms/SpectrumButton',
-    state: {
-      label: 'GraphThree!'
-    }
-  }
-};
-
-export const documentsGraph = {
   TabPanels: {
     type: '$library/Spectrum/Atoms/SpectrumTabPanels',
+    container: 'Layout$BodyMiddle#Container2',
     state: {
-      tabs: ['Graph One', 'Graph Two']
-    }
-  },
-  Card: {
-    container: 'main$TabPanels#Container',
-    type: '$library/Spectrum/Atoms/SpectrumCard',
-    state: {
-      imageSrc: '$library/Assets/dogs.png',
-      heading: 'Cards for Fun',
-      subheading: 'just trying stuff'
-    }
-  },
-  GraphOne: {
-    container: 'main$TabPanels#Container1',
-    type: '$library/Anew/Atoms/System',
-    state: {
-      graphId: 'graphOne'
+      tabs: ['Graph', 'State', 'Editor']
     }
   }
 };
+
+export const BuildLayout = {
+  Panel: {
+    type: '$library/Layout/Atoms/Panel'
+  },
+  Header: {
+    type: '$library/Layout/Atoms/Panel',
+    container: 'Panel#Container',
+    state: {
+      style: {
+        height: '48px',
+        flex: '0 0 auto',
+        background: '#cccccc'
+      }
+    }
+  },
+  BodyLeft: {
+    type: '$library/Layout/Atoms/SplitPanel',
+    container: 'Panel#Container',
+    state: {
+      layout: 'row',
+      divider: 200,
+      endflex: true
+    }
+  },
+  BodyRight: {
+    type: '$library/Layout/Atoms/SplitPanel',
+    container: 'BodyLeft#Container2',
+    state: {
+      layout: 'row',
+      divider: 260
+    }
+  },
+  BodyMiddle: {
+    type: '$library/Layout/Atoms/SplitPanel',
+    container: 'BodyRight#Container',
+    state: {
+      layout: 'column',
+      divider: 260
+    }
+  },
+  Footer: {
+    type: '$library/Layout/Atoms/Panel',
+    container: 'Panel#Container',
+    state: {
+      style: {
+        height: '56px',
+        flex: '0 0 auto',
+        background: '#cccccc'
+      }
+    }
+  }
+};
+
+export const inspectorGraph = {
+  Echo: {
+    type: '$library/Echo',
+    state: {
+      style: {
+        borderBottom: '1px solid #cccccc'
+      }
+    }
+  },
+  Inspector: {
+    type: '$library/Anew/Atoms/Inspect'
+  }
+};
+
