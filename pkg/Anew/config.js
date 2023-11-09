@@ -7,7 +7,7 @@
 // if (import.meta.url.startsWith('http://localhost')) {
 //   xenonPath = new URL('../', import.meta.url).href;
 // }
-const xenonPath = new URL('../../', import.meta.url).href.slice(0, -1);
+const xenonPath = new URL('../', import.meta.url).href.slice(0, -1);
 
 globalThis.config = {
   xenonPath,
@@ -15,6 +15,7 @@ globalThis.config = {
   aeon: 'v1',
   paths: {
     // as needed
+    $anewLibrary: `${xenonPath}/anewLibrary`,
     $library: `${xenonPath}/Library`,
     // next two paths only needed if using workers
     $xenon: xenonPath,

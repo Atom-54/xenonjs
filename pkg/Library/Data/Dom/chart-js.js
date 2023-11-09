@@ -14,9 +14,13 @@ const template = Xen.Template.html`
     display: flex;
     flex-direction: column;
   }
+  canvas {
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 100% !important;
+  }
 </style>
-
-<div>
+<div flex>
   <canvas></canvas>
 </div>
 `;
@@ -38,25 +42,18 @@ export class ChartJs extends Xen.Async {
     }
     if (type && !state.chart) {
       const ctx = this.shadowRoot.querySelector('canvas');
-
       state.chart = new Chart(ctx, {
         type, // 'bar', 'doughnut', ...
         data: data ?? {},
-        options: options ?? {
-          scales: {
-            y: {
-              beginAtZero: true,
-            }
-          }
-        }
+        options: options ?? {}
       });    
     }
-
     if (state.chart) {
       if ((data && JSON.stringify(data) !== JSON.stringify(state.data)) ||
           (options && JSON.stringify(options) !== JSON.stringify(state.options))) {
+        console.log('chart', data);
         state.chart.data = state.data = data;
-        state.chart.options = state.options = options;
+        //state.chart.options = state.options = options;
         state.chart.update();
       }
     }

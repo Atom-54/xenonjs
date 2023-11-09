@@ -2,31 +2,25 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-// configuration
-import './common/config.js';
-// xenon start up
+import './config.js';
+import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
+import * as Env from '../AnewLibrary/Framework/Env.js';
+import * as Controller from '../AnewLibrary/Framework/Controller.js';
 import {start} from 'xenonjs/Library/Common/start.js';
-// rendering
-import '../Library/Spectrum/Dom/spectrum-tab-panels.js';
-import * as Composer from '../Library/CoreXenon/Framework/Composer.js';
-import * as Mouse from './common/mouse.js';
-// framework
-import * as Env from './framework/Env.js';
-import * as Controller from './framework/Controller.js';
-// services
-import {onservice} from './common/services.js';
-// graphs
+import * as Services from './common/services.js';
 import * as Graphs from './common/graphs.js';
+import * as Composer from '../Library/CoreXenon/Framework/Composer.js';
+import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
 
 const log = logf('Index', 'magenta');
 
-start(async (xenon) => {
+start(async xenon => {
   // create a xenon environment
-  const env = globalThis.env = Env.createEnv(xenon, onservice, onrender);
+  const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
   // conjure some bindings
   const bindings = {
     inputs: {
-      'main$GraphOne$GraphThree$Button$value': 'one$main$Thing$trigger'
+      'build$DesignPanels$selected': 'build$DesignSelector$index'
     },
     outputs: {
     }
@@ -34,14 +28,10 @@ start(async (xenon) => {
   // make a controller
   const main = await Env.createController(env, 'main', bindings);
   // add layers
-  //await Controller.reifyLayer(one, one.layers, 'main', Graphs.documentsGraph);
   await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
-  //await Controller.reifyLayer(one, one.layers, 'inspector', Graphs.inspectorGraph);
-  // await Controller.reifyLayer(one, one.layers, 'schema', Graphs.echoGraph);
-  // await Controller.reifyLayer(one, one.layers, 'catalog', Graphs.catalogGraph);
-  // await Controller.reifyLayer(one, one.layers, 'tree', Graphs.treeGraph);
-  // init mouse handler
-  Mouse.init(main);
+  let designLayer = 'build$Design';
+  // init design system
+  Services.DesignService.SetDesignLayer({layer: {controller: main}}, {layerId: designLayer})
 });
 
 const onrender = async (host, packet) => {
@@ -52,13 +42,11 @@ const onrender = async (host, packet) => {
     controller.composer = Composer.createComposer(controller.uxEventHandler, root);
   }
   if (controller.composer) {
-    // TODO(sjmiles): doing this to avoid walking each sublayer to set all the 'root' containers; which way is more efficient?
+    // TODO(sjmiles): doing this to avoid walking each sublayer to set all the 'root' containers; which way is simpler?
     packet.container = (host.container === 'root' && layer.host && `${layer.host.id}#Container`) || host.container; 
     const style = controller.state[`${host.id}$style`];
     if (style) {
       ((packet.content ??= {}).model ??= {}).style = style;
-      // packet.content.model ??= {};
-      // packet.content.model.style = style;
     }
     controller.composer.render(packet);
   }

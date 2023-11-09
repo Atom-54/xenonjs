@@ -65,14 +65,14 @@ export class ToastGrid extends Xen.Async {
     }
     if (state.grid) {
       if (!deepEqual(data, state.data)) {
-        const checkedIds = new Set(state.grid.getCheckedRows().map(({[this.id]: id}) => id));
+        //const checkedIds = new Set(state.grid.getCheckedRows().map(({[this.id]: id}) => id));
         state.data = deepCopy(data);
         state.grid.resetData(data??[]);
-        data?.forEach(({[this.id]: id}, index) => {
-          if (checkedIds.has(id)) {
-            state.grid.check(index);
-          }
-        });
+        // data?.forEach(({[this.id]: id}, index) => {
+        //   if (checkedIds.has(id)) {
+        //     state.grid.check(index);
+        //   }
+        // });
         this.doresize();
       }
     }
@@ -80,11 +80,10 @@ export class ToastGrid extends Xen.Async {
   initGrid(columns, options, data) {
     const grid = new Grid({
       el: this.shadowRoot.querySelector('#grid'),
+      rowHeaders: ['rowNum'],
       columnOptions: {
         resizable: true,
-        //frozenCount: 1
       },
-      //bodyHeight: 'fitToParent',
       scrollX: true,
       scrollY: true,
       ...options,
@@ -92,18 +91,18 @@ export class ToastGrid extends Xen.Async {
       data
     });
     //Grid.applyTheme('striped');
-    grid.on('check', ev => {
-      this.doCheck([this.state.data[ev.rowKey][this.id]], true);
-    });
-    grid.on('uncheck', ev => {
-      this.doCheck([this.state.data[ev.rowKey][this.id]], false);
-    });
-    grid.on('checkAll', ev => {
-      this.doCheck(this.state.data.map(({[this.id]:id}) => id), true);
-    });
-    grid.on('uncheckAll', ev => {
-      this.doCheck(this.state.data.map(({[this.id]:id}) => id), false);
-    });
+    // grid.on('check', ev => {
+    //   this.doCheck([this.state.data[ev.rowKey][this.id]], true);
+    // });
+    // grid.on('uncheck', ev => {
+    //   this.doCheck([this.state.data[ev.rowKey][this.id]], false);
+    // });
+    // grid.on('checkAll', ev => {
+    //   this.doCheck(this.state.data.map(({[this.id]:id}) => id), true);
+    // });
+    // grid.on('uncheckAll', ev => {
+    //   this.doCheck(this.state.data.map(({[this.id]:id}) => id), false);
+    // });
     grid.on('click', ev => {
       ev.nativeEvent.stopPropagation();
       if (ev.columnName !== '_checked') {

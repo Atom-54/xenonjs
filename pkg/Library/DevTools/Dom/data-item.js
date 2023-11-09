@@ -27,7 +27,7 @@ const template = Xen.Template.html`
     flex-shrink: 0;
     padding: 4px 0px 4px 0;
     color: var(-di-left-color);
-    cursor: pointer;
+    /* cursor: pointer; */
     font-weight: bold;
   }
   right {

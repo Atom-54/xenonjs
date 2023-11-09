@@ -7,16 +7,16 @@ export const atom = (log, resolve) => ({
 initialize(inputs, state, {service}) {
   state.chat = body => service('OpenAIService', 'chat', body);
 },
-shouldUpdate({user}, state, {isDirty}) {
-  return Boolean(user) && isDirty('go');
+shouldUpdate({user, auto}, state, {isDirty}) {
+  return user && (auto || isDirty('go'));
 },
-async update({go, ...inputData}, state, {isDirty, output}) {
+async update({go, auto, ...inputData}, state, {output}) {
   state.result = null;
   output({working: true, result: null});
   const result = /*state.result =*/ await this.updateResult(inputData, state);
   return {result, working: false};
 },
-async updateResult({system, assistant, user}, state) {
+async updateResult({system, assistant, user, model, kTokens, temperature}, state) {
   const messages = [];
   const add = (role, content) => content && messages.push({role, content});
   add('system', system);
@@ -25,10 +25,10 @@ async updateResult({system, assistant, user}, state) {
   log('Prompting ai ...', messages);
   const body = {
     messages: JSON.stringify(messages),
+    model: model ?? 'gpt-3.5-turbo-16k',
     //model: 'gpt-4',
-    model: 'gpt-3.5-turbo-16k',
-    max_tokens: 5*1024,
-    temperature: 0.8,
+    max_tokens: (kTokens || 7)*1024,
+    temperature: temperature || 0.3,
     frequency_penalty: 0
 };
   const result = await state.chat(body);

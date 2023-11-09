@@ -84,8 +84,8 @@ export const DragDrop = class extends Xen.Async {
   }
   doMove(dx, dy, sx, sy, x0, y0) {
   }
-  doDrag({l, t, w, h}, dx, dy, dragKind, dragFrom) {
-  }
+  // doDrag({l, t, w, h}, dx, dy, dragKind, dragFrom) {
+  // }
   doUp() {
   }
 };

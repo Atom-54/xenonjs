@@ -11,6 +11,11 @@ render(inputs) {
   }
 },
 template: html`
+<style>
+  :host {
+    flex: 0 0 auto !important;    
+  }
+</style>
 <sp-card size="{{size}}" variant="{{variant}}" heading="{{heading}}" subheading="{{subheading}}" href="{{link}}" asset="{{asset}}" horizontal="{{horizontal}}">
   <img alt="{{altText}}" slot="cover-photo" src="{{imageSrc}}">
   <!-- <div slot="description">{{description}}</div> -->

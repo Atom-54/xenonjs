@@ -12,9 +12,9 @@ render({html, style}) {
 },
 template: html`
 <style>
-:host {
+/* :host {
   overflow: auto !important;
-}
+} */
 </style>
 <div xen:style="{{style}}" unsafe-html="{{html}}"></div>
 `

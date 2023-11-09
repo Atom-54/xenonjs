@@ -12,10 +12,10 @@ const template = Xen.Template.html`
   :host {
     display: block;
   }
-  data-item {
+  /* data-item {
     cursor: grab;
     user-select: none;
-  }
+  } */
 </style>
 
 <div>{{items}}</div>
@@ -23,9 +23,7 @@ const template = Xen.Template.html`
 `;
 
 const templateDataItem = Xen.Template.html`
-<data-item draggable="true" 
-  name="{{name}}" value="{{value}}" expand="{{expand}}" 
-  on-item-change="onItemChange" on-dragstart="onDragStart"></data-item>
+<data-item name="{{name}}" value="{{value}}" expand="{{expand}}" on-item-change="onItemChange" on-dragstart="onDragStart"></data-item>
 `;
 
 //const nob = Object.create(null);
