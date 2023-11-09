@@ -7,11 +7,11 @@ export const atom = (log, resolve) => ({
 update({items, template}, state, {isDirty, output}) {
   if (isDirty('template')) {
     state.template = template || '<div center flex column style="{{style}}" key="{{key}}" on-click="onItemClick"><h2>{{name}}</h2></div>';
-    // Xen renderer does not expect template to change, 
-    // so we clear items for an initial render...
+    // Xen renderer will attempt to cache DOM, and does not expect template to change, 
+    // so we clear items for an first pass...
     state.items = [];
     timeout(() => {
-      // ... and then render the proper items as a second pass
+      // ... and then render the real items as a second pass
       state.items = items;
       output();
     }, 0);
@@ -23,11 +23,7 @@ render({styleRules}, {items, template, selected}) {
   const defaults = {
     name: 'Unnamed Item',
     ligature: 'settings_backup_restore'
-    // thumb: resolve('$library/AI/Assets/delmer.png'),
-    // owner: 'scott.miles@gmail.com<br>02/11/23',
-    // description: 'An amazing piece of kit. Use it again and again. Even better than "Cats"!'
   };
-  //const std = ''; //'border-radius: 13px; margin: 8px;';
   let i = 0;
   const mapImages = items => items?.map?.(item => {
     if (typeof item === 'object') {
@@ -60,9 +56,6 @@ render({styleRules}, {items, template, selected}) {
 onItemClick({eventlet: {key, value}}, state) {
   state.selected = key;
   log('onItemClick', key);
-},
-onDragStart({eventlet: {key, value}}) {
-  //e.dataTransfer.setData('text/plain', key);
 },
 template: html`
 <style>${'{{styleRules}}'}</style>

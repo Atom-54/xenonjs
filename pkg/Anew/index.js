@@ -29,9 +29,6 @@ start(async xenon => {
   const main = await Env.createController(env, 'main', bindings);
   // add layers
   await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
-  let designLayer = 'build$Design';
-  // init design system
-  Services.DesignService.SetDesignLayer({layer: {controller: main}}, {layerId: designLayer})
 });
 
 const onrender = async (host, packet) => {

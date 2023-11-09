@@ -174,7 +174,7 @@ export const inspectorGraph = {
     }
   },
   Inspector: {
-    type: '$library/Anew/Atoms/Inspect'
+    type: '$anewLibrary/Design/Atoms/Inspect'
   }
 };
 
