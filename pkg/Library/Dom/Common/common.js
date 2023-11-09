@@ -31,7 +31,7 @@ import '../../Media/Dom/speech-synthesizer.js';
 //
 import '../../DevTools/dom.js';
 //
-import '../../Anew/Dom/anew-node-graph.js';
+import '../../../AnewLibrary/Design/Dom/anew-node-graph.js';
 import '../../Graph/Dom/node-graph.js';
 //
 import '../../Locale/Dom/geo-location.js';

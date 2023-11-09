@@ -3,8 +3,8 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Xen} from '../../Dom/Xen/xen-async.js';
-import {DragDrop} from '../../Dom/Common/drag-drop.js';
+import {Xen} from '../../../Library/Dom/Xen/xen-async.js';
+import {DragDrop} from '../../../Library/Dom/Common/drag-drop.js';
 
 const log = logf('DOM:node-graph', 'forestgreen');
 

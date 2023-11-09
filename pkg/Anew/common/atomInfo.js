@@ -20,22 +20,3 @@ const manifestData = await load(manifests.map(m => `${m}/atom-manifest`));
 // flatten
 export const atomInfo = Object.assign({}, ...Object.values(manifestData));
 console.log(atomInfo);
-
-// export const atomInfo = {
-//   SpectrumButton: {
-//     inputs: {
-//       label: 'String',
-//     }
-//   },
-//   SpectrumCard: {
-//     inputs: {
-//       asset: 'AssetEnum', 
-//       heading: 'String',
-//       subheading: 'String', 
-//       horizontal: 'Boolean'
-//     },
-//     types: {
-//       AssetEnum: ['file', 'folder']
-//     }
-//   }
-// };
