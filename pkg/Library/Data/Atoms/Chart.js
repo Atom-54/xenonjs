@@ -4,18 +4,15 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 template: html`
 <style>
 :host {
-  overflow: auto !important;
+  display: flex;
+}
+chart-js {
+  display: block;
 }
 </style>
-
-<div>
-  <chart-js type="{{type}}" data="{{data}}" options="{{options}}"></chart-js>
-</div>
-
+<chart-js flex type="{{type}}" data="{{data}}" options="{{options}}"></chart-js>
 `
-
 });

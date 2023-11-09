@@ -8,8 +8,10 @@ export class SpectrumTabPanels extends Xen.Async {
   get template() {
     return Xen.html`
 <style>
-  sp-tab-panel[selected] {
-    display: block;
+  sp-tabs, sp-tab-panel[selected] {
+    flex: 1 0 0;
+    display: flex;
+    flex-direction: column;
   }
 </style>
 <template></template>
@@ -24,7 +26,7 @@ export class SpectrumTabPanels extends Xen.Async {
     tabs?.forEach(panel => {
       html.push(Xen.html`
 <sp-tab-panel value="${panel.value}">
-  <slot name="Container${panel.value != "0" ? panel.value : ''}">
+  <slot name="Container${panel.value != "0" ? Number(panel.value) + 1 : ''}">
 </sp-tab-panel>
       `)
     });

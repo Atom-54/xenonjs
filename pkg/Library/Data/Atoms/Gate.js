@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 shouldUpdate({trigger, json}, state, {isDirty}) {
-  return json && isDirty('trigger');
+  return json && trigger;
 },
 update({json}) {
   if (typeof json === 'string') {

@@ -288,7 +288,7 @@ export class NodeGraph extends Xen.Async {
     this.state.zoom = this.style.zoom = zoom;
   }
   onPointerMove({eventlet}) {
-    log(eventlet);
+    //log(eventlet);
   }
 }
 

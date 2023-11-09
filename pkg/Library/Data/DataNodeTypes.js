@@ -36,6 +36,18 @@ export const DataNodeTypes = {
     },
     type: '$library/Data/Nodes/DataCollectorNode'
   },
+  ItemsCollector: {
+    category,
+    description: 'Collect and merge array items',
+    types: {
+      //Data$jsonDescription: 'is converted to JSON, if a String; otherwise returned as is'
+    },
+    type: '$library/Data/Nodes/ItemsCollectorNode'
+  },
+  Iterator: {
+    category, 
+    type: '$library/Data/Nodes/IteratorNode'
+  },
   StringFormatter: {
     category,
     description: 'Formats given arguments into a string',

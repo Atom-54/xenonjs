@@ -6,7 +6,7 @@
 export const OpenAISimpleChatNode = {
   OpenAISimpleChat: {
     type: '$library/OpenAI/Atoms/OpenAISimpleChat',
-    inputs: ['system', 'assistant', 'user', 'go'],
+    inputs: ['system', 'assistant', 'user', 'go', 'auto', 'model', 'kTokens', 'temperature'],
     outputs: ['result', 'working']
   }
 };
