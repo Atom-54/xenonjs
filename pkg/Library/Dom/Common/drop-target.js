@@ -24,7 +24,7 @@ Xen.DropTarget = class extends Xen.Async {
   }
   onDragEnter(e) {
     e.preventDefault();
-    if (this.isValidTarget(e)) { //this.contains(e.target)) {
+    if (this.isValidTarget(e)) { 
       this.setAttribute('over', '');
       this.fireEvent(e, 'target-enter');
     }
@@ -47,18 +47,22 @@ Xen.DropTarget = class extends Xen.Async {
     return (!this.disabled && e.composedPath().includes(this));
   }
   fireEvent(e, name) {
+    this.computeEventValue(e, name);
+    this.fire(name);
+  }
+  computeEventValue(e, name) {
     let t = e.target;
     while (t && !t.id) t = t.closest('[id]') ?? t.getRootNode().host;
-    const path = e.composedPath();
-    let i = path.indexOf(t) - 1;
-    while (i >= 0 && path[i].localName !== 'slot') i--;
-    if (i >= 0) {
-      log.debug('container: ', path[i].getAttribute('name'));
-    }
+    //const path = e.composedPath();
+    // let i = path.indexOf(t) - 1;
+    // while (i >= 0 && path[i].localName !== 'slot') i--;
+    // if (i >= 0) {
+    //   log.debug('container: ', path[i].getAttribute('name'));
+    // }
+    this.targetElt = t;
     this.key = this.targetkey || t?.id;
     this.trigger = e;
     this.value = e.dataTransfer?.getData(this.datatype || 'text/plain');
-    this.fire(name);
   }
 };
 

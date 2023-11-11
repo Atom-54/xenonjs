@@ -10,7 +10,9 @@ update({id, schema, candidates}, state) {
       label, 
       ...info,
       choices: this.stratifyTypes(id, label, info, candidates)
-    }));
+    }))
+    .filter(({label}) => !['name'].includes(label))
+    ;
 },
 stratifyTypes(hostId, propName, propInfo, candidates) {
   //const propName = propLabel.split('$').pop();
@@ -53,48 +55,56 @@ template: html`
   :host {
     display: flex !important;
   }
-  [repeat] {
+  [props] {
     flex: 1;
     display: flex;
+    flex-direction: column;
     align-content: start;
+    /*
     justify-content: space-evenly;
     flex-wrap: wrap;
+    */
+    padding: 0.5em 0.3em;
   }
   label {
     display: flex;
     flex-direction: column;
-    padding: 0.3em 0;
+    padding: 0.3em;
     padding-right: 0.5em;
   }
-  span {
+  [label] {
     width: 10em;
     font-size: 0.75em;
-    margin-bottom: 0.1em;
+    margin-bottom: 0.3em;
   }
   input {
-    width: 15em;
     border: 1px solid gray;
     border-radius: 4px;
     margin-right: 0.5em;
   }
   select {
+    flex: 0 0 auto;
     width: 1.3em;
   }
 </style>
-<div repeat="input_t">{{inspectors}}</div>
+
+<div props repeat="input_t">{{inspectors}}</div>
+
 <template input_t>
   <label>
-    <span>{{label}}</span>
+    <span label>{{label}}</span>
     <div row>
-      <input list$="{{label}}">
+      <input flex list$="{{label}}">
       <!-- <datalist id="{{label}}" repeat="dl_options_t">{{choices}}</datalist> -->
       <select repeat="s_options_t">{{choices}}</select>
     </div>
   </label>
 </template>
+
 <template dl_options_t>
   <option name="{{value}}" value="{{value}}"></option>
 </template>
+
 <template s_options_t>
   <option value="{{value}}">{{value}}</option>
 </template>

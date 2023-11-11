@@ -6,14 +6,21 @@
 export const Spectrum = {
   SpectrumButton: {
     displayName: 'Spectrum Button',
+    ligature: 'buttons_alt',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumButton',
     inputs: {
       label: 'String'
     },
-    ligature: 'buttons_alt'
+    state: {
+      label: 'Button',
+      style: {
+        flex: '0 0 auto'
+      }
+    }
   },
   SpectrumCard: {
     displayName: 'Spectrum Card',
+    ligature: 'problem',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumCard',
     inputs: {
       asset: 'AssetEnum', 
@@ -21,19 +28,28 @@ export const Spectrum = {
       subheading: 'String', 
       horizontal: 'Boolean'
     },
+    state: {
+      heading: 'Card',
+      subheading: 'A blank card.'
+    },
     types: {
       AssetEnum: ['file', 'folder']
-    },
-    ligature: 'problem'
+    }
   },
   SpectrumTabs: {
     displayName: 'Spectrum Tabs',
+    ligature: 'tab',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    ligature: 'tab'
+    state: {
+      tabs: 'Tab'
+    }
   },
   SpectrumTabPanels: {
     displayName: 'Spectrum Tab Panels',
+    ligature: 'tabs',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    ligature: 'tabs'
+    state: {
+      tabs: 'Tab'
+    }
   }
 };

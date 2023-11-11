@@ -12,22 +12,29 @@ export const create = (name, bindings, {xenon, onservice, onrender}) => {
     name,
     xenon,
     bindings,
+    // atom outflows
     onservice,
     onrender,
-    onoutput: (host, output) => {
-      const outputState = {};
-      keys(output).map(key => outputState[`${host.layer.id}$${host.name}$${key}`] = output[key]);
-      write(controller, outputState);
-    },
-    uxEventHandler: (pid, eventlet) => {
-      controller.atoms[pid].handleEvent(eventlet);
-    },
-    reifySublayer: async (layer, id, graph, host) => {
-      return reifyLayer(controller, layer.layers, id, graph, host);
-    }
+    onoutput: (host, output) => onoutput(controller, host, output),
+    // atom inflow
+    uxEventHandler: (pid, eventlet) => onevent(controller, pid, eventlet),
   };
   return controller;
 };
+
+const onoutput = (controller, host, output) => {
+  const outputState = {};
+  keys(output).map(key => outputState[`${host.layer.id}$${host.name}$${key}`] = output[key]);
+  write(controller, outputState);
+};
+
+const onevent = (controller, pid, eventlet) => {
+  controller.atoms[pid].handleEvent(eventlet);
+};
+
+export const reifySublayer = async (controller, layer, id, graph, host) => {
+  return reifyLayer(controller, layer.layers, id, graph, host);
+}
 
 export const findLayer = (controller, layerId) => {
   let layer;
@@ -46,6 +53,7 @@ export const reifyLayer = async (controller, layers, id, graph, host) => {
   const layer = createLayer(id, controller);
   layers[id] = layer;
   layer.host = host;
+  layer.graph = graph;
   await reifyAtoms(controller, layer, graph);
   return layer;
 };
@@ -64,9 +72,11 @@ export const reifyAtoms = async (controller, layer, graph) => {
   const entries = Object.entries(graph);
   for (let i=0, entry; entry=entries[i]; i++) {
     const [name, value] = entry;
-    let {type, state, container} = value;
-    ((state ??= {}).style ??= {}).order ??= i;
-    await reifyAtom(controller, layer, {name, type, container, state});
+    if (name !== 'meta') {
+      let {type, state, container} = value;
+      ((state ??= {}).style ??= {}).order ??= i;
+      await reifyAtom(controller, layer, {name, type, container, state});
+    }
   }
 };
 
@@ -112,8 +122,21 @@ const calculateContainer = (host, localContainer) => {
   if (!layer.host && !localContainer) {
     return 'root';
   } 
-  // cotainer is layerRoot with localContainer or `#Container`
-  const container = layer.id + (localContainer ? '$' + localContainer : '#Container');
+  // TODO(sjmiles): localContainer has unreliable input
+  // could be empty
+  if (!localContainer) {
+    localContainer = '#Container';
+  } 
+  // could be 'thing$thing#Container' or 'thing#Container'
+  else if (localContainer.includes('$') || localContainer.indexOf('#') > 0) {
+    localContainer = '$' + localContainer;
+  } 
+  // could be 'Container'
+  else if (localContainer[0] !== '#') {
+    localContainer = '#' + localContainer;
+  }
+  // otherwise it's '#Container'
+  const container = layer.id + localContainer;
   return container;
 };
 
@@ -152,6 +175,6 @@ export const writeInputsToHost = (controller, key, inputs) => {
   if (atom) {
     atom.inputs = inputs;
   } else {
-    log.warn('bound atom [', key, '] does not exist')
+    log('bound atom [', key, '] does not exist')
   }
 };

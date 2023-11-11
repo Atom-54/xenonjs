@@ -1,4 +1,4 @@
-import {atomInfo} from '../../Anew/common/atomInfo.js';
+import {atomInfo} from '../../Anew/atomInfo.js';
 
 const log = logf('Schema', '#953553');
 
@@ -42,7 +42,7 @@ export const schemaForHost = host => {
   const schema = {
     inputs: {
       name: {type: 'String', value: host.name},
-      style: {type: 'CssStyle|String', value: {}}
+      style: {type: 'CssStyle', value: {}}
     },
     outputs: {
       // name: {type: 'String', value: host.name},

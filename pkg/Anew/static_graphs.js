@@ -5,41 +5,84 @@ export const Build = {
       graphId: 'BuildLayout'
     }
   },
+  HeaderToolbar: {
+    type: '$library/UX/Atoms/UXToolbar',
+    container: 'Layout$Header#Container',
+    state: {
+      style: {
+        fontSize: '1.5rem'
+      },
+      actions: [
+        // {
+        //   "label": "Atom54"
+        // }, 
+        {
+          "name": "Graphs Menu",
+          // "ligature": "dashboard_customize",
+          "image": "$xenon/Library/Assets/icons/favicon.png",
+          //"action": "toggle",
+          //"stateKey": "GraphListFlyOut$flyOut$show"
+        },
+        // {
+        //   "name": "Graph Name",
+        //   "slot": "graphName",
+        // },
+        {
+          "name": "spanner",
+          "flex": 1
+        },
+        {
+          "name": "New Graph",
+          "ligature": "add",
+          "actions": [{
+            //"action": "set",
+            //"stateKey": "NodeGraph$Graph$selected",
+            //"value": null
+          }]
+        },
+        {
+          "name": "spanner",
+          "flex": 1
+        }
+      ]
+    }
+  },
   DesignSelector: {
     type: '$anewLibrary/Design/Atoms/DesignSelector'
   },
-  DesignTarget: {
-    type: '$anewLibrary/Design/Atoms/DesignTarget',
-    container: 'DesignPanels#Container'
+  InspectorPanel: {
+    type: '$anewLibrary/Layout/Atoms/Panel',
+    container: 'Layout$BodyRight#Container'
   },
-  Designable: {
-    type: '$anewLibrary/Graph/Atoms/Graph',
-    container: 'DesignTarget#Container',
+  InspectorEcho: {
+    type: '$library/Echo',
+    container: 'InspectorPanel#Container',
     state: {
-      graphId: 'graphOne'
-    }
-  },
-  DesignTarget2: {
-    type: '$anewLibrary/Design/Atoms/DesignTarget',
-    container: 'DesignPanels#Container2'
-  },
-  Designable2: {
-    type: '$anewLibrary/Graph/Atoms/Graph',
-    container: 'DesignTarget2#Container',
-    state: {
-      graphId: 'graphThree'
-    }
-  },
-  Inspector: {
-    type: '$anewLibrary/Graph/Atoms/Graph',
-    container: 'Layout$BodyRight#Container',
-    state: {
-      graphId: 'inspectorGraph',
       style: {
         order: 1,
-        borderBottom: '1px solid #cccccc'
+        flex: '0 0 auto',
+        borderBottom: '1px solid #cccccc',
+        backgroundColor: '#e4e4e4'
       }
     }
+  },
+  InspectorPanels: {
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    container: 'InspectorPanel#Container',
+    state: {
+      tabs: ['Properties', 'Connections'],
+      style: {
+        order: 2
+      }
+    }
+  },
+  PropertyInspector: {
+    type: '$anewLibrary/Design/Atoms/PropertyInspector',
+    container: 'InspectorPanels#Container'
+  },
+  ConnectionInspector: {
+    type: '$anewLibrary/Design/Atoms/ConnectionInspector',
+    container: 'InspectorPanels#Container2'
   },
   AtomTree: {
     type: '$anewLibrary/Design/Atoms/AtomTree',
@@ -82,10 +125,7 @@ export const Build = {
   },
   DesignPanels: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    container: 'Layout$BodyMiddle#Container',
-    state: {
-      tabs: ['Project', 'Other Project']
-    }
+    container: 'Layout$BodyMiddle#Container'
   }
 };
 
@@ -94,16 +134,13 @@ export const BuildLayout = {
     type: '$library/Layout/Atoms/Panel'
   },
   Header: {
-    type: '$library/Echo',
+    type: '$library/Layout/Atoms/Panel',
     container: 'Panel#Container',
     state: {
-      html: 'Atom54',
+      layout: 'row',
       style: {
-        // boxSizing: 'border-box',
-        // height: '48px',
         flex: '0 0 auto',
-        background: '#cccccc',
-        padding: '8px 4px'
+        background: '#ececec'
       }
     }
   },
@@ -163,21 +200,6 @@ export const BuildLayout = {
   }
 };
 
-export const inspectorGraph = {
-  Echo: {
-    type: '$library/Echo',
-    state: {
-      style: {
-        flex: '0 0 auto',
-        borderBottom: '1px solid #cccccc'
-      }
-    }
-  },
-  Inspector: {
-    type: '$anewLibrary/Design/Atoms/Inspect'
-  }
-};
-
 export const catalogGraph = {
   Catalog: {
     type: '$anewLibrary/Layout/Atoms/Templated',
@@ -185,13 +207,6 @@ export const catalogGraph = {
       style: {
         padding: '0.6rem'
       },
-      items: [{
-        category: "Atoms",
-        atoms: [{
-          name: 'Button',
-          ligature: 'buttons_alt'
-        }]
-      }],
       template: html`
   <div style="width: 100%; font-family: sans-serif;">
   <div style="padding: 8px 4px; font-weight: bold;">{{category}}</div>

@@ -2,13 +2,11 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-import {DesignService} from '../../AnewLibrary/Design/Services/DesignService.js';
-import {LayerService} from '../../AnewLibrary/Graph/Services/LayerService.js';
-
 const log = globalThis.logf('services', '#555555', 'orange');
 
-const services = {LayerService, DesignService};
-export {LayerService, DesignService};
+export const services = {};
+
+export const addServices = _services => Object.assign(services, _services);
 
 export const onservice = async (host, request) => {
   const {kind, msg, data, resolve} = request;
