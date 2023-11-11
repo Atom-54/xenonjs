@@ -6,7 +6,7 @@
 
 const category = 'Design';
 
-export const Data = {
+export const Design = {
   AtomTree: {
     category,
     displayName: 'Atom Tree',

@@ -62,6 +62,7 @@ const template = Xen.Template.html`
   [startside], [endside] {
     display: flex;
     flex-direction: column;
+    overflow: hidden;
   }
 </style>
 
@@ -136,15 +137,16 @@ export class SplitPanel extends DragDrop {
       [ordStyle]: {
         [ord]: dividerOrd,
         [offOrd]: 'auto',
-        flex: 'none',
-        overflow: 'visible',
+        flex: 'none'
+        //overflow: 'visible',
+        //overflow: 'hidden'
       },
       [flexStyle]: {
         width: 'auto',
         height: 'auto',
         flex: 1,
-        flexBasis: '0px',
-        overflow: 'hidden'
+        flexBasis: '0px'
+        //overflow: 'hidden'
       },
       vertical,
       dragging: this.dragging

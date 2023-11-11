@@ -3,27 +3,43 @@
  * Copyright 2023 Atom54 LLC
  */
 import * as Controller from '../../Framework/Controller.js';
-import * as Schema from '../../Framework/Schema.js';
-import * as Mouse from '../../../Anew/common/mouse.js';
-import {atomInfo} from '../../../Anew/common/atomInfo.js';
+import * as Schema from '../../Design/Schema.js';
+import * as Project from '../../../AnewLibrary/Design/Services/ProjectService.js';
+import {atomInfo} from '../../../Anew/atomInfo.js';
+import {makeCapName} from '../../../Library/CoreXenon/Reactor/Atomic/js/names.js';
 
-const log = logf('DesignService', 'burgandy', 'white');
+const log = logf('DesignService', '#512E5F', 'white');
 
-let designLayerId = 'build$Design';
+let designLayerId;
+const designables = [];
+
+const DesignTarget = {
+  type: '$anewLibrary/Design/Atoms/DesignTarget',
+  container: 'DesignPanels#Container'
+};
+
+const Designable = {
+  type: '$anewLibrary/Graph/Atoms/Graph',
+  container: 'DesignTarget#Container'
+};
 
 export const DesignService = {
+  async CreateDesignable(host) {
+    return await createDesignable(host.layer);
+  },
   async SetDesignLayerIndex(host, {index}) {
-    const layerId = ['build$Designable', 'build$Designable2'][index];
+    const layerId = designables[index];
     if (layerId) {
       DesignService.SetDesignLayer(host, {layerId});
     }
   },
   async SetDesignLayer(host, {layerId}) {
     designLayerId = layerId;
+    designSelect(host.layer.controller, '')
     return designUpdate(host.layer.controller);
   },
   Select(host, {atomId}) {
-    designSelect(host.layer.controller);
+    designSelect(host.layer.controller, atomId);
   },
   async UpdateDesigner(host) {
     return designUpdate(host.layer.controller);
@@ -58,41 +74,74 @@ export const DesignService = {
     }  
   },
   async DesignDragDrop(host, {eventlet}) {
+    const {controller} = host.layer;
     const types = await DesignService.GetAtomTypes();
     const dropType = types.atoms.find(({name}) => name === eventlet.value);
     log.debug(eventlet, dropType);
-    let elt = dragTarget(host, eventlet);
-    if (elt) {
-      elt.style.outline = null;
-      elt.style.outline = '5px dashed green';
-    }
-    const {controller} = host.layer;
-    
-    let container = eventlet.key.includes('#') && eventlet.key;
-    if (!container) {
-      const targetHost = controller.atoms[eventlet.key.replace(/_/g, '$')];
-      container = targetHost.container;
-    }
-    const targetLayer = designLayerId;
-    const layer = Controller.findLayer(controller, targetLayer);
-    const name = dropType.name + Math.floor(Math.random()*100);
-    const type = dropType.type; //'$library/Spectrum/Atoms/SpectrumButton';
-    const state = {
-      label: 'Dropped Button',
-      style: {
-        flex: '0 0 auto'
+    if (dropType) {
+      let elt = dragTarget(host, eventlet);
+      if (elt) {
+        elt.style.outline = null;
+        elt.style.outline = '5px dashed green';
       }
-    };
-    log.debug({name, container, state});
-    // TODO(sjmiles): this is added back in reifyAtom
-    container = container.slice(targetLayer.length + 1);
-    await Controller.reifyAtom(controller, layer, {name, type, container, state});
-    designUpdate(controller);
+      const key = eventlet.key.replace(/_/g, '$');
+      let container = key.includes('#') && key;
+      if (!container) {
+        const targetHost = controller.atoms[key];
+        container = targetHost.container;
+      }
+      const targetLayer = designLayerId;
+      const layer = Controller.findLayer(controller, targetLayer);
+      const name = dropType.name + Math.floor(Math.random()*100);
+      const type = dropType.type; 
+      const state = dropType.state || {};
+      log.debug({name, container, state});
+      // TODO(sjmiles): layer prefix is added back in Controller.reifyAtom, which
+      // expects `container` to be in local-scope
+      container = container.slice(targetLayer.length + 1);
+      return addDesignedAtom(controller, layer, {name, type, container, state});
+    }
   }
 };
 
+export const newGraph = async layer => {
+  const name = makeCapName();
+  const graph = {      
+    meta: {
+      id: name
+    }
+  };
+  Project.Project.addGraph(Project.Project.project, graph);
+  Project.ProjectService.SaveProject(Project.Project.project);
+  reifyGraph(layer, name);
+};
+
+export const reifyGraph = async (layer, name) => {
+  const designable = await createDesignable(layer, name);
+  Controller.writeInputsToHost(layer.controller, designable.id, {graphId: name});
+};
+
+export const createDesignable = async (layer, name) => {
+  const {controller} = layer;
+  //const name = makeCapName();
+  const targetName = name + 'Target'
+  const designableName = name + 'Designable';
+  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName});
+  const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: targetName + '#Container'});
+  designables.push(layer.name + '$' + designableName);
+  Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  return designable;
+};
+
+export const addDesignedAtom = async (controller, layer, {name, type, container, state}) => {
+  const host = await Controller.reifyAtom(controller, layer, {name, type, container, state});
+  layer.graph[name] = {type, container, state}; 
+  designUpdate(controller);
+  designSelect(controller, host.id);
+  Project.ProjectService.SaveProject(Project.Project.project);
+};
+
 export const designUpdate = async controller => {
-  Mouse.init(controller, designLayerId);
   const types = await DesignService.GetAtomTypes();
   Controller.set(controller, 'build$Catalog$Catalog', {items: [types]});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
@@ -101,11 +150,13 @@ export const designUpdate = async controller => {
 
 export const designSelect = (controller, atomId) => {
   const host = controller.atoms[atomId];
-  Controller.writeInputsToHost(controller, 'build$Inspector$Echo', {html: `<h4 style="text-align: center;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`});
-  const schema = Schema.schemaForHost(host).inputs;
+  const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
+  Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
+  const schema = !host ? [] : Schema.schemaForHost(host).inputs;
   const candidates = Schema.schemaForController(controller, designLayerId).outputs;
-  Controller.writeInputsToHost(controller, 'build$Inspector$Inspector', {id: host.id, schema, candidates});
-  const state = prefixedState(controller.state, host.id + '$');
+  Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
+  Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
+  const state = !host ? {} : prefixedState(controller.state, host.id + '$');
   Controller.writeInputsToHost(controller, 'build$State', {object: state});
 };
 

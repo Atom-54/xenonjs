@@ -7,20 +7,19 @@
 const category = 'Data';
 
 export const Data = {
+  Data: {
+    category,
+    displayName: 'Data',
+    ligature: 'scatter_plot',
+    type: '$anewLibrary/Data/Atoms/Data.js',
+    inputs: ['json'],
+    outputs: ['data']
+  },
   DataExplorer: {
     category,
+    displayName: 'DataExplorer',
+    ligature: 'explore',
     type: '$anewLibrary/Data/Atoms/DataExplorer.js',
     inputs: ['object', 'expandLevel'],
-    // inputs: {
-    //   layout: 'LayoutValues|String',
-    //   center: 'Boolean',
-    //   style: 'CSSStyle'
-    // },
-    // layoutValues: ['column','row'],
-    // state: {
-    //   panel$layout: 'column'
-    // },
-    //description: 'Renders a simple panel that can contain elements',
-    ligature: 'explore'
   }
 };

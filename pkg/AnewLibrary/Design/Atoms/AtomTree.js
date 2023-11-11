@@ -13,9 +13,10 @@ async initialize({}, state, {service}) {
 async update({}, state, {service}) {
   const atoms = await service('DesignService', 'GetAtomInfo', {});
   atoms.forEach(atom => atom.name = atom.id.replace(atoms.designLayerId + '$', '').replace(/\$/g, '.'));
+  const rootAtoms = this.atomsInContainer(atoms, atoms.designLayerId + '#Container')
   const root = {
     name: 'root',
-    atoms
+    atoms: rootAtoms
   };
   this.stratify(atoms, root);
   state.tree = [root];

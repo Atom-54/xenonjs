@@ -12,7 +12,7 @@ const xenonPath = new URL('../', import.meta.url).href.slice(0, -1);
 globalThis.config = {
   xenonPath,
   // storage prefix
-  aeon: 'v1',
+  aeon: 'a54.00',
   paths: {
     // as needed
     $anewLibrary: `${xenonPath}/anewLibrary`,

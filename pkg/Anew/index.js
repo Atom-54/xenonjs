@@ -6,11 +6,16 @@ import './config.js';
 import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
 import * as Env from '../AnewLibrary/Framework/Env.js';
 import * as Controller from '../AnewLibrary/Framework/Controller.js';
+import * as Services from '../AnewLibrary/Framework/services.js';
 import {start} from 'xenonjs/Library/Common/start.js';
-import * as Services from './common/services.js';
-import * as Graphs from './common/graphs.js';
+import {Graphs} from './graphs.js';
 import * as Composer from '../Library/CoreXenon/Framework/Composer.js';
 import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
+import {LayerService} from '../AnewLibrary/Graph/Services/LayerService.js';
+import {ProjectService} from '../AnewLibrary/Design/Services/ProjectService.js';
+import {DesignService} from '../AnewLibrary/Design/Services/DesignService.js';
+import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
+//import * as Design from '../AnewLibrary/Design/Services/DesignService.js';
 
 const log = logf('Index', 'magenta');
 
@@ -25,10 +30,13 @@ start(async xenon => {
     outputs: {
     }
   };
+  Services.addServices({ProjectService, LayerService, DesignService});
   // make a controller
   const main = await Env.createController(env, 'main', bindings);
   // add layers
-  await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
+  const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
+  // load project
+  await Project.initProject(build);
 });
 
 const onrender = async (host, packet) => {
