@@ -13,7 +13,7 @@ const viewport = 6000;
 
 export class NodeGraph extends DragDrop {
   static get observedAttributes() {
-    return ['nodes', 'schema', 'graph', 'rects'];
+    return ['nodes', 'schema'];
   }
   // get host() {
   //   return this;
@@ -36,7 +36,8 @@ export class NodeGraph extends DragDrop {
     this.addEventListener('pointermove', e => this.onMove(e));
     this.addEventListener('pointerup', e => this.onUp(e));
   }
-  update({nodes}, state, {service}) {
+  update({nodes, selected}, state, {service}) {
+    this.key = selected;
     //log.debug(nodes);
     // state.data = service();
     // state.nodes = [
@@ -52,7 +53,7 @@ export class NodeGraph extends DragDrop {
     //   let selected = this.validateGraphRects(inputs);
     //   //console.log(inputs.rects);
     //   // compute selectedKeys
-    const selectedKeys = null; //selected?.key ? [`${this.idPrefix}${selected.key}`] : null
+    //const selectedKeys = null; //selected?.key ? [`${this.idPrefix}${selected.key}`] : null
     //   // covert rects into render model objects
     const rects = null; // [{id: 'Foo', position: {l:10, t:10, w:50, h: 50}}];
     //this.renderRects(inputs);
@@ -62,7 +63,7 @@ export class NodeGraph extends DragDrop {
     // NB: connectors are drawn after, via Canvas. See _didRender.
     state.didRender = {rects: rects, graph: graph};
     // complete render model
-    return {selectedKeys, rects, nodes, zoom: state.zoom};
+    return {nodes, zoom: state.zoom};
   // }
   // validateGraphRects(inputs) {
   //   inputs.rects = inputs.rects ?? this._rects;
@@ -252,30 +253,32 @@ export class NodeGraph extends DragDrop {
   onNodeSelect(event) {
     event.stopPropagation();
     this.key = event.currentTarget.key;
-    if (this.key !== this.state.textSelectedKey) {
-      delete this.state.textSelectedKey;
-    }
+    //this.state.selected = this.key;
+    // if (this.key !== this.state.textSelectedKey) {
+    //   delete this.state.textSelectedKey;
+    // }
     this.fire('node-selected');
   }
   onNodeUnselect(event) {
     this.key = null;
-    delete this.state.textSelectedKey;
+    //this.state.selected = this.key;
+    //delete this.state.textSelectedKey;
     this.fire('node-selected');
   }
   // called when user has changed a rectangle (high freq)
-  onUpdateBox({currentTarget: {value: rect}}) {
-    this.value = rect;
-    this.rects[this.key] = rect;
-    this.invalidate();
-  }
-  // called when committed a change to a rectangle (low freq)
-  onUpdatePosition({currentTarget: {target, value: rect}}) {
-    if (target?.key && rect) {
-      this.key = target.key;
-      this.value = rect;
-      this.fire('node-moved');
-    }
-  }
+  // onUpdateBox({currentTarget: {value: rect}}) {
+  //   this.value = rect;
+  //   this.rects[this.key] = rect;
+  //   this.invalidate();
+  // }
+  // // called when committed a change to a rectangle (low freq)
+  // onUpdatePosition({currentTarget: {target, value: rect}}) {
+  //   if (target?.key && rect) {
+  //     this.key = target.key;
+  //     this.value = rect;
+  //     this.fire('node-moved');
+  //   }
+  // }
   // onNodeDblClicked(event) {
   //   this.state.textSelectedKey = this.key;
   // }
@@ -357,17 +360,17 @@ const template = Xen.Template.html`
     text-overflow: ellipsis;
     outline-offset: 4px;
   }
-  [node]:hover {
+  /* [node]:hover {
     outline: 3px solid green;
     z-index: 10000;
-  }
+  } */
   [node][selected] {
-    outline: 3px solid orange;
+    outline: 3px solid purple;
     z-index: 10000;
   }
-  [node]:not([selected]) {
-    /* box-shadow:  9px 9px 18px #cecece20, -9px -9px 18px #d2d2d220; */
-  }
+  /* [node]:not([selected]) {
+    box-shadow:  9px 9px 18px #cecece20, -9px -9px 18px #d2d2d220;
+  } */
   [type] {
     font-size: 65%;
     background-color: #5b20b7; 
@@ -463,22 +466,13 @@ const template = Xen.Template.html`
   <canvas layer1 width="${viewport}" height="${viewport}"></canvas>
   <div layer0 on-mousedown="onNodeUnselect">
     <div repeat="node_t">{{nodes}}</div>
-    <!-- <container-layout
-      rects="{{rects}}"
-      readonly="true"
-      selected="{{selectedKeys}}"
-      zoom="{{zoom}}"
-      on-position-changed="onUpdatePosition"
-      on-update-box="onUpdateBox"
-      on-delete="onNodeDelete"
-      repeat="node_t">{{nodes}}</container-layout> -->
   </div>
 </div>
 
 <template node_t>
-  <div node column id="{{nodeId}}" key="{{key}}" selected$="{{selected}}" xen:style="{{style}}" on-mousedown="onNodeSelect">
+  <div node column id="{{nodeId}}" key="{{id}}" selected$="{{selected}}" xen:style="{{style}}" on-mousedown="onNodeSelect">
     <div type>{{type}}</div>
-    <div name Xxen:style="{{inputStyle}}">{{displayName}}</div>
+    <div name>{{displayName}}</div>
     <div io row>
       <div flex column repeat="socket_i_t">{{inputs}}</div>
       <div flex style="padding: 0 4px;"></div>

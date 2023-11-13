@@ -100,7 +100,7 @@ export const reifyAtom = async (controller, layer, {name, type, container, state
   if (connections) {
     const qualifiedConnections = {};
     for (let [key, value] of Object.entries(connections)) {
-      qualifiedConnections[`${layer.id}$${value}`] = `${layer.id}$${host.name}$${key}`;
+      qualifiedConnections[`${layer.id}$${value}`] = [`${layer.id}$${host.name}$${key}`];
     }
     Object.assign(controller.connections.inputs, qualifiedConnections);
   }
@@ -169,13 +169,13 @@ const writeToState = (controller, inputState) => {
 
 const bindamor = (controller, key, value) => {
   const bound = controller.connections?.inputs?.[key];
-  if (bound) {
-    log.debug(`[${bound}] receives from [${key}] the value`, value);
-    const bits = bound.split('$');
+  bound?.forEach(connection => {
+    log.debug(`[${connection}] receives from [${key}] the value`, value);
+    const bits = connection.split('$');
     const prop = bits.pop();
     const atomId = bits.join('$');
     set(controller, atomId, {[prop]: value});
-  }
+  });
 };
 
 export const set = (controller, key, inputs) => {

@@ -302,7 +302,10 @@ export const graphThree = {
   Button: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumButton',
     state: {
-      label: 'GraphThree!'
+      label: 'GraphThree!',
+      style: {
+        flex: '0 0 auto'
+      }
     }
   }
 };

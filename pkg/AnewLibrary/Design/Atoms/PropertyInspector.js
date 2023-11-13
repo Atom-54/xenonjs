@@ -46,23 +46,25 @@ templateForType(type) {
       return 'textarea_t';
   };
 },
-async onPropChange({eventlet, id}, state, {service}) {
-  const {prop} = state.props.find(({prop}) => prop.models[0].key === eventlet.key);
+async onPropChange({eventlet: {key, value}, id}, state, {service}) {
+  const {prop} = state.props.find(({prop}) => prop.models[0].key === key);
   const model = prop.models[0];
   if (model.isObject) {
-    const result = await service('JsonRepairService', 'Repair', {value: eventlet.value});
+    const result = await service('JsonRepairService', 'Repair', {value});
     if (!result) {
       log.warn('Doh!');
       return;
     }
     try {
-      eventlet.value = JSON.parse(result.json);
+      value = JSON.parse(result.json);
     } catch(x) {
-      eventlet.value = {};
+      value = {};
     }
+    model.value = JSON.stringify(value, null, '  ');
+  } else {
+    model.value = value;
   }
-  model.value = eventlet.value;
-  service('DesignService', 'PropertyChange', {...eventlet, id});
+  service('DesignService', 'PropertyChange', {key, value, id});
 },
 template: html`
 <style>

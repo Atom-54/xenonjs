@@ -32,15 +32,17 @@ render({}, {atoms, selected}) {
 stratify(allAtoms, root, selected) {
   const _stratify = containerNode => {
     containerNode.atoms.forEach(atom => {
-      const atoms = this.atomsInParent(allAtoms, atom.id)
-      const containers = [...new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')))];
       atom.selected = atom.id === selected;
-      atom.containers = containers.map(name => {
-        const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);
-        const node = {name, id: atom.id + '#' + name, atoms: contained};
-        _stratify(node);
-        return node;
-      });
+      if (!atom.type.endsWith('Graph')) {
+        const atoms = this.atomsInParent(allAtoms, atom.id)
+        const containers = [...new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')))];
+        atom.containers = containers.map(name => {
+          const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);
+          const node = {name, id: atom.id + '#' + name, atoms: contained};
+          _stratify(node);
+          return node;
+        });
+      }
     });
   };
   return _stratify(root);
@@ -66,9 +68,8 @@ onDropAfter({eventlet}, {onDrop}) {
   log.debug(eventlet);
   onDrop(eventlet);
 },
-onClick({eventlet}, state, {output}) {
-  state.selected = eventlet.key;
-  output({selected: eventlet.key});
+onClick({eventlet}, state, {service}) {
+  service('DesignService', 'Select', {atomId: eventlet.key});
 },
 template: html`
 <style>
