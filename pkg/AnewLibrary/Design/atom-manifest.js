@@ -10,8 +10,14 @@ export const Design = {
   AtomTree: {
     category,
     displayName: 'Atom Tree',
+    ligature: 'account_tree',
     type: '$anewLibrary/Design/Atoms/AtomTree.js',
-    ligature: 'account_tree'
+    inputs: {
+      selected: 'String'
+    },
+    outputs: {
+      selected: 'String'
+    }
   },
   DesignSelector: {
     category,

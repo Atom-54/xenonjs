@@ -24,18 +24,8 @@ export class XenComposer extends Composer {
   applyModel(slot, model) {
     slot.set(model);
     if (typeof model?.style === 'object') {
+      slot.root.host.style = {};
       Object.assign(slot.root.host.style, model.style);
-      // if (model.style.order) {
-      //   const host = slot.root.host;
-      //   let sibling = host.previousSibling;
-      //   while (Number(sibling?.style.order) > model.style.order) {
-      //     sibling = sibling.previousSibling;
-      //   }
-      //   if (sibling !== host.previousSibling) {
-      //     console.warn('order monkey: moving', host, 'before', sibling);
-      //     host.parentElement.insertBefore(host, sibling);
-      //   }
-      // }
     }
   }
   setRoot(root) {
@@ -102,9 +92,7 @@ export class XenComposer extends Composer {
           } else if (elt.hasAttribute('key')) {
             data.key = elt.getAttribute('key');
           }
-          if (elt.value !== undefined) {
-            data.value = elt.value;
-          } else if ('checked' in elt && elt.checked !== undefined) {
+          if (elt.type === 'checkbox') {
             data.value = elt.checked;
           } else if ('value' in elt) {
             data.value = elt.value;

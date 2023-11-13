@@ -21,6 +21,6 @@ export const createProject = async (env, name, meta) => {
   return env.projects[name] = Project.create(env, name, meta);
 };
 
-export const createController = async (env, name, bindings) => {
-  return env.controllers[name] = Controller.create(name, bindings, env);
+export const createController = async (env, name) => {
+  return env.controllers[name] = Controller.create(name, env);
 };

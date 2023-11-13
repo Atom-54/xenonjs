@@ -9,64 +9,52 @@ export const schemaForLayer = (controller, layerId) => {
   };
   for (const host of Object.values(controller.atoms)) {
     if (host.id.startsWith(layerId + '$')) {
+      const prefix = host.id.slice(layerId.length + 1);
       const hostSchema = schemaForHost(host);
-      rekeySchemaMode(host.id, hostSchema.inputs, schema.inputs);
-      rekeySchemaMode(host.id, hostSchema.outputs, schema.outputs);
+      rekeySchemaMode(prefix, hostSchema.inputs, schema.inputs);
+      rekeySchemaMode(prefix, hostSchema.outputs, schema.outputs);
     }
   }
   return schema;
 };
 
-const rekeySchemaMode = (hostId, modalHostSchema, modalSchema) => {
+const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
   for (const [prop, value] of entries(modalHostSchema)) {
-    const key = `${hostId}$${prop}`.replace(/\$/g, '.');
+    const key = `${idPrefix}$${prop}`.replace(/\$/g, '.');
     modalSchema[key] = value;
   }
 };
 
-export const schemaForController = controller => {
-  const schema = {
-    inputs: {},
-    outputs: {}
-  };  for (const host of Object.values(controller.atoms)) {
-    if (host.id.startsWith('build$Design')) {
-      const hostSchema = schemaForHost(host);
-      rekeySchemaMode(host.id, hostSchema.inputs, schema.inputs);
-      rekeySchemaMode(host.id, hostSchema.outputs, schema.outputs);
-    }
-  }
-  return schema;
-};
-
 export const schemaForHost = host => {
+  const graph = host.layer.graph;
+  const state = graph[host.name].state;
   const schema = {
     inputs: {
       name: {type: 'String', value: host.name},
-      style: {type: 'CssStyle', value: {}}
+      style: {type: 'CssStyle', value: state.style || {}}
     },
     outputs: {
-      // name: {type: 'String', value: host.name},
-      // style: {type: 'CssStyle|String', value: {}}
     }
   };
-  schemaFromHost(schema, host);
+  schemaFromHost(schema, host, state);
   return schema;
 };
 
-const schemaFromHost = (schema, host) => {
+const schemaFromHost = (schema, host, state) => {
   const kind = host.type.split('/').pop();
   const info = atomInfo[kind];
   if (info) {
-    schemaMode(schema.inputs, info.inputs);
-    schemaMode(schema.outputs, info.outputs);
+    schemaMode(schema.inputs, info.inputs, state);
+    schemaMode(schema.outputs, info.outputs, state);
   }
 };
 
-const schemaMode = (modalSchema, modalInfo) => {
+const schemaMode = (modalSchema, modalInfo, state) => {
   for (const [key, type] of Object.entries(modalInfo || {})) {
+    const defaultValue = (type.includes('String') || type.includes('Text')) ? '' : null;
     modalSchema[key] = {
       type, 
-      value: null
+      value: state[key] || defaultValue
     };
   }
 };

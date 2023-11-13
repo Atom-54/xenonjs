@@ -30,7 +30,10 @@ export const Spectrum = {
     },
     state: {
       heading: 'Card',
-      subheading: 'A blank card.'
+      subheading: 'A blank card.',
+      style: {
+        flex: '0 0 auto'
+      }
     },
     types: {
       AssetEnum: ['file', 'folder']
@@ -39,17 +42,23 @@ export const Spectrum = {
   SpectrumTabs: {
     displayName: 'Spectrum Tabs',
     ligature: 'tab',
-    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabs',
+    inputs: {
+      tabs: ['[String]|Json'],
+    },
     state: {
-      tabs: 'Tab'
+      tabs: ['Tab']
     }
   },
   SpectrumTabPanels: {
     displayName: 'Spectrum Tab Panels',
     ligature: 'tabs',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    inputs: {
+      tabs: ['[String]|Json'],
+    },
     state: {
-      tabs: 'Tab'
+      tabs: ['Tab']
     }
   }
 };

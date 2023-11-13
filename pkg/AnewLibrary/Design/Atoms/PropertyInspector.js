@@ -4,19 +4,26 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({id, schema, candidates}, state) {
+async update({schema}, state, {output}) {
+  state.props = [];
+  await output();
   state.props = map(schema, 
     (label, info) => {
       const $template = this.templateForType(info.type);
       if ($template) {
         let {value} = info;
-        if (value && typeof value === 'object') {
+        const isObject = value && typeof value === 'object';
+        if (isObject) {
           value = JSON.stringify(value, null, '  ');
         }
+        const rows = value?.split?.('\n').length || 3;
         const model = {
           ...info,
           label, 
-          value
+          value,
+          key: label,
+          rows,
+          isObject
         };
         return {
           prop: {
@@ -39,6 +46,24 @@ templateForType(type) {
       return 'textarea_t';
   };
 },
+async onPropChange({eventlet, id}, state, {service}) {
+  const {prop} = state.props.find(({prop}) => prop.models[0].key === eventlet.key);
+  const model = prop.models[0];
+  if (model.isObject) {
+    const result = await service('JsonRepairService', 'Repair', {value: eventlet.value});
+    if (!result) {
+      log.warn('Doh!');
+      return;
+    }
+    try {
+      eventlet.value = JSON.parse(result.json);
+    } catch(x) {
+      eventlet.value = {};
+    }
+  }
+  model.value = eventlet.value;
+  service('DesignService', 'PropertyChange', {...eventlet, id});
+},
 template: html`
 <style>
   :host {
@@ -49,19 +74,23 @@ template: html`
     display: flex;
     flex-direction: column;
     align-content: start;
-    padding: 0.5em 0.3em;
+    padding: .5em .3em;
   }
   [prop] {
-    padding: 0.3em;
+    padding: .3em;
   }
   [label] {
     width: 10em;
-    font-size: 0.75em;
-    margin-bottom: 0.3em;
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   input {
     border: 1px solid gray;
     border-radius: 4px;
+    padding: .4em;
+  }
+  textarea {
+    padding: .4em .2em;
   }
   [column][left] {
     align-items: start;
@@ -77,14 +106,14 @@ template: html`
 <template string_t>
   <label column>
     <span label>{{label}}</span>
-    <input flex list$="{{label}}">
+    <input flex key="{{key}}" list$="{{label}}" value="{{value}}" on-change="onPropChange">
   </label>
 </template>
 
 <template textarea_t>
   <label column>
     <span label>{{label}}</span>
-    <textarea rows="{{rows}}" key="{{key}}" value="{{value}}" on-change="onPropChange"></textarea>
+    <textarea rows$="{{rows}}" key="{{key}}" value="{{value}}" on-change="onPropChange"></textarea>
   </label>
 </template>
 
@@ -94,7 +123,6 @@ template: html`
     <input type="checkbox" key="{{key}}" checked="{{value}}" on-change="onPropChange">
   </label>
 </template>
-
 `
 });
     
