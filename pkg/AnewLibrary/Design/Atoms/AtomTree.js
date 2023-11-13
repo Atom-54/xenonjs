@@ -10,22 +10,31 @@ async initialize({}, state, {service}) {
     service('DesignService', 'DesignDragDrop', {eventlet});
   }
 },
-async update({}, state, {service}) {
-  const atoms = await service('DesignService', 'GetAtomInfo', {});
+async update({selected}, state, {service}) {
+  state.selected = selected;
+  state.atoms = await service('DesignService', 'GetAtomInfo', {});
+},
+shouldRender({}, {atoms}) {
+  return atoms;
+},
+render({}, {atoms, selected}) {
   atoms.forEach(atom => atom.name = atom.id.replace(atoms.designLayerId + '$', '').replace(/\$/g, '.'));
   const rootAtoms = this.atomsInContainer(atoms, atoms.designLayerId + '#Container')
   const root = {
     name: 'root',
     atoms: rootAtoms
   };
-  this.stratify(atoms, root);
-  state.tree = [root];
+  this.stratify(atoms, root, selected);
+  return {
+    tree: [root]
+  };
 },
-stratify(allAtoms, root) {
+stratify(allAtoms, root, selected) {
   const _stratify = containerNode => {
     containerNode.atoms.forEach(atom => {
       const atoms = this.atomsInParent(allAtoms, atom.id)
       const containers = [...new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')))];
+      atom.selected = atom.id === selected;
       atom.containers = containers.map(name => {
         const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);
         const node = {name, id: atom.id + '#' + name, atoms: contained};
@@ -56,6 +65,10 @@ onDropAfter({eventlet}, {onDrop}) {
   eventlet.after = true;
   log.debug(eventlet);
   onDrop(eventlet);
+},
+onClick({eventlet}, state, {output}) {
+  state.selected = eventlet.key;
+  output({selected: eventlet.key});
 },
 template: html`
 <style>
@@ -93,6 +106,11 @@ template: html`
   [atoms] div[label] {
     background-color: white;
   }
+  [atoms] div[label][selected] {
+    background-color: purple;
+    color: white;
+    outline: 2px solid purple;
+  }
   drop-target {
     display: block;
   }
@@ -110,7 +128,9 @@ template: html`
   }
 </style>
 
-<div repeat="container_t">{{tree}}</div>
+<div flex scrolling on-click="onClick">
+  <div repeat="container_t" >{{tree}}</div>
+</div>
 
 <template container_t>
   <div container>
@@ -125,7 +145,7 @@ template: html`
 <template atom_t>
   <div>
     <drop-target before targetkey="{{id}}" on-target-drop="onDropBefore"></drop-target>
-    <div label draggable="true"><icon>settings</icon><span>{{name}}</span></div>
+    <div label selected$="{{selected}}" key="{{id}}" draggable="true" on-click="onClick"><icon>settings</icon><span>{{name}}</span></div>
     <drop-target after targetkey="{{id}}" on-target-drop="onDropAfter"></drop-target>
     <div repeat="container_t">{{containers}}</div>
   </div>

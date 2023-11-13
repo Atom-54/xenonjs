@@ -7,7 +7,7 @@ import {Xen} from '../../../Library/Dom/Xen/xen-async.js';
 
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {
-    return ['accepts', 'disabled', 'datatype', 'targetkey'];
+    return ['accepts', 'disabled', 'datatype', 'targetkey', 'refresh'];
   }
   get template() {
     return template;
@@ -18,7 +18,9 @@ const DesignTarget = class extends Xen.DropTarget {
     this.addEventListener('pointermove', e => this.onPointermove(e), {capture: true});
     const observer = new ResizeObserver(() => this.onResize());
     observer.observe(this);
-    //observer.observe(document.body);
+  }
+  update() {
+    this.onResize();
   }
   getLocalRect(elt) {
     const frame = this.getBoundingClientRect();
@@ -28,7 +30,7 @@ const DesignTarget = class extends Xen.DropTarget {
     return rect;
   }
   onClick(e) {
-    let elt = findValidTarget(e.target);
+    let elt = this.findValidTarget(e.target);
     this.selected = elt;
     this.doSelect(elt);
   }
@@ -41,7 +43,7 @@ const DesignTarget = class extends Xen.DropTarget {
     }
   }
   onPointermove(e) {
-    let elt = findValidTarget(e.target);
+    let elt = this.findValidTarget(e.target);
     this.over = elt;
     this.doOver(elt);
   };
@@ -71,11 +73,11 @@ const DesignTarget = class extends Xen.DropTarget {
       }
     }
   }
+  findValidTarget(elt) {
+    return !elt.atomId?.endsWith('Designable') && elt.closest('[atom]');
+  };
 };
 
-const findValidTarget = (elt) => {
-  return elt.closest('[atom]');
-};
 
 const template = Xen.Template.html`
 <slot></slot>

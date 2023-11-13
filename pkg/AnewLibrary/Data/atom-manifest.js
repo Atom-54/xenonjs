@@ -11,15 +11,22 @@ export const Data = {
     category,
     displayName: 'Data',
     ligature: 'scatter_plot',
-    type: '$anewLibrary/Data/Atoms/Data.js',
-    inputs: ['json'],
-    outputs: ['data']
+    type: '$anewLibrary/Data/Atoms/Data',
+    inputs: {
+      json: 'Pojo|Text',
+    },
+    outputs: {
+      data: 'Pojo'
+    }
   },
   DataExplorer: {
     category,
     displayName: 'DataExplorer',
     ligature: 'explore',
-    type: '$anewLibrary/Data/Atoms/DataExplorer.js',
-    inputs: ['object', 'expandLevel'],
+    type: '$anewLibrary/Data/Atoms/DataExplorer',
+    inputs: {
+      object: 'Pojo',
+      expandLevel: 'Number'
+    }
   }
 };

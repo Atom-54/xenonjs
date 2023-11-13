@@ -4,14 +4,18 @@
  */
 const log = logf('Controller', '#9F2B68');
 
-export const create = (name, bindings, {xenon, onservice, onrender}) => {
+export const create = (name, {xenon, onservice, onrender}) => {
   const controller = {
+    allLayers: {},
     layers: {},
     state: {},
     atoms: {},    
     name,
     xenon,
-    bindings,
+    connections: {
+      inputs: {},
+      outputs: {}
+    },
     // atom outflows
     onservice,
     onrender,
@@ -25,7 +29,7 @@ export const create = (name, bindings, {xenon, onservice, onrender}) => {
 const onoutput = (controller, host, output) => {
   const outputState = {};
   keys(output).map(key => outputState[`${host.layer.id}$${host.name}$${key}`] = output[key]);
-  write(controller, outputState);
+  writeToState(controller, outputState);
 };
 
 const onevent = (controller, pid, eventlet) => {
@@ -52,6 +56,7 @@ export const findLayer = (controller, layerId) => {
 export const reifyLayer = async (controller, layers, id, graph, host) => {
   const layer = createLayer(id, controller);
   layers[id] = layer;
+  controller.allLayers[id] = layer;
   layer.host = host;
   layer.graph = graph;
   await reifyAtoms(controller, layer, graph);
@@ -73,21 +78,31 @@ export const reifyAtoms = async (controller, layer, graph) => {
   for (let i=0, entry; entry=entries[i]; i++) {
     const [name, value] = entry;
     if (name !== 'meta') {
-      let {type, state, container} = value;
-      ((state ??= {}).style ??= {}).order ??= i;
-      await reifyAtom(controller, layer, {name, type, container, state});
+      let {type, container, state, connections} = value;
+      state ??= {};
+      state.style = (state.style && typeof state.style === 'object') ? state.style : {};
+      state.style.order = i;
+      await reifyAtom(controller, layer, {name, type, container, state, connections});
     }
   }
+  //log.debug(controller.connections.inputs);
 };
 
-export const reifyAtom = async (controller, layer, {name, type, container, state}) => {
+export const reifyAtom = async (controller, layer, {name, type, container, state, connections}) => {
   const host = await addAtom(controller, layer, {name, type, container});
   if (state) {
     const qualifiedState = {};
     for (let [key, value] of Object.entries(state)) {
       qualifiedState[`${layer.id}$${host.name}$${key}`] = value;
     }
-    write(controller, qualifiedState);
+    writeToState(controller, qualifiedState);
+  }
+  if (connections) {
+    const qualifiedConnections = {};
+    for (let [key, value] of Object.entries(connections)) {
+      qualifiedConnections[`${layer.id}$${value}`] = `${layer.id}$${host.name}$${key}`;
+    }
+    Object.assign(controller.connections.inputs, qualifiedConnections);
   }
   host.inputs = state || {};
   return host;
@@ -140,7 +155,12 @@ const calculateContainer = (host, localContainer) => {
   return container;
 };
 
-const write = (controller, inputState) => {
+export const writeValue = (controller, atomId, propName, value) => {
+  set(controller, atomId, {[propName]: value});
+  bindamor(controller, `${atomId}$${propName}`, value);
+};
+
+const writeToState = (controller, inputState) => {
   entries(inputState).forEach(([key, value]) => {
     bindamor(controller, key, value);
     controller.state[key] = value;
@@ -148,7 +168,7 @@ const write = (controller, inputState) => {
 };
 
 const bindamor = (controller, key, value) => {
-  const bound = controller.bindings?.inputs?.[key];
+  const bound = controller.connections?.inputs?.[key];
   if (bound) {
     log.debug(`[${bound}] receives from [${key}] the value`, value);
     const bits = bound.split('$');
@@ -167,7 +187,6 @@ export const writeInputsToState = (controller, key, inputs) => {
   for (let [prop, value] of Object.entries(inputs)) {
     controller.state[key + '$' + prop] = value;
   }
-  //Object.assign(controller.state[key], inputs);
 };
 
 export const writeInputsToHost = (controller, key, inputs) => {

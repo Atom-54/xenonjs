@@ -24,19 +24,17 @@ const Designable = {
 };
 
 export const DesignService = {
+  async NewGraph(host) {
+    return newGraph(host.layer);
+  },
   async CreateDesignable(host) {
-    return await createDesignable(host.layer);
+    return createDesignable(host.layer);
   },
   async SetDesignLayerIndex(host, {index}) {
-    const layerId = designables[index];
-    if (layerId) {
-      DesignService.SetDesignLayer(host, {layerId});
-    }
+    return setDesignLayerIndex(host.layer.controller, index);
   },
   async SetDesignLayer(host, {layerId}) {
-    designLayerId = layerId;
-    designSelect(host.layer.controller, '')
-    return designUpdate(host.layer.controller);
+    return setDesignLayer(host.layer.controller, layerId);
   },
   Select(host, {atomId}) {
     designSelect(host.layer.controller, atomId);
@@ -101,6 +99,12 @@ export const DesignService = {
       container = container.slice(targetLayer.length + 1);
       return addDesignedAtom(controller, layer, {name, type, container, state});
     }
+  },
+  ConnectionChange(host, {id, key, value}) {
+    updateConnection(host.layer.controller, id, key, value);
+  },
+  PropertyChange(host, {id, key, value}) {
+    updateProperty(host.layer.controller, id, key, value);
   }
 };
 
@@ -111,8 +115,8 @@ export const newGraph = async layer => {
       id: name
     }
   };
-  Project.Project.addGraph(Project.Project.project, graph);
-  Project.ProjectService.SaveProject(Project.Project.project);
+  Project.Project.addGraph(Project.currentProject, graph);
+  Project.ProjectService.SaveProject();
   reifyGraph(layer, name);
 };
 
@@ -123,14 +127,31 @@ export const reifyGraph = async (layer, name) => {
 
 export const createDesignable = async (layer, name) => {
   const {controller} = layer;
-  //const name = makeCapName();
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
-  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName});
-  const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: targetName + '#Container'});
+  const targetContainer = 'DesignPanels#Container' + (designables.length > 0 ? designables.length+1 : '');
+  /*const target =*/ await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
+  const designableContainer = targetName + '#Container';
+  const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
   designables.push(layer.name + '$' + designableName);
   Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  if (!designLayerId) {
+    setDesignLayerIndex(controller, 0);
+  }
   return designable;
+};
+
+const setDesignLayerIndex = async (controller, index) => {
+  const layerId = designables[index];
+  if (layerId) {
+    return setDesignLayer(controller, layerId);
+  }
+};
+
+const setDesignLayer = async (controller, layerId) => {
+  designLayerId = layerId;
+  designSelect(controller, '');
+  return designUpdate(controller);
 };
 
 export const addDesignedAtom = async (controller, layer, {name, type, container, state}) => {
@@ -138,7 +159,7 @@ export const addDesignedAtom = async (controller, layer, {name, type, container,
   layer.graph[name] = {type, container, state}; 
   designUpdate(controller);
   designSelect(controller, host.id);
-  Project.ProjectService.SaveProject(Project.Project.project);
+  Project.ProjectService.SaveProject();
 };
 
 export const designUpdate = async controller => {
@@ -153,11 +174,16 @@ export const designSelect = (controller, atomId) => {
   const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
   Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
   const schema = !host ? [] : Schema.schemaForHost(host).inputs;
-  const candidates = Schema.schemaForController(controller, designLayerId).outputs;
+  const candidates = Schema.schemaForLayer(controller, designLayerId).outputs;
   Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
   const state = !host ? {} : prefixedState(controller.state, host.id + '$');
   Controller.writeInputsToHost(controller, 'build$State', {object: state});
+};
+
+export const designUpdateTarget = (controller, host) => {
+  const target = host.layer.id.replace('Designable', 'Target');
+  Controller.writeInputsToHost(controller, target, {refresh: Math.random()});
 };
 
 const prefixedState = (state, prefix)=> {
@@ -197,4 +223,37 @@ const validTarget = (elt, targetId) => {
       return elt.closest('[atom]');
     }
   }
+};
+
+const updateConnection = (controller, hostId, propName, connection) => {
+  // update connection in live controller
+  const qualifiedConnections = { 
+    [`${designLayerId}$${connection}`]: `${hostId}$${propName}`
+  };
+  Object.assign(controller.connections.inputs, qualifiedConnections);
+  // update connection in graph data
+  const hostSplit = hostId.split('$');
+  const prefixId = hostSplit.slice(2).join('$');
+  const atomName = hostSplit.pop();
+  const host = controller.atoms[hostId];
+  const hostConnections = host.layer.graph[atomName].connections ?? {};
+  const graphQualifiedConnections = {
+    [propName]: `${prefixId}$${connection}`
+  };
+  Object.assign(hostConnections, graphQualifiedConnections);
+  designUpdateTarget(controller, host);
+  Project.ProjectService.SaveProject();
+};
+
+const updateProperty = (controller, hostId, propName, value) => {
+  // update controller state and atoms
+  Controller.writeValue(controller, hostId, propName, value);
+  // update graph state
+  const host = controller.atoms[hostId];
+  const hostSplit = hostId.split('$');
+  const atomName = hostSplit.pop();
+  host.layer.graph[atomName].state[propName] = value;
+  log.debug(host.layer.graph[atomName]);
+  designUpdateTarget(controller, host);
+  Project.ProjectService.SaveProject();
 };

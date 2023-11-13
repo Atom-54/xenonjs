@@ -10,7 +10,10 @@ export const Graph = {
   Graph: {
     category,
     displayName: 'Graph Layer',
-    type: '$anewLibrary/Graph/Atoms/Graph.js',
-    ligature: 'schema'
+    type: '$anewLibrary/Graph/Atoms/Graph',
+    ligature: 'schema',
+    inputs: {
+      graphId: 'String'
+    }
   }
 };

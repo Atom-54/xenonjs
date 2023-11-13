@@ -9,30 +9,22 @@ import * as Controller from '../AnewLibrary/Framework/Controller.js';
 import * as Services from '../AnewLibrary/Framework/services.js';
 import {start} from 'xenonjs/Library/Common/start.js';
 import {Graphs} from './graphs.js';
-import * as Composer from '../Library/CoreXenon/Framework/Composer.js';
+import {createComposer} from './composer.js';
 import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
 import {LayerService} from '../AnewLibrary/Graph/Services/LayerService.js';
 import {ProjectService} from '../AnewLibrary/Design/Services/ProjectService.js';
 import {DesignService} from '../AnewLibrary/Design/Services/DesignService.js';
+import {JsonRepairService} from '../AnewLibrary/JsonRepair/Services/jsonrepairService.js';
 import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
-//import * as Design from '../AnewLibrary/Design/Services/DesignService.js';
 
 const log = logf('Index', 'magenta');
 
 start(async xenon => {
   // create a xenon environment
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
-  // conjure some bindings
-  const bindings = {
-    inputs: {
-      'build$DesignPanels$selected': 'build$DesignSelector$index'
-    },
-    outputs: {
-    }
-  };
-  Services.addServices({ProjectService, LayerService, DesignService});
+  Services.addServices({ProjectService, LayerService, DesignService, JsonRepairService});
   // make a controller
-  const main = await Env.createController(env, 'main', bindings);
+  const main = await Env.createController(env, 'main');
   // add layers
   const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
   // load project
@@ -44,7 +36,7 @@ const onrender = async (host, packet) => {
   const {controller} = layer;
   if (!controller.composer) {
     const root = window[layer.root || layer.id.replace(/\$/g, '_')] || window.root;
-    controller.composer = Composer.createComposer(controller.uxEventHandler, root);
+    controller.composer = createComposer(controller.uxEventHandler, root);
   }
   if (controller.composer) {
     // TODO(sjmiles): doing this to avoid walking each sublayer to set all the 'root' containers; which way is simpler?

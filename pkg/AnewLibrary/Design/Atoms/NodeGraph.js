@@ -4,14 +4,15 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({layerId, graph, selected}, state, {service, isDirty}) {
+async update({layerId}, state, {service}) {
   const info = await service('DesignService', 'GetLayerInfo', {layerId});
   const atomFilter = atom => {
-    const prefix = (atom.id + '$').replace(/\$/g, '.');
+    const prefixId = atom.id.split('$').slice(2).join('$');
+    const prefix = (prefixId + '$').replace(/\$/g, '.');
     return ([id]) => id.startsWith(prefix);
   }
   state.nodes = info.atoms.map((atom, i) => {
-    const stride = 4;
+    const stride = 3;
     const idFilter = atomFilter(atom);
     return {
       id: atom.id, 

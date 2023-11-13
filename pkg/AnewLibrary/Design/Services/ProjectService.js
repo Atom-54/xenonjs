@@ -9,7 +9,7 @@ export {Project};
 
 const log = logf('ProjectService', 'brown', 'white');
 
-let currentProject = null;
+export let currentProject = null;
 
 export const ProjectService = {
   async LoadProject(host, data) {
@@ -34,6 +34,7 @@ export const initProject = async layer => {
     await newGraph(build);
     saveProject(project);
   }
+  selectProject(project);
   log.debug(project);
 };
 

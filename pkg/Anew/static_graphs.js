@@ -1,3 +1,4 @@
+
 export const Build = {
   Layout: {
     type: '$anewLibrary/Graph/Atoms/Graph',
@@ -8,6 +9,9 @@ export const Build = {
   HeaderToolbar: {
     type: '$library/UX/Atoms/UXToolbar',
     container: 'Layout$Header#Container',
+    connections: {
+      event: 'UXActionExecutor$event'
+    },
     state: {
       style: {
         fontSize: '1.5rem'
@@ -34,11 +38,11 @@ export const Build = {
         {
           "name": "New Graph",
           "ligature": "add",
-          "actions": [{
-            //"action": "set",
-            //"stateKey": "NodeGraph$Graph$selected",
-            //"value": null
-          }]
+          "action": "service",
+          "args": {
+            "kind": "DesignService",
+            "msg": "NewGraph"
+          }
         },
         {
           "name": "spanner",
@@ -47,8 +51,11 @@ export const Build = {
       ]
     }
   },
-  DesignSelector: {
-    type: '$anewLibrary/Design/Atoms/DesignSelector'
+  UXActionExecutor: {
+    type: '$library/UX/Atoms/UXActionExecutor',
+    connections: {
+      event: 'HeaderToolbar$event'
+    }
   },
   InspectorPanel: {
     type: '$anewLibrary/Layout/Atoms/Panel',
@@ -126,6 +133,12 @@ export const Build = {
   DesignPanels: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$BodyMiddle#Container'
+  },
+  DesignSelector: {
+    type: '$anewLibrary/Design/Atoms/DesignSelector',
+    connections: {
+      index: 'DesignPanels$selected'
+    }
   }
 };
 
