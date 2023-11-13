@@ -130,13 +130,13 @@ export const createDesignable = async (layer, name) => {
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
   const targetContainer = 'DesignPanels#Container' + (designables.length > 0 ? designables.length+1 : '');
-  /*const target =*/ await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
+  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
   const designableContainer = targetName + '#Container';
   const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
   designables.push(layer.name + '$' + designableName);
   Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
   if (!designLayerId) {
-    setDesignLayerIndex(controller, 0);
+    setDesignLayer(controller, designable.id);
   }
   return designable;
 };
@@ -152,6 +152,10 @@ const setDesignLayer = async (controller, layerId) => {
   designLayerId = layerId;
   designSelect(controller, '');
   return designUpdate(controller);
+};
+
+const getDesignLayer = () => {
+  return designables[designLayerId];
 };
 
 export const addDesignedAtom = async (controller, layer, {name, type, container, state}) => {
@@ -177,13 +181,19 @@ export const designSelect = (controller, atomId) => {
   const candidates = Schema.schemaForLayer(controller, designLayerId).outputs;
   Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
+  Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
+  Controller.writeInputsToHost(controller, 'build$NodeGraph', {selected: host?.id});
+  Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
   const state = !host ? {} : prefixedState(controller.state, host.id + '$');
   Controller.writeInputsToHost(controller, 'build$State', {object: state});
 };
 
+const getDesignTargetId = () => {
+  return designLayerId.replace('Designable', 'Target');
+};
+
 export const designUpdateTarget = (controller, host) => {
-  const target = host.layer.id.replace('Designable', 'Target');
-  Controller.writeInputsToHost(controller, target, {refresh: Math.random()});
+  Controller.writeInputsToHost(controller, getDesignTargetId(), {refresh: Math.random()});
 };
 
 const prefixedState = (state, prefix)=> {
@@ -228,7 +238,7 @@ const validTarget = (elt, targetId) => {
 const updateConnection = (controller, hostId, propName, connection) => {
   // update connection in live controller
   const qualifiedConnections = { 
-    [`${designLayerId}$${connection}`]: `${hostId}$${propName}`
+    [`${designLayerId}$${connection}`]: [`${hostId}$${propName}`]
   };
   Object.assign(controller.connections.inputs, qualifiedConnections);
   // update connection in graph data
@@ -238,7 +248,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
   const host = controller.atoms[hostId];
   const hostConnections = host.layer.graph[atomName].connections ?? {};
   const graphQualifiedConnections = {
-    [propName]: `${prefixId}$${connection}`
+    [propName]: [`${prefixId}$${connection}`]
   };
   Object.assign(hostConnections, graphQualifiedConnections);
   designUpdateTarget(controller, host);

@@ -4,57 +4,38 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({layerId}, state, {service}) {
-  const info = await service('DesignService', 'GetLayerInfo', {layerId});
+async update({layerId, selected}, state, {service}) {
+  state.selected = selected;
+  state.info = await service('DesignService', 'GetLayerInfo', {layerId});
+},
+render({layerId}, {info, selected}) {
   const atomFilter = atom => {
     const prefixId = atom.id.split('$').slice(2).join('$');
     const prefix = (prefixId + '$').replace(/\$/g, '.');
     return ([id]) => id.startsWith(prefix);
-  }
-  state.nodes = info.atoms.map((atom, i) => {
-    const stride = 3;
-    const idFilter = atomFilter(atom);
-    return {
-      id: atom.id, 
-      type: atom.type,
-      displayName: atom.id.slice(layerId.length + 1),
-      style: {
-        left: 30 + 230*(i%stride) + 'px', top: 30 + 160*Math.floor(i/stride) + 'px', width:'220px'
-      },
-      inputs: entries(info.schema.inputs).filter(idFilter).map(([id, value]) => ({name: id.split('.').pop(), ...value})),
-      outputs: entries(info.schema.outputs).filter(idFilter).map(([id, value]) => ({name: id.split('.').pop(), ...value}))
-    }
-  });
-  ///state.schema = await service('GraphService', 'GetLayerSchema', {layerId});
-  // if (isDirty('layerId') || isDirty('graph')) {
-  //   if (layerId) {
-  //     graph = await service('GraphService', 'GetLayerGraph', {layerId});
-  //   }
-  //   state.graphRects = {};
-  //   if (graph) {
-  //     if (state.graph?.meta?.id !== graph.meta.id) {
-  //       selected = null;
-  //     }
-  //     state.graphInfo = await service('GraphService', 'GetGraphInfo', {graph});
-  //   } else {
-  //     state.graphInfo = null;
-  //     selected = null;
-  //   }
-  //   state.graph = graph;
-  // }
-  // if (state.selectedId !== selected) {
-  //   state.selectedId = selected;
-  //   return {selected};
-  // }
+  };
+  const nodes = info.atoms
+    .filter(atom => atom.id.split('$').length < 4)
+    .map((atom, i) => {
+      const stride = 3;
+      const idFilter = atomFilter(atom);
+      return {
+        id: atom.id, 
+        type: atom.type,
+        selected: atom.id === selected,
+        displayName: atom.id.slice(layerId.length + 1),
+        style: {
+          left: 32 + 240*(i%stride) + 'px', top: 32 + 160*Math.floor(i/stride) + 'px', width:'220px'
+        },
+        inputs: entries(info.schema.inputs).filter(idFilter).map(([id, value]) => ({name: id.split('.').pop(), ...value})),
+        outputs: entries(info.schema.outputs).filter(idFilter).map(([id, value]) => ({name: id.split('.').pop(), ...value}))
+      };
+    })
+    ;
+  return {
+    nodes
+  };
 },
-
-// render(inputs, {graph, selectedId, graphInfo}) {
-//   // return {
-//   //   // not really a graph
-//   //   graph: this.renderGraph(graph, selectedId, graphInfo),
-//   //   graphRects: graph?.meta?.graphRects ?? {}
-//   // };
-// },
 
 // renderGraph(graph, selectedId, graphInfo) {
 //   const graphEdges = this.renderGraphEdges(graph);
@@ -132,13 +113,9 @@ async update({layerId}, state, {service}) {
 //     ;
 // },
 
-// onNodeSelect({eventlet: {key}}, state) {
-//   //log(`selected ${key}`);
-//   if (state.selectedId !== key) {
-//     state.selectedId = key;
-//     return {selected: key};
-//   }
-// },
+onNodeSelect({eventlet: {key}}, state, {service}) {
+  service('DesignService', 'Select', {atomId: key});
+},
 
 // onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
 //   const graphRects = graph.meta.graphRects ??= {};
@@ -190,9 +167,10 @@ template: html`
 </style>
 
 <drop-target flex scrolling row on-target-drop="onNodeTypeDropped">
-  <anew-node-graph flex nodes="{{nodes}}" graph="{{graph}}" rects="{{graphRects}}" on-node-moved="onNodeMoved" on-node-selected="onNodeSelect"></anew-node-graph>
+  <anew-node-graph flex nodes="{{nodes}}" selected="{{selected}}" on-node-moved="onNodeMoved" on-node-selected="onNodeSelect"></anew-node-graph>
 </drop-target>
+
 <!-- last, therefore on top -->
-<div floating><slot name="toolbar"></slot></div>
+<!-- <div floating><slot name="toolbar"></slot></div> -->
 `
 });

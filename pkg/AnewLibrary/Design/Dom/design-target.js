@@ -7,7 +7,7 @@ import {Xen} from '../../../Library/Dom/Xen/xen-async.js';
 
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {
-    return ['accepts', 'disabled', 'datatype', 'targetkey', 'refresh'];
+    return ['accepts', 'disabled', 'datatype', 'targetkey', 'refresh', 'selected'];
   }
   get template() {
     return template;
@@ -19,8 +19,13 @@ const DesignTarget = class extends Xen.DropTarget {
     const observer = new ResizeObserver(() => this.onResize());
     observer.observe(this);
   }
-  update() {
-    this.onResize();
+  update({selected}, state) {
+    const id = '#' + selected?.replace(/\$/g, '_');
+    const elt = selected && this.domParent.querySelector(id);
+    this.doSelect(elt);
+  }
+  get domParent() {
+    return this.getRootNode().host;
   }
   getLocalRect(elt) {
     const frame = this.getBoundingClientRect();
@@ -31,37 +36,34 @@ const DesignTarget = class extends Xen.DropTarget {
   }
   onClick(e) {
     let elt = this.findValidTarget(e.target);
-    this.selected = elt;
-    this.doSelect(elt);
+    this.key = elt?.id.replace(/_/g, '$');
+    this.fire('select');
   }
   doSelect(elt) {
+    this.value = {};
     if (elt) {
-      this.key = elt.id.replace(/_/g, '$');
       const rect = this.getLocalRect(elt);
-      this.value = {rects: [rect]};
-      this.fire('select');
+      this.value.rects = [rect];
     }
+    this.fire('selection-rects');
   }
   onPointermove(e) {
-    let elt = this.findValidTarget(e.target);
+    let elt = e.ctrlKey ? this.findValidTarget(e.target) : null;
     this.over = elt;
     this.doOver(elt);
   };
   doOver(elt) {
-    let key = null;
-    let value = null;
+    //let key = null;
+    this.value = {};
     if (elt) {
-      key = elt.id.replace(/_/g, '$');
+      //key = elt.id.replace(/_/g, '$');
       const rect = this.getLocalRect(elt);
-      value = {rects: [rect]};
+      this.value.rects = [rect];
     }
-    this.value = value;
-    if (elt) {
-      this.fire('over');
-    }
+    this.fire('over-rects');
   }
   onResize() {
-    this.doSelect(this.selected);
+    this.doSelect(this.state.selected);
     this.doOver(this.over);
     this.fire('resize');
   }
@@ -74,7 +76,7 @@ const DesignTarget = class extends Xen.DropTarget {
     }
   }
   findValidTarget(elt) {
-    return !elt.atomId?.endsWith('Designable') && elt.closest('[atom]');
+    return !elt.atomId?.endsWith('Designable') && elt.closest('[atom]') || null;
   };
 };
 

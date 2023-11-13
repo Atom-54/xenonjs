@@ -4,25 +4,24 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-initialize(inputs, state, {service}) {
-  state.select = atomId => service('DesignService', 'Select', {atomId});
-},
 update(input, state) {
   // force design-target to update rectangles
   state.refresh = Math.random();
 },
-// invoked during resize also
-onSelect({eventlet: {key, value: {rects}}}, state) {
-  state.selections = rects.map(({x, y, width, height}) => ({
-    style: `left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px`
-  }));
-  state.select(key);
+onSelect({eventlet: {key}}, state, {service}) {
+  service('DesignService', 'Select', {atomId: key});
 },
 // invoked during resize also
-onOver({eventlet: {key, value}}, state) {
-  // state.highlights = !value.rects ? [] : value.rects.map(({x, y, width, height}) => ({
-  //   style: `left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px`
-  // }));
+onSelectionRects({eventlet: {value: {rects}}}, state) {
+  state.selections = rects?.map(({x, y, width, height}) => ({
+    style: `left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px`
+  }));
+},
+// invoked during resize also
+onOverRects({eventlet: {key, value}}, state) {
+  state.highlights = !value.rects ? [] : value.rects.map(({x, y, width, height}) => ({
+    style: `left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px`
+  }));
 },
 onTargetEnter({eventlet}, state, {service}) {
   service('DesignService', 'DesignDragEnter', {eventlet});
@@ -61,7 +60,7 @@ template: html`
     border: 4px dotted orange;
   }
 </style>
-<design-target flex column datatype="node/type" refresh="{{refresh}}" on-resize="onResize" on-over="onOver" on-select="onSelect" on-target-enter="onTargetEnter" on-target-leave="onTargetLeave" on-target-drop="onTargetDrop">
+<design-target flex column datatype="node/type" selected="{{selected}}" refresh="{{refresh}}" on-resize="onResize" on-over-rects="onOverRects" on-select="onSelect" on-selection-rects="onSelectionRects" on-target-enter="onTargetEnter" on-target-leave="onTargetLeave" on-target-drop="onTargetDrop">
   <slot name="Container"></slot>
 </design-target>
 <div selections repeat="transform_box_t">{{selections}}</div>
