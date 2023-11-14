@@ -96,6 +96,7 @@ export const Build = {
     container: 'Layout$BodyLeftSplit#Container2',
     state: {
       style: {
+        overflow: 'auto',
         padding: '0.6rem',
         order: 2
       }
@@ -105,7 +106,10 @@ export const Build = {
     type: '$anewLibrary/Graph/Atoms/Graph',
     container: 'Layout$BodyLeftSplit#Container',
     state: {
-      graphId: 'catalogGraph'
+      graphId: 'catalogGraph',
+      style: {
+        overflow: 'auto'
+      }
     }
   },
   State: {
@@ -218,7 +222,8 @@ export const catalogGraph = {
     type: '$anewLibrary/Layout/Atoms/Templated',
     state: {
       style: {
-        padding: '0.6rem'
+        padding: '0.6rem',
+        flex: '0 0 auto'
       },
       template: html`
   <div style="width: 100%; font-family: sans-serif;">
