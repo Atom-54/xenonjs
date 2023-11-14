@@ -11,18 +11,19 @@ onFile({eventlet: {key: title, value: content}}) {
 
 template: html`
 <style>
-  :host {
-    padding: 0 6px;
-    height: 2em;
+  [label] {
+    font-size: .75em;
+  }
+  [bar] {
+    margin: .3em 0;
   }
   [delim] {
-    width: 15px;
+    padding: 6px;
   }
 </style>
 
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <file-upload on-file="onFile" accept="{{accept}}">
     <wl-button inverted>{{button}}</wl-button>
   </file-upload>

@@ -19,6 +19,13 @@ export const Fields= {
     },
     outputs: {
       value: 'Boolean'
+    },
+    state: {
+      label: 'Boolean Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   Button: {
@@ -35,6 +42,13 @@ export const Fields= {
     },
     outputs: {
       value: 'String|Pojo'
+    },
+    state: {
+      label: 'Button',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   DataNavigator: {
@@ -53,6 +67,12 @@ export const Fields= {
       index: 'Number',
       record: 'Pojo',
       records: '[Pojo]'
+    },
+    state: {
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   DateField: {
@@ -69,6 +89,13 @@ export const Fields= {
     },
     outputs: {
       value: 'String'
+    },
+    state: {
+      label: 'Date Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   FileField: {
@@ -85,6 +112,13 @@ export const Fields= {
     outputs: {
       content: 'String',
       title: 'String'
+    },
+    state: {
+      button: 'Upload',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   Form: {
@@ -120,6 +154,13 @@ export const Fields= {
     outputs: {
       value: 'String',
       image: 'Image'
+    },
+    state: {
+      label: 'Image Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   LigatureField: {
@@ -136,6 +177,13 @@ export const Fields= {
     },
     outputs: {
       value: 'String'
+    },
+    state: {
+      label: 'Ligature Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   SelectField: {
@@ -153,6 +201,13 @@ export const Fields= {
     },
     outputs: {
       value: 'String'
+    },
+    state: {
+      label: 'Select Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   StaticText: {
@@ -163,6 +218,12 @@ export const Fields= {
     ligature: 'notes',
     inputs: {
       text: 'String'
+    },
+    state: {
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   TagField: {
@@ -178,6 +239,13 @@ export const Fields= {
     outputs: {
       value: '[String]',
       json: 'String'
+    },
+    state: {
+      label: 'Tag Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   },
   TextArea: {
@@ -192,6 +260,12 @@ export const Fields= {
     },
     outputs: {
       text: 'MultilineText'
+    },
+    state: {
+      label: 'TextArea Field',
+      style: {
+        padding: '0.5em'
+      }
     }
   },
   TextField: {
@@ -208,6 +282,13 @@ export const Fields= {
     },
     outputs: {
       value: 'String'
+    },
+    state: {
+      label: 'Text Field',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
     }
   }
 };

@@ -24,13 +24,15 @@ render({label, text, style}) {
 template: html`
 <style>
   :host {
-    display: flex;
+    /* display: flex;
     flex-direction: column; 
-    width: 100%;
+    width: 100%; */
+    padding: 0 6px;
   }
   textarea {
     width: 100%;
     height: 100%; 
+    min-height: 2em;
     border: none;
     padding: 12px;
     white-space: pre;
@@ -40,7 +42,8 @@ template: html`
     text-wrap: wrap;
   }
   [label] {
-    padding: 8px;
+    font-size: .75em;
+    margin-bottom: .3em;
   }
 </style>
 <div flex column>
