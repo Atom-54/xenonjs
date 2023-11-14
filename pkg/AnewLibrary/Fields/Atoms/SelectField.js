@@ -25,29 +25,18 @@ template: html`
 <style>
   :host {
     padding: 0 6px;
-    height: 2em;
-    width: 24em;
   }
   [label] {
-    background: inherit;
-    border: none;
-    min-width: var(--field-label-min-width);
-    max-width: var(--field-label-max-width);
-    text-wrap: pretty;
-  }
-  [delim] {
-    padding-right: 12px;
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   [field] {
     --multi-select-color: var(--xcolor-two);
-    /* --multi-select-radius: 4px; */
-    /* --multi-select-padding: 8px;    */
   }
 </style>
 
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <multi-select field flex options="{{options}}" selected="{{value}}" multiple="{{multiple}}" on-change="onFieldChange"></multi-select>
 </div>
 `

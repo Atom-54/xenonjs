@@ -29,31 +29,20 @@ template: html`
   * {
     box-sizing: border-box;
   }
-  :host {
-    padding: 0 6px;
-  }
   [label] {
-    background: inherit;
-    font-weight: bold;
-    font-size: 75%;
-    border: none;
-    text-align: right;
-    min-width: var(--field-label-width);
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   [field] {
     box-sizing: border-box;
-    padding: 6px 9px;
+    padding: 2px 0;
     border-radius: 4px;
-    border: 1px solid var(--xcolor-two);
+    border: 1px solid var(--xcolor-two); 
     overflow-x: auto;
   }
-  [delim] {
-    padding: 6px;
-  }
 </style>
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <tag-field flex field tags="{{value}}" on-tags-change="onTagsChange"></tag-field>
 </div>
 `

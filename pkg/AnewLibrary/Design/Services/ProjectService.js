@@ -31,7 +31,7 @@ export const initProject = async layer => {
   } else {
     project = Project.create({name: defaultProject});
     selectProject(project);
-    await newGraph(build);
+    await newGraph(layer);
     saveProject(project);
   }
   selectProject(project);

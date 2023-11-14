@@ -26,15 +26,10 @@ template: html`
 <style>
   :host {
     padding: 0 6px;
-    height: 2em;
   }
   [label] {
-    background: inherit;
-    font-weight: bold;
-    font-size: 75%;
-    border: none;
-    text-align: right;
-    min-width: var(--field-label-width);
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   [field] {
     padding: 6px 9px;
@@ -42,7 +37,7 @@ template: html`
     border: 1px solid var(--xcolor-two);
   }
   [delim] {
-    padding: 6px;
+    padding: 4px;
   }
   icon {
     border: 1px solid var(--xcolor-two);
@@ -51,9 +46,8 @@ template: html`
   }
 </style>
 
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <icon>{{ligature}}</icon>
   <span delim></span>
   <div flex>

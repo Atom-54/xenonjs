@@ -23,22 +23,20 @@ template: html`
 <style>
   :host {
     padding: 0 6px;
-    /* height: 2em;
-    width: 6em; */
   }
   [label] {
-    background: inherit;
-    border: none;
-    min-width: var(--field-label-min-width);
-    text-wrap: pretty;
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   [delim] {
     padding-right: 9px;
   }
+  [field] {
+    margin: 0;
+  }
 </style>
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <input field type="checkbox" checked="{{value}}" on-change="onValueChange">
 </div>
 `

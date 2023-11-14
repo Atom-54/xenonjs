@@ -24,25 +24,35 @@ onImage({eventlet: {value}}) {
 template: html`
 <style>
   :host {
+    padding: 0 6px;
+  }
+  [label] {
+    font-size: .75em;
+    margin-bottom: .3em;
+  }
+  [field] {
+    padding: 6px 9px;
+    border-radius: 4px;
+    border: 1px solid var(--xcolor-two);
+  }
+  [delim] {
+    padding: 6px;
+  }
+  image-upload {
     display: flex;
-    flex-direction: column;
-  }
-  [bar] > * {
-    padding: 0 4px;
-  }
-  input {
-    min-width: 120px;
-    max-width: 500px;
+    align-items: center;
   }
 </style>
 
-<div bar>
-  <span>Image url:</span>
-  <input flex type="text" on-change="onImage">
-  <span>or</span>
-  <image-upload on-image="onImage" accept="image/*">
-    <button>Upload</button>
-  </image-upload>
+<div label>{{label}}</div>
+<div flex bar>
+  <div flex row> 
+    <input flex field type="text" on-change="onImage">
+    <span delim>or</span>
+    <image-upload on-image="onImage" accept="image/*">
+      <wl-button inverted>Upload</wl-button>
+    </image-upload>
+  </div>
 </div>
 
 `
