@@ -38,13 +38,6 @@ export class NodeGraph extends DragDrop {
   }
   update({nodes, selected}, state, {service}) {
     this.key = selected;
-    //log.debug(nodes);
-    // state.data = service();
-    // state.nodes = [
-    //   {id: 'Foo', displayName: 'Foo', style: {left: '30px', top:'30px', width:'150px', height: '75px', Xbackground: 'silver'}}
-    // ];
-    // state.nodes.forEach(node => {
-    // });
   }
   render({nodes}, state) {
     const graph = null;

@@ -236,19 +236,22 @@ const validTarget = (elt, targetId) => {
 };
 
 const updateConnection = (controller, hostId, propName, connection) => {
+  const source = `${designLayerId}$${connection}`;
+  const target = `${hostId}$${propName}`;
   // update connection in live controller
   const qualifiedConnections = { 
-    [`${designLayerId}$${connection}`]: [`${hostId}$${propName}`]
+    [source]: [target]
   };
   Object.assign(controller.connections.inputs, qualifiedConnections);
+  // update atom state
+  Controller.writeInputsToHost(controller, hostId, {[propName]: controller.state[source]});
   // update connection in graph data
   const hostSplit = hostId.split('$');
-  const prefixId = hostSplit.slice(2).join('$');
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
-  const hostConnections = host.layer.graph[atomName].connections ?? {};
+  const hostConnections = (host.layer.graph[atomName].connections ??= {});
   const graphQualifiedConnections = {
-    [propName]: [`${prefixId}$${connection}`]
+    [propName]: [connection]
   };
   Object.assign(hostConnections, graphQualifiedConnections);
   designUpdateTarget(controller, host);

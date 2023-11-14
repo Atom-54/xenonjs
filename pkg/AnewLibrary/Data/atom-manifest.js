@@ -13,7 +13,7 @@ export const Data = {
     ligature: 'scatter_plot',
     type: '$anewLibrary/Data/Atoms/Data',
     inputs: {
-      json: 'Pojo|Text',
+      json: 'Pojo',
     },
     outputs: {
       data: 'Pojo'
