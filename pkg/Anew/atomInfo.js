@@ -7,6 +7,7 @@ const manifests = [
   'Data',
   'Design',
   'Graph',
+  'Fields',
   'Layout',
   'Spectrum'
 ];
