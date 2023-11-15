@@ -78,17 +78,17 @@ export const reifyAtoms = async (controller, layer, graph) => {
   for (let i=0, entry; entry=entries[i]; i++) {
     const [name, value] = entry;
     if (name !== 'meta') {
-      let {type, container, state, connections} = value;
+      let {type, container, isContainer, state, connections} = value;
       state ??= {};
       state.style = (state.style && typeof state.style === 'object') ? state.style : {};
       state.style.order = i;
-      await reifyAtom(controller, layer, {name, type, container, state, connections});
+      await reifyAtom(controller, layer, {name, type, container, isContainer, state, connections});
     }
   }
 };
 
-export const reifyAtom = async (controller, layer, {name, type, container, state, connections}) => {
-  const host = await addAtom(controller, layer, {name, type, container});
+export const reifyAtom = async (controller, layer, {name, type, isContainer, container, state, connections}) => {
+  const host = await addAtom(controller, layer, {name, type, container, isContainer});
   if (connections) {
     const inputConnections = controller.connections.inputs;
     for (let [key, targets] of Object.entries(connections)) {
@@ -118,8 +118,8 @@ export const reifyAtom = async (controller, layer, {name, type, container, state
   return host;
 };
 
-export const addAtom = async (controller, layer, {name, type, container}) => {
-  const atom = await createAtom(controller, layer, {name, type, container});
+export const addAtom = async (controller, layer, {name, type, container, isContainer}) => {
+  const atom = await createAtom(controller, layer, {name, type, container, isContainer});
   atom.listen('service', request => controller.onservice?.(atom, request));
   atom.listen('output', output => controller.onoutput?.(atom, output));
   atom.listen('render', packet => controller.onrender?.(atom, packet));
@@ -133,7 +133,7 @@ export const removeAtom = async (controller, atom) => {
   return atom;
 };
 
-export const createAtom = async (controller, layer, {name, type, container}) => {
+export const createAtom = async (controller, layer, {name, type, container, isContainer}) => {
   const id = `${layer.id}$${name}`;
   const host = await controller.xenon.emitter(name, {type});
   host.id = id;
@@ -142,7 +142,8 @@ export const createAtom = async (controller, layer, {name, type, container}) => 
   host.meta = {
     name,
     type,
-    container: calculateContainer(host, container)
+    container: calculateContainer(host, container),
+    isContainer
   };
   return host;
 };
@@ -186,7 +187,7 @@ const writeToState = (controller, inputState) => {
 const bindamor = (controller, key, value) => {
   const bound = controller.connections?.inputs?.[key];
   bound?.forEach(connection => {
-    log.debug(`[${connection}] receives from [${key}] the value`, value);
+    log(`[${connection}] receives from [${key}] the value`, value);
     const bits = connection.split('$');
     const prop = bits.pop();
     const atomId = bits.join('$');
@@ -212,4 +213,12 @@ export const writeInputsToHost = (controller, key, inputs) => {
   } else {
     log('bound atom [', key, '] does not exist')
   }
+};
+
+export const unrender = async controller => {
+  await Promise.all(values(controller.atoms).map(atom => atom.render({$clear: true})));
+};
+
+export const rerender = async controller => {
+  await Promise.all(values(controller.atoms).map(atom => atom.invalidate()));
 };

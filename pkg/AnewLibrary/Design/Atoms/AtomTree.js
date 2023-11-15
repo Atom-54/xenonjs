@@ -5,8 +5,8 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async initialize({}, state, {service}) {
-  state.onDrop = async eventlet => {
-    eventlet.key = eventlet.key.replace(/\$/g, '_');
+  state.doDrop = async eventlet => {
+    //log.debug(eventlet);
     service('DesignService', 'DesignDragDrop', {eventlet});
   }
 },
@@ -22,7 +22,8 @@ render({}, {atoms, selected}) {
   const rootAtoms = this.atomsInContainer(atoms, atoms.designLayerId + '#Container')
   const root = {
     name: 'root',
-    atoms: rootAtoms
+    atoms: rootAtoms,
+    disabled: true
   };
   this.stratify(atoms, root, selected);
   return {
@@ -35,7 +36,11 @@ stratify(allAtoms, root, selected) {
       atom.selected = atom.id === selected;
       if (!atom.type.endsWith('Graph')) {
         const atoms = this.atomsInParent(allAtoms, atom.id)
-        const containers = [...new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')))];
+        const foundContainers = new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')));
+        if (atom.isContainer) {
+          foundContainers.add('Container');
+        }
+        const containers = [...foundContainers];
         atom.containers = containers.map(name => {
           const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);
           const node = {name, id: atom.id + '#' + name, atoms: contained};
@@ -54,19 +59,16 @@ atomsInContainer(allAtoms, containerName) {
   const atoms = allAtoms.filter(({container}) => container === containerName);
   return atoms;
 },
-onDrop({eventlet}, {onDrop}) {
-  log.debug(eventlet);
-  onDrop(eventlet);
+onDrop({eventlet}, {doDrop}) {
+  doDrop(eventlet);
 },
-onDropBefore({eventlet}, {onDrop}) {
+onDropBefore({eventlet}, {doDrop}) {
   eventlet.before = true;
-  log.debug(eventlet);
-  onDrop(eventlet);
+  doDrop(eventlet);
 },
-onDropAfter({eventlet}, {onDrop}) {
+onDropAfter({eventlet}, {doDrop}) {
   eventlet.after = true;
-  log.debug(eventlet);
-  onDrop(eventlet);
+  doDrop(eventlet);
 },
 onClick({eventlet}, state, {service}) {
   service('DesignService', 'Select', {atomId: eventlet.key});
@@ -89,7 +91,7 @@ template: html`
     font-size: .8rem;
   }
   [atoms], [container] {
-    padding-left: 0.4em;
+    padding-left: 0.8em;
   }
   [label] {
     user-select: none;
@@ -109,10 +111,10 @@ template: html`
     padding: 4px 0;
     background-color: #eeeeee;
   }
-  [atoms] div[label] {
+  [atoms] drag-able[label] {
     background-color: white;
   }
-  [atoms] div[label][selected] {
+  [atoms] drag-able[label][selected] {
     background-color: purple;
     color: white;
     outline: 2px solid purple;
@@ -140,7 +142,7 @@ template: html`
 
 <template container_t>
   <div container>
-    <drop-target label targetkey="{{id}}" on-target-drop="onDrop">
+    <drop-target label targetkey="{{id}}" disabled="{{disabled}}" on-target-drop="onDrop">
       <icon>folder</icon>
       <span>{{name}}</span>
     </drop-target>
@@ -151,7 +153,10 @@ template: html`
 <template atom_t>
   <div>
     <drop-target before targetkey="{{id}}" on-target-drop="onDropBefore"></drop-target>
-    <div label selected$="{{selected}}" key="{{id}}" draggable="true" on-click="onClick"><icon>settings</icon><span>{{name}}</span></div>
+    <drag-able label selected$="{{selected}}" key="{{id}}" on-click="onClick">
+      <icon>settings</icon>
+      <span>{{name}}</span>
+    </drag-able>
     <drop-target after targetkey="{{id}}" on-target-drop="onDropAfter"></drop-target>
     <div repeat="container_t">{{containers}}</div>
   </div>

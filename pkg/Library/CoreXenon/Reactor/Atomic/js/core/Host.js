@@ -69,11 +69,14 @@ export class Host extends EventEmitter {
   }
   detachAtom() {
     if (this.atom) {
-      this.render({$clear: true});
+      this.unrender();
       this.atom.unlistenAll();
       this.atom = null;
       this.meta = null;
     }
+  }
+  unrender() {
+    this.render({$clear: true});
   }
   async service(request) {
     if (request?.decorate) {
@@ -109,9 +112,9 @@ export class Host extends EventEmitter {
     }
   }
   render(model) {
-    const { id, container, template } = this;
-    const content = { model, template };
-    const packet = { id, container, content };
+    const {id, container, template} = this;
+    const content = {model, template};
+    const packet = {id, container, content};
     this.fire('render', packet);
     this.lastPacket = packet;
   }
