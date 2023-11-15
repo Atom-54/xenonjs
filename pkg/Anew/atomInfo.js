@@ -9,6 +9,7 @@ const manifests = [
   'Graph',
   'Fields',
   'Layout',
+  'OpenAI',
   'Spectrum'
 ];
 

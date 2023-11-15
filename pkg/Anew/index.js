@@ -15,6 +15,8 @@ import {LayerService} from '../AnewLibrary/Graph/Services/LayerService.js';
 import {ProjectService} from '../AnewLibrary/Design/Services/ProjectService.js';
 import {DesignService} from '../AnewLibrary/Design/Services/DesignService.js';
 import {JsonRepairService} from '../AnewLibrary/JsonRepair/Services/jsonrepairService.js';
+// import {FormService} from '../AnewLibrary/Fields/Services/FormService.js';
+import {OpenAIService} from '../AnewLibrary/OpenAI/Services/OpenAIService.js';
 import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
 
 const log = logf('Index', 'magenta');
@@ -22,7 +24,7 @@ const log = logf('Index', 'magenta');
 start(async xenon => {
   // create a xenon environment
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
-  Services.addServices({ProjectService, LayerService, DesignService, JsonRepairService});
+  Services.addServices({ProjectService, LayerService, DesignService, JsonRepairService, /*FormService,*/ OpenAIService});
   // make a controller
   const main = await Env.createController(env, 'main');
   // add layers

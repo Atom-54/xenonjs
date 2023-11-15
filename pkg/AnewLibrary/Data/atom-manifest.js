@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-const category = 'Data';
+const categories = ['Data'];
 
 export const Data = {
   Data: {
-    category,
+    categories,
     displayName: 'Data',
     ligature: 'scatter_plot',
     type: '$anewLibrary/Data/Atoms/Data',
@@ -20,7 +20,7 @@ export const Data = {
     }
   },
   DataExplorer: {
-    category,
+    categories,
     displayName: 'DataExplorer',
     ligature: 'explore',
     type: '$anewLibrary/Data/Atoms/DataExplorer',

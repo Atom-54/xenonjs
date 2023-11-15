@@ -3,11 +3,11 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const category = 'Media';
+const categories = ['Media'];
 
 export const Layout = {
   Panel: {
-    category,
+    categories,
     description: 'Renders a simple panel that can contain elements',
     ligature: 'select_all',
     type: '$anewLibrary/Layout/Atoms/Panel',
@@ -24,7 +24,7 @@ export const Layout = {
     }
   },
   SplitPanel: {
-    category,
+    categories,
     description: 'Renders a split panel with two sections',
     ligature: 'bottom_sheets',
     type: '$anewLibrary/Layout/Atoms/SplitPanel',
