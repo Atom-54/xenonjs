@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({value, form}, state, {service, isDirty}) {
-  service('FormService', 'registerField', {form});
+  service('FormService', 'RegisterField', {form});
   if (isDirty('value')) {
     let textValue = new Date(value).toLocaleString();
     if (textValue === 'Invalid Date') {

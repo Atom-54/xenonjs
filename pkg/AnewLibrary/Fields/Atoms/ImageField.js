@@ -5,7 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({form, image, value}, state, {isDirty, service}) {
-  service('FormService', 'registerField', {form});
+  service('FormService', 'RegisterField', {form});
   if (isDirty('value')) {
     return {image: {url: value}, value};
   }

@@ -4,7 +4,8 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({value}, state) {
+update({value, form}, state, {service}) {
+  service('FormService', 'RegisterField', {form});
   if (typeof value === 'string') {
     value = value.split(',').map(s => s?.trim?.());
   }
@@ -17,10 +18,6 @@ returnValue(value, state) {
     return {value, json: JSON.stringify(value)};
   }
 },
-// onFieldBlur({eventlet: {value}}) {
-//   //state.value = value;
-//   return {value};
-// },
 onTagsChange({eventlet: {value}}, state) {
   return this.returnValue(value, state);
 },

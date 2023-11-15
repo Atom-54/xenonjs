@@ -6,17 +6,16 @@ export const atom = (log, resolve) => ({
  */
 initialize(_, state, {service}) {
   state.id = Math.floor((Math.random()*9+1)*1e5);
-  service('FormService', 'registerForm', state.id);
+  service('FormService', 'RegisterForm', {form: state.id});
   return {form: state.id};
 },
 async update({inputData}, {id}, {isDirty, service}) {
   let submit = isDirty('submitTrigger');
   if (inputData && isDirty('inputData')) {
-    await service('FormService', 'setValues', {form: id, values: inputData});
+    await service('FormService', 'SetValues', {form: id, values: inputData});
     log('inputData:', inputData);
-    //submit = true;
   }
-  const data = await service('FormService', 'getValues', {form: id});
+  const data = await service('FormService', 'GetValues', {form: id});
   const columns = this.getColumns(data); 
   const row = this.getRow(data);
   const result = {
@@ -40,8 +39,8 @@ getRow(data) {
   });
   return row;
 },
-onFormFields(inputs, state, {service}) {
-  state.schema = service('FormService', 'getSchema', {form: id});
-  return {schema};
-}
+// onFormFields(inputs, state, {service}) {
+//   state.schema = service('FormService', 'getSchema', {form: id});
+//   return {schema};
+// }
 });
