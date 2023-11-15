@@ -3,8 +3,11 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+const category = 'Spectrum Components';
+
 export const Spectrum = {
   SpectrumButton: {
+    categories: [category, 'Common'],
     displayName: 'Spectrum Button',
     ligature: 'buttons_alt',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumButton',
@@ -19,6 +22,7 @@ export const Spectrum = {
     }
   },
   SpectrumCard: {
+    categories: [category],
     displayName: 'Spectrum Card',
     ligature: 'problem',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumCard',
@@ -40,6 +44,7 @@ export const Spectrum = {
     }
   },
   SpectrumTabs: {
+    categories: [category],
     displayName: 'Spectrum Tabs',
     ligature: 'tab',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabs',
@@ -51,6 +56,7 @@ export const Spectrum = {
     }
   },
   SpectrumTabPanels: {
+    categories: [category, 'Common'],
     displayName: 'Spectrum Tab Panels',
     ligature: 'tabs',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',

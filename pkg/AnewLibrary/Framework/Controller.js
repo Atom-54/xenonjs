@@ -85,24 +85,34 @@ export const reifyAtoms = async (controller, layer, graph) => {
       await reifyAtom(controller, layer, {name, type, container, state, connections});
     }
   }
-  //log.debug(controller.connections.inputs);
 };
 
 export const reifyAtom = async (controller, layer, {name, type, container, state, connections}) => {
   const host = await addAtom(controller, layer, {name, type, container});
+  if (connections) {
+    const inputConnections = controller.connections.inputs;
+    for (let [key, targets] of Object.entries(connections)) {
+      if (!Array.isArray(targets)) {
+        targets = [targets];
+      }
+      for (const connection of targets) {
+        const source = `${layer.id}$${connection}`;
+        //const sourceName = connection.split('$').slice(0, -1).join('$');
+        const targetName = `${layer.id}$${host.name}`;
+        const target = `${targetName}$${key}`;
+        (inputConnections[source] ??= []).push(target);
+        if (source in controller.state) {
+          (state ??= {})[key] = controller.state[source];
+        }
+      }
+    }
+  }
   if (state) {
     const qualifiedState = {};
-    for (let [key, value] of Object.entries(state)) {
+    for (const [key, value] of Object.entries(state)) {
       qualifiedState[`${layer.id}$${host.name}$${key}`] = value;
     }
     writeToState(controller, qualifiedState);
-  }
-  if (connections) {
-    const qualifiedConnections = {};
-    for (let [key, value] of Object.entries(connections)) {
-      qualifiedConnections[`${layer.id}$${value}`] = [`${layer.id}$${host.name}$${key}`];
-    }
-    Object.assign(controller.connections.inputs, qualifiedConnections);
   }
   host.inputs = state || {};
   return host;

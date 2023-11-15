@@ -228,7 +228,7 @@ export const catalogGraph = {
       template: html`
   <div style="width: 100%; font-family: sans-serif;">
   <div style="padding: 8px 4px; font-weight: bold;">{{category}}</div>
-  <div repeat="foo_t">{{atoms}}</div>
+  <div repeat="foo_t">{{types}}</div>
   <template foo_t>
     <div on-click="onItemClick" key="{{name}}" style="background-color: transparent; vertical-align: top; box-sizing: content-box; zoom: 0.4; display: inline-block; margin: 8px 4px 0 0; width: 130px;">
       <div style="width: 108px; background: #f9f9f9; border: 2px solid #bbbbbb; border-radius: 16px; margin: auto;">

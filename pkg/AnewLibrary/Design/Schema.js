@@ -42,20 +42,22 @@ export const schemaForHost = host => {
 };
 
 const schemaFromHost = (schema, host, state) => {
+  const connections = host.layer.graph[host.name].connections;
   const kind = host.type.split('/').pop();
   const info = atomInfo[kind];
   if (info) {
-    schemaMode(schema.inputs, info.inputs, state);
-    schemaMode(schema.outputs, info.outputs, state);
+    schemaMode(schema.inputs, info.inputs, state, connections);
+    schemaMode(schema.outputs, info.outputs, state, connections);
   }
 };
 
-const schemaMode = (modalSchema, modalInfo, state) => {
+const schemaMode = (modalSchema, modalInfo, state, connections) => {
   for (const [key, type] of Object.entries(modalInfo || {})) {
     const defaultValue = (type.includes('String') || type.includes('Text')) ? '' : null;
     modalSchema[key] = {
       type, 
-      value: state[key] || defaultValue
+      value: state[key] || defaultValue,
+      connection: connections?.[key]?.[0]
     };
   }
 };
