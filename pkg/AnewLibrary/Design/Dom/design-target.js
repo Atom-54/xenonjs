@@ -22,8 +22,8 @@ const DesignTarget = class extends Xen.DropTarget {
     this.addEventListener('pointermove', e => this.onPointermove(e), {capture: true});
     this.addEventListener('scroll', e => this.onScroll(e), {capture: true});
     this.addEventListener('keydown', e => this.onKeyDown(e) /*, {capture: true}*/);
-    const observer = new ResizeObserver(() => this.onResize());
-    observer.observe(this);
+    this.observer = new ResizeObserver(() => this.onResize());
+    this.observer.observe(this);
   }
   update({selected}, state) {
     const id = '#' + selected?.replace(/\$/g, '_');
@@ -57,10 +57,16 @@ const DesignTarget = class extends Xen.DropTarget {
   doSelect(elt) {
     this.value = {};
     if (elt) {
-      this.state.selected = elt;
+      if (!this.state.selected || this.state.selected !== elt) {
+        if (this.state.selected) {
+          this.observer.unobserve(this.state.selected);
+        }
+        this.observer.observe(elt);
+      }
       const rect = this.getLocalRect(elt);
       this.value.rects = [rect];
     }
+    this.state.selected = elt;
     this.fire('selection-rects');
   }
   onPointermove(e) {

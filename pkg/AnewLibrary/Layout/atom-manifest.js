@@ -11,6 +11,7 @@ export const Layout = {
     description: 'A simple container',
     ligature: 'select_all',
     type: '$anewLibrary/Layout/Atoms/Panel',
+    isContainer: true,
     inputs: {
       layout: 'LayoutValues|String',
       center: 'Boolean',
@@ -20,7 +21,10 @@ export const Layout = {
       LayoutValues: ['column','row'],
     },
     state: {
-      layout: 'column'
+      layout: 'column',
+      style: {
+        overflow: 'auto'
+      }
     }
   },
   SplitPanel: {

@@ -105,32 +105,14 @@ export const DesignService = {
     }  
   },
   async DesignDragDrop(host, {eventlet}) {
-    const {controller} = host.layer;
-    const types = await DesignService.GetAtomTypes();
+    const types = DesignService.GetAtomTypes();
     const dropType = types.find(({name}) => name === eventlet.value);
-    log.debug(eventlet, dropType);
     if (dropType) {
-      let elt = dragTarget(host, eventlet);
-      if (elt) {
-        elt.style.outline = null;
-        elt.style.outline = '5px dashed green';
-      }
-      const key = eventlet.key.replace(/_/g, '$');
-      let container = key.includes('#') && key;
-      if (!container) {
-        const targetHost = controller.atoms[key];
-        container = targetHost.container;
-      }
-      const targetLayer = designLayerId;
-      const layer = Controller.findLayer(controller, targetLayer);
-      const name = dropType.name + Math.floor(Math.random()*100);
-      const type = dropType.type; 
-      const state = dropType.state || {};
-      log.debug({name, container, state});
-      // TODO(sjmiles): layer prefix is added back in Controller.reifyAtom, which
-      // expects `container` to be in local-scope
-      container = container.slice(targetLayer.length + 1);
-      return addDesignedAtom(controller, layer, {name, type, container, state});
+      log.debug('Dropping type', eventlet, dropType);
+      await dropAtomType(host, eventlet, dropType);
+    } else {
+      log.debug('Dropping atom', eventlet);
+      await dropAtom(host.layer.controller, eventlet);
     }
   },
   ConnectionChange(host, {id, key, value}) {
@@ -189,9 +171,9 @@ const getDesignLayer = () => {
   return designables[designLayerId];
 };
 
-export const addDesignedAtom = async (controller, layer, {name, type, container, state}) => {
-  const host = await Controller.reifyAtom(controller, layer, {name, type, container, state});
-  layer.graph[name] = {type, container, state}; 
+export const addDesignedAtom = async (controller, layer, {name, type, container, isContainer, state}) => {
+  const host = await Controller.reifyAtom(controller, layer, {name, type, container, isContainer, state});
+  layer.graph[name] = {type, container, isContainer, state}; 
   designUpdate(controller);
   designSelect(controller, host.id);
   Project.ProjectService.SaveProject();
@@ -202,6 +184,8 @@ export const designUpdate = async controller => {
   Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
   Controller.writeInputsToHost(controller, 'build$NodeGraph', {layerId: designLayerId, junk: Math.random()});
+  const tabIndex = designables.indexOf(designLayerId);
+  Controller.writeInputsToHost(controller, 'build$DesignPanels', {selected: tabIndex});
 };
 
 export const designSelect = (controller, atomId) => {
@@ -250,15 +234,62 @@ const prefixedState = (state, prefix)=> {
 
 const getAtomInfo = (controller, layerId) => {
   const result = Object.entries(controller.atoms)
-    .filter(([id, atom]) => id.startsWith(layerId + '$'))
+    .filter(([id]) => id.startsWith(layerId + '$'))
     .map(([id, atom]) => ({
       id,
       type: atom.type.split('/').pop(),
-      container: atom.container
+      container: atom.meta.container,
+      isContainer: atom.meta.isContainer
     }))
   ;
   result.designLayerId = layerId;
   return result;
+};
+
+const dropAtomType = async (host, eventlet, dropType) => {
+  const {controller} = host.layer;
+  let elt = dragTarget(host, eventlet);
+  if (elt) {
+    elt.style.outline = null;
+    elt.style.outline = '5px dashed green';
+  }
+  const key = eventlet.key.replace(/_/g, '$');
+  let container = key.includes('#') && key;
+  if (!container) {
+    const targetHost = controller.atoms[key];
+    container = targetHost.container;
+  }
+  const targetLayer = designLayerId;
+  const layer = Controller.findLayer(controller, targetLayer);
+  const name = dropType.name + Math.floor(Math.random()*100);
+  const type = dropType.type; 
+  const state = dropType.state || {};
+  const isContainer = dropType.isContainer;
+  log.debug({name, container, state});
+  // TODO(sjmiles): layer prefix is added back in Controller.reifyAtom, which
+  // expects `container` to be in local-scope
+  container = container.slice(targetLayer.length + 1);
+  return addDesignedAtom(controller, layer, {name, type, container, isContainer, state});
+};
+
+const dropAtom = async (controller, eventlet, dropType) => {
+  let container;
+  if (eventlet.before) {
+    const containerHost = controller.atoms[eventlet.key];
+    container = containerHost.container;
+  } else if (eventlet.after) {
+    const containerHost = controller.atoms[eventlet.key];
+    container = containerHost.container;
+  } else if (eventlet.key.includes('#')) {
+    container = eventlet.key;
+  }
+  if (container) {
+    const containable =  controller.atoms[eventlet.value];
+    containable.meta.container = container;
+    await Controller.unrender(controller);
+    await Controller.rerender(controller);
+  }
+  log.debug('Drop container', container);
 };
 
 const dragTarget = (host, eventlet) => {

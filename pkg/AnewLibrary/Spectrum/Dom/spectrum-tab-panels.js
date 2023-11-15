@@ -32,7 +32,7 @@ export class SpectrumTabPanels extends Xen.Async {
 <sp-tab-panel value="${panel.value}">
   <slot name="Container${panel.value != "0" ? Number(panel.value) + 1 : ''}">
 </sp-tab-panel>
-      `)
+      `);
     });
     html.push('</sp-tabs>')
     const template = this.shadowRoot.querySelector('template');

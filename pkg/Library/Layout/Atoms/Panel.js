@@ -9,11 +9,6 @@ render({layout, center, style}) {
   const rules = `:host { 
     flex-direction: ${isRow ? 'row' : 'column'} !important;
   }`;
-  // const rules = `:host { 
-  //   flex-direction: ${isRow ? 'row' : 'column'} !important;
-  //   ${isRow ? 'height' : 'width'}: auto !important;
-  //   overflow: auto !important;
-  // }`;
   return {
     rules,
     style,
