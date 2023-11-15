@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-const category = 'Fields';
+const categories = ['Fields'];
 
 export const Fields= {
   BooleanField: {
-    category,
+    categories,
     displayName: 'Boolean Field',
     description: 'Displays a checkbox field',
     type: '$anewLibrary/Fields/Atoms/BooleanField',
@@ -29,7 +29,7 @@ export const Fields= {
     }
   },
   Button: {
-    category,
+    categories,
     displayName: 'Button',
     description: 'Displays a button',
     type: '$anewLibrary/Fields/Atoms/Button',
@@ -52,7 +52,7 @@ export const Fields= {
     }
   },
   DataNavigator: {
-    category,
+    categories,
     displayName: 'Data Navigator',
     description: 'UX for navigating a dataset',
     type: '$anewLibrary/Fields/Atoms/DataNavigator',
@@ -76,7 +76,7 @@ export const Fields= {
     }
   },
   DateField: {
-    category,
+    categories,
     displayName: 'Date Field',
     description: 'Displays a date input field',
     type: '$anewLibrary/Fields/Atoms/DateField',
@@ -99,7 +99,7 @@ export const Fields= {
     }
   },
   FileField: {
-    category,
+    categories,
     displayName: 'File Field',
     description: "Uploads a .text file",
     type: '$anewLibrary/Fields/Atoms/FileField',
@@ -122,7 +122,7 @@ export const Fields= {
     }
   },
   Form: {
-    category,
+    categories,
     displayName: 'Form',
     description: 'Formulates a form',
     type: '$anewLibrary/Fields/Atoms/Form',
@@ -141,7 +141,7 @@ export const Fields= {
     }
   },
   ImageField: {
-    category,
+    categories,
     displayName: 'Image Field',
     description: 'Uploads an image or captures image URL',
     type: '$anewLibrary/Fields/Atoms/ImageField',
@@ -164,7 +164,7 @@ export const Fields= {
     }
   },
   LigatureField: {
-    category,
+    categories,
     displayName: 'Ligature Field',
     description: 'An input field for icons',
     type: '$anewLibrary/Fields/Atoms/LigatureField',
@@ -187,7 +187,7 @@ export const Fields= {
     }
   },
   SelectField: {
-    category,
+    categories,
     displayName: 'Select Field',
     description: 'Displays a drop down selection field',
     type: '$anewLibrary/Fields/Atoms/SelectField',
@@ -211,7 +211,7 @@ export const Fields= {
     }
   },
   StaticText: {
-    category,
+    categories,
     displayName: 'Static Field',
     description: 'Displays static text',
     type: '$anewLibrary/Fields/Atoms/StaticText',
@@ -227,7 +227,7 @@ export const Fields= {
     }
   },
   TagField: {
-    category,
+    categories,
     displayName: 'Tag Field',
     description: 'Displays a tag chip',
     type: '$anewLibrary/Fields/Atoms/TagField',
@@ -249,7 +249,7 @@ export const Fields= {
     }
   },
   TextArea: {
-    category,
+    categories,
     displayName: 'Text Area',
     description: 'Displays a text area field',
     type: '$anewLibrary/Fields/Atoms/TextArea',
@@ -269,7 +269,7 @@ export const Fields= {
     }
   },
   TextField: {
-    category,
+    categories,
     displayName: 'Text Field',
     description: 'Displays a text input field',
     type: '$anewLibrary/Fields/Atoms/TextField',

@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-const category = 'Graph';
+const categories = ['Graph'];
 
 export const Graph = {
   Graph: {
-    category,
+    categories,
     displayName: 'Graph Layer',
     type: '$anewLibrary/Graph/Atoms/Graph',
     ligature: 'schema',
