@@ -4,14 +4,14 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({value}, state) {
+update({value, form}, state, {service}) {
+  service('FormService', 'RegisterField', {form});
   state.value = value;
   return {value};
 },
 onValueChange({eventlet: {value}}, state) {
   // because checkboxes are eccentric
   value = !state.value;
-  log('onValueChange', value);
   // this is done so the renderer can 
   // have it right away
   state.value = value;

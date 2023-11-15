@@ -15,7 +15,8 @@ export const Fields= {
     ligature: 'check_box',
     inputs: {
       label: 'String',
-      value: 'Boolean'
+      value: 'Boolean',
+      form: 'FormId'
     },
     outputs: {
       value: 'Boolean'
@@ -41,7 +42,7 @@ export const Fields= {
       value: 'String|Pojo'
     },
     outputs: {
-      value: 'String|Pojo'
+      value: 'Nonce'
     },
     state: {
       label: 'Button',
@@ -85,7 +86,7 @@ export const Fields= {
       label: 'String',
       value: 'String',
       options: '[String]',
-      form: 'FormId:String'
+      form: 'FormId'
     },
     outputs: {
       value: 'String'
@@ -107,7 +108,8 @@ export const Fields= {
     inputs: {
       label: 'String',
       button: 'String',
-      accept: 'String'
+      accept: 'String',
+      form: 'FormId'
     },
     outputs: {
       content: 'String',
@@ -130,11 +132,11 @@ export const Fields= {
     ligature: 'ballot',
     inputs: {
       inputData: 'Pojo',
-      submitTrigger: 'Boolean',
+      submitTrigger: 'Nonce',
       form: 'FormId:String'
     },
     outputs: {
-      form: 'FormId:String',
+      form: 'FormId',
       schema: '[Pojo]',
       columns: '[Pojo]',
       row: 'Pojo',
@@ -150,7 +152,7 @@ export const Fields= {
     inputs: {
       value: 'String',
       image: 'Image',
-      form: 'FormId:String'
+      form: 'FormId'
     },
     outputs: {
       value: 'String',
@@ -174,7 +176,7 @@ export const Fields= {
       label: 'String',
       value: 'String',
       options: '[String]',
-      form: 'FormId:String'
+      form: 'FormId'
     },
     outputs: {
       value: 'String'
@@ -198,7 +200,7 @@ export const Fields= {
       value: 'String',
       options: 'Pojo',
       multiple: 'Boolean',
-      form: 'FormId|String'
+      form: 'FormId'
     },
     outputs: {
       value: 'String'
@@ -240,7 +242,8 @@ export const Fields= {
     ligature: 'sell',
     inputs: {
       label: 'String',
-      value: 'String|[String]'
+      value: 'String|[String]',
+      form: 'FormId'
     },
     outputs: {
       value: '[String]',
@@ -262,7 +265,8 @@ export const Fields= {
     ligature: 'edit_note',
     inputs: {
       label: 'String',
-      text: 'MultilineText'
+      text: 'MultilineText',
+      form: 'FormId'
     },
     outputs: {
       text: 'MultilineText'
@@ -284,7 +288,7 @@ export const Fields= {
       label: 'String',
       value: 'String',
       options: '[String]',
-      form: 'FormId:String'
+      form: 'FormId'
     },
     outputs: {
       value: 'String'

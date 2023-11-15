@@ -21,7 +21,7 @@ export const create = (name, {xenon, onservice, onrender}) => {
     onrender,
     onoutput: (host, output) => onoutput(controller, host, output),
     // atom inflow
-    uxEventHandler: (pid, eventlet) => onevent(controller, pid, eventlet),
+    onevent: (pid, eventlet) => onevent(controller, pid, eventlet),
   };
   return controller;
 };

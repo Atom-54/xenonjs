@@ -6,17 +6,12 @@ import './config.js';
 import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
 import * as Env from '../AnewLibrary/Framework/Env.js';
 import * as Controller from '../AnewLibrary/Framework/Controller.js';
-import * as Services from '../AnewLibrary/Framework/services.js';
+import * as Services from '../AnewLibrary/Framework/Services.js';
 import {start} from 'xenonjs/Library/Common/start.js';
 import {Graphs} from './graphs.js';
 import {createComposer} from './composer.js';
 import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
-import {LayerService} from '../AnewLibrary/Graph/Services/LayerService.js';
-import {ProjectService} from '../AnewLibrary/Design/Services/ProjectService.js';
-import {DesignService} from '../AnewLibrary/Design/Services/DesignService.js';
-import {JsonRepairService} from '../AnewLibrary/JsonRepair/Services/jsonrepairService.js';
-// import {FormService} from '../AnewLibrary/Fields/Services/FormService.js';
-import {OpenAIService} from '../AnewLibrary/OpenAI/Services/OpenAIService.js';
+import * as services from './services.js';
 import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
 
 const log = logf('Index', 'magenta');
@@ -24,7 +19,7 @@ const log = logf('Index', 'magenta');
 start(async xenon => {
   // create a xenon environment
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
-  Services.addServices({ProjectService, LayerService, DesignService, JsonRepairService, /*FormService,*/ OpenAIService});
+  Services.addServices(services);
   // make a controller
   const main = await Env.createController(env, 'main');
   // add layers
@@ -38,7 +33,7 @@ const onrender = async (host, packet) => {
   const {controller} = layer;
   if (!controller.composer) {
     const root = window[layer.root || layer.id.replace(/\$/g, '_')] || window.root;
-    controller.composer = createComposer(controller.uxEventHandler, root);
+    controller.composer = createComposer(controller.onevent, root);
   }
   if (controller.composer) {
     // TODO(sjmiles): doing this to avoid walking each sublayer to set all the 'root' containers; which way is simpler?
