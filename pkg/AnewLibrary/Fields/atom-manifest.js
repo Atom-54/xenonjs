@@ -29,7 +29,7 @@ export const Fields= {
     }
   },
   Button: {
-    categories: [category, 'Common'],
+    categories: [category, 'Common', 'Weightless Components'],
     displayName: 'Weightless Button',
     description: 'Displays a button',
     type: '$anewLibrary/Fields/Atoms/Button',

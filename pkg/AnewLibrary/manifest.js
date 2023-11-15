@@ -11,7 +11,8 @@ const manifests = [
   'Layout',
   'OpenAI',
   'Media',
-  'Spectrum'
+  'Spectrum',
+  'Weightless'
 ];
 
 // use configured library path
