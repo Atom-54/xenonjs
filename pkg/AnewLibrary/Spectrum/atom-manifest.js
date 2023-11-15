@@ -17,7 +17,8 @@ export const Spectrum = {
     state: {
       label: 'Button',
       style: {
-        flex: '0 0 auto'
+        flex: '0 0 auto',
+        padding: '0.5em'
       }
     }
   },

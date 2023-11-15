@@ -224,22 +224,10 @@ export const designDelete = (controller, atomId) => {
   const host = controller.atoms[atomId];
   Controller.removeAtom(controller, host);
   // update connection in graph data
-  const hostSplit = atomId.split('$');
-  const atomName = hostSplit.pop();
-  const {graph} = host.layer;
-  delete graph[atomId];
-  const {connections} = graph;
-  if (connections) {
-    delete connections[atomName];
-    for (const [source, target] of Object.entries(connections)) {
-      if (target.startsWith(atomId)) {
-        delete connections[source];
-      }
-    };
-  }
+  delete host.layer.graph[host.name];
   designUpdate(controller);
   designSelect(controller, null);
-  //Project.ProjectService.SaveProject();
+  Project.ProjectService.SaveProject();
 };
 
 const getDesignTargetId = () => {

@@ -166,7 +166,7 @@ export const BuildLayout = {
     container: 'Panel#Container',
     state: {
       layout: 'row',
-      divider: 200,
+      divider: 204,
       endflex: true
     }
   },
@@ -230,7 +230,7 @@ export const catalogGraph = {
   <div style="padding: 8px 4px; font-weight: bold;">{{category}}</div>
   <div repeat="foo_t">{{types}}</div>
   <template foo_t>
-    <div on-click="onItemClick" key="{{name}}" style="background-color: transparent; vertical-align: top; box-sizing: content-box; zoom: 0.4; display: inline-block; margin: 8px 4px 0 0; width: 130px;">
+    <div on-click="onItemClick" key="{{name}}" style="background-color: transparent; vertical-align: top; box-sizing: content-box; zoom: 0.4; display: inline-block; margin: 8px 4px 0 0; width: 136px;">
       <div style="width: 108px; background: #f9f9f9; border: 2px solid #bbbbbb; border-radius: 16px; margin: auto;">
         <drag-able key="{{name}}" type="node/type" style="position: relative; width: 104px; height:94px;">
           <img style="position: absolute; opacity: 0; top: -13px; right: -13px; width:32px; height:32px; pointer-events: none;" src="{{icon}}">
