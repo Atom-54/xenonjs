@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-const category = 'Media';
+const categories = ['Media'];
 
 export const Media = {
   Image: {
-    category,
+    categories,
     description: 'Displays an image',
     ligature: 'image',
     type: '$anewLibrary/Media/Atoms/Image',
