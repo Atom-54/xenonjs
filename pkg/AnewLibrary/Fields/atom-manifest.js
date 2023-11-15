@@ -114,6 +114,7 @@ export const Fields= {
       title: 'String'
     },
     state: {
+      label: 'File',
       button: 'Upload',
       style: {
         flex: '0 0 auto',
@@ -195,15 +196,20 @@ export const Fields= {
     inputs: {
       label: 'String',
       value: 'String',
-      options: '[String]',
+      options: 'Pojo',
       multiple: 'Boolean',
-      form: 'FormId:String'
+      form: 'FormId|String'
     },
     outputs: {
       value: 'String'
     },
     state: {
       label: 'Select Field',
+      options: [
+        {key: 1, name: 'Option 1'},
+        {separator: true},
+        {key: 2, name: 'Option 2'}
+      ],
       style: {
         flex: '0 0 auto',
         padding: '0.5em'

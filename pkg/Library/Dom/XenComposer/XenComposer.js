@@ -54,10 +54,11 @@ export class XenComposer extends Composer {
       atomId: id,
       id: sid,
       slot: containerName?.split('#').pop()
+      // tabindex: -1
     }, parent);
     container.setAttribute('atom', '');
     // TODO(sjmiles): hack is for a_frame elements that cannot live in ShadowDOM
-    const root = (!id.toLowerCase().startsWith('a_') && this.useShadowRoot) ? container.attachShadow({mode: `open`}) : container;
+    const root = (!id.toLowerCase().startsWith('a_') && this.useShadowRoot) ? container.attachShadow({mode: 'open', delegatesFocus: true}) : container;
     const css = `/*injected by XenComposer*/${IconsCss}${XenCss}`;
     dom('style', {innerHTML: css}, root);
     const slot = Xen.Template
@@ -105,6 +106,10 @@ export class XenComposer extends Composer {
         if (e.currentTarget === elt || data.key || data.value) {
           break;
         }
+      }
+      if (e instanceof KeyboardEvent) {
+        const {altKey, code, ctrlKey, key, metaKey, repeat, shiftKey} = e;
+        Object.assign(data, {altKey, code, ctrlKey, key, metaKey, repeat, shiftKey});
       }
       if (e.currentTarget && (e instanceof WheelEvent)) {
         const {deltaX, deltaY, deltaZ, deltaMode} = e;

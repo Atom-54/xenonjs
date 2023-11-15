@@ -10,6 +10,7 @@ const manifests = [
   'Fields',
   'Layout',
   'OpenAI',
+  'Media',
   'Spectrum'
 ];
 
@@ -21,4 +22,3 @@ const load = async paths => (await Promise.all(paths.map(p => import(`${library}
 const manifestData = await load(manifests.map(m => `${m}/atom-manifest`));
 // flatten
 export const atomInfo = Object.assign({}, ...Object.values(manifestData));
-console.log(atomInfo);

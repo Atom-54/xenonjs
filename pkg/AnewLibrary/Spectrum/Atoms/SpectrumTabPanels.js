@@ -12,10 +12,17 @@ update({tabs, selected}, state) {
   state.panels = tabs?.map((t,i) => ({
     name: 'Container' + (i===0 ? '' : i+1)
   }));
-  return {selected: Number(selected) || 0};
+  return this.updateSelected(selected, state);
 },
-onChange({eventlet: {value}}) {
-  return {selected: Number(value)};
+onChange({eventlet: {value}}, state) {
+  return this.updateSelected(value, state);
+},
+updateSelected(value, state) {
+  const selected = Number(value) || 0;
+  if (state.selected !== selected) {
+    state.selected = selected;
+    return {selected};
+  }
 },
 template: html`
 <style>

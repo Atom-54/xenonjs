@@ -71,6 +71,11 @@ onDropAfter({eventlet}, {onDrop}) {
 onClick({eventlet}, state, {service}) {
   service('DesignService', 'Select', {atomId: eventlet.key});
 },
+onKeyDown({eventlet}, state, {service}) {
+  if (eventlet.key === 'Delete' && state.selected) {
+    service('DesignService', 'Delete', {atomId: state.selected});
+  }
+},
 template: html`
 <style>
   :host {
@@ -129,7 +134,7 @@ template: html`
   }
 </style>
 
-<div flex scrolling on-click="onClick">
+<div flex scrolling tabindex="-1" on-click="onClick" on-keydown="onKeyDown">
   <div repeat="container_t" >{{tree}}</div>
 </div>
 

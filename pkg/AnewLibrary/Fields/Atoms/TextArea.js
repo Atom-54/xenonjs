@@ -4,30 +4,31 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({text}) {
+update({text}, state) {
+  return this.textChange(text, state);
+},
+onTextChange({eventlet: {value}}, state) {
+  return this.textChange(value, state);
+},
+textChange(text, state) {
+  state.text = text;
   return {text};
 },
-onTextChange({eventlet: {value}}) {
-  return {text: value};
-},
-render({label, text, style}) {
+render({label}, {text}) {
   if (text && !(typeof text === 'string')) {
     text = JSON.stringify(text, null, '  ');
   }
   return {
     label,
     showLabel: String(Boolean(label?.length > 0)),
-    text: text??'',
-    style
+    text: text??''
   };
 },
 template: html`
 <style>
   :host {
-    /* display: flex;
-    flex-direction: column; 
-    width: 100%; */
     padding: 0 6px;
+    overflow: visible !important;
   }
   textarea {
     width: 100%;
@@ -48,7 +49,9 @@ template: html`
 </style>
 <div flex column>
   <div label display$="{{showLabel}}">{{label}}</div>
-  <div flex><textarea xen:style="{{style}}" on-change="onTextChange" on-click="noop" value="{{text}}"></textarea></div>
+  <div flex>
+    <textarea on-change="onTextChange" on-click="noop" value="{{text}}"></textarea>
+  </div>
 </div>
 `
 });

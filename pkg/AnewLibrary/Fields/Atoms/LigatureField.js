@@ -6,12 +6,13 @@ export const atom = (log, resolve) => ({
  */
 update({value, form}, state, {service, isDirty}) {
   service('FormService', 'registerField', {form});
-  if (isDirty('value')) {
+  //if (isDirty('value')) {
     value = value?.replace(/ /g, '_');
+    state.value = value;
     return {value};
-  }
+  //}
 },
-render({label, value, options}) {
+render({label, options}, {value}) {
   return {
     label,
     ligature: value ?? 'help',
@@ -19,7 +20,8 @@ render({label, value, options}) {
     options: options?.map(option => ({option}))
   }
 },
-onFieldChange({eventlet: {value}}) {
+onFieldChange({eventlet: {value}}, state) {
+  state.value = value;
   return {value};
 },
 template: html`

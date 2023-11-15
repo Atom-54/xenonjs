@@ -38,28 +38,20 @@ template: html`
 <style>
   :host {
     padding: 0 6px;
-    height: 2em;
   }
   [label] {
-    background: inherit;
-    border: none;    
-    min-width: var(--field-label-min-width);
-    max-width: var(--field-label-max-width);
-    text-wrap: pretty;
+    font-size: .75em;
+    margin-bottom: .3em;
   }
   [field] {
     padding: 6px 9px;
     border-radius: 4px;
     border: 1px solid var(--xcolor-two);
   }
-  [delim] {
-    padding: 6px;
-  }
 </style>
 
+<div label>{{label}}</div>
 <div flex bar>
-  <div label>{{label}}</div>
-  <span delim></span>
   <input flex field value="{{value}}" on-change="onFieldChange" list="options">
   <datalist id="options" repeat="option_t">{{options}}</datalist>
 </div>

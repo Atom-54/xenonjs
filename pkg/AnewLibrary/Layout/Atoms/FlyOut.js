@@ -4,24 +4,20 @@ export const atom = (log, resolve) => ({
    * Copyright 2023 Atom54 LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
-update({show, side}) {
-  // this.tabIndex = 0;
-  // this.focus();
-  // window.addEventListener('keyup', e => this.onKeyUp(e));
+update({show, side}, state) {
+  state.show = Boolean(show);
 },
-render({show, side}) {
+render({side}, {show}) {
   return {
     side: side ?? 'top',
-    showTools: show
+    showTools: show,
+    focus: true
   };
 },
-async onToggleFlyOver() {
-  //this.fire('toggle');
-},
-onKeyUp(e) {
-  if (this.show) {
-    if (e.key === 'Escape') {
-      this.onToggleFlyOver();
+onKeyDown({eventlet}, state) {
+  if (state.show) {
+    if (eventlet.key === 'Escape') {
+      state.show = false;
     }
   }
 },
@@ -94,9 +90,9 @@ template: `
   } */
 </style>
 
-<div scrim show$="{{showTools}}" on-click="onToggleFlyOver"></div>
+<div scrim focus="{{focus}}" tabIndex="0" show$="{{showTools}}" on-click="onToggleFlyOver" on-keydown="onKeyDown" on-click="onToggleFlyOver"></div>
 
-<div flyout side$="{{side}}" show$="{{showTools}}" xon-click="onToggleFlyOver">
+<div flyout side$="{{side}}" show$="{{showTools}}" on-click="onToggleFlyOver">
   <slot name="flyout"></slot>
 </div>
 `
