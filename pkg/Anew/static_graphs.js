@@ -166,7 +166,7 @@ export const BuildLayout = {
     container: 'Panel#Container',
     state: {
       layout: 'row',
-      divider: 204,
+      divider: 212,
       endflex: true
     }
   },

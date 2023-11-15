@@ -7,7 +7,7 @@ const category = 'Spectrum Components';
 
 export const Spectrum = {
   SpectrumButton: {
-    categories: [category, 'Common'],
+    categories: [category, 'Common', 'Fields'],
     displayName: 'Spectrum Button',
     ligature: 'buttons_alt',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumButton',
