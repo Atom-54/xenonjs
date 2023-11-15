@@ -30,7 +30,7 @@ export const Fields= {
   },
   Button: {
     categories: [category, 'Common'],
-    displayName: 'Button',
+    displayName: 'Weightless Button',
     description: 'Displays a button',
     type: '$anewLibrary/Fields/Atoms/Button',
     ligature: 'buttons_alt',
