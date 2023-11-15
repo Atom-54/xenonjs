@@ -3,11 +3,11 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const categories = ['Layout'];
+const category = 'Layout';
 
 export const Layout = {
   Panel: {
-    categories,
+    categories: [category, 'Common'],
     description: 'A simple container',
     ligature: 'select_all',
     type: '$anewLibrary/Layout/Atoms/Panel',
@@ -24,7 +24,7 @@ export const Layout = {
     }
   },
   SplitPanel: {
-    categories,
+    categories: [category],
     description: 'A panel divided into two resizable sections',
     ligature: 'bottom_sheets',
     type: '$anewLibrary/Layout/Atoms/SplitPanel',
@@ -41,7 +41,7 @@ export const Layout = {
     }
   },
   FlyOut: {
-    categories,
+    categories: [category],
     description: 'A modal panel',
     ligature: 'dialogs',
     type: '$anewLibrary/Layout/Atoms/FlyOut',

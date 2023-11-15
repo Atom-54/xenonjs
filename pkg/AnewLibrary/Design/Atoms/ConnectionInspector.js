@@ -10,24 +10,25 @@ shouldUpdate({id, schema, candidates}) {
 update({id, schema, candidates}, state) {
   const prefixId = id.split('$').slice(2).join('$');
   state.inspectors = map(schema, 
-    (label, info) => ({
+    (label, {type, connection}) => ({
       label, 
       key: label,
-      ...info,
-      choices: this.stratifyTypes(prefixId, label, info, candidates)
+      choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
     }))
     .filter(({label}) => !['name'].includes(label))
     ;
 },
-stratifyTypes(prefixId, propName, propInfo, candidates) {
-  //const propName = propLabel.split('$').pop();
+stratifyTypes(prefixId, propName, type, candidates, connection) {
+  connection = connection?.replace(/\$/g, '.');
+  const target = `${prefixId}$${propName}`.replace(/\$/g, '.');
   const choices = map(candidates, (propId, info) => {
-    if (`${prefixId}$${propName}`.replace(/\$/g, '.') !== propId) {
+    if (target !== propId) {
       const name = propId.split('.').pop();
-      const matchLevel = this.getTypeMatch({name, type: info.type}, {name: propName, type: propInfo.type});
+      const matchLevel = this.getTypeMatch({name, type: info.type}, {name: propName, type: type});
       return !matchLevel ? null : {
         key: propId,
         name: propId,
+        selected: connection === propId,
         matchLevel
       };
     }
@@ -72,10 +73,6 @@ template: html`
     display: flex;
     flex-direction: column;
     align-content: start;
-    /*
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    */
     padding: 0.5em 0.3em;
   }
   label {
@@ -89,15 +86,8 @@ template: html`
     font-size: 0.75em;
     margin-bottom: 0.3em;
   }
-  /* input {
-    border: 1px solid gray;
-    border-radius: 4px;
-    margin-right: 0.5em;
-  } */
   [select] {
-    /* flex: 0 0 auto; */
     margin-right: 0.5em;
-    /* width: 1.3em; */
   }
 </style>
 
@@ -108,21 +98,9 @@ template: html`
     <span label>{{label}}</span>
     <div row>
       <multi-select flex select key="{{key}}" options="{{choices}}" on-change="onPropChange"></multi-select>
-      <!-- <input flex list$="{{label}}"> -->
-      <!-- <datalist id="{{label}}" repeat="dl_options_t">{{choices}}</datalist> -->
-      <!-- <select repeat="s_options_t">{{choices}}</select> -->
-      <!-- <multi-select select on-change="onPropChange" options="{{choices}}"></multi-select> -->
     </div>
   </label>
 </template>
-
-<!-- <template dl_options_t>
-  <option name="{{value}}" value="{{value}}"></option>
-</template>
-
-<template s_options_t>
-  <option value="{{value}}">{{value}}</option>
-</template> -->
 `
 });
     

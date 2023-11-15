@@ -3,11 +3,12 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const categories = ['AI'];
+const category = 'OpenAI';
 
 export const OpenAINodeTypes = {
   OpenAIImage: {
-    categories,
+    categories: [category, 'AI', 'Common'],
+    displayName: 'OpenAI Image',
     description: 'Generates an image for the given prompt using OpenAI',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIImage',
     // icon: '$library/Assets/nodes/openai-logomark.png',
@@ -24,7 +25,8 @@ export const OpenAINodeTypes = {
     }
   },
   OpenAIText: {
-    categories,
+    categories: [category],
+    displayName: 'OpenAI Text',
     description: 'Generates text for the given prompt using OpenAI',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIText',
     // icon: '$library/Assets/nodes/openai-logomark.png',
@@ -42,7 +44,8 @@ export const OpenAINodeTypes = {
     }
   },
   OpenAIChat: {
-    categories,
+    categories: [category],
+    displayName: 'OpenAI Chat',
     description: 'Prompts the OpenAI chat interface',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIChat',
     // icon: '$library/Assets/nodes/openai-logomark.png',
@@ -55,7 +58,8 @@ export const OpenAINodeTypes = {
     }
   },
   OpenAISimpleChat: {
-    categories,
+    categories: [category, 'AI', 'Common'],
+    displayName: 'OpenAI Simple Chat',
     description: 'Prompts the OpenAI chat interface',
     type: '$anewLibrary/OpenAI/Atoms/OpenAISimpleChat',
     // icon: '$library/Assets/nodes/openai-logomark.png',
@@ -76,7 +80,8 @@ export const OpenAINodeTypes = {
     }
   },
   OpenAIImageCompletion: {
-    categories,
+    categories: [category],
+    displayName: 'OpenAI Image Completion',
     description: 'Completes the given image according to the requested prompt',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIImageCompletion',
     // icon: '$library/Assets/nodes/openai-logomark.png',

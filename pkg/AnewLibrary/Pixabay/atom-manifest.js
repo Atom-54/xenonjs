@@ -3,11 +3,12 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const categories = 'Pixabay';
+const category = 'Pixabay';
 
 export const Pixabay = {
   PixabayImage: {
-    categories,
+    categories: [category, 'Media'],
+    displayName: 'Pixabay Image Search',
     description: 'Find images from Pixbay',
     ligature: 'image',
     type: '$anewLibrary/Pixabay/Atoms/Pixabay',

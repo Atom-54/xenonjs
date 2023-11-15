@@ -27,6 +27,18 @@ const Designable = {
   }
 };
 
+const categoryOrder = {
+  Common: 1, 
+  Graph: 2,
+  Layout: 5, 
+  Data: 10,
+  Fields: 15,
+  UX: 20,
+  Media: 25,
+  AI: 30,
+  Design: 200
+};
+
 export const DesignService = {
   async NewGraph(host) {
     return newGraph(host.layer);
@@ -49,12 +61,26 @@ export const DesignService = {
   async UpdateDesigner(host) {
     return designUpdate(host.layer.controller);
   },
-  async GetAtomTypes() {
+  GetAtomTypes() {
     const types = Object.entries(Schema.atomInfo).map(([key, info]) => ({name: key, displayName: key, ...info}));
-    return {
-      category: 'All',
-      atoms: types
-    }
+    return types;
+  },
+  GetAtomTypeCategories() {
+    const types = DesignService.GetAtomTypes();
+    const categorized = {};
+    types.sort((a, b) => a.displayName.localeCompare(b.displayName));
+    types.forEach(type => {
+      const categories = type.categories ?? [];
+      for (const category of categories) {
+        (categorized[category] ??= []).push(type);
+      }
+    });
+    const list = Object.entries(categorized).map(([category, types]) => ({
+      category,
+      types
+    }));
+    list.sort((a, b) => (categoryOrder[a.category] || 100) - (categoryOrder[b.category] || 100));
+    return list;
   },
   async GetAtomInfo(host, data) {
     return getAtomInfo(host.layer.controller, designLayerId);
@@ -81,7 +107,7 @@ export const DesignService = {
   async DesignDragDrop(host, {eventlet}) {
     const {controller} = host.layer;
     const types = await DesignService.GetAtomTypes();
-    const dropType = types.atoms.find(({name}) => name === eventlet.value);
+    const dropType = types.find(({name}) => name === eventlet.value);
     log.debug(eventlet, dropType);
     if (dropType) {
       let elt = dragTarget(host, eventlet);
@@ -172,8 +198,8 @@ export const addDesignedAtom = async (controller, layer, {name, type, container,
 };
 
 export const designUpdate = async controller => {
-  const types = await DesignService.GetAtomTypes();
-  Controller.set(controller, 'build$Catalog$Catalog', {items: [types]});
+  const categories = await DesignService.GetAtomTypeCategories();
+  Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
   Controller.writeInputsToHost(controller, 'build$NodeGraph', {layerId: designLayerId, junk: Math.random()});
 };
@@ -194,10 +220,26 @@ export const designSelect = (controller, atomId) => {
 };
 
 export const designDelete = (controller, atomId) => {
+  // update controller state and atoms
   const host = controller.atoms[atomId];
   Controller.removeAtom(controller, host);
+  // update connection in graph data
+  const hostSplit = atomId.split('$');
+  const atomName = hostSplit.pop();
+  const {graph} = host.layer;
+  delete graph[atomId];
+  const {connections} = graph;
+  if (connections) {
+    delete connections[atomName];
+    for (const [source, target] of Object.entries(connections)) {
+      if (target.startsWith(atomId)) {
+        delete connections[source];
+      }
+    };
+  }
   designUpdate(controller);
   designSelect(controller, null);
+  //Project.ProjectService.SaveProject();
 };
 
 const getDesignTargetId = () => {
@@ -251,21 +293,16 @@ const updateConnection = (controller, hostId, propName, connection) => {
   const source = `${designLayerId}$${connection}`;
   const target = `${hostId}$${propName}`;
   // update connection in live controller
-  const qualifiedConnections = { 
-    [source]: [target]
-  };
-  Object.assign(controller.connections.inputs, qualifiedConnections);
+  const connections = controller.connections.inputs;
+  connections[source] = [...new Set(connections[source]).add(target)];
   // update atom state
   Controller.writeInputsToHost(controller, hostId, {[propName]: controller.state[source]});
   // update connection in graph data
   const hostSplit = hostId.split('$');
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
-  const hostConnections = (host.layer.graph[atomName].connections ??= {});
-  const graphQualifiedConnections = {
-    [propName]: [connection]
-  };
-  Object.assign(hostConnections, graphQualifiedConnections);
+  const atomConnections = host.layer.graph[atomName].connections ??= {};
+  atomConnections[propName] = [connection]; //[...new Set(atomConnections[propName]).add(connection)];
   designUpdateTarget(controller, host);
   Project.ProjectService.SaveProject();
 };

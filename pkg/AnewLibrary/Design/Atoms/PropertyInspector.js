@@ -12,7 +12,7 @@ async update({schema}, state, {output}) {
       const $template = this.templateForType(info.type);
       if ($template) {
         let {value} = info;
-        const isObject = (value && typeof value === 'object') || info.type.includes('Pojo') || info.type.includes('Json');
+        const isObject = value && ((typeof value === 'object') || info.type.includes('Pojo') || info.type.includes('Json'));
         if (isObject) {
           value = JSON.stringify(value, null, '  ');
         }
