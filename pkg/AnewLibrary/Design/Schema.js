@@ -1,4 +1,5 @@
-import {atomInfo} from '../../Anew/atomInfo.js';
+import {atomInfo} from '../../AnewLibrary/manifest.js';
+export {atomInfo};
 
 const log = logf('Schema', '#953553');
 

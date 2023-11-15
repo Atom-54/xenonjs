@@ -69,7 +69,8 @@ export class Host extends EventEmitter {
   }
   detachAtom() {
     if (this.atom) {
-      this.render({ $clear: true });
+      this.render({$clear: true});
+      this.atom.unlistenAll();
       this.atom = null;
       this.meta = null;
     }

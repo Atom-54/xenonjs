@@ -117,6 +117,12 @@ onNodeSelect({eventlet: {key}}, state, {service}) {
   service('DesignService', 'Select', {atomId: key});
 },
 
+onKeyDown({eventlet}, state, {service}) {
+  if (eventlet.key === 'Delete' && state.selected) {
+    service('DesignService', 'Delete', {atomId: state.selected});
+  }
+},
+
 // onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
 //   const graphRects = graph.meta.graphRects ??= {};
 //   keys(value).forEach(key => value[key] = Math.round(value[key]));
@@ -166,7 +172,7 @@ template: html`
   }
 </style>
 
-<drop-target flex scrolling row on-target-drop="onNodeTypeDropped">
+<drop-target flex scrolling row tabindex="-1" on-target-drop="onNodeTypeDropped" on-keydown="onKeyDown">
   <anew-node-graph flex nodes="{{nodes}}" selected="{{selected}}" on-node-moved="onNodeMoved" on-node-selected="onNodeSelect"></anew-node-graph>
 </drop-target>
 

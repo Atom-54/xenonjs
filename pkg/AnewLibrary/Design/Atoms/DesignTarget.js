@@ -11,6 +11,9 @@ update(input, state) {
 onSelect({eventlet: {key}}, state, {service}) {
   service('DesignService', 'Select', {atomId: key});
 },
+onDelete({eventlet: {key}}, state, {service}) {
+  service('DesignService', 'Delete', {atomId: key});
+},
 // invoked during resize also
 onSelectionRects({eventlet: {value: {rects}}}, state) {
   state.selections = rects?.map(({x, y, width, height}) => ({
@@ -60,7 +63,21 @@ template: html`
     border: 4px dotted orange;
   }
 </style>
-<design-target flex column datatype="node/type" selected="{{selected}}" refresh="{{refresh}}" on-resize="onResize" on-over-rects="onOverRects" on-select="onSelect" on-selection-rects="onSelectionRects" on-target-enter="onTargetEnter" on-target-leave="onTargetLeave" on-target-drop="onTargetDrop">
+<design-target 
+  flex column 
+  tabindex="-1"
+  datatype="node/type" 
+  selected="{{selected}}" 
+  refresh="{{refresh}}" 
+  on-resize="onResize"
+  on-over-rects="onOverRects" 
+  on-select="onSelect" 
+  on-delete="onDelete"
+  on-selection-rects="onSelectionRects" 
+  on-target-enter="onTargetEnter" 
+  on-target-leave="onTargetLeave" 
+  on-target-drop="onTargetDrop"
+>
   <slot name="Container"></slot>
 </design-target>
 <div selections repeat="transform_box_t">{{selections}}</div>

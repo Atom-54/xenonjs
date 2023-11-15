@@ -117,6 +117,12 @@ export const addAtom = async (controller, layer, {name, type, container}) => {
   return atom;
 };
 
+export const removeAtom = async (controller, atom) => {
+  atom.dispose();
+  delete controller.atoms[atom.id];
+  return atom;
+};
+
 export const createAtom = async (controller, layer, {name, type, container}) => {
   const id = `${layer.id}$${name}`;
   const host = await controller.xenon.emitter(name, {type});

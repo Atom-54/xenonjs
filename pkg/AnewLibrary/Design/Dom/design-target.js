@@ -5,6 +5,10 @@
  */
 import {Xen} from '../../../Library/Dom/Xen/xen-async.js';
 
+const log = logf("DOM:DesignTarget", 'orange', 'white');
+
+const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field'];
+
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {
     return ['accepts', 'disabled', 'datatype', 'targetkey', 'refresh', 'selected'];
@@ -16,6 +20,8 @@ const DesignTarget = class extends Xen.DropTarget {
     this.enableDrop();
     this.addEventListener('click', e => this.onClick(e), {capture: true});
     this.addEventListener('pointermove', e => this.onPointermove(e), {capture: true});
+    this.addEventListener('scroll', e => this.onScroll(e), {capture: true});
+    this.addEventListener('keydown', e => this.onKeyDown(e) /*, {capture: true}*/);
     const observer = new ResizeObserver(() => this.onResize());
     observer.observe(this);
   }
@@ -36,12 +42,22 @@ const DesignTarget = class extends Xen.DropTarget {
   }
   onClick(e) {
     let elt = this.findValidTarget(e.target);
-    this.key = elt?.id.replace(/_/g, '$');
+    this.key = elt?.atomId;
     this.fire('select');
+  }
+  onKeyDown(e) {
+    this.key = this.state.selected?.atomId;
+    if (this.key && !this.activeElementIsFocusable() && (e.key === 'Delete' || e.key === 'Backspace')) {
+      this.fire('delete');
+    }
+  }
+  activeElementIsFocusable() {
+    return focusables.includes(document.activeElement?.shadowRoot?.activeElement?.localName);
   }
   doSelect(elt) {
     this.value = {};
     if (elt) {
+      this.state.selected = elt;
       const rect = this.getLocalRect(elt);
       this.value.rects = [rect];
     }
@@ -49,14 +65,12 @@ const DesignTarget = class extends Xen.DropTarget {
   }
   onPointermove(e) {
     let elt = e.ctrlKey ? this.findValidTarget(e.target) : null;
-    this.over = elt;
+    this.state.over = elt;
     this.doOver(elt);
   };
   doOver(elt) {
-    //let key = null;
     this.value = {};
     if (elt) {
-      //key = elt.id.replace(/_/g, '$');
       const rect = this.getLocalRect(elt);
       this.value.rects = [rect];
     }
@@ -64,8 +78,12 @@ const DesignTarget = class extends Xen.DropTarget {
   }
   onResize() {
     this.doSelect(this.state.selected);
-    this.doOver(this.over);
+    this.doOver(this.state.over);
     this.fire('resize');
+  }
+  onScroll() {
+    this.doSelect(this.state.selected);
+    this.doOver(this.state.over);
   }
   computeEventValue(e, name) {
     super.computeEventValue(e, name);

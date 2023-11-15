@@ -38,6 +38,8 @@ async update({schema}, state, {output}) {
 templateForType(type) {
  //log.debug(type);
   switch (true) {
+    case type.includes('Nonce'):
+      return 'nonce_t';
     case type.includes('Boolean'):
       return 'boolean_t';
     case type.includes('String'):
@@ -46,7 +48,7 @@ templateForType(type) {
       return 'textarea_t';
   };
 },
-async onPropChange({eventlet: {key, value}, id}, state, {service}) {
+async onPropChange({eventlet: {key, value, nopersist}, id}, state, {service}) {
   const {prop} = state.props.find(({prop}) => prop.models[0].key === key);
   const model = prop.models[0];
   if (model.isObject) {
@@ -64,7 +66,13 @@ async onPropChange({eventlet: {key, value}, id}, state, {service}) {
   } else {
     model.value = value;
   }
-  service('DesignService', 'PropertyChange', {key, value, id});
+  service('DesignService', 'PropertyChange', {key, value, nopersist, id});
+},
+onNonceClick({eventlet: {key}, id}, state, tools) {
+  return this.onPropChange({eventlet: {key, value: Math.random(), nopersist: true}, id}, state, tools);
+},
+onNonceOffClick({eventlet: {key}, id}, state, tools) {
+  return this.onPropChange({eventlet: {key, value: null}, id}, state, tools);
 },
 template: html`
 <style>
@@ -124,6 +132,14 @@ template: html`
     <span label>{{label}}</span>
     <input type="checkbox" key="{{key}}" checked="{{value}}" on-change="onPropChange">
   </label>
+</template>
+
+<template nonce_t>
+  <div prop-container vertical>
+    <div label control>{{displayName}}</div>
+    <wl-button key="{{key}}" on-click="onNonceClick">{{label}}</wl-button>
+    <wl-button key="{{key}}" on-click="onNonceOffClick">(Off)</wl-button>
+  </div>
 </template>
 `
 });
