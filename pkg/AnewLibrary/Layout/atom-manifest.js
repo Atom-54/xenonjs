@@ -3,7 +3,7 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const categories = ['Media'];
+const categories = ['Layout'];
 
 export const Layout = {
   Panel: {
@@ -41,7 +41,7 @@ export const Layout = {
     }
   },
   FlyOut: {
-    category,
+    categories,
     description: 'A modal panel',
     ligature: 'dialogs',
     type: '$anewLibrary/Layout/Atoms/FlyOut',
