@@ -1,0 +1,13 @@
+<!doctype html>
+
+<img id="img"></img>
+
+<script type="module">
+  import {HuggingFaceService} from './HuggingFaceService.js';
+  const result = await HuggingFaceService.imageInference(null, null, {
+    model: 'stabilityai/stable-diffusion-2',
+    inputs: 'A photo of a goose on a skateboard in Times Square.'
+  });
+  console.log(result);
+  img.src = result;
+</script>

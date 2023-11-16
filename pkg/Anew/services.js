@@ -9,3 +9,4 @@ export {DesignService} from '../AnewLibrary/Design/Services/DesignService.js';
 export {JsonRepairService} from '../AnewLibrary/JsonRepair/Services/jsonrepairService.js';
 export {FormService} from '../AnewLibrary/Fields/Services/FormService.js';
 export {OpenAIService} from '../AnewLibrary/OpenAI/Services/OpenAIService.js';
+export {HuggingFaceService} from '../AnewLibrary/HuggingFace/Services/HuggingFaceService.js';

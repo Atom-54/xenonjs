@@ -6,12 +6,12 @@
 const server = `https://openai.iamthearchitect.workers.dev`;
 
 export const OpenAIService = {
-  async chat(layer, atom, data) {
+  async chat(host, data) {
     const response = await post(`${server}/chat`, objectToFormData(data));
     const result = await response.json();
     return result;
   },
-  async edits(layer, atom, {prompt, image, size, n}) {
+  async edits(host, {prompt, image, size, n}) {
     const srcImage = await fetch(image?.url);
     if (srcImage) {
       const imageBlob = await srcImage.blob();

@@ -118,7 +118,7 @@ onNodeSelect({eventlet: {key}}, state, {service}) {
 },
 
 onKeyDown({eventlet}, state, {service}) {
-  if (eventlet.key === 'Delete' && state.selected) {
+  if (['Delete', 'Backspace'].includes(eventlet.key) && state.selected) {
     service('DesignService', 'Delete', {atomId: state.selected});
   }
 },
