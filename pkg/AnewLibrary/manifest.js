@@ -8,11 +8,13 @@ const manifests = [
   'Design',
   'Graph',
   'Fields',
+  'HuggingFace',
   'Layout',
   'OpenAI',
   'Media',
   'Spectrum',
-  'Weightless'
+  'Weightless',
+  'UX'
 ];
 
 // use configured library path

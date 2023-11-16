@@ -218,6 +218,17 @@ export const BuildLayout = {
 };
 
 export const catalogGraph = {
+  Filter: {
+    type: '$anewLibrary/Fields/Atoms/QueryBar',
+    state: {
+      reactive: true,
+      icon: 'search',
+      placeholder: 'Search Atoms',
+      style: {
+        ['min-height']: '40px',
+      }
+    }
+  },
   Catalog: {
     type: '$anewLibrary/Layout/Atoms/Templated',
     state: {

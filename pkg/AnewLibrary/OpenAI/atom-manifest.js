@@ -5,7 +5,7 @@
  */
 const category = 'OpenAI';
 
-export const OpenAINodeTypes = {
+export const OpenAI = {
   OpenAIImage: {
     categories: [category, 'AI', 'Common'],
     displayName: 'OpenAI Image',

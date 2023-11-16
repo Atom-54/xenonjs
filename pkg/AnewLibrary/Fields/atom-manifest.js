@@ -300,5 +300,20 @@ export const Fields= {
         padding: '0.5em'
       }
     }
+  },
+  QueryBar: {
+    categories: [category],
+    displayName: 'Query Bar',
+    type: '$anewLibrary/Fields/Atoms/QueryBar',
+    ligature: 'match_word',
+    inputs: {
+      query: 'String',
+      placeholder: 'String',
+      icon: 'String',
+      reactive: 'Boolean'
+    },
+    outputs: {
+      query: 'String'
+    }
   }
 };
