@@ -143,9 +143,14 @@ export const reifyGraph = async (layer, name) => {
 
 export const createDesignable = async (layer, name) => {
   const {controller} = layer;
+  controller.onwrite = inputs => {
+    if ('build$Catalog$Filter$query' in inputs) {
+      designUpdate(controller);
+    }
+  };
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
-  const targetContainer = 'DesignPanels#Container' + (designables.length > 0 ? designables.length+1 : '');
+  const targetContainer = 'DesignPanels#Container'; // + (designables.length > 0 ? designables.length+1 : '');
   const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
   const designableContainer = targetName + '#Container';
   const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
@@ -179,8 +184,28 @@ export const addDesignedAtom = async (controller, layer, {name, type, container,
   Project.ProjectService.SaveProject();
 };
 
+const getAtomTypeCategories = filter => {
+  const rawTypes = DesignService.GetAtomTypes();
+  const categorized = {};
+  filter = filter?.toLowerCase();
+  const types = filter ? rawTypes.filter(a => a.displayName.toLowerCase().includes(filter)) : rawTypes;
+  types.sort((a, b) => a.displayName.localeCompare(b.displayName));
+  types.forEach(type => {
+    const categories = type.categories ?? [];
+    for (const category of categories) {
+      (categorized[category] ??= []).push(type);
+    }
+  });
+  const list = Object.entries(categorized).map(([category, types]) => ({
+    category,
+    types
+  }));
+  list.sort((a, b) => (categoryOrder[a.category] || 100) - (categoryOrder[b.category] || 100));
+  return list;
+};
+
 export const designUpdate = async controller => {
-  const categories = await DesignService.GetAtomTypeCategories();
+  const categories = getAtomTypeCategories(controller.state.build$Catalog$Filter$query);
   Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
   Controller.writeInputsToHost(controller, 'build$NodeGraph', {layerId: designLayerId, junk: Math.random()});
