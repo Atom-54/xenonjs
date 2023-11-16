@@ -76,9 +76,6 @@ onNonceOffClick({eventlet: {key}, id}, state, tools) {
 },
 template: html`
 <style>
-  :host {
-    display: flex !important;
-  }
   [props] {
     flex: 1;
     display: flex;

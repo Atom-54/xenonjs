@@ -89,7 +89,7 @@ export const Build = {
   },
   ConnectionInspector: {
     type: '$anewLibrary/Design/Atoms/ConnectionInspector',
-    container: 'InspectorPanels#Container2'
+    container: 'InspectorPanels#Container'
   },
   AtomTree: {
     type: '$anewLibrary/Design/Atoms/AtomTree',
