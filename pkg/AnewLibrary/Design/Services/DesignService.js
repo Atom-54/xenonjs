@@ -77,19 +77,6 @@ export const DesignService = {
     const atoms = getAtomInfo(controller, layerId);
     return {atoms, schema};
   },
-  DesignDragEnter(host, {eventlet}) {
-    let elt = dragTarget(host, eventlet);
-    if (elt) {
-      elt.style.outline = '5px dashed orange';
-      elt.style.outlineOffset = '-2px';
-    }  
-  },
-  DesignDragLeave(host, {eventlet}) {
-    let elt = dragTarget(host, eventlet);
-    if (elt) {
-      elt.style.outline = null;
-    }  
-  },
   async DesignDragDrop(host, {eventlet}) {
     const types = DesignService.GetAtomTypes();
     const dropType = types.find(({name}) => name === eventlet.value);
@@ -119,6 +106,7 @@ export const newGraph = async layer => {
   Project.Project.addGraph(Project.currentProject, graph);
   Project.ProjectService.SaveProject();
   await reifyGraph(layer, name);
+  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: designables.length-1});
 };
 
 export const reifyGraph = async (layer, name) => {
@@ -127,32 +115,36 @@ export const reifyGraph = async (layer, name) => {
   return designable;
 };
 
-export const designObserver = (controller, inputs) => {
+const designObserver = (controller, inputs) => {
   if ('build$Catalog$Filter$query' in inputs) {
     designUpdate(controller);
   }
   if ('build$DesignPanels$tabs' in inputs) {
     const tabs = inputs.build$DesignPanels$tabs;
     for (let i=0; i<designables.length; i++) {
-      if (!designables[i].endsWith(tabs[i] + 'Designable')) {
-        const id = designables.splice(i--, 1);
-        Controller.removeAtom(controller, controller.atoms[id]);
+      const suffix = tabs[i] + 'Designable';
+      if (!designables[i].endsWith(suffix)) {
+        const designableId = designables[i];
+        Controller.removeAtom(controller, controller.atoms[designableId]);
+        const targetId = designableId.replace('Designable', 'Target');
+        Controller.removeAtom(controller, controller.atoms[targetId]);
+        designables.splice(i--, 1);
       }
     }
   }
 };
 
-export const createDesignable = async (layer, name) => {
+const createDesignable = async (layer, name) => {
   const {controller} = layer;
   controller.onwrite = designObserver.bind(this, controller);
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
-  const targetContainer = 'DesignPanels#Container'; // + (designables.length > 0 ? designables.length+1 : '');
+  const targetContainer = 'DesignPanels#Container';
   const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
   const designableContainer = targetName + '#Container';
   const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
-  const index = designables.push(layer.name + '$' + designableName);
-  Controller.writeInputsToHost(controller, 'build$DesignPanels', {selected: index-1, tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  designables.push(layer.name + '$' + designableName);
+  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
   return designable;
 };
 
@@ -167,10 +159,6 @@ const setDesignLayer = async (controller, layerId) => {
   designLayerId = layerId;
   designSelect(controller, '');
   return designUpdate(controller);
-};
-
-const getDesignLayer = () => {
-  return designables[designLayerId];
 };
 
 export const addDesignedAtom = async (controller, layer, {name, type, container, isContainer, state}) => {
@@ -206,8 +194,6 @@ export const designUpdate = async controller => {
   Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
   Controller.writeInputsToHost(controller, 'build$NodeGraph', {layerId: designLayerId, junk: Math.random()});
-  const tabIndex = designables.indexOf(designLayerId);
-  Controller.writeInputsToHost(controller, 'build$DesignPanels', {selected: tabIndex});
 };
 
 export const designSelect = (controller, atomId) => {
@@ -302,7 +288,7 @@ const dropAtom = async (controller, eventlet, dropType) => {
   } else if (eventlet.after) {
     const containerHost = controller.atoms[eventlet.key];
     container = containerHost.container;
-  } else if (eventlet.key.includes('#')) {
+  } else if (eventlet.key?.includes('#')) {
     container = eventlet.key;
   }
   if (container) {
@@ -312,22 +298,6 @@ const dropAtom = async (controller, eventlet, dropType) => {
     await Controller.rerender(controller);
   }
   log.debug('Drop container', container);
-};
-
-const dragTarget = (host, eventlet) => {
-  const targetLayer = host.layer.selectedDesignLayerId || 'build_Design';
-  const hostId = eventlet.key.includes('#') ? eventlet.key.split('#').shift() : eventlet.key;
-  let elt = validTarget(document.querySelector('#' + hostId), targetLayer);
-  return elt;
-};
-
-const validTarget = (elt, targetId) => {
-  const root = document.querySelector(`#${targetId}`);
-  if (root) { 
-    if (root.contains(elt)) {
-      return elt.closest('[atom]');
-    }
-  }
 };
 
 const updateConnection = (controller, hostId, propName, connection) => {

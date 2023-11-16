@@ -26,12 +26,6 @@ onOverRects({eventlet: {key, value}}, state) {
     style: `left: ${x}px; top: ${y}px; width: ${width}px; height: ${height}px`
   }));
 },
-onTargetEnter({eventlet}, state, {service}) {
-  service('DesignService', 'DesignDragEnter', {eventlet});
-},
-onTargetLeave({eventlet}, state, {service}) {
-  service('DesignService', 'DesignDragLeave', {eventlet});
-},
 onTargetDrop({eventlet}, state, {service}) {
   service('DesignService', 'DesignDragDrop', {eventlet});
 },
@@ -74,8 +68,6 @@ template: html`
   on-select="onSelect" 
   on-delete="onDelete"
   on-selection-rects="onSelectionRects" 
-  on-target-enter="onTargetEnter" 
-  on-target-leave="onTargetLeave" 
   on-target-drop="onTargetDrop"
 >
   <slot name="Container"></slot>

@@ -26,21 +26,21 @@ Xen.DropTarget = class extends Xen.Async {
     e.preventDefault();
     if (this.isValidTarget(e)) { 
       this.setAttribute('over', '');
-      this.fireEvent(e, 'target-enter');
+      this.doDragEnter?.(e); 
     }
   }
   onDragLeave(e) {
     e.preventDefault();
     if (this.isValidTarget(e)) {
       this.removeAttribute('over');
-      this.fireEvent(e, 'target-leave');
+      this.doDragLeave?.(e); 
     }
   }
   onDrop(e) {
     e.preventDefault();
     if (this.isValidTarget(e)) {
-      this.fireEvent(e, 'target-drop');
       this.removeAttribute('over');
+      this.doDragDrop?.(e); 
     }
   }
   isValidTarget(e) {
@@ -53,12 +53,6 @@ Xen.DropTarget = class extends Xen.Async {
   computeEventValue(e, name) {
     let t = e.target;
     while (t && !t.id) t = t.closest('[id]') ?? t.getRootNode().host;
-    //const path = e.composedPath();
-    // let i = path.indexOf(t) - 1;
-    // while (i >= 0 && path[i].localName !== 'slot') i--;
-    // if (i >= 0) {
-    //   log.debug('container: ', path[i].getAttribute('name'));
-    // }
     this.targetElt = t;
     this.key = this.targetkey || t?.id;
     this.trigger = e;
