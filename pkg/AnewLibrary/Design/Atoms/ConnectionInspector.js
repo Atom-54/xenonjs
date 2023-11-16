@@ -40,7 +40,7 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
 },
 getTypeMatch(propA, propB) {
   const objectTypes = ['Pojo', 'Json'];
-  const basicTypes = ['String', 'Text', 'Number'];
+  const basicTypes = ['String', 'Text', 'MultilineText', 'Number'];
   const booleanTypes = ['Nonce', 'Boolean'];
   let match = 0;
   if (propA.type === propB.type) {

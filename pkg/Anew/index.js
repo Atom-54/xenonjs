@@ -3,6 +3,7 @@
  * Copyright 2023 Atom54 LLC
  */
 import './config.js';
+import '../Library/Common/configKeys.js';
 import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
 import * as Env from '../AnewLibrary/Framework/Env.js';
 import * as Controller from '../AnewLibrary/Framework/Controller.js';

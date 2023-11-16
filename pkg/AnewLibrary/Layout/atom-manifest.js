@@ -13,7 +13,7 @@ export const Layout = {
     type: '$anewLibrary/Layout/Atoms/Panel',
     isContainer: true,
     inputs: {
-      layout: 'LayoutValues|String',
+      layout: 'LayoutValues:String',
       center: 'Boolean',
       style: 'CSSStyle'
     },
@@ -35,7 +35,7 @@ export const Layout = {
     inputs: {
       endflex: 'Boolean',
       divider: 'Number',
-      layout: 'SplitLayoutValues|String'
+      layout: 'SplitLayoutValues:String'
     },
     outputs: {
       divider: 'Number'

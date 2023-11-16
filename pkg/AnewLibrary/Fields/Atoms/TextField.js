@@ -4,14 +4,21 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({value, form}, state, {service, isDirty}) {
+update({value, form, options}, state, {service, isDirty}) {
   service('FormService', 'RegisterField', {form});
   if (isDirty('value')) {
     state.value = value;
     return {value};
   }
+  if (options && isDirty('options')) {
+    if (typeof options === 'string') {
+      try {
+        state.options = JSON.parse(options);
+      } catch (e) {}
+    }
+  }
 },
-render({label, options}, {value}) {
+render({label}, {value, options}) {
   return {
     label,
     value: value??'',

@@ -35,7 +35,7 @@ export const OpenAI = {
       context:'MultilineText',
       prompt: 'MultilineText',
       enabled: 'Boolean',
-      restart: 'Nonce:String',
+      restart: 'Nonce',
     },
     outputs: {
       result: 'String',
