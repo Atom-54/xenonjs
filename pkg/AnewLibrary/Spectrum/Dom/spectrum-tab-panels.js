@@ -57,7 +57,7 @@ export class SpectrumTabPanels extends Xen.Async {
   }
   update({tabs}, state) {
     state.renderTabs = !deepEqual(state.tabs, tabs);
-    state.tabs = tabs;
+    state.tabs = tabs ? [...tabs] : tabs;
     this.childrenChanged();
   }
   render({tabs, closeable}) {
@@ -108,7 +108,6 @@ export class SpectrumTabPanels extends Xen.Async {
     const target = e.composedPath()[0];
     if (target.localName === 'icon') {
       this.value = target.getAttribute('value');
-      console.warn('close', this.value);
       this.fire('close');
     }
   }

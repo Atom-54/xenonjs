@@ -102,10 +102,10 @@ const DesignTarget = class extends Xen.DropTarget {
   findValidTarget(elt) {
     while (elt) {
       elt = elt.closest('[atom]')
-      if (elt.atomId.split('$').length > 3) {
+      if (elt?.atomId.split('$').length > 3) {
         elt = elt.parentElement;
-      } else  {
-        return (!elt.atomId?.endsWith('Designable')) ? elt : null;
+      } else {
+        return (!elt?.atomId?.endsWith('Designable')) ? elt : null;
       }
     }
     return elt;
