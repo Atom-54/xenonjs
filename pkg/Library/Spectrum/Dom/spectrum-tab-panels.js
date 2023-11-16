@@ -15,13 +15,17 @@ export class SpectrumTabPanels extends Xen.Async {
   }
 </style>
 <template></template>
+<sp-tabs-overflow></sp-tabs-overflow>
     `;
   }
   _didRender({tabs, selected}) {
     const html = [];
-    html.push(`<sp-tabs selected="${selected || 0}">`)
+    html.push(`
+<sp-tabs selected="${selected || 0}">`)
     tabs?.forEach(tab => {
-      html.push(`<sp-tab label="${tab.label}" value="${tab.value}"></sp-tab>`)
+      html.push(Xen.html`
+<sp-tab Xlabel="${tab.label}" value="${tab.value}"><icon>close</icon>&nbsp;${tab.label}</sp-tab>
+      `)
     });
     tabs?.forEach(panel => {
       html.push(Xen.html`
@@ -33,8 +37,9 @@ export class SpectrumTabPanels extends Xen.Async {
     html.push('</sp-tabs>')
     const template = this.shadowRoot.querySelector('template');
     template.innerHTML = html.join('');
-    this.shadowRoot.querySelector('sp-tabs')?.remove();
-    this.shadowRoot.appendChild(template.content);
+    const parent = this.shadowRoot.querySelector('sp-tabs-overflow');
+    parent.innerHTML = '';
+    parent.appendChild(template.content);
   }
 }
 customElements.define('spectrum-tab-panels', SpectrumTabPanels);

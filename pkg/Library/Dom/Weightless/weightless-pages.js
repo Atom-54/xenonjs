@@ -4,21 +4,36 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Xen} from '../Xen/xen-async.js';
+import {IconsCss} from '../../../Library/Dom/Material/material-icon-font/icons.css.js';
 
 const template = Xen.Template.html`
 <style>
+  ${IconsCss}
   :host {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     background-color: var(--theme-color-bg-2);
   }
+  icon {
+    cursor: pointer;
+    padding: 4px 0 2px 4px;
+  }
+  [row] {
+    display: flex;
+    align-items: center;
+  }
 </style>
 
 <!-- tabs -->
 <wl-tab-group vertical="{{vertical}}" selectedtab="{{selectedTab}}" on-change="onTabChange" repeat="tabT">{{tabs}}</wl-tab-group>
 <template tabT>
-  <wl-tab key="{{label}}" checked="{{active}}">{{label}}</wl-tab>
+  <wl-tab key="{{label}}" checked="{{active}}">
+    <span row>
+      <span>{{label}}</span>
+      <!-- <icon>close</icon> -->
+    <span>
+  </wl-tab>
 </template>
 
 <!-- content -->
