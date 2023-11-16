@@ -23,8 +23,9 @@ onClose({eventlet: {value}, tabs}, state) {
   const index = Number(value);
   state.tabs.splice(index, 1);
   state.tabs?.forEach((t,i) => t.value = i);
+  state.tabs = [...state.tabs];
   tabs.splice(index, 1);
-  let selected = this.updateSelected(Math.min(index, state.selected-1), state);
+  let selected = this.updateSelected(Math.max(index, state.selected-1), state);
   return {...selected, tabs};
 },
 template: html`

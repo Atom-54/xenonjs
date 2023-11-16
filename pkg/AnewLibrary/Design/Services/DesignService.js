@@ -127,13 +127,24 @@ export const reifyGraph = async (layer, name) => {
   return designable;
 };
 
+export const designObserver = (controller, inputs) => {
+  if ('build$Catalog$Filter$query' in inputs) {
+    designUpdate(controller);
+  }
+  if ('build$DesignPanels$tabs' in inputs) {
+    const tabs = inputs.build$DesignPanels$tabs;
+    for (let i=0; i<designables.length; i++) {
+      if (!designables[i].endsWith(tabs[i] + 'Designable')) {
+        const id = designables.splice(i--, 1);
+        Controller.removeAtom(controller, controller.atoms[id]);
+      }
+    }
+  }
+};
+
 export const createDesignable = async (layer, name) => {
   const {controller} = layer;
-  controller.onwrite = inputs => {
-    if ('build$Catalog$Filter$query' in inputs) {
-      designUpdate(controller);
-    }
-  };
+  controller.onwrite = designObserver.bind(this, controller);
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
   const targetContainer = 'DesignPanels#Container'; // + (designables.length > 0 ? designables.length+1 : '');
