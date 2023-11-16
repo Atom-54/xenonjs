@@ -1,13 +1,2 @@
 <!doctype html>
-
-<script type="module">
-  import * as Reactor from './reactor.js';
-  import {resolve} from '../Utils/Paths.js';
-
-  const log = (...args) => console.log('[main]', ...args);
-
-  Reactor.initialize(log, resolve);
-
-  const atom = await Reactor.createAtom('./atom.js', Reactor.selfScoped(Reactor.log), 'bar');
-  atom.inputs = {bar: 42};
-</script>
+<script type="module" src="./engine.js"></script>

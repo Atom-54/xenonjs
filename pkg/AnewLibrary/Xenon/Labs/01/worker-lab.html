@@ -1,0 +1,8 @@
+<!doctype html>
+
+<script type="module">
+  import * as Reactor from './worker-reactor.js';
+
+  const atom = await Reactor.createAtom('./atom.js');
+  atom.inputs = {bar: 42};
+</script>

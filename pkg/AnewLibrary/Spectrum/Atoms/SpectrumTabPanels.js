@@ -5,18 +5,8 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({tabs, selected}, state) {
-  state.tabs = tabs?.map((t, i) => ({
-    label: t,
-    value: i
-  }));
-  this.updatePanels(state);
+  state.tabs = tabs?.map((t, i) => ({label: t, value: i}));
   return this.updateSelected(selected, state);
-},
-updatePanels(state) {
-  state.tabs?.forEach((t,i) => t.value = i);
-  state.panels = state.tabs?.map((t,i) => ({
-    name: 'Container' + (i===0 ? '' : i+1)
-  }));
 },
 updateSelected(value, state) {
   const selected = Number(value) || 0;
@@ -24,23 +14,21 @@ updateSelected(value, state) {
     state.selected = selected;
     return {selected};
   }
+  return {};
 },
 onChange({eventlet: {value}}, state) {
   return this.updateSelected(value, state);
 },
-onClose({eventlet: {value}}, state) {
+onClose({eventlet: {value}, tabs}, state) {
   const index = Number(value);
   state.tabs.splice(index, 1);
-  this.updatePanels(state);
-  if (state.selected >= index) {
-    this.updateSelected(state.selected-1, state);
-  }
+  state.tabs?.forEach((t,i) => t.value = i);
+  tabs.splice(index, 1);
+  let selected = this.updateSelected(Math.min(index, state.selected-1), state);
+  return {...selected, tabs};
 },
 template: html`
 <style>
-  :host {
-    /* padding: 0 8px; */
-  }
   spectrum-tab-panels {
     flex: 1 0 0;
     display: flex;
@@ -50,11 +38,5 @@ template: html`
 <spectrum-tab-panels size="m" closeable="{{closeable}}" selected="{{selected}}" tabs="{{tabs}}" on-change="onChange" on-close="onClose" repeat="slot_t">
   <slot name="Container"></slot>
 </spectrum-tab-panels>
-
-<!-- <template slot_t>
-    <div flex scrolling column panel slot="{{name}}">
-    <slot name="{{name}}"></slot>
-  </div>
-</template> -->
 `
 });

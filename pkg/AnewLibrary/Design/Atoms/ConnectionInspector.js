@@ -65,9 +65,6 @@ onPropChange({eventlet, id}, state, {service}) {
 },
 template: html`
 <style>
-  :host {
-    display: flex !important;
-  }
   [props] {
     flex: 1;
     display: flex;
