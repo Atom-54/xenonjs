@@ -1,0 +1,62 @@
+<!doctype html>
+
+<script type="module">
+import {Atom} from '../Core/Atom.js';
+import {Host} from '../Core/Host.js';
+
+const createAtom = proto => {
+  return new Atom(proto, {});
+};
+
+const consoleHost = atom => {
+  Object.assign(atom.pipe, {
+    output: (data, render) => {
+      console.log('output', data, render);
+    },
+    service: request => {
+      console.log('service', request);
+    }
+  });
+}
+
+const selfScoped = (log, html, resolve) => ({
+  async update(inputs, state, {service}) {
+    log('Atom lives');
+    await service('Foo', 'FooFoo', {foo: 42});
+    return {foo: 3};
+  },
+  template: `foo`
+});
+
+const proto = `({
+  async update(inputs, state, {service}) {
+    log('Atom2 lives');
+    await service('Foo', 'FooFoo', {foo: 42});
+    return {foo: 3};
+  },
+  template: \`foo\`
+})`;
+
+const autoScoped = (proto, log, html, resolve) => {
+  return eval(proto);
+};
+
+const log = console.log.bind(console);
+
+const atom = createAtom(selfScoped(log));
+
+const switchboard = {
+  output: output => log('[output]', output),
+  render: packet => log('[render]', packet),
+  service: request => log('[service]', request)
+};
+
+const host = new Host('foo', atom, switchboard);
+host.container = 'zot';
+host.inputs = {bar: 42};
+
+const atom2 = createAtom(autoScoped(proto, log));
+consoleHost(atom2);
+atom2.inputs = {bar: 42};
+
+</script>

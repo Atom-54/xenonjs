@@ -41,7 +41,7 @@ export class Atom {
   impl;
   internal;
   constructor(proto, pipe, beUnStateful) {
-    this.pipe = pipe;
+    this.pipe = pipe || {};
     this.impl = create(proto);
     globalThis.harden?.(this.impl);
     defineProperty(this, 'internal', privateProperty(create(null)));
@@ -58,11 +58,11 @@ export class Atom {
   get template() {
     return this.impl?.template;
   }
-  get config() {
-    return {
-        template: this.template
-    };
-  }
+  // get config() {
+  //   return {
+  //     template: this.template
+  //   };
+  // }
   // set-trap for inputs, so we can do work when inputs change
   set inputs(inputs) {
     //this.log(inputs);
@@ -127,7 +127,7 @@ export class Atom {
         }
       }
       catch (e) {
-        log.error(e);
+        console.error(e);
       }
       // nullify validator _after_ methods so state changes don't reschedule validation
       this.internal.validator = null;
@@ -227,7 +227,7 @@ export class Atom {
         return await asyncFunc();
     }
     catch (e) {
-        log.error(e);
+        console.error(e);
     }
     finally {
         this.internal.$busy--;
