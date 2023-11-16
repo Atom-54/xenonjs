@@ -10,3 +10,6 @@ export {JsonRepairService} from '../AnewLibrary/JsonRepair/Services/jsonrepairSe
 export {FormService} from '../AnewLibrary/Fields/Services/FormService.js';
 export {OpenAIService} from '../AnewLibrary/OpenAI/Services/OpenAIService.js';
 export {HuggingFaceService} from '../AnewLibrary/HuggingFace/Services/HuggingFaceService.js';
+export {GoogleApisService} from '../AnewLibrary/Locale/Services/GoogleApisService.js';
+export {POIService} from '../AnewLibrary/Locale/Services/POIService.js'
+export {WeatherApiService} from '../AnewLibrary/Locale/Services/WeatherApiService.js';

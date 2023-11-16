@@ -237,7 +237,7 @@ export const designDelete = (controller, atomId) => {
 };
 
 const getDesignTargetId = () => {
-  return designLayerId.replace('Designable', 'Target');
+  return designLayerId?.replace('Designable', 'Target');
 };
 
 export const designUpdateTarget = (controller, host) => {

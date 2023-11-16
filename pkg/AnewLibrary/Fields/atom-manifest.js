@@ -39,7 +39,7 @@ export const Fields= {
       label: 'String',
       inverted: 'Boolean',
       action: 'String',
-      value: 'String|Pojo'
+      value: 'String:Pojo'
     },
     outputs: {
       value: 'Nonce'
@@ -242,7 +242,7 @@ export const Fields= {
     ligature: 'sell',
     inputs: {
       label: 'String',
-      value: 'String|[String]',
+      value: 'String:[String]',
       form: 'FormId'
     },
     outputs: {
@@ -264,9 +264,9 @@ export const Fields= {
     type: '$anewLibrary/Fields/Atoms/TextArea',
     ligature: 'edit_note',
     inputs: {
-      label: 'String',
+      // label: 'String',
       text: 'MultilineText',
-      form: 'FormId'
+      // form: 'FormId'
     },
     outputs: {
       text: 'MultilineText'

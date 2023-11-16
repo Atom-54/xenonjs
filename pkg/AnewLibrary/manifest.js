@@ -10,6 +10,7 @@ const manifests = [
   'Fields',
   'HuggingFace',
   'Layout',
+  'Locale',
   'OpenAI',
   'Media',
   'Pixabay',
