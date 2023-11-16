@@ -3,65 +3,64 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-/*
-* PSA: code in this file is subject to isolation restrictions, including runtime processing.
-* Atom module interfaces with 3p code, and is often loaded into isolation contexts.
-**/
-const O = Object;
-const {defineProperty, setPrototypeOf} = O;
-const {create, assign, keys, values, entries, mapBy} = (() => {
-  return {
-    create: O.create,
-    assign: O.assign,
-    keys(o) {
-      return o ? O.keys(o) : [];
-    },
-    values(o) {
-      return o ? O.values(o) : [];
-    },
-    entries(o) {
-      return o ? O.entries(o) : [];
-    },
-    mapBy(a, keyGetter) {
-      return a ? O.values(a).reduce((map, item) => (map[keyGetter(item)] = item, map), {}) : {};
-    }
-  };
-})();
 
-const scope = globalThis['scope'] ?? globalThis;
-//const {log, timeout} = scope;
-const nob = () => create(null);
+const {defineProperty, create, assign, getOwnPropertyNames} = Object;
+// const {keys, values, entries} = ({
+//   keys: o => o ? Object.keys(o) : [],
+//   values: o => o ? Object.values(o) : [],
+//   entries: o => o ? Object.entries(o) : []
+// });
+
+const timeout = async (func, delayMs) => new Promise(resolve => setTimeout(() => resolve(func()), delayMs));
+
+export const deepEqual = (a, b) => {
+  const typeA = typeof a;
+  // must be same type to be equal
+  if (typeA === typeof b) {
+    // we are `deep` because we recursively study objects
+    if (typeA === 'object' && a && b) {
+      const aProps = getOwnPropertyNames(a);
+      const bProps = getOwnPropertyNames(b);
+      // equal if same # of props, and no prop is not deepEqual
+      return (aProps.length == bProps.length) && !aProps.some(name => !deepEqual(a[name], b[name]));
+    }
+    // otherwse, perform simple comparison
+    return (a === b);
+  }
+};
 
 const privateProperty = initialValue => {
   let value = initialValue;
   return { get: () => value, set: v => value = v };
 };
 
+const scope = globalThis['scope'] ?? globalThis;
+
 export class Atom {
   pipe;
   impl;
   internal;
-  constructor(proto, pipe, beStateful) {
+  constructor(proto, pipe, beUnStateful) {
     this.pipe = pipe;
     this.impl = create(proto);
     globalThis.harden?.(this.impl);
-    defineProperty(this, 'internal', privateProperty(nob()));
+    defineProperty(this, 'internal', privateProperty(create(null)));
     this.internal.$busy = 0;
-    //if (beStateful) {
-    this.internal.beStateful = true;
-    this.internal.state = nob();
-    this.internal.clean = nob();
-    //}
+    if (!beUnStateful) {
+      this.internal.beStateful = true;
+      this.internal.state = create(null);
+      this.internal.clean = create(null);
+    }
   }
-  get log() {
-    return this.pipe?.log || log;
-  }
+  // get log() {
+  //   return this.pipe?.log || nop;
+  // }
   get template() {
     return this.impl?.template;
   }
   get config() {
     return {
-      template: this.template
+        template: this.template
     };
   }
   // set-trap for inputs, so we can do work when inputs change
@@ -119,7 +118,7 @@ export class Atom {
           // if we're not stateful
           if (!this.internal.beStateful) {
             // then it's a fresh state every validation
-            this.internal.state = nob();
+            this.internal.state = create(null);
           }
           // inputs are immutable (changes to them are ignored)
           this.internal.inputs = this.validateInputs();
@@ -136,7 +135,7 @@ export class Atom {
     }
   }
   validateInputs() {
-    return assign(nob(), this.inputs);
+    return assign(create(null), this.inputs);
   }
   implements(methodName) {
     return typeof this.impl?.[methodName] === 'function';
@@ -170,7 +169,7 @@ export class Atom {
     }
   }
   async shouldUpdate(inputs, state, tools) {
-    // for this method, "not implemented" is true, if implemented, "true" is true
+    // if unimplemented, shouldUpdate is "true" by default
     return !this.implements('shouldUpdate') || await this.impl.shouldUpdate(inputs, state, tools);
   }
   update() {
