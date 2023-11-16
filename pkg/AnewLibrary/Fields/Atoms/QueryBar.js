@@ -11,7 +11,7 @@ render({query, icon, placeholder}, state) {
     query: theQuery,
     //focus: true,
     icon,
-    queryStyle: `padding: 0 ${hideQueryButton ? 20 : 40}px 0 ${hideQueryButton ? 20 : 40}px;`,
+    queryStyle: `padding-right: ${hideQueryButton ? 20 : 40}px;`,
     hideQueryButton,
     placeholder: placeholder??'',
     hideClearButton: !(theQuery?.length > 0)
@@ -49,29 +49,28 @@ template: html`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 13px 20px;
+    margin: .4em 1em;
   }
-  [container] [input] {
+  [input] {
     width: 100%;
-    height: 40px;
     border-radius: 5px;
     border: none;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.3), 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
-    /* padding: 0 40px 0 40px; */
+    padding: .8em 2.7em;
   }
-  [container] icon {
+  icon {
     position: absolute;
-    font-size: 24px;
+    font-size: 20px;
   }
-  [container] icon[query] {
-    left: 32px;
+  icon[query] {
+    left: 8px;
   }
-  [container] icon[clear] {
-    right: 32px;
+  icon[clear] {
+    right: 8px;
     cursor: pointer;
   }
 </style>
-<div container on-click="donothing">
+<div row container on-click="donothing">
   <icon hide$="{{hideQueryButton}}" query>{{icon}}</icon>
   <!-- <fancy-input input placeholder="{{placeholder}}" on-input="onTextChanged" on-blur="onTextEditDone" value="{{query}}" xen:style="{{queryStyle}}"></fancy-input> -->
   <input input focus="{{focus}}" placeholder="{{placeholder}}" on-input="onTextChanged" on-blur="onTextEditDone" value="{{query}}" xen:style="{{queryStyle}}">

@@ -7,7 +7,7 @@ export const Build = {
     }
   },
   HeaderToolbar: {
-    type: '$library/UX/Atoms/UXToolbar',
+    type: '$anewLibrary/UX/Atoms/UXToolbar',
     container: 'Layout$Header#Container',
     connections: {
       event: 'UXActionExecutor$event'
@@ -52,7 +52,7 @@ export const Build = {
     }
   },
   UXActionExecutor: {
-    type: '$library/UX/Atoms/UXActionExecutor',
+    type: '$anewLibrary/UX/Atoms/UXActionExecutor',
     connections: {
       event: 'HeaderToolbar$event'
     }
@@ -106,10 +106,7 @@ export const Build = {
     type: '$anewLibrary/Graph/Atoms/Graph',
     container: 'Layout$BodyLeftSplit#Container',
     state: {
-      graphId: 'catalogGraph',
-      style: {
-        overflow: 'auto'
-      }
+      graphId: 'catalogGraph'
     }
   },
   State: {
@@ -136,7 +133,10 @@ export const Build = {
   },
   DesignPanels: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    container: 'Layout$BodyMiddle#Container'
+    container: 'Layout$BodyMiddle#Container',
+    state: {
+      closeable: true
+    }
   },
   DesignSelector: {
     type: '$anewLibrary/Design/Atoms/DesignSelector',
@@ -148,10 +148,10 @@ export const Build = {
 
 export const BuildLayout = {
   Panel: {
-    type: '$library/Layout/Atoms/Panel'
+    type: '$anewLibrary/Layout/Atoms/Panel'
   },
   Header: {
-    type: '$library/Layout/Atoms/Panel',
+    type: '$anewLibrary/Layout/Atoms/Panel',
     container: 'Panel#Container',
     state: {
       layout: 'row',
@@ -223,7 +223,7 @@ export const catalogGraph = {
     state: {
       reactive: true,
       icon: 'search',
-      placeholder: 'Search Atoms',
+      placeholder: 'Filter',
       style: {
         ['min-height']: '40px',
       }
@@ -233,8 +233,8 @@ export const catalogGraph = {
     type: '$anewLibrary/Layout/Atoms/Templated',
     state: {
       style: {
-        padding: '0.6rem',
-        flex: '0 0 auto'
+        padding: '0 0.6rem',
+        overflow: 'auto'
       },
       template: html`
   <div style="width: 100%; font-family: sans-serif;">

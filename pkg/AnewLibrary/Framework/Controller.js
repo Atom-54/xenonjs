@@ -182,6 +182,7 @@ const writeToState = (controller, inputState) => {
     bindamor(controller, key, value);
     controller.state[key] = value;
   })
+  controller.onwrite?.(inputState);
 };
 
 const bindamor = (controller, key, value) => {
