@@ -61,7 +61,7 @@ export class Atom {
   }
   get config() {
     return {
-      template: this.template
+        template: this.template
     };
   }
   // set-trap for inputs, so we can do work when inputs change

@@ -11,7 +11,7 @@ export const Pixabay = {
     displayName: 'Pixabay Image Search',
     description: 'Find images from Pixbay',
     ligature: 'image',
-    type: '$anewLibrary/Pixabay/Atoms/Pixabay',
+    type: '$anewLibrary/Pixabay/Atoms/PixabayImage',
     inputs: {
       query: 'String',
       image: 'Image',

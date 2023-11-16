@@ -33,9 +33,7 @@ export const emit = async (Host, name, kind) => {
 
 const load = async kind => {
   const paths = {
-    Library: '../..',
-    AIClock$ai: 'OpenAI/Atoms/OpenAIText', 
-    AIClock$clock: 'AI/Atoms/AIClock'
+    Library: '../..'
   };
   const path = 
     paths[kind] 

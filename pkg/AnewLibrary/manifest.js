@@ -12,6 +12,7 @@ const manifests = [
   'Layout',
   'OpenAI',
   'Media',
+  'Pixabay',
   'Spectrum',
   'Weightless',
   'UX'

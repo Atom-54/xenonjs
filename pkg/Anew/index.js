@@ -7,12 +7,12 @@ import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
 import * as Env from '../AnewLibrary/Framework/Env.js';
 import * as Controller from '../AnewLibrary/Framework/Controller.js';
 import * as Services from '../AnewLibrary/Framework/Services.js';
-import {start} from 'xenonjs/Library/Common/start.js';
 import {Graphs} from './graphs.js';
 import {createComposer} from './composer.js';
 import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
 import * as services from './services.js';
 import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
+import {start} from '../Library/Common/start.js';
 
 const log = logf('Index', 'magenta');
 

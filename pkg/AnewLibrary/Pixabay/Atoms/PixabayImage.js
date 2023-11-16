@@ -84,8 +84,11 @@ template: html`
     background: transparent;
   }
 </style>
-<div toolbar><icon on-click="onPrevClick">arrow_circle_left</icon><icon on-click="onNextClick">arrow_circle_right</icon></div>
-<!-- TODO: use an Image atom instead -->
+<!-- TODO: factor out UX -->
+<div toolbar>
+  <icon on-click="onPrevClick">arrow_circle_left</icon>
+  <icon on-click="onNextClick">arrow_circle_right</icon>
+</div>
 <image-resource flex image="{{image}}" on-canvas="onCanvas"></image-resource>
 `
 });
