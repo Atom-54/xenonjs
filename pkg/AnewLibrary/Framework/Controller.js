@@ -33,7 +33,7 @@ const onoutput = (controller, host, output) => {
 };
 
 const onevent = (controller, pid, eventlet) => {
-  controller.atoms[pid].handleEvent(eventlet);
+  controller.atoms[pid]?.handleEvent(eventlet);
 };
 
 export const reifySublayer = async (controller, layer, id, graph, host) => {

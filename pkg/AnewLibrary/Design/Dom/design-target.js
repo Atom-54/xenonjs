@@ -33,27 +33,6 @@ const DesignTarget = class extends Xen.DropTarget {
   get domParent() {
     return this.getRootNode().host;
   }
-  getLocalRect(elt) {
-    const frame = this.getBoundingClientRect();
-    const rect = elt.getBoundingClientRect();
-    rect.x -= frame.x;
-    rect.y -= frame.y;
-    return rect;
-  }
-  onClick(e) {
-    let elt = this.findValidTarget(e.target);
-    this.key = elt?.atomId;
-    this.fire('select');
-  }
-  onKeyDown(e) {
-    this.key = this.state.selected?.atomId;
-    if (this.key && !this.activeElementIsFocusable() && (e.key === 'Delete' || e.key === 'Backspace')) {
-      this.fire('delete');
-    }
-  }
-  activeElementIsFocusable() {
-    return focusables.includes(document.activeElement?.shadowRoot?.activeElement?.localName);
-  }
   doSelect(elt) {
     this.value = {};
     if (elt) {
@@ -69,8 +48,29 @@ const DesignTarget = class extends Xen.DropTarget {
     this.state.selected = elt;
     this.fire('selection-rects');
   }
+  getLocalRect(elt) {
+    const frame = this.getBoundingClientRect();
+    const rect = elt.getBoundingClientRect();
+    rect.x -= frame.x;
+    rect.y -= frame.y;
+    return rect;
+  }
+  onKeyDown(e) {
+    this.key = this.state.selected?.atomId;
+    if (this.key && !this.activeElementIsFocusable() && (e.key === 'Delete' || e.key === 'Backspace')) {
+      this.fire('delete');
+    }
+  }
+  activeElementIsFocusable() {
+    return focusables.includes(document.activeElement?.shadowRoot?.activeElement?.localName);
+  }
+  onClick(e) {
+    let elt = this.findValidTarget(e.target, true);
+    this.key = elt?.atomId;
+    this.fire('select');
+  }
   onPointermove(e) {
-    let elt = e.ctrlKey ? this.findValidTarget(e.target) : null;
+    let elt = e.ctrlKey ? this.findValidTarget(e.target, true) : null;
     this.state.over = elt;
     this.doOver(elt);
   };
@@ -99,19 +99,38 @@ const DesignTarget = class extends Xen.DropTarget {
       }
     }
   }
-  findValidTarget(elt) {
+  doDragEnter(e) {
+    const elt = this.findValidTarget(e.target);
+    if (elt) {
+      elt.style.outline = '5px dashed orange';
+      elt.style.outlineOffset = '-2px';
+    }
+  }
+  doDragLeave(e) {
+    const elt = this.findValidTarget(e.target);
+    if (elt) {
+      elt.style.outline = null;
+    }
+  }
+  doDragDrop(e) {
+    const elt = this.findValidTarget(e.target);
+    if (elt) {
+      elt.style.outline = null;
+      this.fire('target-drop');
+    }
+  }
+  findValidTarget(elt, noDesignable) {
     while (elt) {
       elt = elt.closest('[atom]')
       if (elt?.atomId.split('$').length > 3) {
         elt = elt.parentElement;
       } else {
-        return (!elt?.atomId?.endsWith('Designable')) ? elt : null;
+        return (noDesignable && elt?.atomId?.endsWith('Designable')) ? null : elt;
       }
     }
     return elt;
   };
 };
-
 
 const template = Xen.Template.html`
 <slot></slot>
