@@ -8,14 +8,15 @@ update({tabs, selected}, state) {
   state.tabs = tabs?.map((t, i) => ({
     label: t,
     value: i
-  }))
-  state.panels = tabs?.map((t,i) => ({
-    name: 'Container' + (i===0 ? '' : i+1)
   }));
+  this.updatePanels(state);
   return this.updateSelected(selected, state);
 },
-onChange({eventlet: {value}}, state) {
-  return this.updateSelected(value, state);
+updatePanels(state) {
+  state.tabs?.forEach((t,i) => t.value = i);
+  state.panels = state.tabs?.map((t,i) => ({
+    name: 'Container' + (i===0 ? '' : i+1)
+  }));
 },
 updateSelected(value, state) {
   const selected = Number(value) || 0;
@@ -24,10 +25,21 @@ updateSelected(value, state) {
     return {selected};
   }
 },
+onChange({eventlet: {value}}, state) {
+  return this.updateSelected(value, state);
+},
+onClose({eventlet: {value}}, state) {
+  const index = Number(value);
+  state.tabs.splice(index, 1);
+  this.updatePanels(state);
+  if (state.selected >= index) {
+    this.updateSelected(state.selected-1, state);
+  }
+},
 template: html`
 <style>
   :host {
-    padding: 0 8px;
+    /* padding: 0 8px; */
   }
   spectrum-tab-panels {
     flex: 1 0 0;
@@ -35,11 +47,14 @@ template: html`
     flex-direction: column;
   }
 </style>
-<spectrum-tab-panels size="m" selected="{{selected}}" tabs="{{tabs}}" on-change="onChange" repeat="slot_t">{{panels}}</spectrum-tab-panels>
-<template slot_t>
-  <div flex scrolling column panel slot="{{name}}">
+<spectrum-tab-panels size="m" closeable="{{closeable}}" selected="{{selected}}" tabs="{{tabs}}" on-change="onChange" on-close="onClose" repeat="slot_t">
+  <slot name="Container"></slot>
+</spectrum-tab-panels>
+
+<!-- <template slot_t>
+    <div flex scrolling column panel slot="{{name}}">
     <slot name="{{name}}"></slot>
   </div>
-</template>
+</template> -->
 `
 });

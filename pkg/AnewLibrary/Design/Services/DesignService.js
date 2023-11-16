@@ -66,21 +66,7 @@ export const DesignService = {
     return types;
   },
   GetAtomTypeCategories() {
-    const types = DesignService.GetAtomTypes();
-    const categorized = {};
-    types.sort((a, b) => a.displayName.localeCompare(b.displayName));
-    types.forEach(type => {
-      const categories = type.categories ?? [];
-      for (const category of categories) {
-        (categorized[category] ??= []).push(type);
-      }
-    });
-    const list = Object.entries(categorized).map(([category, types]) => ({
-      category,
-      types
-    }));
-    list.sort((a, b) => (categoryOrder[a.category] || 100) - (categoryOrder[b.category] || 100));
-    return list;
+    return getAtomTypeCategories();
   },
   async GetAtomInfo(host, data) {
     return getAtomInfo(host.layer.controller, designLayerId);

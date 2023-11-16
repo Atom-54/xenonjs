@@ -6,8 +6,9 @@ export const atom = (log, resolve) => ({
  */
 update(inputs, state) {
   state.tabs = [1, 2, 3, 4, 5].map(i => ({
-    label: `Tab ${i}`,
-    value: i-1
+    //label: `Tab ${i}`,
+    value: i-1,
+    content: `Tab ${i}`
   }));
 },
 onChange({eventlet: {value}}) {
@@ -19,9 +20,11 @@ template: html`
     padding-left: 8px;
   }
 </style>
-<sp-tabs selected="1" size="m" on-change="onChange" repeat="tabs_t">{{tabs}}</sp-tabs>
+<sp-tabs-overflow>
+  <sp-tabs selected="1" size="m" on-change="onChange" repeat="tabs_t">{{tabs}}</sp-tabs>
+</sp-tabs-overflow>
 <template tabs_t> 
-  <sp-tab label="{{label}}" value="{{value}}"></sp-tab>
+  <sp-tab label="{{label}}" value="{{value}}">{{content}}</sp-tab>
 </template>
 `
 });
