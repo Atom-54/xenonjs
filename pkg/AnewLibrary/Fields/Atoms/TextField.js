@@ -6,16 +6,16 @@ export const atom = (log, resolve) => ({
  */
 update({value, form, options}, state, {service, isDirty}) {
   service('FormService', 'RegisterField', {form});
-  if (isDirty('value')) {
-    state.value = value;
-    return {value};
-  }
   if (options && isDirty('options')) {
     if (typeof options === 'string') {
       try {
         state.options = JSON.parse(options);
       } catch (e) {}
     }
+  }
+  if (isDirty('value')) {
+    state.value = value;
+    return {value};
   }
 },
 render({label}, {value, options}) {

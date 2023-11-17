@@ -14,7 +14,7 @@ export const OpenAI = {
     // icon: '$library/Assets/nodes/openai-logomark.png',
     ligature: 'image',
     inputs: {
-      prompt: 'MultilineText',
+      prompt: 'Text',
       restart: 'Nonce:String',
       enabled: 'Boolean',
       options: 'Pojo'
@@ -32,8 +32,8 @@ export const OpenAI = {
     // icon: '$library/Assets/nodes/openai-logomark.png',
     ligature: 'edit_note',
     inputs: {
-      context:'MultilineText',
-      prompt: 'MultilineText',
+      context:'Text',
+      prompt: 'Text',
       enabled: 'Boolean',
       restart: 'Nonce',
     },

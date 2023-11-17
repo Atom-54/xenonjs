@@ -16,12 +16,14 @@ async update({geolocation}, state, {service, isDirty}) {
   }
 },
 
+shouldRender(inputs, {weather}) {
+  return Boolean(weather);
+},
+
 render(inputs, {weather}) {
-  if (weather) {
-    return {
-      daily: this.renderDaily(weather.daily)
-    };
-  }
+  return {
+    daily: this.renderDaily(weather.daily)
+  };
 },
 
 renderDaily(daily) {

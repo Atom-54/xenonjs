@@ -264,12 +264,12 @@ export const Fields= {
     type: '$anewLibrary/Fields/Atoms/TextArea',
     ligature: 'edit_note',
     inputs: {
-      // label: 'String',
-      text: 'MultilineText',
-      // form: 'FormId'
+      label: 'String',
+      text: 'Text',
+      form: 'FormId'
     },
     outputs: {
-      text: 'MultilineText'
+      text: 'Text'
     },
     state: {
       label: 'TextArea Field',
