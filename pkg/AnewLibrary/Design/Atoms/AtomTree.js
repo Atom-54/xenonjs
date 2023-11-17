@@ -5,10 +5,7 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async initialize({}, state, {service}) {
-  state.doDrop = async eventlet => {
-    //log.debug(eventlet);
-    service('DesignService', 'DesignDragDrop', {eventlet});
-  }
+  state.doDrop = async eventlet => service('DesignService', 'DesignDragDrop', {eventlet});
 },
 async update({selected}, state, {service}) {
   state.selected = selected;

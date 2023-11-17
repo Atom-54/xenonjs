@@ -50,7 +50,7 @@ Xen.DropTarget = class extends Xen.Async {
     this.computeEventValue(e, name);
     this.fire(name);
   }
-  computeEventValue(e, name) {
+  computeEventValue(e) {
     let t = e.target;
     while (t && !t.id) t = t.closest('[id]') ?? t.getRootNode().host;
     this.targetElt = t;
@@ -73,6 +73,18 @@ export class DropTarget extends Xen.DropTarget {
   }
   _didMount() {
     this.enableDrop();
+  }
+  doDragOver(e) {
+    this.fireEvent(e, 'target-over');
+  }
+  doDragEnter(e) {
+    this.fireEvent(e, 'target-enter');
+  }
+  doDragLeave(e) {
+    this.fireEvent(e, 'target-leave');
+  }
+  doDragDrop(e) {
+    this.fireEvent(e, 'target-drop');
   }
 }
 customElements.define('drop-target', DropTarget);
