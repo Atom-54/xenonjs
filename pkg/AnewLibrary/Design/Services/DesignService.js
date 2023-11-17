@@ -62,8 +62,7 @@ export const DesignService = {
     return designUpdate(host.layer.controller);
   },
   GetAtomTypes() {
-    const types = Object.entries(Schema.atomInfo).map(([key, info]) => ({name: key, displayName: key, ...info}));
-    return types;
+    return Object.entries(Schema.atomInfo).map(([key, info]) => ({name: key, displayName: key, ...info}));
   },
   GetAtomTypeCategories() {
     return getAtomTypeCategories();
@@ -112,6 +111,7 @@ export const newGraph = async layer => {
 export const reifyGraph = async (layer, name) => {
   const designable = await createDesignable(layer, name);
   Controller.writeInputsToHost(layer.controller, designable.id, {graphId: name});
+  validateAtomOrder(layer.controller);
   return designable;
 };
 
@@ -140,11 +140,16 @@ const createDesignable = async (layer, name) => {
   const targetName = name + 'Target'
   const designableName = name + 'Designable';
   const targetContainer = 'DesignPanels#Container';
-  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer});
+  const state = {style: {order: designables.length}};
+  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
   const designableContainer = targetName + '#Container';
   const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
   designables.push(layer.name + '$' + designableName);
-  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  if (!controller.state.build$DesignPanels$selected) {
+    setDesignLayerIndex(controller, 0);
+    Controller.writeInputsToHost(controller, 'build$DesignPanels', {selected: 0});
+  }
   return designable;
 };
 
@@ -249,6 +254,7 @@ const getAtomInfo = (controller, layerId) => {
       container: atom.meta.container,
       isContainer: atom.meta.isContainer
     }))
+    .sort(orderCompareFactory(controller))
   ;
   result.designLayerId = layerId;
   return result;
@@ -280,22 +286,27 @@ const dropAtomType = async (host, eventlet, dropType) => {
   return addDesignedAtom(controller, layer, {name, type, container, isContainer, state});
 };
 
-const dropAtom = async (controller, eventlet, dropType) => {
-  let container;
+const dropAtom = async (controller, eventlet) => {
+  let container, order = 99;
   if (eventlet.before) {
     const containerHost = controller.atoms[eventlet.key];
     container = containerHost.container;
+    order = getAtomStateStyle(controller, containerHost).order - 0.5;
   } else if (eventlet.after) {
     const containerHost = controller.atoms[eventlet.key];
     container = containerHost.container;
+    order = getAtomStateStyle(controller, containerHost).order + 0.5;
   } else if (eventlet.key?.includes('#')) {
     container = eventlet.key;
   }
   if (container) {
-    const containable =  controller.atoms[eventlet.value];
+    const containable = controller.atoms[eventlet.value];
     containable.meta.container = container;
+    getAtomStateStyle(controller, containable).order = order;
+    validateAtomOrder(controller);
     await Controller.unrender(controller);
     await Controller.rerender(controller);
+    designUpdate(controller);
   }
   log.debug('Drop container', container);
 };
@@ -313,7 +324,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
   const atomConnections = host.layer.graph[atomName].connections ??= {};
-  atomConnections[propName] = [connection]; //[...new Set(atomConnections[propName]).add(connection)];
+  atomConnections[propName] = [connection];
   designUpdateTarget(controller, host);
   Project.ProjectService.SaveProject();
 };
@@ -331,4 +342,28 @@ const updateProperty = (controller, hostId, propName, value, nopersist) => {
     designUpdateTarget(controller, host);
     Project.ProjectService.SaveProject();
   }
+};
+
+const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'];
+const orderCompareFactory = controller => (a, b) => Number(getAtomStateStyle(controller, a).order) - Number(getAtomStateStyle(controller, b).order);
+
+const validateAtomOrder = async controller => {
+  const atomsByContainer = {};
+  Object.values(controller.atoms).forEach(atom => {
+    (atomsByContainer[atom.container] ??= []).push(atom);
+  });
+  Object.values(atomsByContainer).forEach(atoms => {
+    if (atoms.length > 1) {
+      const style = a => getAtomStateStyle(controller, a);
+      // for atoms that care about order
+      atoms = atoms.filter(a => style(a)?.order != null);
+      if (atoms.length) {
+        // sort them in recorded order
+        atoms.sort((a, b) => (Number(style(a).order) - Number(style(b).order)));
+        // reorder them for sanity
+        atoms.forEach((a, i) => style(a).order = i);
+        //log.debug(atoms.map((a, i) => ([a.id, getStyle(a).order])));
+      }
+    }
+  });
 };

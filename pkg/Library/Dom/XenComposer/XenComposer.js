@@ -24,7 +24,7 @@ export class XenComposer extends Composer {
   applyModel(slot, model) {
     slot.set(model);
     if (typeof model?.style === 'object') {
-      slot.root.host.style = {};
+      //slot.root.host.style = {};
       Object.assign(slot.root.host.style, model.style);
     }
   }

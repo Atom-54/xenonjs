@@ -79,9 +79,13 @@ export const reifyAtoms = async (controller, layer, graph) => {
     const [name, value] = entry;
     if (name !== 'meta') {
       let {type, container, isContainer, state, connections} = value;
-      state ??= {};
-      state.style = (state.style && typeof state.style === 'object') ? state.style : {};
-      state.style.order = i;
+      // insist on order values for the renderer
+      if (!state?.style || !('order' in state?.style)) {
+        state ??= {};
+        // avoid ??= in case 'style' has been erroneously set to a string
+        state.style = (state.style && typeof state.style === 'object') ? state.style : {};
+        state.style.order = i;
+      }
       await reifyAtom(controller, layer, {name, type, container, isContainer, state, connections});
     }
   }
@@ -221,5 +225,5 @@ export const unrender = async controller => {
 };
 
 export const rerender = async controller => {
-  await Promise.all(values(controller.atoms).map(atom => atom.invalidate()));
+  await Promise.all(values(controller.atoms).map(atom => atom.rerender()));
 };

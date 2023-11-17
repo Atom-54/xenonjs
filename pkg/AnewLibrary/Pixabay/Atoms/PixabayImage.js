@@ -79,6 +79,7 @@ template: html`
     background: black;
     text-shadow: 1px 1px 1px #f1f1f1;
     text-shadow: -1px -1px 1px #f1f1f1;
+    cursor: pointer;
   }
   image-resource {
     background: transparent;
