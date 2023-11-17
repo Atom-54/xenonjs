@@ -79,7 +79,6 @@ onAudioClick({}, state) {
   return {
     mediaDeviceState: state.mediaDeviceState
   };
-
 },
 onSelectChange({eventlet: {key, value}}, state) {
   if (key && value) {

@@ -96,7 +96,7 @@ export const UX = {
     type: '$anewLibrary/UX/Atoms/WebPage',
     ligature: 'web',
     inputs: {
-      html: 'MultilineText',
+      html: 'Text',
       src: 'String'
     }
   }
