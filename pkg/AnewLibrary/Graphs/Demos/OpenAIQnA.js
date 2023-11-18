@@ -1,3 +1,9 @@
+/**
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
 const graph = {
   "meta":{
     "id":"OpenAIQnA"
@@ -71,6 +77,7 @@ const graph = {
         "borderWidth":"0px",
         "borderStyle":"solid",
         "height":"auto",
+        "flex": "0 0 auto",
         "backgroundColor":"var(--xcolor-one)",
         "order":3,
         "padding":"var(--size-2)",
@@ -92,6 +99,7 @@ const graph = {
       "style":{
         "order":2,
         "height":"auto",
+        "flex": "0 0 auto",
         "width":"auto",
         "padding":"var(--size-3)",
         "justifyContent":"end"
@@ -109,7 +117,7 @@ const graph = {
         "borderStyle":"solid",
         "height":"auto",
         "borderRadius":"var(--radius-3)",
-        "flex":"",
+        "flex": "0 0 auto",
         "width":"auto",
         "justifyContent":"start"
       }
@@ -119,7 +127,9 @@ const graph = {
     "type":"$anewLibrary/Media/Atoms/DeviceUx",
     "container":"Container",
     "state": {
-      "style":{}
+      "style":{
+        "order": 1
+      }
     },
     "connections": {
       "mediaDevices": ["MediaStream$mediaDevices"],

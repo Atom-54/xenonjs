@@ -3,7 +3,7 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Resources} from './Resources.js';
+import {Resources} from '../../Resources/Resources.js';
 
 const log = logf('Service:Image', 'coral');
 

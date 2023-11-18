@@ -6,6 +6,35 @@
 
 const category = 'Media';
 
+const compositeOperationValues = [
+  'source-over',
+  'source-in',
+  'source-out',
+  'source-atop',
+  'destination-over',
+  'destination-in',
+  'destination-out',
+  'destination-atop',
+  'lighter',
+  'copy',
+  'xor',
+  'multiply',
+  'screen',
+  'overlay',
+  'darken',
+  'lighten',
+  'color-dodge',
+  'color-burn',
+  'hard-light',
+  'soft-light',
+  'difference',
+  'exclusion',
+  'hue',
+  'saturation',
+  'color',
+  'luminosity'
+];
+
 const speechSynthesizerVoices = [
   "Samantha",
   "Albert",
@@ -120,16 +149,53 @@ export const Media = {
     type: `anewLibrary/Media/Atoms/SpeechSynthesizer`,
     ligature: 'voice_selection',
     inputs: {
-      voice: 'String',
+      voice: 'Voice:String',
       transcript: 'String',
       lang: 'String',
       mediaDeviceState: 'MediaDeviceState'
     },
     outputs: {
       mediaDeviceState: 'MediaDeviceState'
+    },
+    types: {
+      Voice: speechSynthesizerVoices
     }
-    // state: {
-    //   voiceValues: speechSynthesizerVoices ??
-    // },
   },
+  FrameCapture: {
+    categories: [category],
+    description: 'Captures a frame image from a video stream',
+    displayName: 'Frame Capture',
+    type: `$library/Media/Nodes/FrameCaptureNode`,
+    ligature: 'screenshot_frame',
+    inputs: {
+      stream: 'Stream',
+      fps: 'Number'
+    },
+    outputs: {
+      frame: 'Image'
+    }
+  },
+  ImageComposite: {
+    categories: [category],
+    description: 'Composes multiple images together',
+    displayName: 'Image Composite',
+    type: `$library/Media/Nodes/ImageCompositeNode`,
+    ligature: 'tune',
+    inputs: {
+      opA: 'CompositeOperation:String',
+      opB: 'CompositeOperation:String',
+      opC: 'CompositeOperation:String',
+      opD: 'CompositeOperation:String',
+      imageA: 'Image',
+      imageB: 'Image',
+      imageC: 'Image',
+      imageD: 'Image'
+    },
+    outputs: {
+      output: 'Image'
+    },
+    types: {
+      CompositeOperation: compositeOperationValues
+    }
+  }
 };
