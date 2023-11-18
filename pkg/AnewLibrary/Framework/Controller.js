@@ -92,7 +92,9 @@ export const reifyAtoms = async (controller, layer, graph) => {
 };
 
 export const reifyAtom = async (controller, layer, {name, type, isContainer, container, state, connections}) => {
+  // create atom
   const host = await addAtom(controller, layer, {name, type, container, isContainer});
+  // process connection information
   if (connections) {
     const inputConnections = controller.connections.inputs;
     for (let [key, targets] of Object.entries(connections)) {
@@ -101,7 +103,6 @@ export const reifyAtom = async (controller, layer, {name, type, isContainer, con
       }
       for (const connection of targets) {
         const source = `${layer.id}$${connection}`;
-        //const sourceName = connection.split('$').slice(0, -1).join('$');
         const targetName = `${layer.id}$${host.name}`;
         const target = `${targetName}$${key}`;
         (inputConnections[source] ??= []).push(target);
@@ -111,14 +112,28 @@ export const reifyAtom = async (controller, layer, {name, type, isContainer, con
       }
     }
   }
+  // process state information
   if (state) {
     const qualifiedState = {};
     for (const [key, value] of Object.entries(state)) {
-      qualifiedState[`${layer.id}$${host.name}$${key}`] = value;
+      const qualifiedKey = `${layer.id}$${host.name}$${key}`;
+      // use existing state first, then default to atom state
+      qualifiedState[qualifiedKey] = (qualifiedKey in controller.state) ? controller.state[qualifiedKey] : value;
     }
     writeToState(controller, qualifiedState);
   }
-  host.inputs = state || {};
+  // locate existing state for host
+  const hostState = {};
+  for (const [key, value] of Object.entries(controller.state)) {
+    const keyBits = key.split('$');
+    const propName = keyBits.pop();
+    const keyHost = keyBits.join('$');
+    if (keyHost === host.id) {
+      hostState[propName] = value;
+    }
+  }
+  log.debug(host.id, hostState);
+  host.inputs = hostState;
   return host;
 };
 
@@ -158,10 +173,9 @@ const calculateContainer = (host, localContainer) => {
   if (!layer.host && !localContainer) {
     return 'root';
   } 
-  // TODO(sjmiles): localContainer has unreliable input
   // could be empty
   if (!localContainer) {
-    localContainer = '#Container';
+    localContainer ??= '#Container';
   } 
   // could be 'thing$thing#Container' or 'thing#Container'
   else if (localContainer.includes('$') || localContainer.indexOf('#') > 0) {

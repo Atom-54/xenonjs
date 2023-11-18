@@ -10,8 +10,8 @@ export const schemaForLayer = (controller, layerId) => {
   };
   for (const host of Object.values(controller.atoms)) {
     if (host.id.startsWith(layerId + '$')) {
-      const prefix = host.id.slice(layerId.length + 1);
       const hostSchema = schemaForHost(host);
+      const prefix = host.id.slice(layerId.length + 1);
       rekeySchemaMode(prefix, hostSchema.inputs, schema.inputs);
       rekeySchemaMode(prefix, hostSchema.outputs, schema.outputs);
     }
@@ -27,8 +27,29 @@ const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
 };
 
 export const schemaForHost = host => {
-  const graph = host.layer.graph;
-  const state = graph[host.name].state;
+  let graph = host.layer.graph;
+  const hostState = graph[host.name].state;
+  const state = Object.assign({}, hostState || {});
+  while (graph) {
+    graph = null;
+    const parentHost = host.layer.host;
+    const qualifiedHostParts = parentHost.id.split('$');
+    if (qualifiedHostParts.length > 2) {
+      const parentLayer = parentHost.layer;
+      const qualifiedHostId = qualifiedHostParts.pop();
+      const graphState = parentLayer.graph[qualifiedHostId].state;
+      for (let [name, value] of Object.entries(graphState)) {
+        const nameParts = name.split('$');
+        const propName = nameParts.pop();
+        const hostName = nameParts.join('$');
+        if (hostName === host.name) {
+          state[propName] = value;
+        }
+      }
+      graph = qualifiedHostParts.length > 3 ? parentLayer.graph : null;
+      graph && log.debug(graph);
+    }
+  }
   const schema = {
     inputs: {
       name: {type: 'String', value: host.name},
