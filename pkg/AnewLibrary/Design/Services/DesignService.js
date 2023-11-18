@@ -10,14 +10,14 @@ import {makeCapName} from '../../../Library/CoreXenon/Reactor/Atomic/js/names.js
 const log = logf('DesignService', '#512E5F', 'white');
 
 let designLayerId;
-const designables = [];
+const sublayers = [];
 
 const DesignTarget = {
   type: '$anewLibrary/Design/Atoms/DesignTarget',
   container: 'DesignPanels#Container'
 };
 
-const Designable = {
+const Sublayer = {
   type: '$anewLibrary/Graph/Atoms/Graph',
   container: 'DesignTarget#Container',
   state: {
@@ -43,8 +43,8 @@ export const DesignService = {
   async NewGraph(host) {
     return newGraph(host.layer);
   },
-  async CreateDesignable(host) {
-    return createDesignable(host.layer);
+  async CreateLayer(host) {
+    return createLayer(host.layer);
   },
   async SetDesignLayerIndex(host, {index}) {
     return setDesignLayerIndex(host.layer.controller, index);
@@ -105,14 +105,14 @@ export const newGraph = async layer => {
   Project.Project.addGraph(Project.currentProject, graph);
   Project.ProjectService.SaveProject();
   await reifyGraph(layer, name);
-  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: designables.length-1});
+  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
 };
 
 export const reifyGraph = async (layer, name) => {
-  const designable = await createDesignable(layer, name);
-  Controller.writeInputsToHost(layer.controller, designable.id, {graphId: name});
+  const sublayer = await createSublayer(layer, name);
+  Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
   validateAtomOrder(layer.controller);
-  return designable;
+  return sublayer;
 };
 
 const designObserver = (controller, inputs) => {
@@ -121,40 +121,40 @@ const designObserver = (controller, inputs) => {
   }
   if ('build$DesignPanels$tabs' in inputs) {
     const tabs = inputs.build$DesignPanels$tabs;
-    for (let i=0; i<designables.length; i++) {
-      const suffix = tabs[i] + 'Designable';
-      if (!designables[i].endsWith(suffix)) {
-        const designableId = designables[i];
-        Controller.removeAtom(controller, controller.atoms[designableId]);
-        const targetId = designableId.replace('Designable', 'Target');
+    for (let i=0; i<sublayers.length; i++) {
+      const suffix = tabs[i];
+      if (!sublayers[i].endsWith(suffix)) {
+        const sublayerId = sublayers[i];
+        Controller.removeAtom(controller, controller.atoms[sublayerId]);
+        const targetId = sublayerId + 'Target';
         Controller.removeAtom(controller, controller.atoms[targetId]);
-        designables.splice(i--, 1);
+        sublayers.splice(i--, 1);
       }
     }
   }
 };
 
-const createDesignable = async (layer, name) => {
+const createSublayer = async (layer, name) => {
   const {controller} = layer;
   controller.onwrite = designObserver.bind(this, controller);
+  const sublayerName = name;
   const targetName = name + 'Target'
-  const designableName = name + 'Designable';
   const targetContainer = 'DesignPanels#Container';
-  const state = {style: {order: designables.length}};
+  const state = {style: {order: sublayers.length}};
   const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
-  const designableContainer = targetName + '#Container';
-  const designable = await Controller.reifyAtom(controller, layer, {...Designable, name: designableName, container: designableContainer});
-  designables.push(layer.name + '$' + designableName);
-  Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: designables.map(d => d.split('$').slice(1).join('$').split('Designable').shift())});
+  const sublayerContainer = targetName + '#Container';
+  const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
+  sublayers.push(layer.name + '$' + sublayerName);
+  Controller.writeInputsToHost(controller, 'build$DesignPanels', {tabs: sublayers.map(d => d.split('$').slice(1).join('$'))});
   if (!controller.state.build$DesignPanels$selected) {
     setDesignLayerIndex(controller, 0);
     Controller.writeInputsToHost(controller, 'build$DesignPanels', {selected: 0});
   }
-  return designable;
+  return sublayer;
 };
 
 const setDesignLayerIndex = async (controller, index) => {
-  const layerId = designables[index];
+  const layerId = sublayers[index];
   if (layerId) {
     return setDesignLayer(controller, layerId);
   }
@@ -229,7 +229,7 @@ export const designDelete = (controller, atomId) => {
 };
 
 const getDesignTargetId = () => {
-  return designLayerId.replace('Designable', 'Target');
+  return designLayerId + 'Target';
 };
 
 export const designUpdateTarget = (controller, host) => {
@@ -325,15 +325,19 @@ const updateConnection = (controller, hostId, propName, connection) => {
   Project.ProjectService.SaveProject();
 };
 
-const updateProperty = (controller, hostId, propName, value, nopersist) => {
+const updateProperty = (controller, designHostId, propId, value, nopersist) => {
+  const ids = propId.split('.');
+  const propName = ids.pop();
+  const subLayerId = ids.join('$');
+  const hostId = designHostId + '$' + subLayerId;
   // update controller state and atoms
   Controller.writeValue(controller, hostId, propName, value);
   // update graph state
   if (!nopersist) {
-    const host = controller.atoms[hostId];
-    const hostSplit = hostId.split('$');
+    const host = controller.atoms[designHostId];
+    const hostSplit = designHostId.split('$');
     const atomName = hostSplit.pop();
-    host.layer.graph[atomName].state[propName] = value;
+    host.layer.graph[atomName].state[propId.replace(/\./g, '$')] = value;
     log.debug(host.layer.graph[atomName]);
     designUpdateTarget(controller, host);
     Project.ProjectService.SaveProject();

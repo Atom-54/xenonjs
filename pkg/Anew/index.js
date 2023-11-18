@@ -23,10 +23,12 @@ start(async xenon => {
   Services.addServices(services);
   // make a controller
   const main = await Env.createController(env, 'main');
+  globalThis.main = main;
   // add layers
   const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
   // load project
   await Project.initProject(build);
+
 });
 
 const onrender = async (host, packet) => {
