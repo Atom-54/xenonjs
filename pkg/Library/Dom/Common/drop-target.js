@@ -46,16 +46,16 @@ Xen.DropTarget = class extends Xen.Async {
   isValidTarget(e) {
     return (!this.disabled && e.composedPath().includes(this));
   }
-  fireEvent(e, name) {
-    this.computeEventValue(e, name);
+  fireDropEvent(e, elt, name) {
+    this.computeEventValue(e, elt);
     this.fire(name);
   }
-  computeEventValue(e) {
-    let t = e.target;
+  computeEventValue(e, t) {
+    this.trigger = e;
+    //let t = e.target;
     while (t && !t.id) t = t.closest('[id]') ?? t.getRootNode().host;
     this.targetElt = t;
     this.key = this.targetkey || t?.id;
-    this.trigger = e;
     this.value = e.dataTransfer?.getData(this.datatype || 'text/plain');
   }
 };

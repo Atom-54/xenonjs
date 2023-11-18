@@ -116,7 +116,7 @@ const DesignTarget = class extends Xen.DropTarget {
     const elt = this.findValidTarget(e.target);
     if (elt) {
       elt.style.outline = null;
-      this.fire('target-drop');
+      this.fireDropEvent(e, elt, 'target-drop');
     }
   }
   findValidTarget(elt, noDesignable) {

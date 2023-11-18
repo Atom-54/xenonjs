@@ -262,11 +262,6 @@ const getAtomInfo = (controller, layerId) => {
 
 const dropAtomType = async (host, eventlet, dropType) => {
   const {controller} = host.layer;
-  let elt = dragTarget(host, eventlet);
-  if (elt) {
-    elt.style.outline = null;
-    elt.style.outline = '5px dashed green';
-  }
   const key = eventlet.key.replace(/_/g, '$');
   let container = key.includes('#') && key;
   if (!container) {
@@ -307,8 +302,8 @@ const dropAtom = async (controller, eventlet) => {
     await Controller.unrender(controller);
     await Controller.rerender(controller);
     designUpdate(controller);
+    Project.ProjectService.SaveProject();
   }
-  log.debug('Drop container', container);
 };
 
 const updateConnection = (controller, hostId, propName, connection) => {
