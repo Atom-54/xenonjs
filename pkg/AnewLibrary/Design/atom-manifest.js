@@ -31,10 +31,10 @@ export const Design = {
     type: '$anewLibrary/Design/Atoms/DesignTarget.js',
     ligature: 'target'
   },
-  NodeGraph: {
+  AtomGraph: {
     categories: [category],
     displayName: 'Node Graph',
-    type: '$anewLibrary/Design/Atoms/NodeGraph.js',
+    type: '$anewLibrary/Design/Atoms/AtomGraph.js',
     ligature: 'schema'
   }
 };

@@ -46,7 +46,7 @@ Xen.DropTarget = class extends Xen.Async {
   isValidTarget(e) {
     return (!this.disabled && e.composedPath().includes(this));
   }
-  fireDropEvent(e, elt, name) {
+  fireTargetEvent(e, elt, name) {
     this.computeEventValue(e, elt);
     this.fire(name);
   }
@@ -75,16 +75,16 @@ export class DropTarget extends Xen.DropTarget {
     this.enableDrop();
   }
   doDragOver(e) {
-    this.fireEvent(e, 'target-over');
+    this.fireTargetEvent(e, e.target, 'target-over');
   }
   doDragEnter(e) {
-    this.fireEvent(e, 'target-enter');
+    this.fireTargetEvent(e, e.target, 'target-enter');
   }
   doDragLeave(e) {
-    this.fireEvent(e, 'target-leave');
+    this.fireTargetEvent(e, e.target, 'target-leave');
   }
   doDragDrop(e) {
-    this.fireEvent(e, 'target-drop');
+    this.fireTargetEvent(e, e.target, 'target-drop');
   }
 }
 customElements.define('drop-target', DropTarget);
