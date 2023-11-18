@@ -1,0 +1,18 @@
+<!doctype html>
+
+<img id="image" width="256" src="../../../Library/Assets/scott.png">
+<img id="image2" width="256" src="../../../Library/Assets/dogs.png">
+
+<script type="module">
+  import {VisionTasksService} from './VisionTasksService.js';
+  const id = Resources.allocate(image);
+  const {results} = await VisionTasksService.detectFace(null, null, {image: {canvas: id}});
+  const id2 = Resources.allocate(image2);
+  const {results: results1} = await VisionTasksService.detectObject(null, null, {image: {canvas: id2}});
+  const {results: results2} = await VisionTasksService.segmentImage(null, null, {image: {canvas: id2}});
+  //
+  console.log(results);
+  console.log(results1);
+  console.log(results2);
+
+</script>

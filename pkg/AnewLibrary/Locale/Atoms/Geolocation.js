@@ -37,7 +37,9 @@ async fetchReverseCoords(coords, state, service) {
   const response = await service('GoogleApisService', 'reverseCoords', {coords});
   const result = response?.results?.[0];
   if (result) {
-    return {geolocation: this.formatLocation(coords, result)};
+    return {
+      geolocation: this.formatLocation(coords, result)
+    };
   }
 },
 
@@ -45,10 +47,14 @@ coordsChanged({latitude, longitude}, location) {
   return (latitude !== location?.latitude) || (longitude !== location?.longitude);
 },
 
-async onCoords({eventlet: {value}, address, live}, state, {service}) {
+async onCoords({eventlet: {value}, geolocation, address, live}, state, {service}) {
   state.liveLocation = value;
   if (live || this.isMyLocation(address)) {
-    return {geolocation: value};
+    geolocation = value;
+    if (geolocation && this.coordsChanged(geolocation, state.coords)) {
+      return this.fetchReverseCoords(geolocation, state, service);
+    }
+    return {geolocation};
   }
 },
 
