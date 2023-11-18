@@ -79,17 +79,28 @@ export const Build = {
     state: {
       tabs: ['Properties', 'Connections'],
       style: {
+        overflow: 'auto',
         order: 2
       }
     }
   },
   PropertyInspector: {
     type: '$anewLibrary/Design/Atoms/PropertyInspector',
-    container: 'InspectorPanels#Container'
+    container: 'InspectorPanels#Container',
+    state: {
+      style: {
+        overflowY: 'visible'
+      }
+    }
   },
   ConnectionInspector: {
     type: '$anewLibrary/Design/Atoms/ConnectionInspector',
-    container: 'InspectorPanels#Container'
+    container: 'InspectorPanels#Container',
+    state: {
+      style: {
+        overflowY: 'visible'
+      }
+    }
   },
   AtomTree: {
     type: '$anewLibrary/Design/Atoms/AtomTree',
@@ -127,8 +138,8 @@ export const Build = {
       tabs: ['Graph', 'Editor']
     }
   },
-  NodeGraph: {
-    type: '$anewLibrary/Design/Atoms/NodeGraph',
+  AtomGraph: {
+    type: '$anewLibrary/Design/Atoms/AtomGraph',
     container: 'TabPanels#Container'
   },
   DesignPanels: {

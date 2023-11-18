@@ -6,12 +6,12 @@
 import {Xen} from '../../../Library/Dom/Xen/xen-async.js';
 import {DragDrop} from '../../../Library/Dom/Common/drag-drop.js';
 
-const log = logf('DOM:node-graph', 'forestgreen');
+const log = logf('DOM:atom-graph', 'forestgreen');
 
 const viewport = 6000;
 // const defaultSize = [200, 56];
 
-export class NodeGraph extends DragDrop {
+export class AtomGraph extends DragDrop {
   static get observedAttributes() {
     return ['nodes', 'schema'];
   }
@@ -490,4 +490,4 @@ const template = Xen.Template.html`
 
 `;
 
-customElements.define('anew-node-graph', NodeGraph);
+customElements.define('atom-graph', AtomGraph);

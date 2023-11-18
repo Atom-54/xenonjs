@@ -20,7 +20,7 @@ export const schemaForLayer = (controller, layerId) => {
 };
 
 const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
-  for (const [prop, value] of entries(modalHostSchema)) {
+  for (const [prop, value] of Object.entries(modalHostSchema)) {
     const key = `${idPrefix}$${prop}`.replace(/\$/g, '.');
     modalSchema[key] = value;
   }
@@ -60,4 +60,25 @@ const schemaMode = (modalSchema, modalInfo, state, connections) => {
       connection: connections?.[key]?.[0]
     };
   }
+};
+
+export const deepSchemaForHost = (layerSchema, host) => {
+  const schema = {
+    inputs: {},
+    outputs: {}
+  };
+  const prefix = host.id.split('$').slice(2).join('.') + '.';
+  for (const [propName, value] of Object.entries(layerSchema.inputs)) {
+    if (propName.startsWith(prefix)) {
+      const shortName = propName.slice(prefix).split('.').slice(1).join('.');
+      schema.inputs[shortName] = value;
+    }
+  }
+  for (const [propName, value] of Object.entries(layerSchema.outputs)) {
+    if (propName.startsWith(prefix)) {
+      const shortName = propName.slice(prefix).split('.').slice(1).join('.');
+      schema.outputs[shortName] = value;
+    }
+  }
+  return schema;
 };

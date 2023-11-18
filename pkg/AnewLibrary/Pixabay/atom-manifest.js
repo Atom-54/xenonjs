@@ -17,6 +17,9 @@ export const Pixabay = {
       image: 'Image',
       retry: 'Nonce',
       index: 'Number'
+    },
+    outputs: {
+      image: 'Image'
     }
   }
 };

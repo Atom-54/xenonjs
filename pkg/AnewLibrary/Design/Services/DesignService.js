@@ -198,19 +198,20 @@ export const designUpdate = async controller => {
   const categories = getAtomTypeCategories(controller.state.build$Catalog$Filter$query);
   Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
-  Controller.writeInputsToHost(controller, 'build$NodeGraph', {layerId: designLayerId, junk: Math.random()});
+  Controller.writeInputsToHost(controller, 'build$AtomGraph', {layerId: designLayerId, junk: Math.random()});
 };
 
 export const designSelect = (controller, atomId) => {
   const host = controller.atoms[atomId];
   const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
   Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
-  const schema = !host ? [] : Schema.schemaForHost(host).inputs;
-  const candidates = Schema.schemaForLayer(controller, designLayerId).outputs;
+  const layerSchema = Schema.schemaForLayer(controller, designLayerId);
+  const candidates = layerSchema.outputs;
+  const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
   Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
-  Controller.writeInputsToHost(controller, 'build$NodeGraph', {selected: host?.id});
+  Controller.writeInputsToHost(controller, 'build$AtomGraph', {selected: host?.id});
   Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
   const state = !host ? {} : prefixedState(controller.state, host.id + '$');
   Controller.writeInputsToHost(controller, 'build$State', {object: state});
@@ -340,7 +341,7 @@ const updateProperty = (controller, hostId, propName, value, nopersist) => {
 };
 
 const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'];
-const orderCompareFactory = controller => (a, b) => Number(getAtomStateStyle(controller, a).order) - Number(getAtomStateStyle(controller, b).order);
+const orderCompareFactory = controller => (a, b) => Number(getAtomStateStyle(controller, a)?.order) - Number(getAtomStateStyle(controller, b)?.order);
 
 const validateAtomOrder = async controller => {
   const atomsByContainer = {};
