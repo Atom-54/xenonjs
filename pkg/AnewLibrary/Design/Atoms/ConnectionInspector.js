@@ -38,7 +38,8 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
   .filter(i=>i)
   .sort((a, b) => b.matchLevel - a.matchLevel)
   ;
-  return choices;
+  //return choices;
+  return [{}, ...choices];
 },
 getTypeMatch(propA, propB) {
   let match = 0;
@@ -67,7 +68,7 @@ getTypeMatch(propA, propB) {
   return match;
 },
 onPropChange({eventlet, id}, state, {service}) {
-  const value = eventlet.value.replace(/\./g, '$');
+  const value = eventlet.value?.replace(/\./g, '$');
   service('DesignService', 'ConnectionChange', {...eventlet, id, value});
 },
 template: html`

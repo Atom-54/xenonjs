@@ -54,8 +54,14 @@ render({styleRules}, {items, template, selected}) {
   }
 },
 onItemClick({eventlet: {key, value}}, state) {
-  state.selected = key;
   log('onItemClick', key);
+  state.selected = key;
+  return {selected: key}
+},
+onItemActivate({eventlet: {key, value}}, state) {
+  log('onItemActivate', key);
+  state.selected = key;
+  return {activated: key}
 },
 template: html`
 <style>${'{{styleRules}}'}</style>
