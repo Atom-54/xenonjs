@@ -12,16 +12,21 @@ const log = logf('ProjectService', 'brown', 'white');
 export let currentProject = null;
 
 export const ProjectService = {
+  async Discover() {
+    return discoverLocalGraphs();
+  },
+  async Load(host, data) {
+    await Design.reifyGraph(Design.getDesignLayer(host.layer.controller), data);
+  },
   async LoadProject(host, data) {
   },
   async SaveProject(host, data) {
     saveProject(currentProject);
   }
 };
-
 export const initProject = async (projectName) => {
   let project = loadProject(projectName);
-  project ??= Project.create({name: projectName});
+  //const project = Project.create({name: projectName});
   selectProject(project);
   log.debug(project);
 };
@@ -84,12 +89,12 @@ const persistLocalGraphs = (key, graphs) => {
     graphKeys.add(graphKey);
   });
   // remove vestigial storage entries
-  for (let i=0; i<localStorage.length; i++) {
-    const storeKey = localStorage.key(i);
-    if (storeKey.startsWith(`${qualifiedKey}.`) && !graphKeys.has(storeKey)) {
-      localStorage.removeItem(storeKey);
-    }
-  }
+  // for (let i=0; i<localStorage.length; i++) {
+  //   const storeKey = localStorage.key(i);
+  //   if (storeKey.startsWith(`${qualifiedKey}.`) && !graphKeys.has(storeKey)) {
+  //     localStorage.removeItem(storeKey);
+  //   }
+  // }
 };
 
 const restoreLocalProject = name => {
@@ -126,4 +131,35 @@ const getValue = key => {
     }
   }
   return value;
+};
+
+const discoverLocalGraphs = () => {
+  //const prefix = `${globalThis.config.aeon}/projects/`;
+  // let projects = [];
+  // for (let i=0; i<localStorage.length; i++) {
+  //   const key = localStorage.key(i);
+  //   if (key.startsWith(prefix)) {
+  //     const name = key.slice(prefix.length);
+  //     const project = localStorage.getItem(key);
+  //     projects.push({name, project});
+  //   }
+  // }
+  const prefix = `${globalThis.config.aeon}/`;
+  let projects = {};
+  for (let i=0; i<localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith(prefix)) {
+      const id = key.slice(prefix.length);
+      const parts = id.split('.');
+      if (parts.length > 1) {
+        const project = parts[0];
+        const graphs = (projects[project] ??= {graphs:[]}).graphs;
+        graphs.push({
+          project,
+          name: parts[1]
+        })
+      }
+    }
+  }
+  return Object.entries(projects).map(([name, {graphs}]) => ({name, graphs}));
 };

@@ -38,7 +38,7 @@ export const schemaForHost = host => {
     if (qualifiedHostParts.length > 2) {
       const parentLayer = parentHost.layer;
       const qualifiedHostId = qualifiedHostParts.pop();
-      const graphState = parentLayer.graph[qualifiedHostId].state;
+      const graphState = parentLayer.graph[qualifiedHostId]?.state || {};
       for (let [name, value] of Object.entries(graphState)) {
         const nameParts = name.split('$');
         const propName = nameParts.pop();

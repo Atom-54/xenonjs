@@ -147,6 +147,10 @@ const setDesignLayer = async (controller, layerId) => {
   return designUpdate(controller);
 };
 
+export const getDesignLayer = controller => {
+  return Controller.findLayer(controller, designLayerId);
+};
+
 export const addDesignedAtom = async (controller, layer, {name, type, container, isContainer, state}) => {
   const host = await Controller.reifyAtom(controller, layer, {name, type, container, isContainer, state});
   layer.graph[name] = {type, container, isContainer, state}; 
@@ -320,23 +324,33 @@ const dropAtom = async (controller, eventlet) => {
 };
 
 const updateConnection = (controller, hostId, propName, connection) => {
-  const source = `${designLayerId}$${connection}`;
   const propId = propName.replace(/\./g, '$');
   const target = `${hostId}$${propId}`;
-  // update connection in live controller
-  const connections = controller.connections.inputs;
-  connections[source] = [...new Set(connections[source]).add(target)];
-  // update atom state
   const propBits = propId.split('$');
   const propSimple = propBits.pop();
   const propHostId = [hostId, ...propBits].join('$');
-  Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
+  // may be a clearing operation (connection == null)
+  if (connection) {
+    // update connection in live controller
+    const source = `${designLayerId}$${connection}`;
+    const connections = controller.connections.inputs;
+    connections[source] = [...new Set(connections[source]).add(target)];
+    // update atom state
+    Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
+  } else {
+    
+    Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
+  }
   // update connection in graph data
   const hostSplit = hostId.split('$');
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
   const atomConnections = host.layer.graph[atomName].connections ??= {};
-  atomConnections[propId] = [connection];
+  if (connection) {
+    atomConnections[propId] = [connection];
+  } else {
+    delete atomConnections[propId];
+  }
   designUpdateTarget(controller, host);
   Project.ProjectService.SaveProject();
 };

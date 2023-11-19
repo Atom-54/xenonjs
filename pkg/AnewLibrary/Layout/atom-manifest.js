@@ -49,9 +49,13 @@ export const Layout = {
     description: 'A container that renders items using a template',
     type: '$anewLibrary/Layout/Atoms/TemplateLayout',
     inputs: {
-      items: "Array|Pojo",
-      template: "HTML|Text",
-      styleRules: "CSSRules|Text"
+      items: 'Array|Pojo',
+      template: 'HTML|Text',
+      styleRules: 'CSSRules|Text'
+    },
+    outputs: {
+      selected: 'String',
+      activated: 'String'
     },
     ligature: 'grid_guides'
   },

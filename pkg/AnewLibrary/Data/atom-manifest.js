@@ -28,5 +28,19 @@ export const Data = {
       object: 'Pojo',
       expandLevel: 'Number'
     }
+  },
+  ServiceAccess: {
+    categories: [category],
+    displayName: 'Service Access',
+    ligature: 'joystick',
+    type: '$anewLibrary/Data/Atoms/ServiceAccess',
+    inputs: {
+      service: 'String',
+      task: 'String',
+      data: 'Pojo'
+    },
+    outputs: {
+      result: 'Pojo'
+    }
   }
 };
