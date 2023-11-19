@@ -28,6 +28,7 @@ const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
 
 export const schemaForHost = host => {
   let graph = host.layer.graph;
+  // accumulate host state
   const hostState = graph[host.name].state;
   const state = Object.assign({}, hostState || {});
   while (graph) {
@@ -50,6 +51,20 @@ export const schemaForHost = host => {
       graph && log.debug(graph);
     }
   }
+  // accumulate host connections
+  let connections = host.layer.graph[host.name].connections;
+  const parentHost = host.layer.host;
+  const parentLayer = parentHost?.layer;
+  if (parentLayer?.id.split('$')?.length > 1) {
+    connections = {};
+    const qualifedConnections = parentLayer.graph[parentHost.name]?.connections;
+    for (const [key, value] of entries(qualifedConnections)) {
+      if (key.startsWith(host.name + '$')) {
+        connections[key.slice(host.name.length + 1)] = value;
+      }
+    }
+  }
+  // build schema
   const schema = {
     inputs: {
       name: {type: 'String', value: host.name},
@@ -58,12 +73,11 @@ export const schemaForHost = host => {
     outputs: {
     }
   };
-  schemaFromHost(schema, host, state);
+  schemaFromHost(schema, host, state, connections);
   return schema;
 };
 
-const schemaFromHost = (schema, host, state) => {
-  const connections = host.layer.graph[host.name].connections;
+const schemaFromHost = (schema, host, state, connections) => {
   const kind = host.type.split('/').pop();
   const info = atomInfo[kind];
   if (info) {
