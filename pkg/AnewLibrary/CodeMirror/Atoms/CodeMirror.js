@@ -5,8 +5,11 @@ export const atom = log => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 update({text}, state) {
-  state.text = this.stringify(text);
-  return {text: state.text};
+  text = this.stringify(text);
+  if (text !== state.text) {
+    state.text = this.stringify(text);
+    return {text: state.text}; 
+  }
 },
 onCodeChanges({eventlet: {value}, text}) {
   text = this.parseString(value, text);

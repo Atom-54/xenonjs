@@ -52,7 +52,7 @@ export const Build = {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$BodyLeft#Container',
     state: {
-      tabs: ['Atoms', 'Graphs'],
+      tabs: ['Atoms', 'Projects'],
       style: {
         overflow: 'auto',
         order: 1
@@ -93,7 +93,7 @@ export const Build = {
     type: '$anewLibrary/Graph/Atoms/Graph',
     container: 'GraphPanels#Container',
     state: {
-      graphId: 'EvergreenSignature',
+      graphId: 'ProjectGraph',
       style: {
         order: 2
       }
@@ -295,6 +295,58 @@ export const catalogGraph = {
   </template>
   </div>
       `
+    }
+  }
+};
+
+export const ProjectGraph = {
+  "meta": {
+    "id": "UnimportantDirector"
+  },
+  "TemplateLayout81": {
+    "type": "$anewLibrary/Layout/Atoms/TemplateLayout",
+    "container": "Container",
+    "state": {
+      "template": "<div>\n <div project toolbar>\n   <icon>topic</icon>\n   <span>{{name}}</span>\n </div>\t\n <div graphs repeat=\"graph_t\">{{graphs}}</div>\n <template graph_t>\n   <div graph toolbar key=\"{{name}}\" on-dblclick=\"onItemActivate\">\n     <icon>account_tree</icon>\n     <span>{{name}}</span>\n   </div>\t\n  </template>  \n</div>",
+      "styleRules": "[project] {\n  color: purple;\n  background-color: white;\n  font-weight: bold;\n  font-size: 90%;\n}\n[graphs] {\n padding: 0 12px;\n}\n[graph]:hover {\n background-color: purple;\n color: white;\n cursor: pointer;\n}",
+      "style": {
+        "order": 0
+      }
+    },
+    "connections": {
+      "items": [
+        "ServiceAccess20$result"
+      ]
+    }
+  },
+  "ServiceAccess20": {
+    "type": "$anewLibrary/Data/Atoms/ServiceAccess",
+    "container": "Container",
+    "state": {
+      "template": "",
+      "service": "ProjectService",
+      "task": "Discover",
+      "data": {},
+      "style": {
+        "order": 1
+      }
+    }
+  },
+  "ServiceAccess88": {
+    "type": "$anewLibrary/Data/Atoms/ServiceAccess",
+    "container": "Container",
+    "state": {
+      "template": "",
+      "service": "ProjectService",
+      "task": "Load",
+      "style": {
+        "order": 2
+      }
+    },
+    "connections": {
+      "data": [
+        "TemplateLayout81$activated"
+      ]
     }
   }
 };

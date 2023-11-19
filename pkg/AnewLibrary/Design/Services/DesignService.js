@@ -122,6 +122,7 @@ const createSublayer = async (layer, name) => {
   const targetName = name + 'Target'
   const targetContainer = 'DesignPanels#Container';
   const state = {style: {order: sublayers.length}};
+  delete controller.state['build$' + targetName + '$style'];
   const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
   const sublayerContainer = targetName + '#Container';
   const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
@@ -338,7 +339,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
     // update atom state
     Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
   } else {
-    
+
     Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
   }
   // update connection in graph data
