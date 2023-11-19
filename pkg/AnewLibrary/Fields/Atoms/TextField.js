@@ -11,6 +11,8 @@ update({value, form, options}, state, {service, isDirty}) {
       try {
         state.options = JSON.parse(options);
       } catch (e) {}
+    } else {
+      state.options = options;
     }
   }
   if (isDirty('value')) {

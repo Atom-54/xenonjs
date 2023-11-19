@@ -15,7 +15,7 @@ export const Pixabay = {
     inputs: {
       query: 'String',
       image: 'Image',
-      retry: 'Nonce',
+      trigger: 'Nonce',
       index: 'Number'
     },
     outputs: {

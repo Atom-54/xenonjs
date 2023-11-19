@@ -103,6 +103,7 @@ template: html`
   icon {
     font-size: 18px;
     margin-right: 2px !important;
+    cursor: pointer;
   }
   select {
     width: 16px;
