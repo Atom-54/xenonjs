@@ -94,55 +94,58 @@ export const reifyAtoms = async (controller, layer, graph) => {
 export const reifyAtom = async (controller, layer, {name, type, isContainer, container, state, connections}) => {
   // create atom
   const host = await addAtom(controller, layer, {name, type, container, isContainer});
-  // process connection information
-  if (connections) {
-    const inputConnections = controller.connections.inputs;
-    for (let [key, targets] of Object.entries(connections)) {
-      if (!Array.isArray(targets)) {
-        targets = [targets];
-      }
-      for (const connection of targets) {
-        const source = `${layer.id}$${connection}`;
-        const targetName = `${layer.id}$${host.name}`;
-        const target = `${targetName}$${key}`;
-        (inputConnections[source] ??= []).push(target);
-        if (source in controller.state) {
-          (state ??= {})[key] = controller.state[source];
+  if (host) {
+    // process connection information
+    if (connections) {
+      const inputConnections = controller.connections.inputs;
+      for (let [key, targets] of Object.entries(connections)) {
+        if (!Array.isArray(targets)) {
+          targets = [targets];
+        }
+        for (const connection of targets) {
+          const source = `${layer.id}$${connection}`;
+          const targetName = `${layer.id}$${host.name}`;
+          const target = `${targetName}$${key}`;
+          (inputConnections[source] ??= []).push(target);
+          if (source in controller.state) {
+            (state ??= {})[key] = controller.state[source];
+          }
         }
       }
     }
-  }
-  // process state information
-  if (state) {
-    const qualifiedState = {};
-    for (const [key, value] of Object.entries(state)) {
-      const qualifiedKey = `${layer.id}$${host.name}$${key}`;
-      // use existing state first, then default to atom state
-      qualifiedState[qualifiedKey] = (qualifiedKey in controller.state) ? controller.state[qualifiedKey] : value;
+    // process state information
+    if (state) {
+      const qualifiedState = {};
+      for (const [key, value] of Object.entries(state)) {
+        const qualifiedKey = `${layer.id}$${host.name}$${key}`;
+        // use existing state first, then default to atom state
+        qualifiedState[qualifiedKey] = (qualifiedKey in controller.state) ? controller.state[qualifiedKey] : value;
+      }
+      writeToState(controller, qualifiedState);
     }
-    writeToState(controller, qualifiedState);
-  }
-  // locate existing state for host
-  const hostState = {};
-  for (const [key, value] of Object.entries(controller.state)) {
-    const keyBits = key.split('$');
-    const propName = keyBits.pop();
-    const keyHost = keyBits.join('$');
-    if (keyHost === host.id) {
-      hostState[propName] = value;
+    // locate existing state for host
+    const hostState = {};
+    for (const [key, value] of Object.entries(controller.state)) {
+      const keyBits = key.split('$');
+      const propName = keyBits.pop();
+      const keyHost = keyBits.join('$');
+      if (keyHost === host.id) {
+        hostState[propName] = value;
+      }
     }
+    host.inputs = hostState;
   }
-  log.debug(host.id, hostState);
-  host.inputs = hostState;
   return host;
 };
 
 export const addAtom = async (controller, layer, {name, type, container, isContainer}) => {
   const atom = await createAtom(controller, layer, {name, type, container, isContainer});
-  atom.listen('service', request => controller.onservice?.(atom, request));
-  atom.listen('output', output => controller.onoutput?.(atom, output));
-  atom.listen('render', packet => controller.onrender?.(atom, packet));
-  controller.atoms[atom.id] = atom;
+  if (atom) {
+    atom.listen('service', request => controller.onservice?.(atom, request));
+    atom.listen('output', output => controller.onoutput?.(atom, output));
+    atom.listen('render', packet => controller.onrender?.(atom, packet));
+    controller.atoms[atom.id] = atom;
+  }
   return atom;
 };
 
@@ -155,15 +158,17 @@ export const removeAtom = async (controller, atom) => {
 export const createAtom = async (controller, layer, {name, type, container, isContainer}) => {
   const id = `${layer.id}$${name}`;
   const host = await controller.xenon.emitter(name, {type});
-  host.id = id;
-  host.type = type;
-  host.layer = layer;
-  host.meta = {
-    name,
-    type,
-    container: calculateContainer(host, container),
-    isContainer
-  };
+  if (host) {
+    host.id = id;
+    host.type = type;
+    host.layer = layer;
+    host.meta = {
+      name,
+      type,
+      container: calculateContainer(host, container),
+      isContainer
+    };
+  }
   return host;
 };
 

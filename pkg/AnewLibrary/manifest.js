@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const manifests = [
+  'CodeMirror',
   'Data',
   'Design',
   'Graph',
@@ -11,10 +12,11 @@ const manifests = [
   'HuggingFace',
   'Json',
   'Layout',
+  'LocalStorage',
   'Locale',
-  'OpenAI',
   'Media',
   'MediaPipe',
+  'OpenAI',
   'Pixabay',
   'Shader',
   'Spectrum',

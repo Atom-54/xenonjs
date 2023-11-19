@@ -9,7 +9,7 @@ const graph = {
     "id":"LocalWeather"
   },
   "Echo":{
-    "type":"$library/Echo",
+    "type":"$anewLibrary/Echo",
     "container":"Container",
     "state":{
       "style":{

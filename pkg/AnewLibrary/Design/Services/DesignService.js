@@ -115,25 +115,6 @@ export const reifyGraph = async (layer, name) => {
   return sublayer;
 };
 
-const designObserver = (controller, inputs) => {
-  if ('build$Catalog$Filter$query' in inputs) {
-    designUpdate(controller);
-  }
-  if ('build$DesignPanels$tabs' in inputs) {
-    const tabs = inputs.build$DesignPanels$tabs;
-    for (let i=0; i<sublayers.length; i++) {
-      const suffix = tabs[i];
-      if (!sublayers[i].endsWith(suffix)) {
-        const sublayerId = sublayers[i];
-        Controller.removeAtom(controller, controller.atoms[sublayerId]);
-        const targetId = sublayerId + 'Target';
-        Controller.removeAtom(controller, controller.atoms[targetId]);
-        sublayers.splice(i--, 1);
-      }
-    }
-  }
-};
-
 const createSublayer = async (layer, name) => {
   const {controller} = layer;
   controller.onwrite = designObserver.bind(this, controller);
@@ -194,6 +175,34 @@ const getAtomTypeCategories = filter => {
   return list;
 };
 
+const designObserver = (controller, inputs) => {
+  if ('build$CodeEditor$text' in inputs) {
+    const qualifiedId = controller.state.build$CodeEditor$id;
+    if (qualifiedId) {
+      const parts = qualifiedId.split('$');
+      const key = parts.pop();
+      const id = parts.join('$');
+      log.debug('udpating property text for', id, key);
+      updateProperty(controller, id, key,  inputs.build$CodeEditor$text);
+    }
+  }
+  if ('build$Catalog$Filter$query' in inputs) {
+    designUpdate(controller);
+  }
+  if ('build$DesignPanels$tabs' in inputs) {
+    const tabs = inputs.build$DesignPanels$tabs;
+    for (let i=0; i<sublayers.length; i++) {
+      const suffix = tabs[i];
+      if (!sublayers[i].endsWith(suffix)) {
+        const sublayerId = sublayers[i];
+        Controller.removeAtom(controller, controller.atoms[sublayerId]);
+        const targetId = sublayerId + 'Target';
+        Controller.removeAtom(controller, controller.atoms[targetId]);
+        sublayers.splice(i--, 1);
+      }
+    }
+  }
+};
 export const designUpdate = async controller => {
   const categories = getAtomTypeCategories(controller.state.build$Catalog$Filter$query);
   Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
@@ -208,6 +217,9 @@ export const designSelect = (controller, atomId) => {
   const layerSchema = Schema.schemaForLayer(controller, designLayerId);
   const candidates = layerSchema.outputs;
   const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
+  const editorValue = schema.template?.value || '';
+  Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
+  Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
   Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
@@ -332,8 +344,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
 const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   const ids = propId.split('.');
   const propName = ids.pop();
-  const subLayerId = ids.join('$');
-  const hostId = designHostId + '$' + subLayerId;
+  const hostId = [designHostId, ...ids].join('$');
   // update controller state and atoms
   Controller.writeValue(controller, hostId, propName, value);
   // update graph state
@@ -348,7 +359,7 @@ const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   }
 };
 
-const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'];
+const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'] ??= {};
 const orderCompareFactory = controller => (a, b) => Number(getAtomStateStyle(controller, a)?.order) - Number(getAtomStateStyle(controller, b)?.order);
 
 const validateAtomOrder = async controller => {

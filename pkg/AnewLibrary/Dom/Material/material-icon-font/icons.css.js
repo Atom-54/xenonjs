@@ -1,0 +1,26 @@
+/**
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+export const IconsCss = `
+:root {
+  --icon-font: 'Material Symbols Outlined'
+}
+icon {
+  font-family: var(--icon-font);
+  font-weight: normal;
+  font-style: normal;
+  /* font-size: 24px; */
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+`;

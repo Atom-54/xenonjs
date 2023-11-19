@@ -132,6 +132,7 @@ export const Media = {
   SpeechRecognizer: {
     categories: [category],
     description: 'Listens to audio input and returns the transcript',
+    displayName: 'Speech Recognizer',
     type: `anewLibrary/Media/Atoms/SpeechRecognizer`,
     ligature: 'hearing',
     inputs: {
@@ -146,10 +147,11 @@ export const Media = {
   SpeechSynthesizer: {
     categories: [category],
     description: 'Synthesizes audio output speech for the given transcript',
+    displayName: 'Speech Synthesizer',
     type: `anewLibrary/Media/Atoms/SpeechSynthesizer`,
-    ligature: 'voice_selection',
+    ligature: 'record_voice_over',
     inputs: {
-      voice: 'Voice:String',
+      voice: 'Voice|String',
       transcript: 'String',
       lang: 'String',
       mediaDeviceState: 'MediaDeviceState'
@@ -182,10 +184,10 @@ export const Media = {
     type: `$library/Media/Nodes/ImageCompositeNode`,
     ligature: 'tune',
     inputs: {
-      opA: 'CompositeOperation:String',
-      opB: 'CompositeOperation:String',
-      opC: 'CompositeOperation:String',
-      opD: 'CompositeOperation:String',
+      opA: 'CompositeOperation|String',
+      opB: 'CompositeOperation|String',
+      opC: 'CompositeOperation|String',
+      opD: 'CompositeOperation|String',
       imageA: 'Image',
       imageB: 'Image',
       imageC: 'Image',

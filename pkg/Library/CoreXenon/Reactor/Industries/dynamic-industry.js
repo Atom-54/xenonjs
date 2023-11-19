@@ -24,29 +24,30 @@ export const emit = async (Host, name, kind) => {
     factory = await load(kind);
     Basic.setFactory(kind, factory);
   }
-  if (factory) {
-    log('emitting', [kind]);
-    const host = new Host(name);
-    return Basic.enhosten(host, factory);
+  if (!factory) {
+    factory = () => ({});
   }
+  log('emitting', [kind]);
+  const host = new Host(name);
+  return Basic.enhosten(host, factory);
 };
 
 const load = async kind => {
   const paths = {
     Library: '../..'
   };
-  const path = 
-    paths[kind] 
-    ? `${paths.Library}/${paths[kind]}`
-    : Paths.resolve(kind)
-    ;
-  const {atom} = await import(`${path}.js`);
-  const atomLog = logf(`Atom: ${kind.split('/').pop()}`, 
+  try {
+    const path = 
+      paths[kind] 
+      ? `${paths.Library}/${paths[kind]}`
+      : Paths.resolve(kind)
+      ;
+    const {atom} = await import(`${path}.js`);
+    const atomLog = logf(`Atom: ${kind.split('/').pop()}`, 
     // hsl(277 // purply
     // hsl(97 // neon green
     // hsl(57 // bright yellow
     `hsl(${Math.random()<.5 ? 97 : 57}, ${Math.floor(Math.random()*20)+80}%, ${Math.floor(Math.random()*20)+40}%)`, '#111');
-  try {
     return Basic.miniReactor(atom, atomLog);
   } catch(x) {
     log.groupCollapsed('Reactor failed for', kind);

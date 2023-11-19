@@ -7,6 +7,7 @@ import {XenComposer} from '../Library/Dom/XenComposer/XenComposer.js';
 import {loadCss} from '../Library/Dom/dom.js';
 import '../Library/Dom/Common/common.js';
 import '../AnewLibrary/Fields/Dom/common.js';
+import '../AnewLibrary/dom.js';
 
 // Load library css
 loadCss(`${config.xenonPath}/Library/Common/theme.css`);
