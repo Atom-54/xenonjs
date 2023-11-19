@@ -9,7 +9,8 @@ const category = 'Shader';
 export const Shader = {
   FragmentShader: {
     categories: [category],
-    description: 'Applies the shader effect to an image',
+    displayName: 'Fragment Shader',
+    description: 'Applies a WebGL shader effect to an image',
     ligature: 'image',
     type: '$anewLibrary/Shader/Atoms/FragmentShader',
     inputs: ['shader', 'image', 'image2', 'image3', 'image4', 'audio', 'defaultShader', 'defaultShaders'],

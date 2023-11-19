@@ -19,23 +19,23 @@ export const ProjectService = {
   }
 };
 
-const defaultProject = 'FirstProject';
+export const initProject = async (projectName) => {
+  let project = loadProject(projectName);
+  project ??= Project.create({name: projectName});
+  selectProject(project);
+  log.debug(project);
+};
 
-export const initProject = async layer => {
-  let project = loadProject(defaultProject);
-  if (project) {
-    selectProject(project);
+export const reifyGraphs = async layer => {
+  const project = currentProject;
+  if (!project?.graphs.length) {
+    await newGraph(layer);
+    saveProject(project);
+  } else {
     for (let graph of project.graphs) {
       await Design.reifyGraph(layer, graph.meta.id);
     }
-  } else {
-    project = Project.create({name: defaultProject});
-    selectProject(project);
-    await newGraph(layer);
-    saveProject(project);
   }
-  selectProject(project);
-  log.debug(project);
 };
 
 export const loadProject = name => {

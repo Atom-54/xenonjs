@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+-->
+<html lang="us">
+
+<link rel="stylesheet" href="./xen.css">
+<style>
+  body {
+    box-sizing: border-box;
+    margin: 0;
+    --xen-pad: 12px;
+  }
+  [grid] > * {
+    flex: 1;
+    --grid-margin: 12px;
+    margin: var(--grid-margin) var(--grid-margin) var(--grid-margin) 0;
+    --cell-pad: 12px;
+    padding: var(--cell-pad);
+    border: 1px dotted lightblue;
+    background: darkorange;
+  }
+  [grid] > :first-child {
+    margin-left: var(--grid-margin);
+  }
+</style>
+
+<body fullbleed>
+  <div toolbar>
+    <span>LeftEdge</span>
+    <button>Button</button>
+    <input><span flex></span>
+    <span>RightEdge</span>
+  </div>
+  <div grid>
+    <span>I have to push the pram a lot. Shh! Knights, I bid you welcome to your new home. Let us ride to Camelot! You can't expect to wield supreme power just 'cause some watery tart threw a sword at you! You don't frighten us, English pig-dogs! Go and boil your bottoms, sons of a silly person! I blow my nose at you, so-called Ah-thoor Keeng, you and all your silly English K-n-n-n-n-n-n-n-niggits!</span>
+    <span>Item 2</span>
+    <span>Item 3</span>
+    <span>Item 4</span>
+    <span>Item 5</span>
+  </div>
+</body>
+
+</html>

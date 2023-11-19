@@ -14,23 +14,14 @@ export const Build = {
     },
     state: {
       style: {
-        fontSize: '1.5rem'
+        fontSize: '1.5rem',
+        padding: '2px'
       },
       actions: [
-        // {
-        //   "label": "Atom54"
-        // }, 
         {
-          "name": "Graphs Menu",
-          // "ligature": "dashboard_customize",
+          "name": "XenonJs",
           "image": "$xenon/Library/Assets/icons/favicon.png",
-          //"action": "toggle",
-          //"stateKey": "GraphListFlyOut$flyOut$show"
         },
-        // {
-        //   "name": "Graph Name",
-        //   "slot": "graphName",
-        // },
         {
           "name": "spanner",
           "flex": 1
@@ -55,6 +46,95 @@ export const Build = {
     type: '$anewLibrary/UX/Atoms/UXActionExecutor',
     connections: {
       event: 'HeaderToolbar$event'
+    }
+  },
+  GraphPanels: {
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    container: 'Layout$BodyLeft#Container',
+    state: {
+      tabs: ['Atoms', 'Graphs'],
+      style: {
+        overflow: 'auto',
+        order: 1
+      }
+    }
+  },
+  AtomPanel: {
+    type: '$anewLibrary/Layout/Atoms/SplitPanel',
+    container: 'GraphPanels#Container',
+    state: {
+      style: {
+        order: 1
+      }
+    }
+  },  
+  Catalog: {
+    type: '$anewLibrary/Graph/Atoms/Graph',
+    container: 'AtomPanel#Container',
+    state: {
+      graphId: 'catalogGraph',
+      style: {
+        order: 1
+      }
+    }
+  },
+  AtomTree: {
+    type: '$anewLibrary/Design/Atoms/AtomTree',
+    container: 'AtomPanel#Container2',
+    state: {
+      style: {
+        overflow: 'auto',
+        padding: '0.6rem',
+        order: 2
+      }
+    }
+  },
+  GraphPanel: {
+    type: '$anewLibrary/Graph/Atoms/Graph',
+    container: 'GraphPanels#Container',
+    state: {
+      graphId: 'EvergreenSignature',
+      style: {
+        order: 2
+      }
+    }
+  },
+  TabPanels: {
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    container: 'Layout$BodyMiddle#Container2',
+    state: {
+      tabs: ['Graph', 'Editor']
+    }
+  },
+  AtomGraph: {
+    type: '$anewLibrary/Design/Atoms/AtomGraph',
+    container: 'TabPanels#Container',
+    state: {
+      style: {
+        order: 1
+      }
+    }
+  },
+  CodeEditor: {
+    type: '$anewLibrary/CodeMirror/Atoms/CodeMirror',
+    container: 'TabPanels#Container',
+    state: {
+      style: {
+        order: 2
+      }
+    }
+  },
+  DesignPanels: {
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
+    container: 'Layout$BodyMiddle#Container',
+    state: {
+      closeable: true
+    }
+  },
+  DesignSelector: {
+    type: '$anewLibrary/Design/Atoms/DesignSelector',
+    connections: {
+      index: 'DesignPanels$selected'
     }
   },
   InspectorPanel: {
@@ -102,24 +182,6 @@ export const Build = {
       }
     }
   },
-  AtomTree: {
-    type: '$anewLibrary/Design/Atoms/AtomTree',
-    container: 'Layout$BodyLeftSplit#Container2',
-    state: {
-      style: {
-        overflow: 'auto',
-        padding: '0.6rem',
-        order: 2
-      }
-    }
-  },  
-  Catalog: {
-    type: '$anewLibrary/Graph/Atoms/Graph',
-    container: 'Layout$BodyLeftSplit#Container',
-    state: {
-      graphId: 'catalogGraph'
-    }
-  },
   State: {
     type: '$anewLibrary/Data/Atoms/DataExplorer',
     container: 'Layout$BodyRight#Container2',
@@ -129,30 +191,6 @@ export const Build = {
         overflow: 'auto'
       },
       expandLevel: 2
-    }
-  },
-  TabPanels: {
-    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    container: 'Layout$BodyMiddle#Container2',
-    state: {
-      tabs: ['Graph', 'Editor']
-    }
-  },
-  AtomGraph: {
-    type: '$anewLibrary/Design/Atoms/AtomGraph',
-    container: 'TabPanels#Container'
-  },
-  DesignPanels: {
-    type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
-    container: 'Layout$BodyMiddle#Container',
-    state: {
-      closeable: true
-    }
-  },
-  DesignSelector: {
-    type: '$anewLibrary/Design/Atoms/DesignSelector',
-    connections: {
-      index: 'DesignPanels$selected'
     }
   }
 };
@@ -179,13 +217,6 @@ export const BuildLayout = {
       layout: 'row',
       divider: 212,
       endflex: true
-    }
-  },
-  BodyLeftSplit: {
-    type: '$anewLibrary/Layout/Atoms/SplitPanel',
-    container: 'BodyLeft#Container',
-    state: {
-      layout: 'column'
     }
   },
   BodyMiddleRight: {
@@ -241,7 +272,7 @@ export const catalogGraph = {
     }
   },
   Catalog: {
-    type: '$anewLibrary/Layout/Atoms/Templated',
+    type: '$anewLibrary/Layout/Atoms/TemplateLayout',
     state: {
       style: {
         padding: '0 0.6rem',

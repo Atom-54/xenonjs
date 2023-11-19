@@ -20,7 +20,6 @@ update({id, schema, candidates}, state) {
     ;
 },
 stratifyTypes(prefixId, propName, type, candidates, connection) {
-  //const skipProperties = ['name'];
   connection = connection?.replace(/\$/g, '.');
   const target = `${prefixId}$${propName}`.replace(/\$/g, '.');
   const choices = map(candidates, (propId, info) => {
@@ -28,7 +27,6 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
       const name = propId.split('.').pop();
       const targetName = propName.split('.').pop();
       const matchLevel = this.getTypeMatch({name, type: info.type}, {name: targetName, type: type});
-      //return (!matchLevel || skipProperties.includes(name) || skipProperties.includes(targetName)) ? null : {
       return !matchLevel ? null : {
         key: propId,
         name: propId,
@@ -43,17 +41,22 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
   return choices;
 },
 getTypeMatch(propA, propB) {
+  let match = 0;
+  const intersect = (a, b) => {
+    var setB = new Set(b);
+    return [...new Set(a)].filter(x => setB.has(x));
+  };
   const objectTypes = ['Pojo', 'Json'];
   const basicTypes = ['String', 'Text', 'Number'];
   const booleanTypes = ['Nonce', 'Boolean'];
-  let match = 0;
-  if (propA.type === propB.type) {
+  const [A, B] = [propA.type, propB.type];
+  if (A === B || (intersect(A.split('|'), B.split('|')))) {
     match += 3;
-  } else if (basicTypes.includes(propA.type) && basicTypes.includes(propB.type)) {
+  } else if (basicTypes.includes(A) && basicTypes.includes(B)) {
     match += 2;
-  } else if (objectTypes.includes(propA.type) || objectTypes.includes(propB.type)) {
+  } else if (objectTypes.includes(A) || objectTypes.includes(B)) {
     match += 2;
-  } else if (booleanTypes.includes(propA.type) && booleanTypes.includes(propB.type)) {
+  } else if (booleanTypes.includes(A) && booleanTypes.includes(B)) {
     match += 2;
   }
   if (match) {

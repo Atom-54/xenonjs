@@ -44,6 +44,17 @@ export const Layout = {
       SplitLayoutValues: ['vertical', 'horizontal']
     }
   },
+  TemplateLayout: {
+    categories: [category],
+    description: 'A container that renders items using a template',
+    type: '$anewLibrary/Layout/Atoms/TemplateLayout',
+    inputs: {
+      items: "Array|Pojo",
+      template: "HTML|Text",
+      styleRules: "CSSRules|Text"
+    },
+    ligature: 'grid_guides'
+  },
   FlyOut: {
     categories: [category],
     description: 'A modal panel',

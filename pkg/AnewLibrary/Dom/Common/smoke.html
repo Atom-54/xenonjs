@@ -1,0 +1,43 @@
+<!doctype html>
+
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  span {
+    display: inline-block;
+    min-width: 10em;
+  }
+</style>
+
+<h1>Dom/Common sampler</h1>
+
+<h3>fancy-input</h3>
+<hr>
+
+<script type="module">
+  import './fancy-input.js';
+</script>
+
+<label>
+  <span>autofocus</span>
+  <fancy-input autofocus></fancy-input>
+</label><hr>
+
+<label>
+  <span>simple</span>
+  <fancy-input id="simple" value="Hello World"></fancy-input>
+  <br>
+  <button onclick="simple.focus = true">Focus Simple Input</button>
+</label><hr>
+
+<label>
+  <span>disabled</span>
+  <fancy-input disabled value="Hello World"></fancy-input>
+</label><hr>
+
+<label>
+  <span>jit (dbl-click to enable)</span>
+  <fancy-input jit value="Hello World"></fancy-input>
+</label><hr>
+

@@ -12,9 +12,12 @@ async update({schema}, state, {output}) {
       const $template = this.templateForType(info.type);
       if ($template) {
         let {value} = info;
-        const isObject = value && ((typeof value === 'object') || info.type.includes('Pojo') || info.type.includes('Json'));
+        const isObject = (value && (typeof value === 'object')) || info.type.includes('Pojo') || info.type.includes('Json');
         if (isObject) {
           value = JSON.stringify(value, null, '  ');
+          if (value === 'null') {
+            value = '';
+          }
         }
         const rows = value?.split?.('\n').length || 3;
         const model = {
@@ -36,7 +39,6 @@ async update({schema}, state, {output}) {
   ).filter(i => i);
 },
 templateForType(type) {
- //log.debug(type);
   switch (true) {
     case type.includes('Nonce'):
       return 'nonce_t';
