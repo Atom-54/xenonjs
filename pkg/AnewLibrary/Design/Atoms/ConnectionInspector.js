@@ -24,7 +24,8 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
   const choices = map(candidates, (propId, info) => {
     if (target !== propId) {
       const name = propId.split('.').pop();
-      const matchLevel = this.getTypeMatch({name, type: info.type}, {name: propName, type: type});
+      const targetName = propName.split('.').pop();
+      const matchLevel = this.getTypeMatch({name, type: info.type}, {name: targetName, type: type});
       return !matchLevel ? null : {
         key: propId,
         name: propId,

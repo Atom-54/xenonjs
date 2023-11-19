@@ -309,18 +309,22 @@ const dropAtom = async (controller, eventlet) => {
 
 const updateConnection = (controller, hostId, propName, connection) => {
   const source = `${designLayerId}$${connection}`;
-  const target = `${hostId}$${propName}`;
+  const propId = propName.replace(/\./g, '$');
+  const target = `${hostId}$${propId}`;
   // update connection in live controller
   const connections = controller.connections.inputs;
   connections[source] = [...new Set(connections[source]).add(target)];
   // update atom state
-  Controller.writeInputsToHost(controller, hostId, {[propName]: controller.state[source]});
+  const propBits = propId.split('$');
+  const propSimple = propBits.pop();
+  const propHostId = [hostId, ...propBits].join('$');
+  Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
   // update connection in graph data
   const hostSplit = hostId.split('$');
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
   const atomConnections = host.layer.graph[atomName].connections ??= {};
-  atomConnections[propName] = [connection];
+  atomConnections[propId] = [connection];
   designUpdateTarget(controller, host);
   Project.ProjectService.SaveProject();
 };
