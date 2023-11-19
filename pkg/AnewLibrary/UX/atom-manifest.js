@@ -86,7 +86,10 @@ export const UX = {
       interval: 'Number',
     },
     state: {
-      height: 30
+      height: 30,
+      style: {
+        flex: '0 0 auto'
+      }
     }
   },
   WebPage: {
