@@ -8,6 +8,7 @@ shouldUpdate({id, schema, candidates}) {
   return id && schema && candidates;
 },
 update({id, schema, candidates}, state) {
+  const skipProperties = ['name'];
   const prefixId = id.split('$').slice(2).join('$');
   state.inspectors = map(schema, 
     (label, {type, connection}) => ({
@@ -15,10 +16,11 @@ update({id, schema, candidates}, state) {
       key: label,
       choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
     }))
-    .filter(({label}) => !['name'].includes(label))
+    .filter(({label}) => !skipProperties.includes(label.split('.').pop()))
     ;
 },
 stratifyTypes(prefixId, propName, type, candidates, connection) {
+  //const skipProperties = ['name'];
   connection = connection?.replace(/\$/g, '.');
   const target = `${prefixId}$${propName}`.replace(/\$/g, '.');
   const choices = map(candidates, (propId, info) => {
@@ -26,6 +28,7 @@ stratifyTypes(prefixId, propName, type, candidates, connection) {
       const name = propId.split('.').pop();
       const targetName = propName.split('.').pop();
       const matchLevel = this.getTypeMatch({name, type: info.type}, {name: targetName, type: type});
+      //return (!matchLevel || skipProperties.includes(name) || skipProperties.includes(targetName)) ? null : {
       return !matchLevel ? null : {
         key: propId,
         name: propId,
