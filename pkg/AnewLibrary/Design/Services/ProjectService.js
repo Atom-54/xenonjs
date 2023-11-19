@@ -16,7 +16,8 @@ export const ProjectService = {
     return discoverLocalGraphs();
   },
   async Load(host, data) {
-    await Design.reifyGraph(Design.getDesignLayer(host.layer.controller), data);
+    const build = host.layer.controller.layers.build;
+    await Design.reifyGraph(build, data);
   },
   async LoadProject(host, data) {
   },
@@ -25,7 +26,7 @@ export const ProjectService = {
   }
 };
 export const initProject = async (projectName) => {
-  let project = loadProject(projectName);
+  const project = loadProject(projectName);
   //const project = Project.create({name: projectName});
   selectProject(project);
   log.debug(project);

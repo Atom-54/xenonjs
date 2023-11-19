@@ -53,7 +53,7 @@ render({styleRules}, {items, template, selected}) {
     }
   }
 },
-onItemClick({eventlet: {key, value}}, state) {
+onItemSelect({eventlet: {key, value}}, state) {
   log('onItemClick', key);
   state.selected = key;
   return {selected: key}
