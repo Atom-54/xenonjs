@@ -37,7 +37,8 @@ export const Data = {
     inputs: {
       service: 'String',
       task: 'String',
-      data: 'Pojo'
+      data: 'Pojo',
+      interval: 'Number'
     },
     outputs: {
       result: 'Pojo'

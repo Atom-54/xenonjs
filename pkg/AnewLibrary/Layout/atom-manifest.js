@@ -55,7 +55,8 @@ export const Layout = {
     },
     outputs: {
       selected: 'String',
-      activated: 'String'
+      activated: 'String',
+      delete: 'String'
     },
     ligature: 'grid_guides'
   },

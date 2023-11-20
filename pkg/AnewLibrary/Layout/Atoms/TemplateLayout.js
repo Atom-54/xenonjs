@@ -53,6 +53,10 @@ render({styleRules}, {items, template, selected}) {
     }
   }
 },
+onItemDelete({eventlet: {key, value}}, state) {
+  log('onItemDelete', key);
+  return {delete: key}
+},
 onItemSelect({eventlet: {key, value}}, state) {
   log('onItemClick', key);
   state.selected = key;
