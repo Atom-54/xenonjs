@@ -19,12 +19,21 @@ export const ProjectService = {
     const build = host.layer.controller.layers.build;
     await Design.reifyGraph(build, data);
   },
-  async LoadProject(host, data) {
+  async Delete(host, name) {
+    log.debug(host.id);
+    log.debug(name);
+    const graphId = currentProject.meta.name + '.' + name;
+    const graph = restoreLocalGraph(graphId);
+    if (graph) {
+      persistLocalGraph('Deleted', graph)
+      removeLocalGraph(graphId);
+    }
   },
   async SaveProject(host, data) {
     saveProject(currentProject);
   }
 };
+
 export const initProject = async (projectName) => {
   const project = loadProject(projectName);
   //const project = Project.create({name: projectName});
@@ -80,15 +89,9 @@ const persistLocalProject = project => {
 };
 
 const persistLocalGraphs = (key, graphs) => {
-  const qualifiedKey = `${globalThis.config.aeon}/${key}`;
-  log('persist', qualifiedKey);
+  log('persist', key);
   // for human readability, we split the graphs out into individual storage entries
-  const graphKeys = new Set();
-  graphs?.forEach(g => {
-    const graphKey = `${qualifiedKey}.${g.meta.id}`;
-    localStorage.setItem(graphKey, JSON.stringify(g))
-    graphKeys.add(graphKey);
-  });
+  graphs?.forEach(graph => persistLocalGraph(key, graph));
   // remove vestigial storage entries
   // for (let i=0; i<localStorage.length; i++) {
   //   const storeKey = localStorage.key(i);
@@ -96,6 +99,14 @@ const persistLocalGraphs = (key, graphs) => {
   //     localStorage.removeItem(storeKey);
   //   }
   // }
+};
+
+const persistLocalGraph = (key, graph) => {
+  localStorage.setItem( `${globalThis.config.aeon}/${key}.${graph.meta.id}`, JSON.stringify(graph));
+};
+
+const removeLocalGraph = key => {
+  localStorage.removeItem( `${globalThis.config.aeon}/${key}`);
 };
 
 const restoreLocalProject = name => {
@@ -120,6 +131,11 @@ const restoreLocalGraphs = key => {
     }
   }
   return graphs;
+};
+
+const restoreLocalGraph = key => {
+  const qualifiedKey = `${globalThis.config.aeon}/${key}`;
+  return getValue(qualifiedKey);
 };
 
 const getValue = key => {

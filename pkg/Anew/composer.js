@@ -8,6 +8,7 @@ import {loadCss} from '../Library/Dom/dom.js';
 import '../Library/Dom/Common/common.js';
 import '../AnewLibrary/Fields/Dom/common.js';
 import '../AnewLibrary/dom.js';
+import '../AnewLibrary/Pixijs/PixiJsDom.js';
 
 // Load library css
 loadCss(`${config.xenonPath}/Library/Common/theme.css`);

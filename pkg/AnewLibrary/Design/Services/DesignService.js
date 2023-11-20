@@ -187,7 +187,7 @@ const designObserver = (controller, inputs) => {
       const parts = qualifiedId.split('$');
       const key = parts.pop();
       const id = parts.join('$');
-      log.debug('udpating property text for', id, key);
+      log.debug('updating property text for', id, key);
       updateProperty(controller, id, key,  inputs.build$CodeEditor$text);
     }
   }
@@ -330,6 +330,10 @@ const updateConnection = (controller, hostId, propName, connection) => {
   const propBits = propId.split('$');
   const propSimple = propBits.pop();
   const propHostId = [hostId, ...propBits].join('$');
+  const hostSplit = hostId.split('$');
+  const atomName = hostSplit.pop();
+  const host = controller.atoms[hostId];
+  const {graph} = host.layer;
   // may be a clearing operation (connection == null)
   if (connection) {
     // update connection in live controller
@@ -339,14 +343,11 @@ const updateConnection = (controller, hostId, propName, connection) => {
     // update atom state
     Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
   } else {
-
-    Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
+    const value = graph[host.name]?.state?.value;
+    Controller.writeInputsToHost(controller, propHostId, {[propSimple]: value});
   }
   // update connection in graph data
-  const hostSplit = hostId.split('$');
-  const atomName = hostSplit.pop();
-  const host = controller.atoms[hostId];
-  const atomConnections = host.layer.graph[atomName].connections ??= {};
+  const atomConnections = graph[atomName].connections ??= {};
   if (connection) {
     atomConnections[propId] = [connection];
   } else {

@@ -7,7 +7,10 @@ export const atom = (log, resolve) => ({
 shouldUpdate({service, task, data}) {
   return Boolean(service && task && data);
 },
-async update({service: serviceName, task, data}, state, {service}) {
+async update({service: serviceName, task, data, interval}, state, {service, invalidate}) {
+  if (interval) {
+    timeout(invalidate, interval);
+  }
   return {result: await service(serviceName, task, data)};
 }
 });

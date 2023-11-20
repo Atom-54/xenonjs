@@ -19,6 +19,7 @@ async update({schema}, state, {output}) {
             value = '';
           }
         }
+        const isNumber = info.type.includes('Number');
         const rows = value?.split?.('\n').length || 3;
         const model = {
           ...info,
@@ -26,7 +27,8 @@ async update({schema}, state, {output}) {
           value,
           key: label,
           rows,
-          isObject
+          isObject,
+          isNumber
         };
         return {
           prop: {
@@ -67,6 +69,9 @@ async onPropChange({eventlet: {key, value, nopersist}, id}, state, {service}) {
     model.value = JSON.stringify(value, null, '  ');
   } else {
     model.value = value;
+  }
+  if (model.isNumber) {
+    value = Number(value) || 0;
   }
   service('DesignService', 'PropertyChange', {key, value, nopersist, id});
 },
