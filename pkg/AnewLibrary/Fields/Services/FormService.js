@@ -3,7 +3,7 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {debounce} from '../../../Library/CoreXenon/Reactor/Atomic/js/task.js';
+import {debounce} from '../..//CoreXenon/Reactor/Atomic/js/task.js';
 import * as Controller from '../../Framework/Controller.js';
 
 const log = logf('Services:Form', 'lightblue', 'black');

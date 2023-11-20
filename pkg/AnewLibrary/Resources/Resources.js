@@ -3,7 +3,7 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {makeId} from '../../Library/CoreXenon/Reactor/Atomic/js/utils/id.js';
+import {makeId} from '..//CoreXenon/Reactor/Atomic/js/utils/id.js';
 
 let resources = {};
 

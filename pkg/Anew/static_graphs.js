@@ -1,5 +1,8 @@
 
 export const Build = {
+  DevTools: {
+    type: '$anewLibrary/DevTools/Atoms/DevTools',
+  },
   Layout: {
     type: '$anewLibrary/Graph/Atoms/Graph',
     state: {
@@ -20,7 +23,7 @@ export const Build = {
       actions: [
         {
           "name": "XenonJs",
-          "image": "$xenon/Library/Assets/icons/favicon.png",
+          "image": "$xenon/AnewLibrary/Assets/icons/favicon.png",
         },
         {
           "name": "spanner",
@@ -142,7 +145,7 @@ export const Build = {
     container: 'Layout$BodyRight#Container'
   },
   InspectorEcho: {
-    type: '$library/Echo',
+    type: '$anewLibrary/Echo',
     container: 'InspectorPanel#Container',
     state: {
       style: {
@@ -244,7 +247,7 @@ export const BuildLayout = {
     }
   },
   Footer: {
-    type: '$library/Echo',
+    type: '$anewLibrary/Echo',
     container: 'Panel#Container',
     state: {
       html: 'atom54.com',
@@ -405,7 +408,7 @@ export const graphOne = {
       style: {
         flex: '0 0 auto'
       },
-      imageSrc: '$library/Assets/dogs.png',
+      imageSrc: '$anewLibrary/Assets/dogs.png',
       heading: 'Cards for Fun',
       subheading: 'just trying stuff'
     },
@@ -439,7 +442,7 @@ export const graphOne = {
       style: {
         flex: '0 0 auto'
       },
-      imageSrc: '$library/Assets/dogs.png',
+      imageSrc: '$anewLibrary/Assets/dogs.png',
       heading: 'Dogs!'
     }
   }

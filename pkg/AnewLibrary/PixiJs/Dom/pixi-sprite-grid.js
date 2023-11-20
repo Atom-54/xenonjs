@@ -11,7 +11,7 @@ import {irand} from '../../Xenon/Utils/rand.js';
 const log = logf('DOM:PixiSpriteGrid', 'beige', 'black');
 logf.flags['DOM:PixiSpriteGrid'] = true;
 
-const assets = Paths.resolve('$library/Assets/gems');
+const assets = Paths.resolve('$anewLibrary/Assets/gems');
 
 // animation velocity
 const v = 0.04;

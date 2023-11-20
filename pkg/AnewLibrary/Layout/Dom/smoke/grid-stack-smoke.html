@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en-US">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>GridStack</title>
+
+<script src="../../../../third-party/gridstack/gridstack-all.js"></script>
+<link href="../../../../third-party/gridstack/gridstack.min.css" rel="stylesheet"/>
+<style type="text/css">
+    body {
+    --icon-font: 'Material Symbols Outlined';
+    font-family: sans-serif;
+    margin: 0;
+    scroll-behavior: smooth;
+    background-color: hsla(292, 6%, 95%, 1);
+  }
+  .grid-stack {
+    background: #9695bf;
+    padding: 0px;
+  }
+  .grid-stack-item {
+    /* border: 3px solid #57315A; */
+    background-color: #57315A; 
+    padding: 0px;
+    margin: 0px;
+  }
+  .grid-stack-item-content {
+    border: 3px solid #8C2B59;
+     /* #333259; */
+    background-color: pink;
+    color: white;
+    padding: 0px;
+    margin: 0px;
+    inset: 0px !important;
+  }
+  /* .grid-stack-item[selected] {
+    border: 3px dotted fuchsia;
+  } */
+  [selected] .grid-stack-item-content {
+    border: 3px dotted fuchsia;
+  }
+</style>
+
+
+<div class="grid-stack"></div>
+
+<button onclick="addItem()">Add</button>
+<button onclick="removeAll()">Clear</button>
+<!-- 
+  API Doc:
+  https://github.com/gridstack/gridstack.js/tree/master/doc 
+-->
+<script type="text/javascript">
+var items = [
+  {id: 'id000', content: 'my first widget'}, // will default to location (0,0) and 1x1
+  {w: 2, id: 'id111', content: 'another longer widget!'}, // will be placed next at (1,0) and 2x1
+  {h: 2, id: 'id222', content: 'another taller widget!'} // will be placed next and 1x2
+];
+var grid = GridStack.init();
+items.forEach(item => addItem(item));
+
+function addItem(item) {
+  const id = grid.getGridItems().length;
+  const newItem = grid.addWidget(item ?? {id: `id${id}${id}${id}`, content: `Item #${id}`});
+  newItem.addEventListener('click', function(event, el) {
+    console.log(`Clicked: ${newItem.getAttribute('gs-id')}`);
+    grid.getGridItems().forEach(item => item.removeAttribute('selected'));
+    newItem.setAttribute('selected', true);
+  });
+}
+
+function removeAll() {
+  grid.removeAll();
+}
+</script>

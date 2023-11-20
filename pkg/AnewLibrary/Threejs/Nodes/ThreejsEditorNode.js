@@ -11,6 +11,6 @@ export const ThreejsEditorNode = {
     category: 'Effect'
   },
   threejsEditor: {
-    $kind: '$library/Threejs/ThreejsEditor'
+    $kind: '$anewLibrary/Threejs/ThreejsEditor'
   }
 };

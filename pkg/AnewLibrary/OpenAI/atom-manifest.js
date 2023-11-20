@@ -11,7 +11,7 @@ export const OpenAI = {
     displayName: 'OpenAI Image',
     description: 'Generates an image for the given prompt using OpenAI',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIImage',
-    // icon: '$library/Assets/nodes/openai-logomark.png',
+    // icon: '$anewLibrary/Assets/nodes/openai-logomark.png',
     ligature: 'image',
     inputs: {
       prompt: 'Text',
@@ -29,7 +29,7 @@ export const OpenAI = {
     displayName: 'OpenAI Text',
     description: 'Generates text for the given prompt using OpenAI',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIText',
-    // icon: '$library/Assets/nodes/openai-logomark.png',
+    // icon: '$anewLibrary/Assets/nodes/openai-logomark.png',
     ligature: 'edit_note',
     inputs: {
       context:'Text',
@@ -48,7 +48,7 @@ export const OpenAI = {
     displayName: 'OpenAI Chat',
     description: 'Prompts the OpenAI chat interface',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIChat',
-    // icon: '$library/Assets/nodes/openai-logomark.png',
+    // icon: '$anewLibrary/Assets/nodes/openai-logomark.png',
     ligature: 'sms',
     inputs: {
       messages: '[Message]'
@@ -62,7 +62,7 @@ export const OpenAI = {
     displayName: 'OpenAI Simple Chat',
     description: 'Prompts the OpenAI chat interface',
     type: '$anewLibrary/OpenAI/Atoms/OpenAISimpleChat',
-    // icon: '$library/Assets/nodes/openai-logomark.png',
+    // icon: '$anewLibrary/Assets/nodes/openai-logomark.png',
     ligature: 'chat',
     inputs: {
       system: 'String', 
@@ -84,7 +84,7 @@ export const OpenAI = {
     displayName: 'OpenAI Image Completion',
     description: 'Completes the given image according to the requested prompt',
     type: '$anewLibrary/OpenAI/Atoms/OpenAIImageCompletion',
-    // icon: '$library/Assets/nodes/openai-logomark.png',
+    // icon: '$anewLibrary/Assets/nodes/openai-logomark.png',
     ligature: 'image',
     inputs: {
       prompt: 'String',

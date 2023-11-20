@@ -5,11 +5,11 @@
 import * as Controller from '../../Framework/Controller.js';
 import * as Schema from '../../Design/Schema.js';
 import * as Project from '../../../AnewLibrary/Design/Services/ProjectService.js';
-import {makeCapName} from '../../../Library/CoreXenon/Reactor/Atomic/js/names.js';
+import {makeCapName} from '../..//CoreXenon/Reactor/Atomic/js/names.js';
 
 const log = logf('DesignService', '#512E5F', 'white');
 
-let designLayerId;
+let designLayerId, designSelectedHost;
 export const sublayers = [];
 
 const DesignTarget = {
@@ -215,6 +215,10 @@ const designObserver = (controller, inputs) => {
     }
     Project.ProjectService.SaveProject();
   }
+  if (designSelectedHost) {
+    const state = prefixedState(controller.state, designSelectedHost.id + '$');
+    Controller.writeInputsToHost(controller, 'build$State', {object: state}); 
+  }
 };
 export const designUpdate = async controller => {
   const categories = getAtomTypeCategories(controller.state.build$Catalog$Filter$query);
@@ -225,6 +229,7 @@ export const designUpdate = async controller => {
 
 export const designSelect = (controller, atomId) => {
   const host = controller.atoms[atomId];
+  designSelectedHost = host;
   const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
   Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
   const layerSchema = Schema.schemaForLayer(controller, designLayerId);
