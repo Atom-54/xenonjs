@@ -15,7 +15,7 @@ async update(inputs, state, {service}) {
     state.shader = shader;
     state.shaderId = await this.updateShaderId(state.shaderId, shader, service);
   }
-  if (state.shaderId && image?.canvas || audio) {
+  if (state.shaderId && (image?.canvas || audio)) {
     state.output = await this.updateOutputCanvas(inputs, state, {service});
     return {outputImage: state.output};
   }

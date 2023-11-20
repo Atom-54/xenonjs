@@ -1,0 +1,62 @@
+<!doctype html>
+<style>
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ececec;
+  }
+  input, textarea {
+    background: #ffffff;
+    font-family: monospace;
+  }
+  textarea {
+    padding: 8px 16px;
+    margin-top: 4px;
+  }
+  pre {
+    margin: 0;
+  }
+</style>
+
+<div><big>Atom Lab</big></div>
+<hr><br>
+<div>async update({<tag-field id="inputs"></tag-field>}, {<tag-field id="state"></tag-field>}, {<tag-field id="tools"></tag-field>}) {</div>
+<textarea id="code" rows="20" cols="100"></textarea>
+<div>  return {<tag-field id="outputs"></tag-field>};
+}</div>
+<hr>
+<button onclick="go()">Go</button>
+<hr>
+<pre id="result"></pre>
+
+<script type="module" src="../../Fields/Dom/tag-field.js"></script>
+<script type="module">
+  code.value = `const winner = Math.random() >= 0.5;
+if (!winner) {
+  invalidate();
+}
+const result = \`\${name} ... \${winner ? 'wins a FLAN!' : 'gets no flan this time.'}\`;
+`;
+  inputs.tags = ['name'];
+  outputs.tags = ['result'];
+  tools.tags = ['output','service','invalidate'];
+  window.go = () => {
+    const f = eval(`
+    ({name}, state, {invalidate}) => {
+      ${code.value}\n
+      return {result};
+    }`);
+    const state = {};
+    const input = {name: 'Alphonse'};
+    const tools = {
+      invalidate: () => {
+        setTimeout(()=>{
+          const output = f(input, state, tools);
+          result.innerText += '\n' + JSON.stringify(output, null, '  ');
+        });
+      }
+    };
+    const output = f(input, state, tools);
+    console.log(output);
+    result.innerText = JSON.stringify(output, null, '  ');
+  }
+</script>

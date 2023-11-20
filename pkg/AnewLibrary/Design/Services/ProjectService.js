@@ -2,7 +2,7 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-import {makeCapName} from '../../../Library/CoreXenon/Reactor/Atomic/js/names.js';
+import {makeCapName} from '../..//CoreXenon/Reactor/Atomic/js/names.js';
 import * as Design from '../../Design/Services/DesignService.js';
 import * as Project from '../../Framework/Project.js';
 export {Project};

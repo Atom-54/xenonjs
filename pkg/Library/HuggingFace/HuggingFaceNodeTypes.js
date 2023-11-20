@@ -9,7 +9,7 @@ export const HuggingFaceNodeTypes = {
   HuggingFaceImage: {
     category,
     description: 'Generates an image using one of the HuggingFace models',
-    type: '$library/HuggingFace/Nodes/HuggingFaceImageNode',
+    type: '$anewLibrary/HuggingFace/Nodes/HuggingFaceImageNode',
     types: {
       HuggingFace$textToImageModel: 'String',
       HuggingFace$textToImageModelValues: [
@@ -21,25 +21,25 @@ export const HuggingFaceNodeTypes = {
       HuggingFace$trigger: 'Nonce',
       HuggingFace$working: 'Boolean'
     },
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     ligature: 'image'
   },
   HuggingFaceText: {
     category,
     description: 'Generates text using one of the HuggingFace models',
-    type: '$library/HuggingFace/Nodes/HuggingFaceTextNode',
+    type: '$anewLibrary/HuggingFace/Nodes/HuggingFaceTextNode',
     types: {
       HuggingFace$prompt: 'MultilineString',
       HuggingFace$model: 'String',
       HuggingFace$working: 'Boolean'
     },
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     ligature: 'edit_note'
   },
   HuggingFaceOcr: {
     category,
     description: 'Recognizes written of printed text form an image using one of the HuggingFace trOCR models (https://huggingface.co/models?other=trocr)',
-    type: '$library/HuggingFace/Nodes/HuggingFaceOcrNode',
+    type: '$anewLibrary/HuggingFace/Nodes/HuggingFaceOcrNode',
     types: {
       // ocr$prompt: 'Image' or 'String',
       ocr$model: 'String',
@@ -54,13 +54,13 @@ export const HuggingFaceNodeTypes = {
       ocr$working: 'Boolean',
       ocr$text: 'String'
     },
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     ligature: 'read_more'
   },
   HuggingFaceImageToText: {
     category,
     description: 'Generates text using one of the HuggingFace models',
-    type: '$library/HuggingFace/Nodes/HuggingFaceImageToTextNode',
+    type: '$anewLibrary/HuggingFace/Nodes/HuggingFaceImageToTextNode',
     types: {
       // toText$prompt: 'Image' or 'String',
       toText$model: 'String',
@@ -74,13 +74,13 @@ export const HuggingFaceNodeTypes = {
       toText$working: 'Boolean',
       toText$text: 'String'
     },
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     ligature: 'image'
   },
   HuggingFaceImageToImage: {
     category,
     description: 'Generates images from images, using one of the HuggingFace models',
-    type: '$library/HuggingFace/Nodes/HuggingFaceImageToImageNode',
+    type: '$anewLibrary/HuggingFace/Nodes/HuggingFaceImageToImageNode',
     types: {
       HuggingFace$prompt: 'String',
       HuggingFace$image: 'Image',
@@ -93,7 +93,7 @@ export const HuggingFaceNodeTypes = {
       HuggingFace$working: 'Boolean',
       HuggingFace$outputImage: 'Image'
     },
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     ligature: 'image'
   }
 };

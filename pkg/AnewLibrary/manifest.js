@@ -7,6 +7,7 @@ const manifests = [
   'CodeMirror',
   'Data',
   'Design',
+  'DevTools',
   'Graph',
   'Fields',
   'HuggingFace',

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Xen} from '../../Dom/Xen/xen-async.js';
-import {Resources} from '../Resources.js';
+import {Resources} from '../../Resources/Resources.js';
 
 const sharedStreams = {};
 // const subscribers = {};

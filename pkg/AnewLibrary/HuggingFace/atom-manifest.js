@@ -12,7 +12,7 @@ export const HuggingFace = {
     description: 'Generates an image using one of the HuggingFace models',
     type: '$anewLibrary/HuggingFace/Atoms/HuggingFaceImage',
     ligature: 'image',
-    //icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    //icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     inputs: {
       prompt: 'MultilineString',
       textToImageModel: 'String',
@@ -37,7 +37,7 @@ export const HuggingFace = {
     description: 'Generates text using one of the HuggingFace models',
     type: '$anewLibrary/HuggingFace/Atoms/HuggingFaceText',
     ligature: 'edit_note',
-    //icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    //icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     inputs: {
       prompt: 'MultilineString',
       model: 'String',
@@ -54,7 +54,7 @@ export const HuggingFace = {
     description: 'Recognizes written of printed text form an image using one of the HuggingFace trOCR models (https://huggingface.co/models?other=trocr)',
     type: '$anewLibrary/HuggingFace/Atoms/HuggingFaceOcr',
     ligature: 'read_more',
-    // icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    // icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     inputs: {
       model: 'String',
       image: 'Image',
@@ -82,7 +82,7 @@ export const HuggingFace = {
     description: 'Generates text using one of the HuggingFace models',
     type: '$anewLibrary/HuggingFace/Atoms/HuggingFaceImageToText',
     ligature: 'image',
-    icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     inputs: {
       model: 'String',
       customModel: 'String',
@@ -109,7 +109,7 @@ export const HuggingFace = {
     description: 'Generates images from images, using one of the HuggingFace models',
     type: '$anewLibrary/HuggingFace/Atoms/HuggingFaceImageToImage',
     ligature: 'image',
-    // icon: '$library/Assets/nodes/huggingface_logo-noborder.svg',
+    // icon: '$anewLibrary/Assets/nodes/huggingface_logo-noborder.svg',
     inputs: {
       image: 'Image',
       active: 'Boolean',

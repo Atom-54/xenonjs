@@ -21,7 +21,7 @@ import '../Weightless/weightless-accordion.js';
 //
 import '../../Layout/Dom/split-panel.js';
 import '../../Layout/Dom/fly-out.js';
-import '../../Layout/Dom/design-grid.js';
+// import '../../Layout/Dom/design-grid.js';
 //
 import '../../Media/Dom/image-resource.js';
 import '../../Media/Dom/media-stream.js';
@@ -31,9 +31,8 @@ import '../../Media/Dom/speech-synthesizer.js';
 //
 import '../../DevTools/dom.js';
 //
-import '../../../AnewLibrary/Design/Dom/atom-graph.js';
-import '../../../AnewLibrary/Design/Dom/design-target.js';
-import '../../Graph/Dom/node-graph.js';
+import '../../Design/Dom/atom-graph.js';
+import '../../Design/Dom/design-target.js';
 //
 import '../../Locale/Dom/geo-location.js';
 import '../../Locale/Dom/good-map.js';

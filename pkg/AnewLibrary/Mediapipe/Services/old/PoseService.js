@@ -12,7 +12,7 @@ const pose = await globalThis.requirePose();
 
 //const dom = (tag, props, container) => (container ?? document.body).appendChild(Object.assign(document.createElement(tag), props));
 //const canvas = dom('canvas', {width: 640, height: 480, style: 'display: none;'});
-//dom('iframe', {src: '../Library/Mediapipe/smoke/pose-raw-smoke.html', style: 'display: inline-block; height: 240px;'});
+//dom('iframe', {src: '/Mediapipe/smoke/pose-raw-smoke.html', style: 'display: inline-block; height: 240px;'});
 
 export const PoseService = {
   async classify(app, atom, {image}) {

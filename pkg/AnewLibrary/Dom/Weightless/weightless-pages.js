@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {Xen} from '../Xen/xen-async.js';
-import {IconsCss} from '../../../Library/Dom/Material/material-icon-font/icons.css.js';
+import {IconsCss} from '../..//Dom/Material/material-icon-font/icons.css.js';
 
 const template = Xen.Template.html`
 <style>
