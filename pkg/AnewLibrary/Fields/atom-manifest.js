@@ -52,30 +52,6 @@ export const Fields= {
       }
     }
   },
-  DataNavigator: {
-    categories: [category],
-    displayName: 'Data Navigator',
-    description: 'UX for navigating a dataset',
-    type: '$anewLibrary/Fields/Atoms/DataNavigator',
-    ligature: 'source_notes',
-    inputs: {
-      index: 'Number',
-      count: 'Number',
-      records: '[Pojo]',
-      submittedRecord: 'Pojo'
-    },
-    outputs: {
-      index: 'Number',
-      record: 'Pojo',
-      records: '[Pojo]'
-    },
-    state: {
-      style: {
-        flex: '0 0 auto',
-        padding: '0.5em'
-      }
-    }
-  },
   DateField: {
     categories: [category],
     displayName: 'Date Field',
@@ -122,25 +98,6 @@ export const Fields= {
         flex: '0 0 auto',
         padding: '0.5em'
       }
-    }
-  },
-  Form: {
-    categories: [category],
-    displayName: 'Form',
-    description: 'Formulates a form',
-    type: '$anewLibrary/Fields/Atoms/Form',
-    ligature: 'ballot',
-    inputs: {
-      inputData: 'Pojo',
-      submitTrigger: 'Nonce',
-      form: 'FormId:String'
-    },
-    outputs: {
-      form: 'FormId',
-      schema: '[Pojo]',
-      columns: '[Pojo]',
-      row: 'Pojo',
-      preview: 'Pojo'
     }
   },
   ImageField: {

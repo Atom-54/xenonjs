@@ -7,10 +7,10 @@
 const category = 'Data';
 
 export const LocalStorage = {
-  ChromecastLauncher: {
-    categories: [category, 'Media'],
-    displayName: 'Chromecast Launcher',
-    description: 'Connection to Chromecast device',
+  LocalStorage: {
+    categories: [category],
+    displayName: 'Local Storage',
+    description: 'Store and retrieve data from browser cache',
     ligature: 'save',
     type: '$anewLibrary/LocalStorage/Atoms/LocalStorage',
     inputs: {

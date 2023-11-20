@@ -18,7 +18,6 @@ template: html`
   [objects] {
     position: absolute;
     inset: 0;
-    display: flex;
   }
 </style>
 <pixi-app flex active="{{active}}" on-appid="onAppId" on-canvas="onCanvas"></pixi-app>

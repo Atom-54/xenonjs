@@ -43,24 +43,14 @@ export class PixiObject extends Xen.Async {
         }
       }
     } 
-    if (state.app) {
+    if (state.app && state.app.renderer && state.app.renderer.height) {
       this.updateObject(inputs, state);
+    } else {
+      setTimeout(() => this.invalidate(), 100);
     }
   }
   updateObject({x, y, s, r, z}, {object, app}) {
-    if (object && app.state) {
-      const {width, height} = app.state;
-      if (width && height) {
-        let ar = width / height;
-        if (ar > 1) ar = 1 / ar;
-        const cx = width * ar / 2;
-        const cy = height * ar / 2;
-        const mx = (width - cx*2);
-        const my = (height - cy*2);
-        x = (x??0) + mx;
-        y = (y??0) + my;
-        log.debug(mx, my);
-      }
+    if (object && app.renderer) {
       if (x !== undefined) {
         object.x = x;
       }
@@ -76,7 +66,7 @@ export class PixiObject extends Xen.Async {
       if (z !== undefined) {
         object.zIndex = z;
       }
-      sortChildren();
+      app.stage?.sortChildren();
       //updateTransform();
     }
   }
@@ -98,30 +88,63 @@ export class PixiObject extends Xen.Async {
       }
     });
   }
-  updateAnimation({time}, {app, object, bounds}) {
+  recenterApp({x, y}, {object, app}) {
+    const {width: bwidth, height: bheight} = object.getLocalBounds();
+    const {width, height} = app.renderer;
+    if (width && height && bwidth && bheight) {
+      let ar = width / height;
+      let lbHeight, lbWidth;
+      if (ar > 1) {
+        ar = 1/ar;
+        lbHeight = ar * bwidth;
+        lbWidth = width;
+        object.scale = {x:1, y:ar};
+      } else {
+        lbWidth = ar * bheight;
+        lbHeight = height;
+        object.scale = {x:ar, y:1};
+      }
+      // if (ar > 1) ar = 1 / ar;
+      //const cx = width * ar / 2;
+      //const cy = height * ar / 2;
+      const mx =- (lbWidth - width) / 2;
+      const my = (lbHeight - height) / 2;
+      x = (x??0) + mx;
+      y = (y??0) + my;
+      log.debug([lbWidth, width], [lbHeight, height], [mx, my]);
+    }
+    // if (x !== undefined) {
+    //   object.x = x;
+    // }
+    // if (y !== undefined) {
+    //   object.y = y;
+    // }
+  }
+  updateAnimation({time, x, y}, {app, object, bounds}) {
     const s = this.s || 1;
     // TODO(sjmiles): measuring bad (caveat emptor)
     // nothing need be done if these haven't actually changed
-    const {offsetLeft: ox, offsetTop: oy, offsetWidth: ow, offsetHeight: oh} = this.originHost;
-    let {x: sx, y:sy } = app.stage.scale;
+    // const {offsetLeft: ox, offsetTop: oy, offsetWidth: ow, offsetHeight: oh} = this.originHost;
+    // let {x: sx, y:sy } = app.stage.scale;
     // object position
-    const [x, y] = [ox, oy];
-    object.position = {x, y};
+    // const [x, y] = [ox, oy];
+    // object.position = {x, y};
     // object size
-    const {width: tw, height: th} = bounds;
+    // const {width: tw, height: th} = bounds;
     // our 'automatic' size for designable DOM element
-    Object.assign(this.style, {
-      display: `inline-block`,
-      // left: `${x}px`,
-      // top: `${y}px`,
-      width: `${tw*s}px`,
-      height: `${th*s}px`
-    });
+    // Object.assign(this.style, {
+    //   display: `inline-block`,
+    //   // left: `${x}px`,
+    //   // top: `${y}px`,
+    //   width: `${tw*s}px`,
+    //   height: `${th*s}px`
+    // });
     //
     // sprite scale adjusted for aspect ratio and stage scale
     //const ss = Math.min(ow / tw / sx, oh / th / sy) * s;
     //object.scale = {x: ss, y: ss};
-    object.scale = {x:s, y:s};
+    //object.scale = {x:s, y:s};
+    this.recenterApp({x, y}, {object, app});
     //
     //console.log(this.getBoundingClientRect());
   }

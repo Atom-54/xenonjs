@@ -29,18 +29,19 @@ async update({inputData}, {id}, {isDirty, service}) {
   return result;
 },
 getColumns(data) {
-  return data.map(({name}) => ({name: name.split('$')[1]}));
+  return data.map(({name}) => ({name: name.split('$').pop()}));
 },
 getRow(data) {
   const row = {};
   data.forEach(({name, type, value})=> {
-    const key = name.split('$')[1];
+    const key = name.split('$').pop();
     row[key] = value;
   });
   return row;
 },
-// onFormFields(inputs, state, {service}) {
+onFormFields(inputs, state, {service}) {
+  log.debug('onFormFields');
 //   state.schema = service('FormService', 'getSchema', {form: id});
 //   return {schema};
-// }
+}
 });

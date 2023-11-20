@@ -70,7 +70,7 @@ export class PixiSpriteGrid extends PixiObject {
     }
   }
   updateSparkle({s}) {
-    s.scale = {x: 2.0, y: 2.0};
+    s.scale = {x: 1.0, y: 1.0};
     if (s.alpha) {
       s.alpha = Math.max(0, s.alpha - 0.1);
     } else if (Math.random() < 0.005) {

@@ -21,8 +21,8 @@ const manifests = [
   'Pixijs',
   'Shader',
   'Spectrum',
-  'Weightless',
-  'UX'
+  'UX',
+  'Weightless'
 ];
 
 // use configured library path

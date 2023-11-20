@@ -13,6 +13,7 @@ import {createComposer} from './composer.js';
 import '../AnewLibrary/Spectrum/Dom/spectrum-tab-panels.js';
 import * as services from './services.js';
 import * as Project from '../AnewLibrary/Design/Services/ProjectService.js';
+import * as Design from '../AnewLibrary/Design/Services/DesignService.js';
 import {start} from '../Library/Common/start.js';
 
 const log = logf('Index', 'magenta');
@@ -28,8 +29,14 @@ start(async xenon => {
   globalThis.main = main;
   // add layers
   const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
-  // load project graphs
-  await Project.reifyGraphs(build);
+  // load project graph(s)
+  const {sublayers} = Project.currentProject;
+  if (sublayers) {
+    for (const id of sublayers) {
+      await Design.reifyGraph(build, id);
+    }
+  }
+  //await Project.reifyGraphs(build);
 });
 
 const onrender = async (host, packet) => {

@@ -97,7 +97,7 @@ export const Media = {
     categories: [category],
     description: 'Provides UX to control device video and audio inputs and outputs',
     displayName: 'Device UX',
-    type: `anewLibrary/Media/Atoms/DeviceUx`,
+    type: '$anewLibrary/Media/Atoms/DeviceUx',
     ligature: 'camera_video',
     inputs: {
       mediaDeviceState: 'MediaDeviceState',
@@ -115,7 +115,7 @@ export const Media = {
     categories: [category],
     description: 'Device video and audio streams',
     displayName: 'Media Stream',
-    type: `anewLibrary/Media/Atoms/MediaStream`,
+    type: '$anewLibrary/Media/Atoms/MediaStream',
     ligature: 'camera_video',
     inputs: {
       mediaDeviceState: 'MediaDeviceState',
@@ -133,7 +133,7 @@ export const Media = {
     categories: [category],
     description: 'Listens to audio input and returns the transcript',
     displayName: 'Speech Recognizer',
-    type: `anewLibrary/Media/Atoms/SpeechRecognizer`,
+    type: '$anewLibrary/Media/Atoms/SpeechRecognizer',
     ligature: 'hearing',
     inputs: {
       mediaDeviceState: 'MediaDeviceState'
@@ -148,7 +148,7 @@ export const Media = {
     categories: [category],
     description: 'Synthesizes audio output speech for the given transcript',
     displayName: 'Speech Synthesizer',
-    type: `anewLibrary/Media/Atoms/SpeechSynthesizer`,
+    type: '$anewLibrary/Media/Atoms/SpeechSynthesizer',
     ligature: 'record_voice_over',
     inputs: {
       voice: 'Voice|String',
@@ -167,7 +167,7 @@ export const Media = {
     categories: [category],
     description: 'Captures a frame image from a video stream',
     displayName: 'Frame Capture',
-    type: `$library/Media/Nodes/FrameCaptureNode`,
+    type: '$anewLibrary/Media/Atoms/FrameCapture',
     ligature: 'screenshot_frame',
     inputs: {
       stream: 'Stream',
@@ -181,7 +181,7 @@ export const Media = {
     categories: [category],
     description: 'Composes multiple images together',
     displayName: 'Image Composite',
-    type: `$library/Media/Nodes/ImageCompositeNode`,
+    type: '$anewlibrary/Media/Atoms/ImageComposite',
     ligature: 'tune',
     inputs: {
       opA: 'CompositeOperation|String',
