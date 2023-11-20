@@ -7,6 +7,9 @@ export const atom = (log, resolve) => ({
   template: html`
 <style>
   :host {
+    display: block;
+    position: absolute;
+    inset: 0
     /* display: block;
     position: absolute !important; */
     /* pointer-events: none; */

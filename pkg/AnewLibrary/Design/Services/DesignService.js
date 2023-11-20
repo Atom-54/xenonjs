@@ -10,7 +10,7 @@ import {makeCapName} from '../../../Library/CoreXenon/Reactor/Atomic/js/names.js
 const log = logf('DesignService', '#512E5F', 'white');
 
 let designLayerId;
-const sublayers = [];
+export const sublayers = [];
 
 const DesignTarget = {
   type: '$anewLibrary/Design/Atoms/DesignTarget',
@@ -36,16 +36,16 @@ const categoryOrder = {
   UX: 20,
   Media: 25,
   AI: 30,
-  Design: 200
+  Designer: 200
 };
 
 export const DesignService = {
   async NewGraph(host) {
     return newGraph(host.layer);
   },
-  async CreateLayer(host) {
-    return createLayer(host.layer);
-  },
+  // async CreateLayer(host) {
+  //   return createLayer(host.layer);
+  // },
   async SetDesignLayerIndex(host, {index}) {
     return setDesignLayerIndex(host.layer.controller, index);
   },
@@ -74,7 +74,8 @@ export const DesignService = {
     const {controller} = host.layer;
     const schema = Schema.schemaForLayer(controller, layerId);
     const atoms = getAtomInfo(controller, layerId);
-    return {atoms, schema};
+    const connections = controller.connections;
+    return {atoms, schema, connections};
   },
   async DesignDragDrop(host, {eventlet}) {
     const types = DesignService.GetAtomTypes();
@@ -103,9 +104,9 @@ export const newGraph = async layer => {
     }
   };
   Project.Project.addGraph(Project.currentProject, graph);
-  Project.ProjectService.SaveProject();
   await reifyGraph(layer, name);
   Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
+  Project.ProjectService.SaveProject();
 };
 
 export const reifyGraph = async (layer, name) => {
@@ -176,7 +177,13 @@ const getAtomTypeCategories = filter => {
     category,
     types
   }));
-  list.sort((a, b) => (categoryOrder[a.category] || 100) - (categoryOrder[b.category] || 100));
+  list.sort((a, b) => {
+    const [coa, cob] = [categoryOrder[a.category], categoryOrder[b.category]];
+    if (coa || cob) {
+      return (coa || 100) - (cob || 100);
+    }
+    return a.category.localeCompare(b.category);
+  });
   return list;
 };
 
@@ -206,6 +213,7 @@ const designObserver = (controller, inputs) => {
         sublayers.splice(i--, 1);
       }
     }
+    Project.ProjectService.SaveProject();
   }
 };
 export const designUpdate = async controller => {
@@ -314,7 +322,16 @@ const dropAtom = async (controller, eventlet) => {
   }
   if (container) {
     const containable = controller.atoms[eventlet.value];
-    containable.meta.container = container;
+    // update graph
+    let [containerId, containerName] = container.split('#');
+    if (!containerName) {
+      containerName = containerId;
+      containerId = '';
+    }
+    const localContainer = [containerId.split('$').slice(2).join('$'), containerName].filter(i=>i).join('#');
+    containable.layer.graph[containable.name].container = localContainer;
+    log.debug('localContainer', localContainer);
+    // update live state
     getAtomStateStyle(controller, containable).order = order;
     validateAtomOrder(controller);
     await Controller.unrender(controller);
@@ -393,7 +410,6 @@ const validateAtomOrder = async controller => {
         atoms.sort((a, b) => (Number(style(a).order) - Number(style(b).order)));
         // reorder them for sanity
         atoms.forEach((a, i) => style(a).order = i);
-        //log.debug(atoms.map((a, i) => ([a.id, getStyle(a).order])));
       }
     }
   });

@@ -20,8 +20,8 @@ render({layerId}, {info, selected}) {
     .map(([id, value]) => ({name: id.split('.').slice(1).join('.'), ...value}))
     .filter(({name}) => !['name'].includes(name.split('.').pop()))
     ;
-  const nodes = info.atoms
-    .filter(atom => atom.id.split('$').length < 4)
+  const nodables = info.atoms.filter(atom => atom.id.split('$').length < 4);
+  const nodes = nodables
     .map((atom, i) => {
       const stride = 3;
       const idFilter = atomFilter(atom);
@@ -36,6 +36,16 @@ render({layerId}, {info, selected}) {
         inputs: getIOProps(info.schema.inputs, idFilter),
         outputs: getIOProps(info.schema.output, idFilter)
       };
+    })
+    ;
+  const {inputs} = info.connections;
+  const edges = nodables
+    .map((atom, i) => {
+      for (let [id, binding] of Object.entries(inputs)) {
+        if (id.startsWith(atom.id + '$')) {
+          //log.debug(id, binding)
+        }
+      }
     })
     ;
   return {

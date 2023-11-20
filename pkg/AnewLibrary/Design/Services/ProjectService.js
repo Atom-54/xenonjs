@@ -57,8 +57,8 @@ export const loadProject = name => {
   return restoreLocalProject(name);
 };
 
-export const saveProject = project => {
-  persistLocalProject(project);
+export const saveProject = (project) => {
+  persistLocalProject(project, Design.sublayers.map(n=>n.split('$').pop()));
 };
 
 export const selectProject = project => {
@@ -81,8 +81,9 @@ export const getGraph = id => {
   return Project.getGraph(currentProject, id);
 };
 
-const persistLocalProject = project => {
+const persistLocalProject = (project, sublayers) => {
   const qualifiedKey = `${globalThis.config.aeon}/projects/${project.meta.name}`;
+  localStorage.setItem(qualifiedKey + '/sublayers', JSON.stringify(sublayers));
   localStorage.setItem(qualifiedKey, JSON.stringify(project.meta));
   log.debug('persist', qualifiedKey);
   persistLocalGraphs(project.meta.name, project.graphs);
@@ -112,9 +113,11 @@ const removeLocalGraph = key => {
 const restoreLocalProject = name => {
   const qualifiedKey = `${globalThis.config.aeon}/projects/${name}`;
   const meta = getValue(qualifiedKey);
+  const sublayers = getValue(qualifiedKey + '/sublayers');
   if (meta) {
     const graphs = restoreLocalGraphs(name);
     return {
+      sublayers,
       meta,
       graphs
     };

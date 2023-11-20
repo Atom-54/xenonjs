@@ -9,6 +9,7 @@ template: html`
   :host {
     display: block;
     position: absolute;
+    inset: 0;
     /* display: none; */
   }
 </style>

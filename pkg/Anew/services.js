@@ -22,3 +22,4 @@ export {MediapipeClassifier} from '../AnewLibrary/Mediapipe/Services/MediapipeCl
 export {SelfieSegmentationService} from '../AnewLibrary/Mediapipe/Services/SelfieSegmentationService.js';
 export {VisionTasksService} from '../AnewLibrary/Mediapipe/Services/VisionTasksService.js';
 export {ShaderService} from '../AnewLibrary/Shader/Services/ShaderService.js';
+export {LocalStorageService} from '../AnewLibrary/LocalStorage/Services/LocalStorageService.js';
