@@ -157,7 +157,7 @@ template: html`
 
 <!-- devtools button -->
 <div tools-button on-click="onToggleDevToolsClick">
-  <img src=${resolve('$anewLibrary/DevTools/Assets/tools.gif')}>
+  <img src=${resolve('$library/DevTools/Assets/tools.gif')}>
 </div>
 
 <!-- devtools flyout -->

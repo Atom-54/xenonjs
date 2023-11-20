@@ -21,7 +21,7 @@ render({layerId}, {info, selected}) {
     .filter(({name}) => !['name'].includes(name.split('.').pop()))
     ;
   const nodables = info.atoms.filter(atom => atom.id.split('$').length < 4);
-  const nodes = nodables
+  const atoms = nodables
     .map((atom, i) => {
       const stride = 3;
       const idFilter = atomFilter(atom);
@@ -49,7 +49,7 @@ render({layerId}, {info, selected}) {
     })
     ;
   return {
-    nodes
+    atoms
   };
 },
 
@@ -57,13 +57,13 @@ render({layerId}, {info, selected}) {
 //   const graphEdges = this.renderGraphEdges(graph);
 //   return {
 //     name: graph?.meta?.id,
-//     graphNodes: this.renderGraphNodes(graph, selectedId, graphInfo, graphEdges),
+//     graphAtoms: this.renderGraphAtoms(graph, selectedId, graphInfo, graphEdges),
 //     graphEdges
 //   };
 // },
 
-// renderGraphNodes(graph, selectedId, graphInfo, graphEdges) {
-//   const renderNode = id => {
+// renderGraphAtoms(graph, selectedId, graphInfo, graphEdges) {
+//   const renderAtom = id => {
 //     return {
 //       key: id,
 //       name: id,
@@ -72,7 +72,7 @@ render({layerId}, {info, selected}) {
 //       ...this.renderIO(id, graphInfo, graphEdges)
 //     }
 //   };
-//   return keys(graph?.nodes).filter(i=>i!='Main').map(id => renderNode(id));
+//   return keys(graph?.atoms).filter(i=>i!='Main').map(id => renderAtom(id));
 // },
 
 // renderGraphEdges(graph) {
@@ -120,7 +120,7 @@ render({layerId}, {info, selected}) {
 // },
 
 // getAtomsByPrefix(id, graphInfo) {
-//   // $NameOfObject$[<nameOfNode$>nameOfAtom]
+//   // $NameOfObject$[<nameOfAtom$>nameOfAtom]
 //   // -----idl-----^ == slicing length to remove $id$
 //   const idl = id.length + 2;
 //   return entries(graphInfo?.system)
@@ -129,7 +129,7 @@ render({layerId}, {info, selected}) {
 //     ;
 // },
 
-onNodeSelect({eventlet: {key}}, state, {service}) {
+onAtomSelect({eventlet: {key}}, state, {service}) {
   service('DesignService', 'Select', {atomId: key});
 },
 
@@ -139,7 +139,7 @@ onKeyDown({eventlet}, state, {service}) {
   }
 },
 
-// onNodeMoved({eventlet: {key, value}}, {graph}, {service}) {
+// onAtomMoved({eventlet: {key, value}}, {graph}, {service}) {
 //   const graphRects = graph.meta.graphRects ??= {};
 //   keys(value).forEach(key => value[key] = Math.round(value[key]));
 //   if (JSON.stringify(graphRects[key]) !== JSON.stringify(value)) {
@@ -152,7 +152,7 @@ onKeyDown({eventlet}, state, {service}) {
 //   }
 // },
 
-// async onNodeTypeDropped({eventlet: {value}}, state, {service}) {
+// async onAtomTypeDropped({eventlet: {value}}, state, {service}) {
 //   await service('DesignService', 'AddObject', {key: value});
 // },
 
@@ -166,7 +166,7 @@ template: html`
     font-size: 12px;
     color: black;
     background-color: var(--theme-color-bg-1);
-    border: var(--NodeEditor-border);
+    border: var(--AtomEditor-border);
     --edge-border: 1px solid #555;
     --mdc-icon-size: 18px;
     --mdc-icon-button-size: 26px;
@@ -188,8 +188,8 @@ template: html`
   }
 </style>
 
-<drop-target flex scrolling row tabindex="-1" on-target-drop="onNodeTypeDropped" on-keydown="onKeyDown">
-  <atom-graph flex nodes="{{nodes}}" selected="{{selected}}" on-node-moved="onNodeMoved" on-node-selected="onNodeSelect"></atom-graph>
+<drop-target flex scrolling row tabindex="-1" on-target-drop="onAtomTypeDropped" on-keydown="onKeyDown">
+  <atom-graph flex atoms="{{atoms}}" selected="{{selected}}" on-atom-moved="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
 </drop-target>
 
 <!-- last, therefore on top -->

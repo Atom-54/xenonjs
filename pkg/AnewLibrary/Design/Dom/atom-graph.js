@@ -13,7 +13,7 @@ const viewport = 6000;
 
 export class AtomGraph extends DragDrop {
   static get observedAttributes() {
-    return ['nodes', 'schema'];
+    return ['atoms', 'schema'];
   }
   // get host() {
   //   return this;
@@ -36,13 +36,13 @@ export class AtomGraph extends DragDrop {
     this.addEventListener('pointermove', e => this.onMove(e));
     this.addEventListener('pointerup', e => this.onUp(e));
   }
-  update({nodes, selected}, state, {service}) {
+  update({atoms, selected}, state, {service}) {
     this.key = selected;
   }
-  render({nodes}, state) {
+  render({atoms}, state) {
     const graph = null;
     //   // inputs.graph is ad hoc, not really a graph
-    //   // iterate graph nodes to find selection and ensure each rect exists
+    //   // iterate graph atoms to find selection and ensure each rect exists
     //   let selected = this.validateGraphRects(inputs);
     //   //console.log(inputs.rects);
     //   // compute selectedKeys
@@ -51,22 +51,22 @@ export class AtomGraph extends DragDrop {
     const rects = null; // [{id: 'Foo', position: {l:10, t:10, w:50, h: 50}}];
     //this.renderRects(inputs);
     //   //console.log(rects);
-    //   // compute array of graphNodes to render
+    //   // compute array of graphAtoms to render
     //this.renderGraph(inputs);
     // NB: connectors are drawn after, via Canvas. See _didRender.
     state.didRender = {rects: rects, graph: graph};
     // complete render model
-    return {nodes, zoom: state.zoom};
+    return {atoms, zoom: state.zoom};
   // }
   // validateGraphRects(inputs) {
   //   inputs.rects = inputs.rects ?? this._rects;
   //   // ... not actually a 'Graph' graph, just a graph
   //   const {rects, graph} = inputs;
-  //   // iterate graph nodes
+  //   // iterate graph atoms
   //   let selected = null;
   //   if (graph) {
-  //     const nodes = [...graph.graphNodes].sort((a,b) => a.key?.localeCompare(b.key));
-  //     nodes.forEach((n, i) => {
+  //     const atoms = [...graph.graphAtoms].sort((a,b) => a.key?.localeCompare(b.key));
+  //     atoms.forEach((n, i) => {
   //       // - calculate missing rect
   //       if (!rects[n.key]) {
   //         const {l, t, w, h} = this.geom(rects, n.key, i, n);
@@ -75,7 +75,7 @@ export class AtomGraph extends DragDrop {
   //       // - calc a height based on # of connection points
   //       const autoHeight = (Math.max(n?.inputs.length, n?.outputs.length) || 2) * 20 + 36;
   //       rects[n.key].h = autoHeight; //Math.max(autoHeight, rects[n.key].h);
-  //       // - memoize selected node
+  //       // - memoize selected atom
   //       if (n.selected) {
   //         selected = n;
   //       }
@@ -84,7 +84,7 @@ export class AtomGraph extends DragDrop {
   //   return selected;
   // }
   // // get the geometry information for rectangle `key` (with index i)
-  // geom(rects, key, i, node) {
+  // geom(rects, key, i, atom) {
   //   if (rects?.[key]) {
   //     const {l, t, w, h} = rects[key];
   //     const [w2, h2] = [w/2, h/2];
@@ -106,11 +106,11 @@ export class AtomGraph extends DragDrop {
   //   return Object.entries(rects || []).map(([id, position]) => ({id, position}));
   // }
   // renderGraph({rects, graph}) {
-  //   // compute array of graphNodes to render
-  //   const renderNodes = (rects && graph?.graphNodes) ?? [];
-  //   return renderNodes.map(n => this.renderGraphNode(n));
+  //   // compute array of graphAtoms to render
+  //   const renderAtoms = (rects && graph?.graphAtoms) ?? [];
+  //   return renderAtoms.map(n => this.renderGraphAtom(n));
   // }
-  // renderGraphNode({key, selected, color, bgColor, inputs, outputs, textSelected, ...etc}) {
+  // renderGraphAtom({key, selected, color, bgColor, inputs, outputs, textSelected, ...etc}) {
   //   // color ??= 'var(--xcolor-three)';
   //   // bgColor ??= 'var(--xcolor-two)';
   //   // const selectedColor = 'var(--xcolor-brand)';
@@ -118,7 +118,7 @@ export class AtomGraph extends DragDrop {
   //     //...etc,
   //     key,
   //     selected,
-  //     nodeId: `${this.idPrefix}${key}`,
+  //     atomId: `${this.idPrefix}${key}`,
   //     // inputs: inputs?.map(({name, type}) => ({name, type, title: `${name}: ${type}`})),
   //     // outputs: outputs?.map(({name, type}) => ({name, type, title: `${name}: ${type}`})),
   //     // nameStyle: {
@@ -156,16 +156,16 @@ export class AtomGraph extends DragDrop {
         const spacing = 18;
         const margin = 11;
         //
-        const i0 = graph.graphNodes.findIndex(({key}) => key === edge.from.id);
-        const i0outs = graph.graphNodes[i0]?.outputs;
+        const i0 = graph.graphAtoms.findIndex(({key}) => key === edge.from.id);
+        const i0outs = graph.graphAtoms[i0]?.outputs;
         const ii0 = i0outs?.findIndex(({name}) => name === edge.from.storeName);
         const ii0c =i0outs?.length / 2 - 0.5;
         //console.log('out', i0, ii0, ii0c, edge.from.storeName);
         const i0offset = spacing * (ii0-ii0c) + margin;
         const g0 = this.geom(rects, edge.from.id, i0);
         //
-        const i1 = graph.graphNodes.findIndex(({key}) => key === edge.to.id);
-        const i1ins = graph.graphNodes[i1]?.inputs;
+        const i1 = graph.graphAtoms.findIndex(({key}) => key === edge.to.id);
+        const i1ins = graph.graphAtoms[i1]?.inputs;
         const ii1 = i1ins?.findIndex(({name}) => name === edge.to.storeName);
         const ii1c = i1ins?.length / 2 - 0.5;
         //console.log('in', i1, ii1, ii1c, edge.to.storeName);
@@ -243,20 +243,20 @@ export class AtomGraph extends DragDrop {
       ctx.closePath();
     }
   }
-  onNodeSelect(event) {
+  onAtomSelect(event) {
     event.stopPropagation();
     this.key = event.currentTarget.key;
     //this.state.selected = this.key;
     // if (this.key !== this.state.textSelectedKey) {
     //   delete this.state.textSelectedKey;
     // }
-    this.fire('node-selected');
+    this.fire('atom-selected');
   }
-  onNodeUnselect(event) {
+  onAtomUnselect(event) {
     this.key = null;
     //this.state.selected = this.key;
     //delete this.state.textSelectedKey;
-    this.fire('node-selected');
+    this.fire('atom-selected');
   }
   // called when user has changed a rectangle (high freq)
   // onUpdateBox({currentTarget: {value: rect}}) {
@@ -269,17 +269,17 @@ export class AtomGraph extends DragDrop {
   //   if (target?.key && rect) {
   //     this.key = target.key;
   //     this.value = rect;
-  //     this.fire('node-moved');
+  //     this.fire('atom-moved');
   //   }
   // }
-  // onNodeDblClicked(event) {
+  // onAtomDblClicked(event) {
   //   this.state.textSelectedKey = this.key;
   // }
-  // onRenameNode(event){
+  // onRenameAtom(event){
   //   const text = event.target.value.trim();
   //   if (text?.length > 0) {
   //     this.value = text;
-  //     this.fire('node-renamed');
+  //     this.fire('atom-renamed');
   //   }
   //   delete this.state.textSelectedKey;
   // }
@@ -322,6 +322,7 @@ const template = Xen.Template.html`
     user-select: none;
     overflow: hidden !important;
     /* position: relative; */
+    --main-hue: 274; 
   }
   [viewport] {
     position: relative;
@@ -333,7 +334,7 @@ const template = Xen.Template.html`
     background-position: -8px -8px, 0 0;
     background-size: 16px 16px;
   }
-  [node] {
+  [atom] {
     position: absolute;
     min-width: 100px;
     min-height: 60px;
@@ -345,7 +346,7 @@ const template = Xen.Template.html`
     cursor: pointer;
     /**/
     opacity: 0.9;
-    background-color: #8024f5;
+    background-color: hsl(var(--main-hue), 50, 1));
     color: white;
     /**/
     overflow: hidden;
@@ -353,15 +354,15 @@ const template = Xen.Template.html`
     text-overflow: ellipsis;
     outline-offset: 4px;
   }
-  /* [node]:hover {
+  /* [atom]:hover {
     outline: 3px solid green;
     z-index: 10000;
   } */
-  [node][selected] {
+  [atom][selected] {
     outline: 3px solid purple;
     z-index: 10000;
   }
-  /* [node]:not([selected]) {
+  /* [atom]:not([selected]) {
     box-shadow:  9px 9px 18px #cecece20, -9px -9px 18px #d2d2d220;
   } */
   [type] {
@@ -457,13 +458,13 @@ const template = Xen.Template.html`
 
 <div viewport on-wheel="onWheel">
   <canvas layer1 width="${viewport}" height="${viewport}"></canvas>
-  <div layer0 on-mousedown="onNodeUnselect">
-    <div repeat="node_t">{{nodes}}</div>
+  <div layer0 on-mousedown="onatomUnselect">
+    <div repeat="atom_t">{{atoms}}</div>
   </div>
 </div>
 
-<template node_t>
-  <div node column id="{{nodeId}}" key="{{id}}" selected$="{{selected}}" xen:style="{{style}}" on-mousedown="onNodeSelect">
+<template atom_t>
+  <div atom column id="{{atomId}}" key="{{id}}" selected$="{{selected}}" xen:style="{{style}}" on-mousedown="onAtomSelect">
     <div type>{{type}}</div>
     <div name>{{displayName}}</div>
     <div io row>
