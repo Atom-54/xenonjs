@@ -310,45 +310,8 @@ export const ProjectGraph = {
     "type": "$anewLibrary/Layout/Atoms/TemplateLayout",
     "container": "Container",
     "state": {
-      "template": html`
-<div style="zoom: 0.8;">
-  <div project toolbar>
-    <icon>topic</icon>
-    <span>{{name}}</span>
-  </div>	
-  <div graphs repeat="graph_t">{{graphs}}</div>
-  <template graph_t>
-    <div graph toolbar key="{{name}}" on-dblclick="onItemActivate">
-      <icon>account_tree</icon>
-      <span>{{name}}</span>
-      <span flex></span>
-      <icon trash key="{{name}}" on-click="onItemDelete">delete</icon>
-    </div>	
-  </template>  
-</div>
-      `,
-      "styleRules": `
-[project] {
-  color: purple;
-  background-color: white;
-  font-weight: bold;
-  font-size: 90%;
-}
-[graphs] {
-  padding: 0 12px;
-}
-[graph]:hover {
-  background-color: purple;
-  color: white;
-  cursor: pointer;
-}
-[graph] > [trash] {
-  visibility: hidden;
-}
-[graph]:hover > [trash] { 
-  visibility: visible;
-}
-      `,
+      "template": "<div>\n <div project toolbar>\n   <icon>topic</icon>\n   <span>{{name}}</span>\n </div>\t\n <div graphs repeat=\"graph_t\">{{graphs}}</div>\n <template graph_t>\n   <div graph toolbar key=\"{{name}}\" on-dblclick=\"onItemActivate\">\n     <icon>account_tree</icon>\n     <span>{{name}}</span>\n\t <span flex></span>\n     <icon trash key=\"{{name}}\" on-click=\"onItemDelete\">delete</icon>\n   </div>\t\n  </template>  \n</div>",
+      "styleRules": "[project] {\n  color: purple;\n  background-color: white;\n  font-weight: bold;\n  font-size: 90%;\n}\n[graphs] {\n padding: 0 12px;\n}\n[graph]:hover {\n background-color: purple;\n color: white;\n cursor: pointer;\n}\n[graph] > [trash] {\n  visibility: hidden;\n}\n[graph]:hover > [trash] { \n visibility: visible;\n}",
       "style": {
         "order": 0
       }
@@ -369,8 +332,10 @@ export const ProjectGraph = {
       "data": {},
       "style": {
         "order": 1
-      }
-    }
+      },
+      "interval": 0
+    },
+    "connections": {}
   },
   "ServiceAccess88": {
     "type": "$anewLibrary/Data/Atoms/ServiceAccess",
@@ -386,6 +351,23 @@ export const ProjectGraph = {
     "connections": {
       "data": [
         "TemplateLayout81$activated"
+      ]
+    }
+  },
+  "ServiceAccess99": {
+    "type": "$anewLibrary/Data/Atoms/ServiceAccess",
+    "container": "Container",
+    "state": {
+      "service": "ProjectService",
+      "task": "Delete",
+      "style": {
+        "order": 3
+      },
+      "template": ""
+    },
+    "connections": {
+      "data": [
+        "TemplateLayout81$delete"
       ]
     }
   }

@@ -239,7 +239,7 @@ export const designSelect = (controller, atomId) => {
   const layerSchema = Schema.schemaForLayer(controller, designLayerId);
   const candidates = layerSchema.outputs;
   const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
-  const editorValue = schema.template?.value || '';
+  const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
   Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
   Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
   Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
