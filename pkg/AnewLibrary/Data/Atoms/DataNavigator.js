@@ -16,15 +16,17 @@ export const atom = (log, resolve) => ({
     if (records && dirtyRecords) {
       log.debug('consume records');
       state.records = records;
-    }
-    if (submittedRecord && isDirty('submittedRecord')) {
+    } else if (submittedRecord && Object.keys(submittedRecord).length) {
       state.records ??= [];
-      state.records[state.index - 1] = submittedRecord;
-      log.debug('record submitted and output');
-      return {
-        record: submittedRecord,
-        records: state.records
-      };
+      const storedRecord = state.records[state.index - 1];
+      if (!deepEqual(submittedRecord, storedRecord)) {
+        state.records[state.index - 1] = {...submittedRecord};
+        log.debug('record submitted and output', submittedRecord);
+        return {
+          record: submittedRecord,
+          records: state.records
+        };
+      }
     }
     if (state.records && (dirtyRecords || indexDirty)) {
       log.debug('record output');

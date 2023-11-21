@@ -63,17 +63,19 @@ export const FormService = {
   GetValues(atom, {form: formId}) {
     const {controller} = atom.layer;
     const form = requireForm(atom, formId);
-    const values = form.fields.map(({name, id}) => {
+    const fieldValues = form.fields.map(({name, id}) => {
       const value = controller.state[id + '$value'];
       return {name, value};
     });
-    return values;
+    return fieldValues;
   },
   SetValues(atom, {form: formId, values}) {
     const {controller} = atom.layer;
     const form = requireForm(atom, formId);
     form.fields.forEach(({name, id}) => {
-      Controller.writeValue(controller, id, 'value', values[name]);
+      if (name in values) {
+        Controller.writeValue(controller, id, 'value', values[name]);
+      }
     });
   }
 };

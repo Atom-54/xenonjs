@@ -155,7 +155,7 @@ export class AtomGraph extends DragDrop {
     if (ctx) {
       // ctx.fillStyle = 'red';
       // ctx.fillRect(3000, 3000, 3000, 3000);
-      //ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       let i = 0;
       for (const edge of edges) {
         if (edge) {
@@ -163,20 +163,19 @@ export class AtomGraph extends DragDrop {
           const sourceId = source.slice(0, -1).join('-');
           const elt = this.shadowRoot.querySelector(`#${sourceId}`);
           //
-          const bound = edge.binding[0];
-          const target = bound.split('$');
-          const targetId = target.slice(0, -1).join('-');
-          const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
-          //
-          //log.debug(edge, elt);
           const [p0, p1] = [{x:3010, y:3010},{x:4000, y:4000}];
           p0.x = elt.offsetLeft + elt.offsetWidth + 3000;
           p0.y = elt.offsetTop + 3000 + elt.offsetHeight/2;
-          p1.x = elt2.offsetLeft + 3000;
-          p1.y = elt2.offsetTop + 3000 + elt2.offsetHeight/2;
-          const path = this.calcBezier(p0, p1);
-          const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
-          this.laserCurve(ctx, path, highlight);
+          for (const bound of edge.binding) {
+            const target = bound.split('$');
+            const targetId = target.slice(0, -1).join('-');
+            const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
+            p1.x = elt2.offsetLeft + 3000;
+            p1.y = elt2.offsetTop + 3000 + elt2.offsetHeight/2;
+            const path = this.calcBezier(p0, p1);
+            const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+            this.laserCurve(ctx, path, highlight);
+          }
         }
       }
     }
@@ -377,7 +376,7 @@ const template = Xen.Template.html`
     outline-offset: 4px;
     cursor: pointer;
     /**/
-    opacity: 0.9;
+    opacity: 0.95;
     background-color: hsl(var(--main-hue), 50%, 60%);
     color: white;
     /**/

@@ -20,8 +20,10 @@ render({layerId}, {info, selected}) {
     .map(([id, value]) => ({name: id.split('.').slice(1).join('.'), ...value}))
     .filter(({name}) => !['name'].includes(name.split('.').pop()))
     ;
-  const nodables = info.atoms.filter(atom => atom.id.split('$').length < 4);
-  const [w, h] = [240, 100];
+  const nodables = info.atoms
+    .filter(atom => atom.id.split('$').length < 4 && !atom.id.includes('$Panel'))
+    ;
+  const [w, h] = [260, 140];
   const atoms = nodables
     .map((atom, i) => {
       const stride = 3;
@@ -33,7 +35,7 @@ render({layerId}, {info, selected}) {
         selected: atom.id === selected,
         displayName: atom.id.slice(layerId.length + 1),
         style: {
-          left: 32 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + 'px', width:'220px'
+          left: 64 + w*(i%stride) + (Math.floor(i/stride)%2)*w/4 + 'px', top: 32 + h*Math.floor(i/stride) + ((i%stride)%2)*h/4 + 'px', width: '200px'
         },
         inputs: getIOProps(info.schema.inputs, idFilter),
         outputs: getIOProps(info.schema.output, idFilter)
@@ -41,17 +43,15 @@ render({layerId}, {info, selected}) {
     })
     ;
   const {inputs} = info.connections;
-  const edges = nodables
-    .map((atom, i) => {
-      for (let [id, binding] of Object.entries(inputs)) {
-        if (id.startsWith(atom.id + '$')) {
-          log.debug(id, binding)
-          return {id, binding};
-        }
+  const edges = [];
+  nodables.forEach((atom, i) => {
+    for (let [id, binding] of Object.entries(inputs)) {
+      if (id.startsWith(atom.id + '$')) {
+        log.debug(id, binding)
+        edges.push({id, binding});
       }
-    })
-    .filter(i=>i)
-    ;
+    }
+  });
   return {
     atoms,
     edges

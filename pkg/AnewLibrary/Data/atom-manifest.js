@@ -28,7 +28,7 @@ export const Data = {
     inputs: {
       inputData: 'Pojo',
       submitTrigger: 'Nonce',
-      form: 'FormId:String'
+      form: 'FormId|String'
     },
     outputs: {
       form: 'FormId',
