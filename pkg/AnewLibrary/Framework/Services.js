@@ -2,9 +2,11 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
+import {SystemService} from './Services/SystemService.js';
+
 const log = globalThis.logf('services', '#555555', 'orange');
 
-export const services = {};
+export const services = {SystemService};
 
 export const addServices = _services => Object.assign(services, _services);
 

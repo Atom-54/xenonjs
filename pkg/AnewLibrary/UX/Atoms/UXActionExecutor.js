@@ -15,14 +15,13 @@ shouldUpdate({event}) {
 },
 async update({event, readonly}, {defaultResponse}, {service}) {
   log(event);
-  if (readonly) {
-    return;
+  if (!readonly) {
+    if (!event.complete) {
+      event.complete = true;
+      await this.updateEvent(event, defaultResponse, service);
+    }
+    return {event};
   }
-  if (!event.complete) {
-    event.complete = true;
-    await this.updateEvent(event, defaultResponse, service);
-  }
-  return {event};
 },
 async updateEvent(event, defaultResponse, service) {
   const handled = await this.handleEvent(event, service);
@@ -51,15 +50,15 @@ async service_action({args}, service) {
   await service(args);
 },
 async toggle_action({stateKey}, service) {
-  let value = await service({kind: 'StateService', msg: 'GetStateValue', data: {stateKey}});
-  //log('toggle_action::StateService::GetStateValue', stateKey, value);
+  let value = await service({kind: 'SystemService', msg: 'GetStateValue', data: {stateKey}});
+  //log('toggle_action::SystemService::GetStateValue', stateKey, value);
   value = !value;
-  //log('toggle_action::StateService::SetStateValue', stateKey, value);
-  return service({kind: 'StateService', msg: 'SetStateValue', data: {stateKey, value}})
+  //log('toggle_action::SystemService::SetStateValue', stateKey, value);
+  return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
 },
 async set_action({stateKey, value}, service) {
-  //log('set_action::StateService::SetStateValue', stateKey, value);
-  return service({kind: 'StateService', msg: 'SetStateValue', data: {stateKey, value}})
+  //log('set_action::SystemService::SetStateValue', stateKey, value);
+  return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
 }
 });
     
