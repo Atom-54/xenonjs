@@ -92,7 +92,11 @@ export const DesignService = {
     updateConnection(host.layer.controller, id, key, value);
   },
   PropertyChange(host, {id, key, value, nopersist}) {
-    updateProperty(host.layer.controller, id, key, value, nopersist);
+    if (key === 'name') {
+      renameAtom(host, id, value)
+    } else {
+      updateProperty(host.layer.controller, id, key, value, nopersist);
+    }
   }
 };
 
@@ -418,4 +422,57 @@ const validateAtomOrder = async controller => {
       }
     }
   });
+};
+
+const renameAtom = async (host, id, value) => {
+  const {controller} = host.layer;
+  const atom = controller.atoms[id];
+  const newKey = [...atom.id.split('$').slice(0, -1), value].join('$');
+  //
+  const {layer} = atom;
+  log.debug('layer graph rekey from', id, 'to', newKey);
+  const layerAtomId = id.split('$').slice(2).join('$');
+  const layerNewKey = newKey.split('$').slice(2).join('$')
+  const graphAtom = layer.graph[layerAtomId];
+  delete layer.graph[layerAtomId];
+  layer.graph[layerNewKey] = graphAtom;
+  //
+  log.debug('atom controller rekey from', id, 'to', newKey);
+  delete controller.atoms[id];
+  atom.name = value;
+  atom.id = newKey;
+  controller.atoms[newKey] = atom;
+  //
+  log.debug('connection search');
+  // update sibling connections
+  Object.values(layer.graph).forEach(atom => {
+    if (atom.connections) {
+      Object.values(atom.connections).forEach(connects => {
+        for (let c$ of connects) {
+          if (c$.startsWith(id)) {
+            log.debug(c$);
+          }
+        }
+      });
+    }
+  });
+  // const {controller} = layer;
+  // update live state
+  log.debug('state search');
+  const k0 = Object.entries(controller.state).forEach(([sid, svalue]) => {
+    if (sid.startsWith(id)) {
+      const bits = sid.split('$');
+      bits[2] = value;
+      const newKey = bits.join('$');
+      delete controller.state[sid];
+      controller.state[newKey] = svalue;
+      sid.split('$').splice(2, 1)
+      log.debug('state controller rekey from', sid, 'to', newKey);
+    }
+  });
+  //
+  //update bindings
+  const k1 = Object.keys(controller.connections).filter(key => key.includes(atom.id));
+  log.debug(k1);
+
 };

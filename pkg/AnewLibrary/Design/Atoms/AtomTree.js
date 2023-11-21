@@ -154,8 +154,8 @@ template: html`
       <icon>settings</icon>
       <span>{{name}}</span>
     </drag-able>
-    <drop-target after targetkey="{{id}}" on-target-drop="onDropAfter"></drop-target>
     <div repeat="container_t">{{containers}}</div>
+    <drop-target after targetkey="{{id}}" on-target-drop="onDropAfter"></drop-target>
   </div>
 </template>
 `

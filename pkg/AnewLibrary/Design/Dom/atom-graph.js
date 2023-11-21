@@ -13,7 +13,7 @@ const viewport = 6000;
 
 export class AtomGraph extends DragDrop {
   static get observedAttributes() {
-    return ['atoms', 'schema'];
+    return ['atoms', 'edges', 'schema'];
   }
   // get host() {
   //   return this;
@@ -39,7 +39,7 @@ export class AtomGraph extends DragDrop {
   update({atoms, selected}, state, {service}) {
     this.key = selected;
   }
-  render({atoms}, state) {
+  render({atoms, edges}, state) {
     const graph = null;
     //   // inputs.graph is ad hoc, not really a graph
     //   // iterate graph atoms to find selection and ensure each rect exists
@@ -54,7 +54,7 @@ export class AtomGraph extends DragDrop {
     //   // compute array of graphAtoms to render
     //this.renderGraph(inputs);
     // NB: connectors are drawn after, via Canvas. See _didRender.
-    state.didRender = {rects: rects, graph: graph};
+    state.didRender = {rects, graph, edges, atoms};
     // complete render model
     return {atoms, zoom: state.zoom};
   // }
@@ -142,12 +142,46 @@ export class AtomGraph extends DragDrop {
   //     // disableRename: Boolean(true) //Boolean(!textSelected && (key !== this.state.textSelectedKey))
   //   };
   // }
-  _didRender({}, {x, y, didRender: {graph, rects}}) {
-    if (rects) {
-      this.renderCanvas({graph, rects}, {x, y});
+  _didRender({}, {x, y, didRender: {atoms, edges}}) {
+    if (edges) {
+      this.renderCanvas({atoms, edges}, {x, y});
+    }
+    // if (rects) {
+    //   this.renderCanvas({graph, rects}, {x, y});
+    // }
+  }
+  renderCanvas({atoms, edges}, {x, y}) {
+    const ctx = this.canvas?.getContext('2d');
+    if (ctx) {
+      // ctx.fillStyle = 'red';
+      // ctx.fillRect(3000, 3000, 3000, 3000);
+      //ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      let i = 0;
+      for (const edge of edges) {
+        if (edge) {
+          const source = edge.id.split('$');
+          const sourceId = source.slice(0, -1).join('-');
+          const elt = this.shadowRoot.querySelector(`#${sourceId}`);
+          //
+          const bound = edge.binding[0];
+          const target = bound.split('$');
+          const targetId = target.slice(0, -1).join('-');
+          const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
+          //
+          //log.debug(edge, elt);
+          const [p0, p1] = [{x:3010, y:3010},{x:4000, y:4000}];
+          p0.x = elt.offsetLeft + elt.offsetWidth + 3000;
+          p0.y = elt.offsetTop + 3000 + elt.offsetHeight/2;
+          p1.x = elt2.offsetLeft + 3000;
+          p1.y = elt2.offsetTop + 3000 + elt2.offsetHeight/2;
+          const path = this.calcBezier(p0, p1);
+          const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+          this.laserCurve(ctx, path, highlight);
+        }
+      }
     }
   }
-  renderCanvas({graph, rects}, {x, y}) {
+  renderCanvas0({graph, rects}, {x, y}) {
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -156,31 +190,31 @@ export class AtomGraph extends DragDrop {
         const spacing = 18;
         const margin = 11;
         //
-        const i0 = graph.graphAtoms.findIndex(({key}) => key === edge.from.id);
-        const i0outs = graph.graphAtoms[i0]?.outputs;
-        const ii0 = i0outs?.findIndex(({name}) => name === edge.from.storeName);
-        const ii0c =i0outs?.length / 2 - 0.5;
-        //console.log('out', i0, ii0, ii0c, edge.from.storeName);
-        const i0offset = spacing * (ii0-ii0c) + margin;
-        const g0 = this.geom(rects, edge.from.id, i0);
-        //
-        const i1 = graph.graphAtoms.findIndex(({key}) => key === edge.to.id);
-        const i1ins = graph.graphAtoms[i1]?.inputs;
-        const ii1 = i1ins?.findIndex(({name}) => name === edge.to.storeName);
-        const ii1c = i1ins?.length / 2 - 0.5;
-        //console.log('in', i1, ii1, ii1c, edge.to.storeName);
-        const i1offset = spacing * (ii1-ii1c) + margin;
-        const g1 = this.geom(rects, edge.to.id, i1);
-        //
-        if (i0outs?.length && i1ins?.length) {
-          const p0 = {x: g0.r - 1, y: g0.y + i0offset};
-          const p1 = {x: g1.l + 1, y: g1.y + i1offset};
-          const path = this.calcBezier(p0, p1);
-          //this.curve(ctx, path);
-          //const highlight = [[210, 210, 255], [255, 210, 210], [210, 255, 210]][i%3];
-          const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][i%3];
-          this.laserCurve(ctx, path, highlight);
-        }
+        // const i0 = graph.graphAtoms.findIndex(({key}) => key === edge.from.id);
+        // const i0outs = graph.graphAtoms[i0]?.outputs;
+        // const ii0 = i0outs?.findIndex(({name}) => name === edge.from.storeName);
+        // const ii0c =i0outs?.length / 2 - 0.5;
+        // //console.log('out', i0, ii0, ii0c, edge.from.storeName);
+        // const i0offset = spacing * (ii0-ii0c) + margin;
+        // const g0 = this.geom(rects, edge.from.id, i0);
+        // //
+        // const i1 = graph.graphAtoms.findIndex(({key}) => key === edge.to.id);
+        // const i1ins = graph.graphAtoms[i1]?.inputs;
+        // const ii1 = i1ins?.findIndex(({name}) => name === edge.to.storeName);
+        // const ii1c = i1ins?.length / 2 - 0.5;
+        // //console.log('in', i1, ii1, ii1c, edge.to.storeName);
+        // const i1offset = spacing * (ii1-ii1c) + margin;
+        // const g1 = this.geom(rects, edge.to.id, i1);
+        // //
+        // if (i0outs?.length && i1ins?.length) {
+        //   const p0 = {x: g0.r - 1, y: g0.y + i0offset};
+        //   const p1 = {x: g1.l + 1, y: g1.y + i1offset};
+        //   const path = this.calcBezier(p0, p1);
+        //   //this.curve(ctx, path);
+        //   //const highlight = [[210, 210, 255], [255, 210, 210], [210, 255, 210]][i%3];
+        //   const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][i%3];
+        //   this.laserCurve(ctx, path, highlight);
+        // }
       });
     }
   }
@@ -235,7 +269,7 @@ export class AtomGraph extends DragDrop {
     for (let i=3; i>=0; i--) {
       ctx.beginPath();
       // draw each line, the last line in each is always white
-      ctx.lineWidth = i*2.2 + 1;
+      ctx.lineWidth = i*1.5 + 1;
       ctx.strokeStyle = !i ? `rgba(${highlight[0]},${highlight[1]},${highlight[2]},1)` : `rgba(${highlight[0]},${highlight[1]},${highlight[2]},${0.25-0.06*i})`;
       ctx.moveTo(path[0], path[1]);
       ctx.bezierCurveTo(path[2], path[3], path[4], path[5], path[6], path[7]);
@@ -322,7 +356,7 @@ const template = Xen.Template.html`
     user-select: none;
     overflow: hidden !important;
     /* position: relative; */
-    --main-hue: 274; 
+    --main-hue: 290; 
   }
   [viewport] {
     position: relative;
@@ -340,19 +374,15 @@ const template = Xen.Template.html`
     min-height: 60px;
     /**/
     border-radius: 8px;
-    /* border: 2px solid var(--xcolor-two); */
-    /**/
-    /* font-weight: bold; */
+    outline-offset: 4px;
     cursor: pointer;
     /**/
     opacity: 0.9;
-    background-color: hsl(var(--main-hue), 50, 1));
+    background-color: hsl(var(--main-hue), 50%, 60%);
     color: white;
     /**/
     overflow: hidden;
-    /* text-align: center; */
     text-overflow: ellipsis;
-    outline-offset: 4px;
   }
   /* [atom]:hover {
     outline: 3px solid green;
@@ -368,7 +398,9 @@ const template = Xen.Template.html`
   [type] {
     font-size: 65%;
     background-color: #5b20b7; 
+    background-color: hsl(var(--main-hue), 80%, 25%);
     color: #9e7cd4; 
+    color: hsl(0, 0%, 80%);
     height: 1em; 
     padding: 0.3rem 0.1rem 0.3rem 0.5rem;
     font-weight: bold;
@@ -376,11 +408,13 @@ const template = Xen.Template.html`
   }
   [name] {
     background-color: #6720cc; 
+    background-color: hsl(var(--main-hue), 80%, 30%);
     height 3em; 
     padding: 0.3rem 0.1rem 0.3rem 0.5rem;
   }
   [io] {
     background-color: #8024f5;
+    background-color: hsl(var(--main-hue), 80%, 35%);
     padding: 0.3rem 0; 
   }
   /**/
@@ -468,9 +502,9 @@ const template = Xen.Template.html`
     <div type>{{type}}</div>
     <div name>{{displayName}}</div>
     <div io row>
-      <div flex column repeat="socket_i_t">{{inputs}}</div>
+      <!-- <div flex column repeat="socket_i_t">{{inputs}}</div>
       <div flex style="padding: 0 4px;"></div>
-      <div flex column repeat="socket_o_t">{{outputs}}</div>
+      <div flex column repeat="socket_o_t">{{outputs}}</div> -->
     </div>
   </div>
 </template>
