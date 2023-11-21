@@ -21,17 +21,19 @@ render({layerId}, {info, selected}) {
     .filter(({name}) => !['name'].includes(name.split('.').pop()))
     ;
   const nodables = info.atoms.filter(atom => atom.id.split('$').length < 4);
+  const [w, h] = [240, 100];
   const atoms = nodables
     .map((atom, i) => {
       const stride = 3;
       const idFilter = atomFilter(atom);
       return {
         id: atom.id, 
+        atomId: atom.id.replace(/\$/g, '-'),
         type: atom.type,
         selected: atom.id === selected,
         displayName: atom.id.slice(layerId.length + 1),
         style: {
-          left: 32 + 240*(i%stride) + 'px', top: 32 + 160*Math.floor(i/stride) + 'px', width:'220px'
+          left: 32 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + 'px', width:'220px'
         },
         inputs: getIOProps(info.schema.inputs, idFilter),
         outputs: getIOProps(info.schema.output, idFilter)
@@ -43,13 +45,16 @@ render({layerId}, {info, selected}) {
     .map((atom, i) => {
       for (let [id, binding] of Object.entries(inputs)) {
         if (id.startsWith(atom.id + '$')) {
-          //log.debug(id, binding)
+          log.debug(id, binding)
+          return {id, binding};
         }
       }
     })
+    .filter(i=>i)
     ;
   return {
-    atoms
+    atoms,
+    edges
   };
 },
 
@@ -189,7 +194,7 @@ template: html`
 </style>
 
 <drop-target flex scrolling row tabindex="-1" on-target-drop="onAtomTypeDropped" on-keydown="onKeyDown">
-  <atom-graph flex atoms="{{atoms}}" selected="{{selected}}" on-atom-moved="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
+  <atom-graph flex atoms="{{atoms}}" edges="{{edges}}" selected="{{selected}}" on-atom-moved="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
 </drop-target>
 
 <!-- last, therefore on top -->
