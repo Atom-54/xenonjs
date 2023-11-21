@@ -51,15 +51,15 @@ async service_action({args}, service) {
   await service(args);
 },
 async toggle_action({stateKey}, service) {
-  let value = await service({kind: 'StateService', msg: 'GetStateValue', data: {stateKey}});
+  let value = await service({kind: 'SystemService', msg: 'GetStateValue', data: {stateKey}});
   //log('toggle_action::StateService::GetStateValue', stateKey, value);
   value = !value;
   //log('toggle_action::StateService::SetStateValue', stateKey, value);
-  return service({kind: 'StateService', msg: 'SetStateValue', data: {stateKey, value}})
+  return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
 },
 async set_action({stateKey, value}, service) {
   //log('set_action::StateService::SetStateValue', stateKey, value);
-  return service({kind: 'StateService', msg: 'SetStateValue', data: {stateKey, value}})
+  return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
 }
 });
     
