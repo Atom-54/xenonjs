@@ -151,27 +151,35 @@ export class AtomGraph extends DragDrop {
     // }
   }
   renderCanvas({atoms, edges}, {x, y}) {
+    const [ox, oy] = [3000, 3000 + 53];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
       // ctx.fillStyle = 'red';
       // ctx.fillRect(3000, 3000, 3000, 3000);
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       let i = 0;
+      const srcEdgeCount = {}, trgEdgeCount = {};
       for (const edge of edges) {
-        if (edge) {
-          const source = edge.id.split('$');
-          const sourceId = source.slice(0, 3).join('-');
-          const elt = this.shadowRoot.querySelector(`#${sourceId}`);
-          //
-          const [p0, p1] = [{x:3010, y:3010},{x:4000, y:4000}];
-          p0.x = elt.offsetLeft + elt.offsetWidth + 3000;
-          p0.y = elt.offsetTop + 3000 + elt.offsetHeight/2;
-          for (const bound of edge.binding) {
-            const target = bound.split('$');
-            const targetId = target.slice(0, 3).join('-');
+        const source = edge.id.split('$');
+        const sourceId = source.slice(0, 3).join('-');
+        srcEdgeCount[sourceId] ??= -1;
+        const e = ++srcEdgeCount[sourceId];
+        const elt = this.shadowRoot.querySelector(`#${sourceId}`);
+        const p0 = {
+          x: ox + elt.offsetLeft + elt.offsetWidth,
+          y: oy + elt.offsetTop + e*14,
+        };
+        for (const bound of edge.binding) {
+          const target = bound.split('$');
+          const targetId = target.slice(0, 3).join('-');
+          if (targetId !== sourceId) {
+            trgEdgeCount[targetId] ??= -1;
+            const b = ++trgEdgeCount[targetId];
             const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
-            p1.x = elt2.offsetLeft + 3000;
-            p1.y = elt2.offsetTop + 3000 + elt2.offsetHeight/2;
+            const p1 = {
+              x: ox + elt2.offsetLeft,
+              y: oy + elt2.offsetTop + b*14
+            };
             const path = this.calcBezier(p0, p1);
             const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
             this.laserCurve(ctx, path, highlight);
@@ -456,10 +464,17 @@ const template = Xen.Template.html`
     display: inline-block;
     width: 6px;
     height: 6px;
-    background: transparent;
-    border: 1px solid white;
+    background: lightgreen;
+    /* border: 1px solid white; */
+    border: 4px solid rgba(0, 96, 0, 0.8);
     border-radius: 50%;
     margin: 0 .5rem;
+  }
+  [dot][left] {
+    margin-left: -6px;
+  }
+  [dot][right] {
+    margin-right: -6px;
   }
   [input], [output] {
     overflow: hidden; 
@@ -501,16 +516,16 @@ const template = Xen.Template.html`
     <div type>{{type}}</div>
     <div name>{{displayName}}</div>
     <div io row>
-      <!-- <div flex column repeat="socket_i_t">{{inputs}}</div>
+      <div flex column repeat="socket_i_t">{{inputs}}</div>
       <div flex style="padding: 0 4px;"></div>
-      <div flex column repeat="socket_o_t">{{outputs}}</div> -->
+      <div flex column repeat="socket_o_t">{{outputs}}</div>
     </div>
   </div>
 </template>
 
 <template socket_i_t>
   <div bar title="{{title}}">
-    <span dot></span>
+    <span dot left></span>
     <span input>{{name}}</span>
   </div>
 </template>
@@ -518,7 +533,7 @@ const template = Xen.Template.html`
 <template socket_o_t>
   <div bar title="{{title}}" style="justify-content: right;">
     <span output>{{name}}</span>
-    <span dot></span>
+    <span dot right></span>
   </div>
 </template>
 

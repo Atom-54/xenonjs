@@ -24,24 +24,7 @@ render({layerId}, {info, selected}) {
     .filter(atom => atom.id.split('$').length < 4 && !atom.id.includes('$Panel'))
     ;
   const [w, h] = [260, 140];
-  const atoms = nodables
-    .map((atom, i) => {
-      const stride = 3;
-      const idFilter = atomFilter(atom);
-      return {
-        id: atom.id, 
-        atomId: atom.id.replace(/\$/g, '-'),
-        type: atom.type,
-        selected: atom.id === selected,
-        displayName: atom.id.slice(layerId.length + 1),
-        style: {
-          left: 64 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + h/2*(Math.sin((i%stride)*Math.PI/2)) + 'px', width: '200px'
-        },
-        inputs: getIOProps(info.schema.inputs, idFilter),
-        outputs: getIOProps(info.schema.output, idFilter)
-      };
-    })
-    ;
+
   const {inputs} = info.connections;
   const edges = [];
   nodables.forEach((atom, i) => {
@@ -52,9 +35,61 @@ render({layerId}, {info, selected}) {
       }
     }
   });
+  const edgeClipper = id => id.split('$').slice(0, 3).join('-'); 
+  const cleanEdges = edges.filter(edge => {
+    const sourceId = edgeClipper(edge.id);
+    const cleanBinding = edge.binding.filter(bound => {
+      const targetId = edgeClipper(bound);
+      return sourceId !== targetId;
+    });
+    if (cleanBinding.length) {
+      edge.binding = cleanBinding;
+      return true;
+    }
+  });
+
+  const atoms = nodables
+    .map((atom, i) => {
+      const stride = 3;
+      //const idFilter = atomFilter(atom);
+      const inputs = cleanEdges
+        .flatMap(({id, binding}) => binding
+          .filter(id => id.startsWith(atom.id + '$'))
+          .map(id=>({name: id.split('$').slice(3).join('$')}))
+        )
+        ;
+      const outputs = cleanEdges
+        .filter(({id}) => id.startsWith(atom.id + '$'))
+        .map(({id})=>({name: id.split('$').slice(3).join('$')}))
+        ;
+      return {
+        id: atom.id, 
+        atomId: atom.id.replace(/\$/g, '-'),
+        type: atom.type,
+        selected: atom.id === selected,
+        displayName: atom.id.slice(layerId.length + 1),
+        style: {
+          left: 64 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + h/2*(Math.sin((i%stride)*Math.PI/2)) + 'px', width: '200px'
+        },
+        inputs,
+        outputs
+        //inputs: getIOProps(info.schema.inputs, idFilter),
+        // inputs: cleanEdges.map(({id, binding}) => ({
+        //   id,
+        //   binding: binding
+        //     .filter(({id}) => id.startsWith(atom.id + '$'))
+        //     .map(({id})=>({name: id.split('$').slice(3).join('$')}))
+        // })),
+        //outputs: getIOProps(info.schema.output, idFilter),
+        // outputs: cleanEdges
+        //   .filter(({id}) => id.startsWith(atom.id + '$'))
+        //   .map(({id})=>({name: id.split('$').slice(3).join('$')}))
+      };
+    })
+    ;
   return {
     atoms,
-    edges
+    edges: cleanEdges
   };
 },
 
