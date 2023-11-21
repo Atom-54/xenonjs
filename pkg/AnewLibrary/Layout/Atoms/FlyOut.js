@@ -4,14 +4,21 @@ export const atom = (log, resolve) => ({
    * Copyright 2023 Atom54 LLC
    * SPDX-License-Identifier: BSD-3-Clause
    */
-update({show, side}, state) {
-  state.show = Boolean(show);
+update({show, hide, side, design}, state, {isDirty}) {
+  if (isDirty('show')) {
+    state.show = Boolean(show);
+  } 
+  if (isDirty('hide')) {
+    state.show = !Boolean(hide);
+  }
+  state.design = Boolean(design);
 },
-render({side}, {show}) {
+render({side}, {show, design}) {
   return {
     side: side ?? 'top',
     showTools: show,
-    focus: true
+    focus: true,
+    design
   };
 },
 onKeyDown({eventlet}, state) {
@@ -21,11 +28,11 @@ onKeyDown({eventlet}, state) {
     }
   }
 },
-template: `
+template: html`
 <style>
   :host {
-    position: absolute;
-    flex: 0 !important;
+    /* position: absolute; */
+    /* flex: 0 !important; */
   }
   [scrim], [flyout] {
     z-index: 10000;
@@ -81,19 +88,29 @@ template: `
     transform: translateY(-120%);
   }
   [flyout][show] {
+    position: absolute;
     transform: translateX(0) translateY(0);
     height: auto;
     overflow: auto;
+  }
+  [flyout][design] {
+    transform: translateX(0) translateY(0);
+    height: auto;
+    overflow: auto;
+    position: static;
+  }
+  [scrim][design] {
+    display: none;
   }
   /* slot::slotted(*) {
     background-color: var(--xcolor-one);
   } */
 </style>
 
-<div scrim focus="{{focus}}" tabIndex="0" show$="{{showTools}}" on-click="onToggleFlyOver" on-keydown="onKeyDown" on-click="onToggleFlyOver"></div>
+<div scrim design$="{{design}}" focus="{{focus}}" tabIndex="0" show$="{{showTools}}" on-click="onToggleFlyOver" on-keydown="onKeyDown" on-click="onToggleFlyOver"></div>
 
-<div flyout side$="{{side}}" show$="{{showTools}}" on-click="onToggleFlyOver">
-  <slot name="flyout"></slot>
+<div flyout design$="{{design}}" side$="{{side}}" show$="{{showTools}}" on-click="onToggleFlyOver">
+  <slot name="Container"></slot>
 </div>
 `
 });

@@ -58,7 +58,7 @@ onItemDelete({eventlet: {key, value}}, state) {
   return {delete: key}
 },
 onItemSelect({eventlet: {key, value}}, state) {
-  log('onItemClick', key);
+  log('onItemSelect', key);
   state.selected = key;
   return {selected: key}
 },

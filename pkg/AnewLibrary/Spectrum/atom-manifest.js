@@ -12,7 +12,11 @@ export const Spectrum = {
     ligature: 'buttons_alt',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumButton',
     inputs: {
+      value: 'Pojo',
       label: 'String'
+    },
+    outputs: {
+      value: 'Nonce'
     },
     state: {
       label: 'Button',
