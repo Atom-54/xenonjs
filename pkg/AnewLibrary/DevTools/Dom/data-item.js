@@ -24,6 +24,7 @@ const template = Xen.Template.html`
   }
   left {
     display: inline-flex;
+    align-items: center;
     flex-shrink: 0;
     padding: 4px 0px 4px 0;
     color: var(-di-left-color);

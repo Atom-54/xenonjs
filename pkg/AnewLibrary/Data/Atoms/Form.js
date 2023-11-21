@@ -14,20 +14,20 @@ async update({inputData}, {id}, {isDirty, service}) {
   if (inputData && isDirty('inputData')) {
     await service('FormService', 'SetValues', {form: id, values: inputData});
     log('inputData:', inputData);
-    return;
+  } else {
+    const data = await service('FormService', 'GetValues', {form: id});
+    const columns = this.getColumns(data); 
+    const row = this.getRow(data);
+    const result = {
+      columns,
+      preview: row
+    };
+    if (submit) {
+      log('submitting', data);
+      result.row = row;
+    }
+    return result;
   }
-  const data = await service('FormService', 'GetValues', {form: id});
-  const columns = this.getColumns(data); 
-  const row = this.getRow(data);
-  const result = {
-    columns,
-    preview: row
-  };
-  if (submit) {
-    log('submitting', data);
-    result.row = row;
-  }
-  return result;
 },
 getColumns(data) {
   return data.map(({name}) => ({name: name.split('$').pop()}));
@@ -40,8 +40,9 @@ getRow(data) {
   });
   return row;
 },
-onFormFields(inputs, state, {service}) {
+async onFormFields({inputData}, {id}, {service, invalidate}) {
   log.debug('onFormFields');
+  await service('FormService', 'SetValues', {form: id, values: inputData});
 //   state.schema = service('FormService', 'getSchema', {form: id});
 //   return {schema};
 }

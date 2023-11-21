@@ -12,7 +12,7 @@ export const atom = (log, resolve) => ({
     if (indexDirty && Number(index) >=0) {
       state.index = this.validateIndex(index, this.validateCount(count, records));
     }
-    const dirtyRecords = isDirty('records');
+    const dirtyRecords = isDirty('records') && !deepEqual(state.records, records);
     if (records && dirtyRecords) {
       log.debug('consume records');
       state.records = records;
@@ -31,7 +31,7 @@ export const atom = (log, resolve) => ({
     if (state.records && (dirtyRecords || indexDirty)) {
       log.debug('record output');
       return {
-        ...this.returnRecord(state.index, records),
+        ...this.returnRecord(state.index, state.records),
         records: state.records
       };
     }
