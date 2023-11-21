@@ -160,7 +160,7 @@ export class AtomGraph extends DragDrop {
       for (const edge of edges) {
         if (edge) {
           const source = edge.id.split('$');
-          const sourceId = source.slice(0, -1).join('-');
+          const sourceId = source.slice(0, 3).join('-');
           const elt = this.shadowRoot.querySelector(`#${sourceId}`);
           //
           const [p0, p1] = [{x:3010, y:3010},{x:4000, y:4000}];
@@ -168,7 +168,7 @@ export class AtomGraph extends DragDrop {
           p0.y = elt.offsetTop + 3000 + elt.offsetHeight/2;
           for (const bound of edge.binding) {
             const target = bound.split('$');
-            const targetId = target.slice(0, -1).join('-');
+            const targetId = target.slice(0, 3).join('-');
             const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
             p1.x = elt2.offsetLeft + 3000;
             p1.y = elt2.offsetTop + 3000 + elt2.offsetHeight/2;

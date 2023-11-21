@@ -35,7 +35,7 @@ render({layerId}, {info, selected}) {
         selected: atom.id === selected,
         displayName: atom.id.slice(layerId.length + 1),
         style: {
-          left: 64 + w*(i%stride) + (Math.floor(i/stride)%2)*w/4 + 'px', top: 32 + h*Math.floor(i/stride) + ((i%stride)%2)*h/4 + 'px', width: '200px'
+          left: 64 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + h/2*(Math.sin((i%stride)*Math.PI/2)) + 'px', width: '200px'
         },
         inputs: getIOProps(info.schema.inputs, idFilter),
         outputs: getIOProps(info.schema.output, idFilter)
