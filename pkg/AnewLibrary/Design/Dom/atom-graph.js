@@ -355,7 +355,7 @@ const template = Xen.Template.html`
     user-select: none;
     overflow: hidden !important;
     /* position: relative; */
-    --main-hue: 290; 
+    --main-hue: 304; 
   }
   [viewport] {
     position: relative;
@@ -397,7 +397,7 @@ const template = Xen.Template.html`
   [type] {
     font-size: 65%;
     background-color: #5b20b7; 
-    background-color: hsl(var(--main-hue), 80%, 25%);
+    background-color: hsl(var(--main-hue), 80%, 20%);
     color: #9e7cd4; 
     color: hsl(0, 0%, 80%);
     height: 1em; 
@@ -407,7 +407,7 @@ const template = Xen.Template.html`
   }
   [name] {
     background-color: #6720cc; 
-    background-color: hsl(var(--main-hue), 80%, 30%);
+    background-color: hsl(var(--main-hue), 80%, 25%);
     height 3em; 
     padding: 0.3rem 0.1rem 0.3rem 0.5rem;
   }

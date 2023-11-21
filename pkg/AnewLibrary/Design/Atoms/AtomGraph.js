@@ -47,7 +47,7 @@ render({layerId}, {info, selected}) {
   nodables.forEach((atom, i) => {
     for (let [id, binding] of Object.entries(inputs)) {
       if (id.startsWith(atom.id + '$')) {
-        log.debug(id, binding)
+        //log.debug(id, binding)
         edges.push({id, binding});
       }
     }
