@@ -8,221 +8,155 @@ const graph = {
   "meta":{
     "id":"VideoBackgroundGen"
   },
-  "DeviceUx":{
-    "type":"$library/Media/Nodes/DeviceUxNode",
-    "container":"Panel$panel#Container"
-  },
-  "FrameCapture":{
-    "type":"$library/Media/Nodes/FrameCaptureNode",
-    "container":"Panel$panel#Container"
-  },
   "SelfieSegmentation":{
-    "type":"$library/Mediapipe/Nodes/SelfieSegmentationNode",
-    "container":"Main$panel#Container"
+    "type":"$anewLibrary/Mediapipe/Atoms/SelfieSegmentation",
+    "container":"Container",
+    "state":{
+      "style":{
+        "borderWidth":"0",
+        "borderStyle":"solid"
+      }
+    },
+    "connections":{
+      "image":[
+        "FrameCapture$frame"
+      ]
+    }
   },
   "ImageComposite":{
-    "type":"$library/Media/Nodes/ImageCompositeNode",
-    "container":"Main$panel#Container"
+    "type":"$anewLibrary/Media/Atoms/ImageComposite",
+    "container":"Container",
+    "state":{
+      "opA":"source-over",
+      "opB":"source-over",
+      "opC":"destination-out",
+      "opD":"destination-atop"
+    },
+    "connections":{
+      "imageA":[
+        "FrameCapture$frame"
+      ],
+      "imageB":[
+        "OpenAIImage$image"
+      ],
+      "imageC":[
+        "SelfieSegmentation$mask"
+      ],
+      "imageD":[
+        "FrameCapture$frame"
+      ]
+    }
   },
   "Image2":{
-    "type":"$library/Media/Nodes/ImageNode",
-    "container":"Panel$panel#Container"
-  },
-  "OpenAIImage":{
-    "type":"$library/OpenAI/Nodes/OpenAIImageNode",
-    "container":"Main$panel#Container"
-  },
-  "TextField":{
-    "type":"$library/Fields/Nodes/TextFieldNode",
-    "container":"Panel2$panel#Container"
-  },
-  "Panel":{
-    "type":"$library/Layout/Nodes/PanelNode",
-    "container":"Main$panel#Container"
-  },
-  "ProgressBar":{
-    "type":"$library/UX/Nodes/ProgressBarNode",
-    "container":"Panel$panel#Container"
-  },
-  "Panel2":{
-    "type":"$library/Layout/Nodes/PanelNode",
-    "container":"Panel$panel#Container"
-  },
-  "Button":{
-    "type":"$library/Fields/Nodes/ButtonNode",
-    "container":"Panel2$panel#Container"
-  },
-  "state":{
-    "FrameCapture$FrameCapture$fps":30,
-    "Panel$panel$layout":"column",
-    "ProgressBar$bar$height":3,
-    "Panel2$panel$layout":"row",
-    "Button$button$action":"toggle",
-    "Image2$image$image":{
-      "alt":"no image"
-    },
-    "Main$designer$layout":{
-      "DeviceUx":{
-        "l":32,
-        "t":32,
-        "w":461,
-        "h":43,
+    "type":"$anewLibrary/Media/Atoms/Image",
+    "container":"Panel#Container",
+    "state":{
+      "image":{
+        "alt":"no image"
+      },
+      "selfie":true,
+      "style":{
         "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"1",
-        "width":"auto",
-        "height":"auto",
-        "color":"var(--xcolor-four)"
-      },
-      "FrameCapture":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid",
-        "color":"var(--xcolor-one)"
-      },
-      "FragmentShader":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid"
-      },
-      "SelfieSegmentation":{
-        "l":176,
-        "t":80,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid"
-      },
-      "ImageComposite":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid"
-      },
-      "Image2":{
-        "l":320,
-        "t":80,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid",
         "flex":"1",
         "order":"4",
-        "borderRadius":"",
-        "width":"auto",
-        "height":"auto",
-        "padding":""
-      },
-      "Panel2":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"2",
-        "width":"auto",
-        "height":"auto"
-      },
-      "Image3":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"0",
-        "borderStyle":"solid"
-      },
-      "OpenAIImage":{
-        "l":0,
-        "t":0,
-        "w":1152,
-        "h":16,
+        "borderRadius":""
+      }
+    },
+    "connections":{
+      "image":[
+        "ImageComposite$output"
+      ]
+    }
+  },
+  "OpenAIImage":{
+    "type":"$anewLibrary/OpenAI/Atoms/OpenAIImage",
+    "container":"Container",
+    "state":{
+      "enabled":true,
+      "style":{
         "borderWidth":"0",
         "borderStyle":"solid",
         "order":"9"
-      },
-      "TextField":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
+      }
+    },
+    "connections":{
+      "prompt":[
+        "TextField$value"
+      ],
+      "restart":[
+        "Button$value"
+      ]
+    }
+  },
+  "TextField":{
+    "type":"$anewLibrary/Fields/Atoms/TextField",
+    "container":"Panel2#Container",
+    "state":{
+      "value":"",
+      "label":"Choose background:",
+      "style":{
         "borderWidth":"0",
-        "borderStyle":"solid",
-        "height":"auto",
         "flex":"1",
         "order":"1",
-        "color":"var(--xcolor-four)",
-        "width":"auto"
-      },
-      "Panel":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
+        "color":"var(--xcolor-four)"
+      }
+    }
+  },
+  "Panel":{
+    "type":"$anewLibrary/Layout/Atoms/Panel",
+    "container":"Container",
+    "state":{
+      "layout":"column",
+      "center":false,
+      "style":{
         "borderWidth":"var(--border-size-4)",
-        "borderStyle":"solid",
         "flex":"1",
         "order":"1",
         "padding":"var(--size-3)",
         "backgroundColor":"var(--xcolor-two)",
         "color":"var(--xcolor-two)",
-        "borderRadius":"var(--radius-5)",
-        "width":"auto",
-        "height":"auto"
-      },
-      "ProgressBar":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"",
-        "borderStyle":"solid",
+        "borderRadius":"var(--radius-5)"
+      }
+    }
+  },
+  "ProgressBar":{
+    "type":"$anewLibrary/UX/Atoms/ProgressBar",
+    "container":"Panel#Container",
+    "state":{
+      "height":3,
+      "interval":100,
+      "style":{
         "order":"3",
-        "height":"auto",
-        "padding":"var(--size-2)",
-        "width":"auto"
-      },
-      "Button":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "width":"auto",
-        "height":"auto",
-        "order":"2"
+        "padding":"var(--size-2)"
       }
     },
-    "ImageComposite$ImageComposite$opA":"source-over",
-    "ImageComposite$ImageComposite$opB":"source-over",
-    "ImageComposite$ImageComposite$opC":"destination-out",
-    "Image2$image$selfie":true,
-    "Panel$panel$center":false,
-    "TextField$field$value":"",
-    "TextField$field$label":"choose background:",
-    "ProgressBar$bar$interval":100,
-    "ImageComposite$ImageComposite$opD":"destination-atop",
-    "OpenAIImage$OpenAIImage$enabled":true,
-    "Button$button$label":"Generate",
-    "Button$button$inverted":false
+    "connections":{
+      "inProgress":[
+        "OpenAIImage$working"
+      ]
+    }
   },
-  "connections":{
-    "FrameCapture$FrameCapture$stream":"DeviceUx$defaultStream$stream",
-    "SelfieSegmentation$SelfieSegmentation$image":"FrameCapture$FrameCapture$frame",
-    "Image2$image$image":"ImageComposite$ImageComposite$output",
-    "ImageComposite$ImageComposite$imageB":"OpenAIImage$OpenAIImage$image",
-    "ImageComposite$ImageComposite$imageC":"SelfieSegmentation$SelfieSegmentation$mask",
-    "OpenAIImage$OpenAIImage$prompt":"TextField$field$value",
-    "ImageComposite$ImageComposite$imageA":"FrameCapture$FrameCapture$frame",
-    "ProgressBar$bar$inProgress":"OpenAIImage$OpenAIImage$working",
-    "ImageComposite$ImageComposite$imageD":"FrameCapture$FrameCapture$frame",
-    "OpenAIImage$OpenAIImage$restart":"Button$button$value"
+  "Panel2":{
+    "type":"$anewLibrary/Layout/Atoms/Panel",
+    "container":"Panel#Container",
+    "state":{
+      "layout":"row",
+      "style":{
+        "borderWidth":"0",
+        "order":"2"
+      }
+    }
+  },
+  "Button":{
+    "type":"$anewLibrary/Fields/Atoms/Button",
+    "container":"Panel2#Container",
+    "state":{
+      "action":"toggle",
+      "label":"Generate",
+      "inverted":false,
+      "style":{
+        "order":"2"
+      }
+    }
   }
 };
