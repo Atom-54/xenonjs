@@ -65,9 +65,12 @@ export const Layout = {
     description: 'A modal panel',
     ligature: 'dialogs',
     type: '$anewLibrary/Layout/Atoms/FlyOut',
+    isContainer: true,
     inputs: {
       show: 'Nonce',
-      side: 'FlyOutSide'
+      hide: 'Nonce',
+      side: 'FlyOutSide',
+      design: 'Boolean'
     },
     types: {
       FlyOutSide: ['','top','right','bottom','left'],

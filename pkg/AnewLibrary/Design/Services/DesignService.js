@@ -340,6 +340,8 @@ const dropAtom = async (controller, eventlet) => {
     const localContainer = [containerId.split('$').slice(2).join('$'), containerName].filter(i=>i).join('#');
     containable.layer.graph[containable.name].container = localContainer;
     log.debug('localContainer', localContainer);
+    // update live atom
+    containable.meta.container = container;
     // update live state
     getAtomStateStyle(controller, containable).order = order;
     validateAtomOrder(controller);
@@ -380,6 +382,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
     delete atomConnections[propId];
   }
   designUpdateTarget(controller, host);
+  designUpdate(controller);
   Project.ProjectService.SaveProject();
 };
 

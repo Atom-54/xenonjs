@@ -38,7 +38,7 @@ template: html`
     pointer-events: none;
     background: transparent;
     position: absolute;
-    z-index: 1000;
+    z-index: 100000;
   }
   [handle] {
     pointer-events: all;

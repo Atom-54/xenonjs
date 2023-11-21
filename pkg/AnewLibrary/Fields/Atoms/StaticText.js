@@ -26,8 +26,6 @@ template: html`
     text-wrap: wrap;
   }
 </style>
-<div scrolling flex column>
-  <pre xen:style="{{textStyle}}">{{text}}</pre>
-</div>
+<pre xen:style="{{textStyle}}">{{text}}</pre>
 `
 });

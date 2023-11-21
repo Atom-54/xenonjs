@@ -176,13 +176,15 @@ export class AtomGraph extends DragDrop {
             trgEdgeCount[targetId] ??= -1;
             const b = ++trgEdgeCount[targetId];
             const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
-            const p1 = {
-              x: ox + elt2.offsetLeft,
-              y: oy + elt2.offsetTop + b*14
-            };
-            const path = this.calcBezier(p0, p1);
-            const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
-            this.laserCurve(ctx, path, highlight);
+            if (elt2) {
+              const p1 = {
+                x: ox + elt2.offsetLeft,
+                y: oy + elt2.offsetTop + b*14
+              };
+              const path = this.calcBezier(p0, p1);
+              const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+              this.laserCurve(ctx, path, highlight);
+            }
           }
         }
       }
