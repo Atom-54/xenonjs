@@ -14,6 +14,7 @@ async update({inputData}, {id}, {isDirty, service}) {
   if (inputData && isDirty('inputData')) {
     await service('FormService', 'SetValues', {form: id, values: inputData});
     log('inputData:', inputData);
+    return;
   }
   const data = await service('FormService', 'GetValues', {form: id});
   const columns = this.getColumns(data); 
