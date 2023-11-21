@@ -8,118 +8,62 @@ const graph = {
   "meta":{
     "id":"VideoFingerpaint"
   },
-  "DeviceUx":{
-    "type":"$anewLibrary/Media/Atoms/DeviceUx",
-    "container":"Panel#Container",
-    "state": {
-      "DeviceUx":{
-        "l":16,
-        "t":0,
-        "w":384,
-        "h":40,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "order":"1",
-        "width":"auto",
-        "height":"auto",
-        "backgroundColor":"var(--xcolor-three)",
-        "color":"var(--xcolor-four)",
-        "padding":"var(--size-2)",
-        "borderRadius":"var(--radius-3)",
-        "justifyContent":"center",
-        "alignItems":"center"
-      }
-    },
-    "connections":{
-      "mediaDevices":[
-        "MediaStream$mediaDevices"
-      ]
-    }
-  },
-  "MediaStream":{
-    "type":"$anewLibrary/Media/Atoms/MediaStream",
-    "container":"Container",
-    "state":{
-    },
-    "connections":{
-      "mediaDeviceState":[
-        "DeviceUx$mediaDeviceState"
-      ]
-    }
-  },
-  "FrameCapture":{
-    "type":"$anewLibrary/Media/Atoms/FrameCapture",
-    "container":"Panel#Container",
-    "state":{
-      "fps":30,
-      "style":{
-        "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid",
-        "color":"var(--xcolor-one)",
-        "justifyContent":"center",
-        "order":"",
-        "backgroundColor":""
-      }
-    },
-    "connections": {
-      "stream":["MediaStream$stream"]
-    }
-  },
   "Holistic":{
     "type":"$anewLibrary/Mediapipe/Atoms/Holistic",
     "container":"Container",
-    "connections": {
-      "image":["FrameCapture$frame"]
+    "connections":{
+      "image":[
+        "Graph23$FrameCapture27$frame"
+      ]
     }
   },
   "ImageComposite":{
     "type":"$anewLibrary/Media/Atoms/ImageComposite",
     "container":"Container",
-    "state": {
+    "state":{
       "style":{
         "l":320,
         "t":64,
         "w":132,
         "h":132,
         "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid"
+        "borderStyle":"solid",
+        "order":2
       }
     },
-    "connections": {
-      "imageA":["FrameCapture$frame"],
-      "imageB":["PointerPoms$image"]  
+    "connections":{
+      "imageB":[
+        "PointerPoms$image"
+      ],
+      "imageA":[
+        "Graph23$FrameCapture27$frame"
+      ]
     }
   },
   "Image3":{
     "type":"$anewLibrary/Media/Atoms/Image",
     "container":"Panel#Container",
-    "state": {
+    "state":{
       "image":{
         "alt":"no image"
       },
       "selfie":true,
       "style":{
-        "l":4,
-        "t":38,
-        "w":1042,
-        "h":151,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "flex":"1",
         "order":"3",
-        "width":"auto",
         "borderRadius":"var(--radius-round)",
         "backgroundColor":"var(--xcolor-three)"
       }
     },
-    "connections": {
-      "image":["ImageComposite$output"]
+    "connections":{
+      "image":[
+        "ImageComposite$output"
+      ]
     }
   },
   "UXToolbar":{
     "type":"$anewLibrary/UX/Atoms/UXToolbar",
     "container":"Panel#Container",
-    "state": {
+    "state":{
       "actions":[
         {
           "name":"red",
@@ -195,39 +139,42 @@ const graph = {
         }
       ],
       "style":{
-        "l":0,
-        "t":38,
-        "w":425,
-        "h":62,
-        "borderWidth":"0",
-        "borderStyle":"solid",
-        "backgroundColor":"var(--xcolor-three)",
-        "height":"auto",
-        "padding":"var(--size-3)",
-        "flex":"none",
         "order":"3",
-        "width":"auto",
-        "borderRadius":"var(--radius-3)"
+        "backgroundColor":"var(--xcolor-three)",
+        "padding":"var(--size-3)",
+        "borderRadius":"var(--radius-3)",
+        "flex":"0 0 auto"
       }
     },
-    "connections": {
-      "event": ["UXActionExecutor$event"]
+    "connections":{
+      "event":[
+        "UXActionExecutor$event"
+      ]
     }
   },
-  "UXActionExecutor": {
-    "type": "$anewLibrary/UX/Atoms/UXActionExecutor",
-    "container": "Container",
-    "state": {},
-    "connections": {
-      "event": ["UXToolbar$event"]
+  "UXActionExecutor":{
+    "type":"$anewLibrary/UX/Atoms/UXActionExecutor",
+    "container":"Container",
+    "state":{
+      "style":{
+        "order":5
+      }
+    },
+    "connections":{
+      "event":[
+        "UXToolbar$event"
+      ]
     }
   },
   "Panel":{
     "type":"$anewLibrary/Layout/Atoms/Panel",
     "container":"Container",
-    "state": {
+    "state":{
       "layout":"column",
-      "center":true
+      "center":true,
+      "style":{
+        "order":6
+      }
     },
     "style":{
       "l":384,
@@ -247,18 +194,37 @@ const graph = {
   "VirtualPointer":{
     "type":"$anewLibrary/Mediapipe/Atoms/VirtualPointer",
     "container":"Container",
-    "connections": {
-      "results":["Holistic$results"]
+    "connections":{
+      "results":[
+        "Holistic$results"
+      ]
     }
   },
   "PointerPoms":{
     "type":"$anewLibrary/Mediapipe/Atoms/PointerPoms",
     "container":"Container",
-    "state": {
-      "penSize":2
+    "state":{
+      "penSize":2,
+      "style":{
+        "order":8
+      }
     },
-    "connections": {
-      "tracking":["VirtualPointer$tracking"]
+    "connections":{
+      "tracking":[
+        "VirtualPointer$tracking"
+      ]
+    }
+  },
+  "Graph23":{
+    "type":"$anewLibrary/Graph/Atoms/Graph",
+    "container":"Panel#Container",
+    "state":{
+      "graphId":"DeviceVideo",
+      "style":{
+        "order":"1",
+        "flex":"0 0 auto",
+        "align-items":"center"
+      }
     }
   }
 };
