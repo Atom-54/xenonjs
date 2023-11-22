@@ -31,10 +31,7 @@ import '../../Media/Dom/speech-synthesizer.js';
 //
 import '../../DevTools/dom.js';
 //
-import '../../../AnewLibrary/Design/Dom/atom-graph.js';
-import '../../../AnewLibrary/Design/Dom/design-target.js';
 import '../../Graph/Dom/node-graph.js';
 //
 import '../../Locale/Dom/geo-location.js';
 import '../../Locale/Dom/good-map.js';
-

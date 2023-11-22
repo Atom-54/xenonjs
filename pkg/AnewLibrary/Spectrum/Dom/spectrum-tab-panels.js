@@ -107,8 +107,11 @@ export class SpectrumTabPanels extends Xen.Async {
   onClick(e) {
     const target = e.composedPath()[0];
     if (target.localName === 'icon') {
-      this.value = target.getAttribute('value');
-      this.fire('close');
+      const value = target.getAttribute('value');
+      if (value) {
+        this.value = value;
+        this.fire('close');
+      }
     }
   }
   onSlotChange(e) {

@@ -54,9 +54,11 @@ export const Layout = {
       styleRules: 'CSSRules|Text'
     },
     outputs: {
-      selected: 'String',
-      activated: 'String',
-      delete: 'String'
+      selected: 'Pojo',
+      activated: 'Pojo',
+      renamed: 'Pojo',
+      delete: 'Pojo',
+      trigger: 'Nonce'
     },
     ligature: 'grid_guides'
   },

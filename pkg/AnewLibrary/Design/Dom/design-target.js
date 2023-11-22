@@ -7,7 +7,7 @@ import {Xen} from '../../Dom/Xen/xen-async.js';
 
 const log = logf("DOM:DesignTarget", 'orange', 'white');
 
-const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field', 'code-mirror'];
+const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field', 'code-mirror', 'fancy-input'];
 
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {
@@ -58,6 +58,7 @@ const DesignTarget = class extends Xen.DropTarget {
   onKeyDown(e) {
     this.key = this.state.selected?.atomId;
     if (this.key && !this.activeElementIsFocusable() && (e.key === 'Delete' || e.key === 'Backspace')) {
+      log.warn(document.activeElement?.shadowRoot?.activeElement?.localName);
       this.fire('delete');
     }
   }

@@ -2,9 +2,9 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-import {makeCapName} from '../..//CoreXenon/Reactor/Atomic/js/names.js';
-import * as Design from '../../Design/Services/DesignService.js';
-import * as Project from '../../Framework/Project.js';
+import {makeCapName} from '../../Xenon/Utils/names.js';
+import * as Design from './DesignService.js';
+import * as Project from '../../Design/Project.js';
 export {Project};
 
 const log = logf('ProjectService', 'brown', 'white');
@@ -16,22 +16,43 @@ export const ProjectService = {
     return discoverLocalGraphs();
   },
   async Load(host, data) {
-    const build = host.layer.controller.layers.build;
-    await Design.reifyGraph(build, data);
+    if (Design.sublayers.includes(host.layerid)) {
+      log.debug('Design-time service intercept: ProjectSevice.Load:', data);
+    } else {
+      if (!Design.sublayers.includes(data)) {
+        const build = host.layer.controller.layers.build;
+        await Design.loadGraph(build, data);
+      }
+    }
   },
   async Delete(host, name) {
-    log.debug(host.id);
-    log.debug(name);
-    const graphId = currentProject.meta.name + '.' + name;
-    const graph = restoreLocalGraph(graphId);
-    if (graph) {
-      persistLocalGraph('Deleted', graph)
-      removeLocalGraph(graphId);
+    if (Design.sublayers.includes(host.layerid)) {
+      log.debug('Design-time service intercept: ProjectSevice.Delete:', data);
+    } else {
+      log.debug(host.id);
+      log.debug(name);
+      const graphId = currentProject.meta.name + '.' + name;
+      const graph = restoreLocalGraph(graphId);
+      if (graph) {
+        persistLocalGraph('Deleted', graph)
+        removeLocalGraph(graphId);
+      }
+    }
+  },
+  async RenameGraph(host, {key, value}) {
+    if (Design.sublayers.includes(host.layerid)) {
+      log.debug('Design-time service intercept: ProjectSevice.RenameGraph:', key, value);
+    } else {
+      renameGraph({key, value});
     }
   },
   async SaveProject(host, data) {
-    saveProject(currentProject);
-  }
+    if (Design.sublayers.includes(host.layerid)) {
+      log.debug('Design-time service intercept: ProjectSevice.SaveProject');
+    } else {
+      saveProject(currentProject);
+    }
+  },
 };
 
 export const initProject = async (projectName) => {
@@ -79,6 +100,17 @@ export const newGraph = async layer => {
 
 export const getGraph = id => {
   return Project.getGraph(currentProject, id);
+};
+
+const renameGraph = ({key, value}) => {
+  if (key && value && key !== value) {
+    const projectName = currentProject.meta.name;
+    const graph = getGraph(key);
+    removeLocalGraph(projectName + '.' + key);
+    graph.meta.id = value;
+    persistLocalGraph(projectName, graph);
+    saveProject(currentProject);
+  }
 };
 
 const persistLocalProject = (project, sublayers) => {

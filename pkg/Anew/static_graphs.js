@@ -92,13 +92,15 @@ export const Build = {
       }
     }
   },
-  GraphPanel: {
+  ProjectListPanel: {
     type: '$anewLibrary/Graph/Atoms/Graph',
     container: 'GraphPanels#Container',
     state: {
       graphId: 'ProjectGraph',
       style: {
-        order: 2
+        order: 2,
+        zoom: '75%',
+        overflow: 'auto'
       }
     }
   },
@@ -304,25 +306,26 @@ export const catalogGraph = {
 
 export const ProjectGraph = {
   "meta": {
-    "id": "UnimportantDirector"
+    "id": "ProjectListGraph"
   },
-  "TemplateLayout81": {
+  "ProjectList": {
     "type": "$anewLibrary/Layout/Atoms/TemplateLayout",
     "container": "Container",
     "state": {
-      "template": "<div>\n <div project toolbar>\n   <icon>topic</icon>\n   <span>{{name}}</span>\n </div>\t\n <div graphs repeat=\"graph_t\">{{graphs}}</div>\n <template graph_t>\n   <div graph toolbar key=\"{{name}}\" on-dblclick=\"onItemActivate\">\n     <icon>account_tree</icon>\n     <span>{{name}}</span>\n\t <span flex></span>\n     <icon trash key=\"{{name}}\" on-click=\"onItemDelete\">delete</icon>\n   </div>\t\n  </template>  \n</div>",
-      "styleRules": "[project] {\n  color: purple;\n  background-color: white;\n  font-weight: bold;\n  font-size: 90%;\n}\n[graphs] {\n padding: 0 12px;\n}\n[graph]:hover {\n background-color: purple;\n color: white;\n cursor: pointer;\n}\n[graph] > [trash] {\n  visibility: hidden;\n}\n[graph]:hover > [trash] { \n visibility: visible;\n}",
+      "template": "<div>\n <div project toolbar>\n   <icon>topic</icon>\n   <span>{{name}}</span>\n </div>\t\n <div graphs repeat=\"graph_t\">{{graphs}}</div>\n <template graph_t>\n   <div graph toolbar tabindex=\"-1\" key=\"{{name}}\" on-dblclick=\"onItemActivate\">\n     <icon>account_tree</icon>\n     <fancy-input jit style=\"flex: 0 1 auto;\" key=\"{{name}}\" value=\"{{name}}\" on-change=\"onItemRename\"></fancy-input>\n\t <span flex></span>\n     <icon hover key=\"{{name}}\" on-click=\"onItemActivate\">open_in_new</icon>\n     <span hover>|</span>\n     <icon hover key=\"{{name}}\" on-click=\"onItemDelete\">delete</icon>\n   </div>\t\n  </template>  \n</div>",
+      "styleRules": "[project] {\n  color: purple;\n  background-color: white;\n  font-weight: bold;\n  font-size: 90%;\n}\n[graphs] {\n padding: 0 12px;\n}\n[graph]:hover {\n background-color: purple;\n color: white;\n cursor: pointer;\n}\n[graph] > [hover] {\n  visibility: hidden;\n}\n[graph]:hover > [hover] { \n visibility: visible;\n}",
       "style": {
+        "flex": "0 0 auto",
         "order": 0
       }
     },
     "connections": {
       "items": [
-        "ServiceAccess20$result"
+        "DiscoverService$result"
       ]
     }
   },
-  "ServiceAccess20": {
+  "DiscoverService": {
     "type": "$anewLibrary/Data/Atoms/ServiceAccess",
     "container": "Container",
     "state": {
@@ -335,9 +338,13 @@ export const ProjectGraph = {
       },
       "interval": 0
     },
-    "connections": {}
+    "connections": {
+      "data": [
+        "ProjectList$trigger"
+      ]
+    }
   },
-  "ServiceAccess88": {
+  "LoadService": {
     "type": "$anewLibrary/Data/Atoms/ServiceAccess",
     "container": "Container",
     "state": {
@@ -350,11 +357,11 @@ export const ProjectGraph = {
     },
     "connections": {
       "data": [
-        "TemplateLayout81$activated"
+        "ProjectList$activated"
       ]
     }
   },
-  "ServiceAccess99": {
+  "DeleteService": {
     "type": "$anewLibrary/Data/Atoms/ServiceAccess",
     "container": "Container",
     "state": {
@@ -367,7 +374,24 @@ export const ProjectGraph = {
     },
     "connections": {
       "data": [
-        "TemplateLayout81$delete"
+        "ProjectList$delete"
+      ]
+    }
+  },
+  "RenameService": {
+    "type": "$anewLibrary/Data/Atoms/ServiceAccess",
+    "container": "Container",
+    "state": {
+      "template": "",
+      "service": "ProjectService",
+      "task": "RenameGraph",
+      "style": {
+        "order": 4
+      }
+    },
+    "connections": {
+      "data": [
+        "ProjectList$renamed"
       ]
     }
   }
