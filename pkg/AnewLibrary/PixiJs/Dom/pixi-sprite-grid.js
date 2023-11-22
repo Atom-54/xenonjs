@@ -69,6 +69,33 @@ export class PixiSpriteGrid extends PixiObject {
       this.updateSparkle(state.sparkle);
     }
   }
+  getFrameSize() {
+    const ar = 3/4;
+    const padding = 100;
+    const siz = this.size+this.margin*2;
+    const clientWidth = this.cols * siz;
+    const width = clientWidth + padding;
+    return {
+      cw: clientWidth, ch: ar*clientWidth, 
+      w: width, h: ar*width
+    };
+  }
+  recenterApp({x, y}, {object, app}) {
+    // fixed
+    const frame = this.getFrameSize();
+    // screen dependent
+    const {width, height} = app.renderer;
+    let s = height/frame.h;
+    let fittedWidth = frame.w*s;
+    if (fittedWidth > width) {
+      s = width/frame.w;
+    }
+    // scaled to contain
+    object.scale = {x: s, y: s};
+    // translation
+    object.x = width/2 + 11;
+    object.y = height/2 + 42;
+  }
   updateSparkle({s}) {
     s.scale = {x: 1.0, y: 1.0};
     if (s.alpha) {
@@ -143,6 +170,25 @@ export class PixiSpriteGrid extends PixiObject {
         this.tumbleGems(gems, object);
       }
     }
+  }
+  scaleAndPositionGem(gem) {
+    // reset scale to #0
+    //gem.s.scale = {x: scales[0], y: scales[0]};
+    // get pixel location for this gem
+    const [ix, jy] = this.ijToXy(gem.l, gem.t, gem.ol, gem.ot);
+    gem.s.position = {x: ix, y: jy};
+  }
+  ijToXy(i, j, oi, oj) {
+    const {size, margin} = this;
+    const sx = size + margin;
+    const sy = size + margin;
+    const x = sx * (i + oi) + (size/2);
+    const y = sy * (j + oj) + (size/2);
+    //const ox = this.cols*sx/2;
+    //const oy = this.rows*sy/2;
+    //return [x + ox/2, y + oy/2];
+    const frame = this.getFrameSize();
+    return [x - frame.cw/2, y - frame.ch/2];
   }
   findRowMatches(gems, object) {
     const {cols, rows} = this;
@@ -292,31 +338,37 @@ export class PixiSpriteGrid extends PixiObject {
     }
   }
   calcDragOffset({l, t}, e) {
-    const {size, state: {app}} = this;
+    const {state: {app}} = this;
     // app rect
     const appRect = app.view.getBoundingClientRect();
     // stage position 
-    const [stageX, stageY] = [app.stage.x, app.stage.y]
+    //const [stageX, stageY] = [app.stage.x, app.stage.y]
     // pointer position in stage frame
-    const [px, py] = [e.x - appRect.x - stageX, e.y - appRect.y - stageY];
+    const frame = this.getFrameSize();
+    const s = this.state.object.scale.x;
+    const [cx, cy] = [frame.w * s /2, frame.h * s / 2]
+    //const [px, py] = [e.x - appRect.x - stageX + frame.cw/2, e.y - appRect.y - stageY + frame.ch/2];
+    const [px, py] = [e.x - appRect.x - cx, e.y - appRect.y - cy - 70*s];
+    log.debug(px, py);
     // stage scale
-    const {x: ssx, y: ssy} = app.stage.scale;
+    //const {x: ssx, y: ssy} = app.stage.scale;
     // object origin local to appRect (subject to stage scale)
-    const {offsetLeft: ox, offsetTop: oy} = this.offsetParent;
+    //const {offsetLeft: ox, offsetTop: oy} = this.offsetParent;
     // grid-local point 
-    const [lx, ly] = [px-ox*ssx, py-oy*ssy];
+    //const [lx, ly] = [px-ox*ssx, py-oy*ssy];
     // object scale
-    const {x: osx, y: osy} = this.state.object.scale;
+    //const {x: osx, y: osy} = this.state.object.scale;
     // sprite origin
-    const [x, y] = this.ijToXy(l, t, 0, 0);
+    //const [x, y] = this.ijToXy(l, t, 0, 0);
     // sprite-local point
-    const [slx, sly] = [lx/(osx*ssx) - x, ly/(osy*ssy) - y];
+    //const [slx, sly] = [lx/(osx*ssx) - x, ly/(osy*ssy) - y];
     //log(slx, sly);
-    const clamp = v => Math.max(Math.min(v, 0.99), -0.99);
+    //const clamp = v => Math.max(Math.min(v, 0.99), -0.99);
     //const [ol, ot] = [clamp(slx*2 / size), clamp(sly*2 / size)];
-    const [ol, ot] = [clamp(slx / size), clamp(sly / size)];
-    const [mol, mot] = [ol*ol, ot*ot];
-    return [ol, ot, mol, mot];
+    //const [ol, ot] = [clamp(slx / size), clamp(sly / size)];
+    //const [mol, mot] = [ol*ol, ot*ot];
+    //return [ol=0, ot=0, mol=0, mot=0];
+    return [0,0,0,0];
   }
   constructSparkle(object) {
     const s = this.makeSprite(`${assets}/sparkles.png`);
@@ -418,21 +470,6 @@ export class PixiSpriteGrid extends PixiObject {
     //s.onpointerup = e => this.pointerUp(e, gems);
     //s.onpointerupoutside = e => this.pointerUp(e, gems);
     return gem;
-  }
-  ijToXy(i, j, oi, oj) {
-    const {size, margin} = this;
-    const xs = size + margin;
-    const ys = size + margin;
-    const x = xs * (i + oi) + (size/2);
-    const y = ys * (j + oj) + (size/2);
-    return [x, y];
-  }
-  scaleAndPositionGem(gem) {
-    // reset scale to #0
-    //gem.s.scale = {x: scales[0], y: scales[0]};
-    // get pixel location for this gem
-    const [ix, jy] = this.ijToXy(gem.l, gem.t, gem.ol, gem.ot);
-    gem.s.position = {x: ix, y: jy};
   }
 };
 

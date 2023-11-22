@@ -19,10 +19,14 @@ template: html`
     position: absolute;
     inset: 0;
   }
+  pixi-app {
+    position: absolute;
+    inset: 0;
+  }
 </style>
-<pixi-app flex active="{{active}}" on-appid="onAppId" on-canvas="onCanvas"></pixi-app>
 <div objects>
   <slot name="Container"></slot>
 </div>
+<pixi-app active="{{active}}" on-appid="onAppId" on-canvas="onCanvas"></pixi-app>
 `
 })

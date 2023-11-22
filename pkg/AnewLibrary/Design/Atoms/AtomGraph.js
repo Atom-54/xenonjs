@@ -69,7 +69,7 @@ render({layerId}, {info, selected}) {
         selected: atom.id === selected,
         displayName: atom.id.slice(layerId.length + 1),
         style: {
-          left: 64 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + h/2*(Math.sin((i%stride)*Math.PI/2)) + 'px', width: '200px'
+          left: 64 + w*(i%stride) + 'px', top: 32 + h*Math.floor(i/stride) + h/2*(Math.sin((i%stride)*Math.PI*.8/2)) + 'px', width: '200px'
         },
         inputs,
         outputs

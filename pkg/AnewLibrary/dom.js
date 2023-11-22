@@ -6,7 +6,7 @@
 import './CodeMirror/Dom/code-mirror.js';
 import './Dom/Common/common.js';
 import './Fields/Dom/common.js';
-import './Pixijs/PixiJsDom.js';
+import './PixiJs/PixiJsDom.js';
 import './DevTools/dom.js';
 import './Spectrum/Dom/spectrum-tab-panels.js';
 

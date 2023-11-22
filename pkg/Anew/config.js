@@ -15,7 +15,7 @@ globalThis.config = {
   aeon: 'a54.00',
   paths: {
     // as needed
-    $anewLibrary: `${xenonPath}/anewLibrary`,
+    $anewLibrary: `${xenonPath}/AnewLibrary`,
     $library: `${xenonPath}/Library`,
     // next two paths only needed if using workers
     $xenon: xenonPath,
