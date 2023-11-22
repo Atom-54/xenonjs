@@ -22,14 +22,12 @@ globalThis.config = {
     $boot: `${xenonPath}/Build/xenon.js`
   },
   logFlags: {
-    //App: true,
     Atom: true,
-    //Binder: true,
     //BusTerminal: true,
     //Composer: true,
+    //Controller: true,
     //Design: true,
     //DOM: true,
-    //Flan: true,
     //Graphs: true,
     //Host: true,
     //Industry: true,

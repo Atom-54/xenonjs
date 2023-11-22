@@ -33,7 +33,8 @@ export class FancyInput extends Xen.Async {
     return {
       value: value ?? '',
       type: 'text',
-      disabled: disabled || (jit && !userEnabled)
+      disabled: disabled || (jit && !userEnabled),
+      jit
     };
   }
   _didRender({disabled, autofocus, focus, jit}, {userEnabled}) {
@@ -90,11 +91,11 @@ export class FancyInput extends Xen.Async {
     width: 94%;
     border: none;
   }
-  input[disabled] {
+  input[disabled]:not([jit]) {
     color: gray;
   }
 </style>
-<input disabled="{{disabled}}" type="{{type}}" value="{{value}}" on-blur="onBlur" on-change="onChange" Xon-input="onInput">
+<input jit$="{{jit}}" disabled="{{disabled}}" type="{{type}}" value="{{value}}" on-blur="onBlur" on-change="onChange" Xon-input="onInput">
 `;
   }
 }

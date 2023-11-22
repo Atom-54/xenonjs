@@ -55,17 +55,23 @@ render({styleRules}, {items, template, selected}) {
 },
 onItemDelete({eventlet: {key, value}}, state) {
   log('onItemDelete', key);
-  return {delete: key}
+  return {delete: key, trigger: Math.random()};
 },
 onItemSelect({eventlet: {key, value}}, state) {
-  log('onItemSelect', key);
+  log.debug('onItemSelect', key);
+  debugger;
   state.selected = key;
-  return {selected: key}
+  return {selected: key};
+},
+onItemRename({eventlet: {key, value}}, state) {
+  log('onItemRename', key, value);
+  state.renamed = {key, value};
+  return {renamed: {key, value}, trigger: Math.random()};
 },
 onItemActivate({eventlet: {key, value}}, state) {
   log('onItemActivate', key);
   state.selected = key;
-  return {activated: key}
+  return {activated: key, trigger: Math.random()};
 },
 template: html`
 <style>${'{{styleRules}}'}</style>

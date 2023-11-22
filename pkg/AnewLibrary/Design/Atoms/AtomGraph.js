@@ -43,7 +43,7 @@ render({layerId}, {info, selected}) {
       return sourceId !== targetId;
     });
     if (cleanBinding.length) {
-      edge.binding = cleanBinding;
+      edge.binding = [...new Set(cleanBinding)];
       return true;
     }
   });

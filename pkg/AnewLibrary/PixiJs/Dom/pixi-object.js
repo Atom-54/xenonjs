@@ -111,7 +111,7 @@ export class PixiObject extends Xen.Async {
       const my = (lbHeight - height) / 2;
       x = (x??0) + mx;
       y = (y??0) + my;
-      log.debug([lbWidth, width], [lbHeight, height], [mx, my]);
+      //log.debug([lbWidth, width], [lbHeight, height], [mx, my]);
     }
     // if (x !== undefined) {
     //   object.x = x;
