@@ -7,25 +7,30 @@ import * as Design from './DesignService.js';
 import * as Project from '../../Design/Project.js';
 export {Project};
 
-const log = logf('ProjectService', 'brown', 'white');
+const log = logf('Services:ProjectService', 'brown', 'white');
+logf.flags.ProjectService = true;
 
 export let currentProject = null;
 
 export const ProjectService = {
   async Discover() {
+    log('Discover');
     return discoverLocalGraphs();
   },
   async Load(host, data) {
+    log('Load', data);
     if (Design.sublayers.includes(host.layerid)) {
       log.debug('Design-time service intercept: ProjectSevice.Load:', data);
     } else {
       if (!Design.sublayers.includes(data)) {
         const build = host.layer.controller.layers.build;
         await Design.loadGraph(build, data);
+        saveProject(currentProject);
       }
     }
   },
   async Delete(host, name) {
+    log('Delete', name);
     if (Design.sublayers.includes(host.layerid)) {
       log.debug('Design-time service intercept: ProjectSevice.Delete:', data);
     } else {
@@ -40,6 +45,7 @@ export const ProjectService = {
     }
   },
   async RenameGraph(host, {key, value}) {
+    log('RenameGraph', key, value);
     if (Design.sublayers.includes(host.layerid)) {
       log.debug('Design-time service intercept: ProjectSevice.RenameGraph:', key, value);
     } else {
@@ -47,6 +53,7 @@ export const ProjectService = {
     }
   },
   async SaveProject(host, data) {
+    log('SaveProject', data);
     if (Design.sublayers.includes(host.layerid)) {
       log.debug('Design-time service intercept: ProjectSevice.SaveProject');
     } else {

@@ -45,7 +45,7 @@ export const findLayer = (controller, layerId) => {
   let owner = controller;
   while (!layer && owner) {
     layer = owner.layers[layerId];
-    if (!layer) {
+    if (!layer && layerId) {
       const nextLayerId = Object.keys(owner.layers).find(key => layerId.startsWith(key + '$'));
       owner = owner.layers[nextLayerId];
     }
@@ -195,11 +195,13 @@ const calculateContainer = (host, localContainer) => {
   return container;
 };
 
+// write name, value pair to hosts and state, forward to bindings
 export const writeValue = (controller, atomId, propName, value) => {
   set(controller, atomId, {[propName]: value});
   bindamor(controller, `${atomId}$${propName}`, value);
 };
 
+// writes object to state, forwards to bindings, and notifies observer
 const writeToState = (controller, inputState) => {
   entries(inputState).forEach(([key, value]) => {
     bindamor(controller, key, value);
@@ -208,28 +210,37 @@ const writeToState = (controller, inputState) => {
   controller.onwrite?.(inputState);
 };
 
+// forward value to bindings
 const bindamor = (controller, key, value) => {
+  // input connections of `key`
   const bound = controller.connections?.inputs?.[key];
+  // for each bound connection
   bound?.forEach(connection => {
+    // binding channel is active
     log(`[${connection}] receives from [${key}] the value`, value);
+    // conver data to local format
     const bits = connection.split('$');
     const prop = bits.pop();
     const atomId = bits.join('$');
+    // set data 
     set(controller, atomId, {[prop]: value});
   });
 };
 
+// keys in `inputs` are local to main `key`
 export const set = (controller, key, inputs) => {
   writeInputsToState(controller, key, inputs);
   writeInputsToHost(controller, key, inputs);
 };
 
-export const writeInputsToState = (controller, key, inputs) => {
+// keys in `inputs` are local to main `key`
+const writeInputsToState = (controller, key, inputs) => {
   for (let [prop, value] of Object.entries(inputs)) {
     controller.state[key + '$' + prop] = value;
   }
 };
 
+// keys in `inputs` are local to main `key`
 export const writeInputsToHost = (controller, key, inputs) => {
   const atom = controller.atoms[key];
   if (atom) {
@@ -242,7 +253,6 @@ export const writeInputsToHost = (controller, key, inputs) => {
 export const unrender = async controller => {
   await Promise.all(values(controller.atoms).map(atom => atom.render({$clear: true})));
 };
-
 export const rerender = async controller => {
   await Promise.all(values(controller.atoms).map(atom => atom.rerender()));
 };

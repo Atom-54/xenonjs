@@ -72,7 +72,7 @@ export const FormService = {
   SetValues(atom, {form: formId, values}) {
     const {controller} = atom.layer;
     const form = requireForm(atom, formId);
-    form.fields.forEach(({name, id}) => {
+    values && form.fields.forEach(({name, id}) => {
       if (name in values) {
         Controller.writeValue(controller, id, 'value', values[name]);
       }

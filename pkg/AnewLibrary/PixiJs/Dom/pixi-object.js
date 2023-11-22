@@ -89,64 +89,22 @@ export class PixiObject extends Xen.Async {
     });
   }
   recenterApp({x, y}, {object, app}) {
-    const {width: bwidth, height: bheight} = object.getLocalBounds();
+    const ar = 3/4;
     const {width, height} = app.renderer;
-    if (width && height && bwidth && bheight) {
-      let ar = width / height;
-      let lbHeight, lbWidth;
-      if (ar > 1) {
-        ar = 1/ar;
-        lbHeight = ar * bwidth;
-        lbWidth = width;
-        object.scale = {x:1, y:ar};
-      } else {
-        lbWidth = ar * bheight;
-        lbHeight = height;
-        object.scale = {x:ar, y:1};
-      }
-      // if (ar > 1) ar = 1 / ar;
-      //const cx = width * ar / 2;
-      //const cy = height * ar / 2;
-      const mx =- (lbWidth - width) / 2;
-      const my = (lbHeight - height) / 2;
-      x = (x??0) + mx;
-      y = (y??0) + my;
-      //log.debug([lbWidth, width], [lbHeight, height], [mx, my]);
+    let fittedWidth = width;
+    let fittedHeight = ar * width;
+    if (fittedHeight > height) {
+      fittedHeight = height;
+      fittedWidth = height / ar;
     }
-    // if (x !== undefined) {
-    //   object.x = x;
-    // }
-    // if (y !== undefined) {
-    //   object.y = y;
-    // }
+    object.width = fittedWidth;
+    object.height = fittedHeight;
+    object.x = width/2;
+    object.y = height/2;
   }
   updateAnimation({time, x, y}, {app, object, bounds}) {
     const s = this.s || 1;
-    // TODO(sjmiles): measuring bad (caveat emptor)
-    // nothing need be done if these haven't actually changed
-    // const {offsetLeft: ox, offsetTop: oy, offsetWidth: ow, offsetHeight: oh} = this.originHost;
-    // let {x: sx, y:sy } = app.stage.scale;
-    // object position
-    // const [x, y] = [ox, oy];
-    // object.position = {x, y};
-    // object size
-    // const {width: tw, height: th} = bounds;
-    // our 'automatic' size for designable DOM element
-    // Object.assign(this.style, {
-    //   display: `inline-block`,
-    //   // left: `${x}px`,
-    //   // top: `${y}px`,
-    //   width: `${tw*s}px`,
-    //   height: `${th*s}px`
-    // });
-    //
-    // sprite scale adjusted for aspect ratio and stage scale
-    //const ss = Math.min(ow / tw / sx, oh / th / sy) * s;
-    //object.scale = {x: ss, y: ss};
-    //object.scale = {x:s, y:s};
     this.recenterApp({x, y}, {object, app});
-    //
-    //console.log(this.getBoundingClientRect());
   }
 };
 

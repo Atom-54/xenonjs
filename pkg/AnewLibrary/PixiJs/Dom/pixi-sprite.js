@@ -43,7 +43,7 @@ export class PixiSprite extends PixiObject {
     const uni = {x:1, y:1};
     const sprite = PIXI.Sprite.from(from);
     sprite.pivot = center;
-    sprite.anchor = ori;
+    sprite.anchor = center;
     sprite.scale = uni;
     sprite.visible = true;
     return sprite;

@@ -209,10 +209,10 @@ const designObserver = (controller, inputs) => {
         const suffix = tabs[i];
         if (!sublayers[i].endsWith(suffix)) {
           const sublayerId = sublayers[i];
-          Controller.removeAtom(controller, controller.atoms[sublayerId]);
-          const targetId = sublayerId + 'Target';
-          Controller.removeAtom(controller, controller.atoms[targetId]);
+          log.debug('remove layer #', i, sublayerId);
           sublayers.splice(i--, 1);
+          removeAtom(controller, sublayerId);
+          removeAtom(controller, sublayerId + 'Target');
         }
       }
       designUpdateDocuments(controller);
@@ -222,6 +222,15 @@ const designObserver = (controller, inputs) => {
   if (designSelectedHost) {
     const state = prefixedState(controller.state, designSelectedHost.id + '$');
     Controller.writeInputsToHost(controller, 'build$State', {object: state}); 
+  }
+};
+
+const removeAtom = (controller, atomId) => {
+  const targetAtom = controller.atoms[atomId];
+  if (!targetAtom) {
+    log.warn('removeAtom:', atomId, 'does not exist in controller');
+  } else {
+    Controller.removeAtom(controller, targetAtom);
   }
 };
 

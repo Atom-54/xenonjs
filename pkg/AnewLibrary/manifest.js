@@ -19,7 +19,7 @@ const manifests = [
   'MediaPipe',
   'OpenAI',
   'Pixabay',
-  'Pixijs',
+  'PixiJs',
   'Shader',
   'Spectrum',
   'UX',

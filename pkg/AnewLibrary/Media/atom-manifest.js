@@ -181,7 +181,7 @@ export const Media = {
     categories: [category],
     description: 'Composes multiple images together',
     displayName: 'Image Composite',
-    type: '$anewlibrary/Media/Atoms/ImageComposite',
+    type: '$anewLibrary/Media/Atoms/ImageComposite',
     ligature: 'tune',
     inputs: {
       opA: 'CompositeOperation|String',
