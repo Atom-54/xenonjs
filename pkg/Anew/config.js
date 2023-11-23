@@ -22,7 +22,7 @@ globalThis.config = {
     $boot: `${xenonPath}/Build/xenon.js`
   },
   logFlags: {
-    Atom: true,
+    //Atom: true,
     //BusTerminal: true,
     //Composer: true,
     //Controller: true,

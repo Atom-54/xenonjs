@@ -1,0 +1,20 @@
+/**
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+export const PeerBarNode = {
+  PeerBar: {
+    type: '$library/Peer/Atoms/PeerBar',
+    //inputs: ['staticPeers'],
+    outputs: ['selectedPeer'],
+    bindings: {
+      peers: 'PeerCollector$peers'
+    }
+  },
+  PeerCollector: {
+    type: '$library/Peer/Atoms/PeerCollector',
+    inputs: ['peer', 'peers'],
+    outputs: ['peers']
+  }
+};

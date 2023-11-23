@@ -123,6 +123,7 @@ export const reifyGraph = async (layer, name) => {
   const sublayer = await createSublayer(layer, name);
   Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
   validateAtomOrder(layer.controller);
+  designUpdate(layer.controller);
   return sublayer;
 };
 
@@ -138,7 +139,6 @@ const createSublayer = async (layer, name) => {
   const sublayerContainer = targetName + '#Container';
   const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
   sublayers.push(layer.name + '$' + sublayerName);
-  designUpdateDocuments(controller);
   return sublayer;
 };
 
@@ -244,8 +244,8 @@ export const designUpdate = async controller => {
 
 export const designUpdateDocuments = async controller => {
   if (sublayers.length) {
-    let selected =  controller.state.build$DesignPanels$selected;
-    if (selected === undefined || selected === null || selected < 0 || selected >= sublayers.length) {
+    let selected = controller.state.build$DesignPanels$selected;
+    if (designLayerId === undefined || selected === undefined || selected === null || selected < 0 || selected >= sublayers.length) {
       selected = sublayers.length - 1;
       setDesignLayerIndex(controller, selected);
     }
@@ -454,17 +454,18 @@ const validateAtomOrder = async controller => {
 };
 
 const renameAtom = async (host, id, value) => {
+  // calculate keys
   const {controller} = host.layer;
   const atom = controller.atoms[id];
   const newKey = [...atom.id.split('$').slice(0, -1), value].join('$');
-  //
-  const {layer} = atom;
   log.debug('layer graph rekey from', id, 'to', newKey);
-  const layerAtomId = id.split('$').slice(2).join('$');
-  const layerNewKey = newKey.split('$').slice(2).join('$')
-  const graphAtom = layer.graph[layerAtomId];
-  delete layer.graph[layerAtomId];
-  layer.graph[layerNewKey] = graphAtom;
+  const graphAtomId = id.split('$').slice(2).join('$');
+  const graphNewId = newKey.split('$').slice(2).join('$')
+  // move atom from here to there
+  const {layer} = atom;
+  const {graph} = layer;
+  graph[graphNewId] = graph[graphAtomId];
+  delete graph[graphAtomId];
   //
   log.debug('atom controller rekey from', id, 'to', newKey);
   delete controller.atoms[id];

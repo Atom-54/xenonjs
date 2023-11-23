@@ -1,0 +1,28 @@
+<!doctype html>
+
+<link rel="stylesheet" href="./index.css">
+
+<div screen id="ascreen">
+  <div image></div>
+</div>
+
+<div style="width: 48px;"></div>
+
+<div screen id="bscreen">
+  <div image></div>
+</div>
+
+<script type="module">
+  import {SSEPubSub} from '../SSEPubSub.js';
+  const pubSub = new SSEPubSub('https://xenon-js-default-rtdb.firebaseio.com');
+  // //
+  const setScrollTop = top => {
+    window.ascreen.scrollTop = top;
+  };
+  pubSub.subscribe('scroll/y', setScrollTop);
+  //
+  window.bscreen.onscroll = e => {
+    const remoteScroll = value => pubSub.publish('scroll/y', value);
+    pubSub.debounce(remoteScroll, window.bscreen.scrollTop, 40);
+  };
+</script>

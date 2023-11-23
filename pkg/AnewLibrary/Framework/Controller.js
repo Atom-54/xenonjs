@@ -27,9 +27,25 @@ export const create = (name, {xenon, onservice, onrender}) => {
 };
 
 const onoutput = (controller, host, output) => {
+  //log.debug(`onoutput [${host.id}][${Object.keys(output)}]`); //[${JSON.stringify(output)}]`);
   const outputState = {};
   keys(output).map(key => outputState[`${host.layer.id}$${host.name}$${key}`] = output[key]);
   writeToState(controller, outputState);
+};
+
+// writes object to state, forwards to bindings, and notifies observer
+const writeToState = (controller, inputState) => {
+  let filteredState;
+  entries(inputState).forEach(([key, value]) => {
+    if (!deepEqual(controller.state[key], value)) {
+      (filteredState ??= {})[key] = value;
+      bindamor(controller, key, value);
+      controller.state[key] = value;
+    }
+  });
+  if (filteredState) {
+    controller.onwrite?.(filteredState);
+  }
 };
 
 const onevent = (controller, pid, eventlet) => {
@@ -43,7 +59,7 @@ export const reifySublayer = async (controller, layer, id, graph, host) => {
 export const findLayer = (controller, layerId) => {
   let layer;
   let owner = controller;
-  while (!layer && owner) {
+  while (!layer && layerId && owner) {
     layer = owner.layers[layerId];
     if (!layer && layerId) {
       const nextLayerId = Object.keys(owner.layers).find(key => layerId.startsWith(key + '$'));
@@ -201,15 +217,6 @@ export const writeValue = (controller, atomId, propName, value) => {
   bindamor(controller, `${atomId}$${propName}`, value);
 };
 
-// writes object to state, forwards to bindings, and notifies observer
-const writeToState = (controller, inputState) => {
-  entries(inputState).forEach(([key, value]) => {
-    bindamor(controller, key, value);
-    controller.state[key] = value;
-  })
-  controller.onwrite?.(inputState);
-};
-
 // forward value to bindings
 const bindamor = (controller, key, value) => {
   // input connections of `key`
@@ -217,7 +224,7 @@ const bindamor = (controller, key, value) => {
   // for each bound connection
   bound?.forEach(connection => {
     // binding channel is active
-    log(`[${connection}] receives from [${key}] the value`, value);
+    log.debug(`[${connection}] receives data from [${key}]`); // the value`, String(value).slice(0, 30));
     // conver data to local format
     const bits = connection.split('$');
     const prop = bits.pop();

@@ -4,10 +4,10 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update(inputs, state) {
-  state.tabs = [1, 2, 3, 4, 5].map(i => ({
-    label: `Tab ${i}`,
-    value: i-1
+update({tabs}, state) {
+  state.tabs = tabs?.map?.((label, i) => ({
+    label,
+    value: i + 1
   }));
 },
 onChange({eventlet: {value}}) {

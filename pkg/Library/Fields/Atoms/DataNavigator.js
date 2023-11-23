@@ -38,8 +38,8 @@ validateIndex(index, count) {
   return index;
 },
 returnRecord(index, records) {
-  const record = records?.[this.validateIndex(index, records?.length) - 1];
-  if (record) {
+  const record = records?.[this.validateIndex(index, records?.length) - 1] || {};
+  //if (record) {
     return {record};
   }
 },

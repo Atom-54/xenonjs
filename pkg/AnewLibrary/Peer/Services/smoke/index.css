@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+[screen] {
+  width: 80vw; /*336px;*/
+  height: 80vh; /*480px;*/
+  border: 1px dotted darkorange;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+[image] {
+  height: 5000px;
+  /* magicpattern.design */
+  background-color: #e5e5f7;
+  opacity: 0.5;
+  background: radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent), radial-gradient(circle, transparent 20%, #e5e5f7 20%, #e5e5f7 80%, transparent 80%, transparent) 80px 80px, linear-gradient(#444cf7 5.800000000000001px, transparent 5.800000000000001px) 0 -2.9000000000000004px, linear-gradient(90deg, #444cf7 5.800000000000001px, #e5e5f7 5.800000000000001px) -2.9000000000000004px 0;
+  background-size: 160px 160px, 160px 160px, 80px 80px, 80px 80px;
+}

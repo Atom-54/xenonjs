@@ -1,0 +1,19 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+
+<link href="./index.css" rel="stylesheet">
+
+<div screen id="bscreen">
+  <div image></div>
+</div>
+
+<script type="module">
+  import {SSEPubSub} from '../SSEPubSub.js';
+  const pubSub = new SSEPubSub('https://xenonjs-core.firebaseio.com');
+  window.bscreen.onscroll = () => {
+    pubSub.debounce(
+      value => pubSub.publish('scroll/y', value),
+      window.bscreen.scrollTop
+    );
+  };
+</script>
