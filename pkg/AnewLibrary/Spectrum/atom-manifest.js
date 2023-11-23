@@ -54,10 +54,13 @@ export const Spectrum = {
     ligature: 'tab',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabs',
     inputs: {
-      tabs: '[String]',
+      tabs: 'Pojo',
+    },
+    outputs: {
+      tab: 'String'
     },
     state: {
-      tabs: 'Tab'
+      tabs: ['Tab']
     }
   },
   SpectrumTabPanels: {
@@ -66,10 +69,10 @@ export const Spectrum = {
     ligature: 'tabs',
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     inputs: {
-      tabs: '[String]',
+      tabs: 'Pojo',
     },
     outputs: {
-      tabs: '[String]'
+      tabs: 'Pojo'
     },
     state: {
       tabs: ['Tab']

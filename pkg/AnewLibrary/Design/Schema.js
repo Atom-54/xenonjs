@@ -21,8 +21,11 @@ export const schemaForLayer = (controller, layerId) => {
 
 const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
   for (const [prop, value] of Object.entries(modalHostSchema)) {
-    const key = `${idPrefix}$${prop}`.replace(/\$/g, '.');
-    modalSchema[key] = value;
+    const ids = [...(idPrefix||'').split('$'), prop];
+    const key = ids.join('.');
+    if (ids[ids.length-1] !== 'name' || ids.length < 3) {
+      modalSchema[key] = value;
+    }
   }
 };
 

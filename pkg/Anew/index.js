@@ -32,10 +32,10 @@ start(async xenon => {
   const {sublayers} = Project.currentProject;
   if (sublayers) {
     for (const id of sublayers) {
+      // waits for graph to exist, but does not wait for output
       await Design.reifyGraph(build, id);
     }
   }
-  //await Project.reifyGraphs(build);
 });
 
 const onrender = async (host, packet) => {

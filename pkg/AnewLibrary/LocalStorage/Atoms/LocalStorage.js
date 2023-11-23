@@ -15,7 +15,6 @@ async update({key, storeValue}, state, {service}) {
   if (cached !== undefined && (state.value === undefined || state.key !== key)) {
     state.key = key;
     state.value = cached;
-    return {value: state.value};
   } else if (!deepEqual(state.value, storeValue)) {
     log('about to persist', key, storeValue);
     state.value = storeValue;
@@ -31,5 +30,6 @@ async update({key, storeValue}, state, {service}) {
       }
     }
   }
+  return {value: state.value};
 }
 });

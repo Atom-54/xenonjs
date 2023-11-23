@@ -16,7 +16,7 @@ export const Data = {
       json: 'Pojo',
     },
     outputs: {
-      data: 'Pojo'
+      value: 'Pojo'
     }
   },
   Form: {
@@ -27,8 +27,7 @@ export const Data = {
     ligature: 'ballot',
     inputs: {
       inputData: 'Pojo',
-      submitTrigger: 'Nonce',
-      form: 'FormId|String'
+      submitTrigger: 'Nonce'
     },
     outputs: {
       form: 'FormId',
