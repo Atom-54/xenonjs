@@ -85,5 +85,52 @@ export const Data = {
     outputs: {
       result: 'Pojo'
     }
+  },
+  CsvData: {
+    categories: [category],
+    description: 'Parse CSV text',
+    type: '$anewLibrary/Data/Atoms/CsvData',
+    ligature: 'data_table',
+    inputs: {
+      csv: 'String',
+      url: 'String', 
+    },
+    outputs: {
+      lines: '[Pojo]'
+    }
+  },
+  Chart: {
+    categories: [category],
+    description: 'Renders chart',
+    type: '$anewLibrary/Data/Atoms/Chart',
+    ligature: 'area_chart',
+    inputs: {
+      type: 'TypeValues|String',
+      data: '[Pojo]',
+      options: '[Pojo]'      
+    },
+    types: {
+      TypeValues: ['bar', 'doughnut', 'pie', 'line']
+    }  
+  },
+  Table: {
+    categories: [category],
+    displayName: 'Toast Table',
+    description: 'Renders data in a table',
+    type: '$anewLibrary/Data/Atoms/Table',
+    ligature: 'table',
+    inputs: {
+      columns: '[Pojo]',
+      data: '[Pojo]',
+      options: '[Pojo]'
+    },
+    outputs: {
+      event: 'Pojo'
+    },
+    state: {
+      options: {
+        rowHeaders: ['checkbox']
+      }
+    }
   }
 };
