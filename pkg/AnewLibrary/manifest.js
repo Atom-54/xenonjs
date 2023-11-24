@@ -20,6 +20,7 @@ const manifests = [
   'OpenAI',
   'Pixabay',
   'PixiJs',
+  'Polymath',
   'Shader',
   'Spectrum',
   'UX',

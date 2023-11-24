@@ -1,0 +1,7 @@
+<!doctype html>
+
+<script type="module">
+  import {PolymathService} from './PolymathService.js';
+  const result = await PolymathService.IngestWikiQuery(null, null, {query: 'alien UFOs'});
+  console.log(result);
+</script>
