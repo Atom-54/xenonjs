@@ -28,7 +28,7 @@ const graph = {
     },
     "connections":{
       "image":[
-        "Graph17$FrameCapture27$frame"
+        "Graph17$FrameCapture$frame"
       ]
     }
   },
@@ -44,7 +44,7 @@ const graph = {
     },
     "connections":{
       "image":[
-        "Graph17$FrameCapture27$frame"
+        "Graph17$FrameCapture$frame"
       ]
     }
   },
@@ -71,7 +71,7 @@ const graph = {
         "SelfieSegmentation$mask"
       ],
       "imageC":[
-        "Graph17$FrameCapture27$frame"
+        "Graph17$FrameCapture$frame"
       ]
     }
   },

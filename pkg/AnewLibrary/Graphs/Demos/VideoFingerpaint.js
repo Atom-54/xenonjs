@@ -13,7 +13,7 @@ const graph = {
     "container":"Container",
     "connections":{
       "image":[
-        "Graph23$FrameCapture27$frame"
+        "Graph23$FrameCapture$frame"
       ]
     }
   },
@@ -36,7 +36,7 @@ const graph = {
         "PointerPoms$image"
       ],
       "imageA":[
-        "Graph23$FrameCapture27$frame"
+        "Graph23$FrameCapture$frame"
       ]
     }
   },

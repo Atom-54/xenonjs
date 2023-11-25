@@ -27,7 +27,7 @@ const graph = {
     },
     "connections":{
       "text":[
-        "DeviceAudio$SpeechRecognizer89$transcript"
+        "DeviceAudio$SpeechRecognizer$transcript"
       ]
     }
   },

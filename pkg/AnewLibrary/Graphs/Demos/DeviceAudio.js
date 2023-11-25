@@ -8,7 +8,7 @@ const graph = {
   "meta":{
     "id":"DeviceAudio"
   },
-  "DeviceUx27":{
+  "DeviceUx":{
     "type":"$anewLibrary/Media/Atoms/DeviceUx",
     "container":"Container",
     "state":{
@@ -38,11 +38,11 @@ const graph = {
     },
     "connections":{
       "mediaDeviceState":[
-        "DeviceUx27$mediaDeviceState"
+        "DeviceUx$mediaDeviceState"
       ]
     }
   },
-  "SpeechRecognizer89":{
+  "SpeechRecognizer":{
     "type":"$anewLibrary/Media/Atoms/SpeechRecognizer",
     "container":"Container",
     "state":{
@@ -57,11 +57,11 @@ const graph = {
     },
     "connections":{
       "mediaDeviceState":[
-        "DeviceUx27$mediaDeviceState"
+        "DeviceUx$mediaDeviceState"
       ]
     }
   },
-  "SpeechSynthesizer71":{
+  "SpeechSynthesizer":{
     "type":"$anewLibrary/Media/Atoms/SpeechSynthesizer",
     "container":"Container",
     "state":{
@@ -76,7 +76,7 @@ const graph = {
     },
     "connections":{
       "mediaDeviceState":[
-        "DeviceUx27$mediaDeviceState"
+        "DeviceUx$mediaDeviceState"
       ]
     }
   }

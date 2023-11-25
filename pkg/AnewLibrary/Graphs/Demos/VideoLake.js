@@ -22,7 +22,7 @@ const graph = {
     },
     "connections":{
       "image":[
-        "DeviceVideo$FrameCapture27$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
@@ -41,7 +41,7 @@ const graph = {
         "FragmentShader$outputImage"
       ],
       "imageA":[
-        "DeviceVideo$FrameCapture27$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
