@@ -77,5 +77,15 @@ export const Layout = {
     types: {
       FlyOutSide: ['','top','right','bottom','left'],
     }
+  },
+  TabPages: {
+    categories: [category],
+    displayName: 'Tag Pages',
+    description: 'Set of pages with Tabs for navigation',
+    type: '$anewLibrary/Layout/Atoms/TabPages',
+    ligature: 'tabs',
+    inputs: {
+      tabs: '[Pojo]'
+    }
   }
 };

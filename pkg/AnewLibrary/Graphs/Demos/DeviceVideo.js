@@ -8,7 +8,7 @@ const graph = {
   "meta":{
     "id":"DeviceVideo"
   },
-  "DeviceUx43":{
+  "DeviceUx":{
     "type":"$anewLibrary/Media/Atoms/DeviceUx",
     "container":"Container",
     "state":{
@@ -62,11 +62,11 @@ const graph = {
     },
     "connections":{
       "mediaDevices":[
-        "MediaStream8$mediaDevices"
+        "MediaStream$mediaDevices"
       ]
     }
   },
-  "MediaStream8":{
+  "MediaStream":{
     "type":"$anewLibrary/Media/Atoms/MediaStream",
     "container":"Container",
     "state":{
@@ -82,11 +82,11 @@ const graph = {
     },
     "connections":{
       "mediaDeviceState":[
-        "DeviceUx43$mediaDeviceState"
+        "DeviceUx$mediaDeviceState"
       ]
     }
   },
-  "FrameCapture27":{
+  "FrameCapture":{
     "type":"$anewLibrary/Media/Atoms/FrameCapture",
     "container":"Container",
     "state":{
@@ -101,7 +101,7 @@ const graph = {
     },
     "connections":{
       "stream":[
-        "MediaStream8$stream"
+        "MediaStream$stream"
       ]
     }
   }

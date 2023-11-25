@@ -132,5 +132,50 @@ export const Data = {
         rowHeaders: ['checkbox']
       }
     }
+  },
+  Gate: {
+    categories: [category],
+    description: 'Serves as a triggered passthrough for JSON data',
+    type: '$anewLibrary/Data/Atoms/Gate',
+    ligature: 'outdoor_garden',
+    inputs: {
+      json: 'Pojo',
+      trigger: 'Nonce'
+    },
+    outputs: {
+      value: 'Pojo'
+    }
+  },
+  Iterator: {
+    categories: [category],
+    type: '$anewLibrary/Data/Atoms/Iterator',
+    ligature: 'steppers',
+    inputs: {
+      source: 'String',
+      stride: 'String|Number',
+      response: '[Pojo]'
+    },
+    outputs: {
+      data: 'Pojo',
+      results: 'Pojo'
+    }
+  },
+  StringFormatter: {
+    categories: [category],
+    displayName: 'String Formatter',
+    description: 'Formats given arguments into a string',
+    type: '$anewLibrary/Data/Atoms/StringFormatter',
+    ligature: 'regular_expression',
+    inputs: {
+      format: 'MultilineText',
+      arg0: 'String',
+      arg1: 'String',
+      arg2: 'String',
+      arg3: 'String',
+      arg4: 'String',
+    },
+    outputs: {
+      result: 'String'
+    },
   }
 };

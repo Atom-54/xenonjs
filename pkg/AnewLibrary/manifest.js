@@ -23,6 +23,7 @@ const manifests = [
   'Polymath',
   'Shader',
   'Spectrum',
+  'TensorFlow',
   'UX',
   'Weightless'
 ];

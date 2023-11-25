@@ -24,3 +24,4 @@ export {VisionTasksService} from '../AnewLibrary/Mediapipe/Services/VisionTasksS
 export {ShaderService} from '../AnewLibrary/Shader/Services/ShaderService.js';
 export {LocalStorageService} from '../AnewLibrary/LocalStorage/Services/LocalStorageService.js';
 export {PolymathService} from '../AnewLibrary/Polymath/Services/PolymathService.js';
+export {CocoSsdService} from '../AnewLibrary/TensorFlow/Services/CocoSsdService.js';
