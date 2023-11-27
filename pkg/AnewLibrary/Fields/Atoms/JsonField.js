@@ -4,26 +4,34 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({form, text}, state, {service}) {
+async update({form, value}, state, {service}) {
   service('FormService', 'RegisterField', {form});
-  return this.textChange(text, state);
+  if (typeof value === 'object') {
+    value = JSON.stringify(value, null, '  ');
+  }
+  return this.updateText(value, state);
 },
-onTextChange({eventlet: {value}}, state) {
-  return this.textChange(value, state);
-},
-textChange(value, state) {
-  state.text = value;
-  return {text: value, value};
+async onTextChange({eventlet: {value}}, state, {service}) {
+  const clean = await service('JsonRepairService', 'Repair', {value});
+  return this.updateText(clean?.json, state);
 },
 render({label}, {text}) {
-  if (text && !(typeof text === 'string')) {
-    text = JSON.stringify(text, null, '  ');
-  }
   return {
     label,
     showLabel: String(Boolean(label?.length > 0)),
     text: text??''
   };
+},
+updateText(text, state) {
+  let value;
+  try {
+    value = JSON.parse(text);
+    text = JSON.stringify(value, null, '  ');
+  } catch(x) {
+  }
+  state.text = text;
+  state.value = value;
+  return {text, value};
 },
 template: html`
 <style>
@@ -40,7 +48,8 @@ template: html`
     white-space: pre;
     resize: none;
     margin: 0;
-    font-size: inherit;
+    font-family: Courier, "Roboto Mono", Inconsolata, "Source Code Pro", monospace;
+    font-size: .8em;
     text-wrap: wrap;
   }
   [label] {

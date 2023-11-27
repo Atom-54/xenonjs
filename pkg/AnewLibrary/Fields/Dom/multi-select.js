@@ -60,7 +60,7 @@ export class MultiSelect extends Xen.Async {
     return Xen.Template.html`
 <style>
   [options] {
-    font-size: 12px;
+    /* font-size: 12px; */
     width: 100%;
     height: 100%;
     border: 1px solid var(--multi-select-color, --theme-color-fg-0);

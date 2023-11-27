@@ -52,11 +52,10 @@ Xen.DropTarget = class extends Xen.Async {
   }
   computeEventValue(e, t) {
     this.trigger = e;
-    //let t = e.target;
     while (t && !t.id) t = t.closest('[id]') ?? t.getRootNode().host;
     this.targetElt = t;
     this.key = this.targetkey || t?.id;
-    this.value = e.dataTransfer?.getData(this.datatype || 'text/plain');
+    this.value = (this.datatype && e.dataTransfer?.getData(this.datatype)) || e.dataTransfer.getData('text/plain');
   }
 };
 

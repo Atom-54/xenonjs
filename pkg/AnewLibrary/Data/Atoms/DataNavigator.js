@@ -7,7 +7,7 @@ export const atom = (log, resolve) => ({
 initialize(_, state) {
   state.index = 1;
 },
-async update({index, count, records, submittedRecord}, state, {isDirty}) {
+async update({index, records, submittedRecord}, state, {isDirty}) {
   const indexDirty = isDirty('index') && Number(index) >= 0; 
   if (indexDirty) {
     state.index = Number(index);
@@ -16,6 +16,9 @@ async update({index, count, records, submittedRecord}, state, {isDirty}) {
   const dirtyRecords = isDirty('records') && !deepEqual(state.records, records);
   if (records && dirtyRecords) {
     log.debug('consume records');
+    if (records && !records.length) {
+      records = [{}];
+    }
     state.records = records;
   } else if (submittedRecord) {
     state.records ??= [];

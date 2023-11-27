@@ -7,28 +7,6 @@
 const category = 'Fields';
 
 export const Fields= {
-  BooleanField: {
-    categories: [category],
-    displayName: 'Boolean Field',
-    description: 'Displays a checkbox field',
-    type: '$anewLibrary/Fields/Atoms/BooleanField',
-    ligature: 'check_box',
-    inputs: {
-      label: 'String',
-      value: 'Boolean',
-      form: 'FormId'
-    },
-    outputs: {
-      value: 'Boolean'
-    },
-    state: {
-      label: 'Boolean Field',
-      style: {
-        flex: '0 0 auto',
-        padding: '0.5em'
-      }
-    }
-  },
   Button: {
     categories: [category, 'Common', 'Weightless Components'],
     displayName: 'Weightless Button',
@@ -46,6 +24,28 @@ export const Fields= {
     },
     state: {
       label: 'Button',
+      style: {
+        flex: '0 0 auto',
+        padding: '0.5em'
+      }
+    }
+  },
+  BooleanField: {
+    categories: [category],
+    displayName: 'Boolean Field',
+    description: 'Displays a checkbox field',
+    type: '$anewLibrary/Fields/Atoms/BooleanField',
+    ligature: 'check_box',
+    inputs: {
+      label: 'String',
+      value: 'Boolean',
+      form: 'FormId'
+    },
+    outputs: {
+      value: 'Boolean'
+    },
+    state: {
+      label: 'Boolean Field',
       style: {
         flex: '0 0 auto',
         padding: '0.5em'
@@ -177,7 +177,7 @@ export const Fields= {
   },
   StaticText: {
     categories: [category, 'Common'],
-    displayName: 'Static Field',
+    displayName: 'Static Text',
     description: 'Displays static text',
     type: '$anewLibrary/Fields/Atoms/StaticText',
     ligature: 'notes',
@@ -254,6 +254,27 @@ export const Fields= {
       label: 'Text Field',
       style: {
         flex: '0 0 auto',
+        padding: '0.5em'
+      }
+    }
+  },
+  JsonField: {
+    categories: [category],
+    displayName: 'JSON Field',
+    description: 'Displays JSON as editable text',
+    type: '$anewLibrary/Fields/Atoms/JsonField',
+    ligature: 'edit_note',
+    inputs: {
+      label: 'String',
+      value: 'Json',
+      form: 'FormId'
+    },
+    outputs: {
+      value: 'Json'
+    },
+    state: {
+      label: 'JSON Field',
+      style: {
         padding: '0.5em'
       }
     }

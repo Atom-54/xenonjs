@@ -1,5 +1,5 @@
-import {atomInfo} from '../../AnewLibrary/manifest.js';
-export {atomInfo};
+import {atomInfo} from '../../AnewLibrary/Xenon/Library.js';
+import * as Graph from './Graph.js';
 
 const log = logf('Schema', '#953553');
 
@@ -30,6 +30,8 @@ const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
 };
 
 export const schemaForHost = host => {
+  const state = Graph.getAtomState(host);
+  /*
   let graph = host.layer.graph;
   // accumulate host state
   const hostState = graph[host.name].state;
@@ -54,19 +56,21 @@ export const schemaForHost = host => {
       graph && log.debug(graph);
     }
   }
-  // accumulate host connections
+  */
+  // host has these connections
   let connections = host.layer.graph[host.name].connections;
-  const parentHost = host.layer.host;
-  const parentLayer = parentHost?.layer;
-  if (parentLayer?.id.split('$')?.length > 1) {
-    connections = {};
-    const qualifedConnections = parentLayer.graph[parentHost.name]?.connections;
-    for (const [key, value] of entries(qualifedConnections)) {
-      if (key.startsWith(host.name + '$')) {
-        connections[key.slice(host.name.length + 1)] = value;
-      }
-    }
-  }
+  // const parentLayer = host.layer;
+  // const parentHost = parentLayer.host;
+  // //const parentLayer = parentHost?.layer;
+  // if (parentLayer?.id.split('$')?.length > 1) {
+  //   connections = {};
+  //   const qualifedConnections = parentLayer.graph[parentHost.name]?.connections;
+  //   for (const [key, value] of entries(qualifedConnections)) {
+  //     if (key.startsWith(host.name + '$')) {
+  //       connections[key.slice(host.name.length + 1)] = value;
+  //     }
+  //   }
+  // }
   // build schema
   const schema = {
     inputs: {
@@ -84,18 +88,21 @@ const schemaFromHost = (schema, host, state, connections) => {
   const kind = host.type.split('/').pop();
   const info = atomInfo[kind];
   if (info) {
-    schemaMode(schema.inputs, info.inputs, state, connections);
-    schemaMode(schema.outputs, info.outputs, state, connections);
+    schemaMode(schema.inputs, info.inputs, state);
+    schemaMode(schema.outputs, info.outputs, state);
   }
+  entries(connections).forEach(([key, connection]) => {
+    const input = schema.inputs[key] ??= {};
+    input.connection = connection[0];
+  });
 };
 
-const schemaMode = (modalSchema, modalInfo, state, connections) => {
+const schemaMode = (modalSchema, modalInfo, state) => {
   for (const [key, type] of Object.entries(modalInfo || {})) {
     const defaultValue = (type.includes('String') || type.includes('Text')) ? '' : null;
     modalSchema[key] = {
       type, 
-      value: state[key] || defaultValue,
-      connection: connections?.[key]?.[0]
+      value: state[key] || defaultValue
     };
   }
 };

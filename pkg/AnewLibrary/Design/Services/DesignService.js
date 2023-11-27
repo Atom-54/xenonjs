@@ -2,10 +2,12 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
+import {makeCapName} from '../../CoreXenon/Reactor/Atomic/js/names.js';
+import * as Library from '../../Xenon/Library.js';
 import * as Controller from '../../Framework/Controller.js';
-import * as Schema from '../../Design/Schema.js';
-import * as Project from '../../../AnewLibrary/Design/Services/ProjectService.js';
-import {makeCapName} from '../..//CoreXenon/Reactor/Atomic/js/names.js';
+import * as Schema from '../Schema.js';
+import * as Graph from '../Graph.js';
+import * as Project from './ProjectService.js';
 
 const log = logf('DesignService', '#512E5F', 'white');
 
@@ -62,9 +64,9 @@ export const DesignService = {
   async UpdateDesigner(host) {
     return designUpdate(host.layer.controller);
   },
-  GetAtomTypes() {
-    return Object.entries(Schema.atomInfo).map(([key, info]) => ({name: key, displayName: key, ...info}));
-  },
+  // GetAtomTypes() {
+  //   return getAtomTypes();
+  // },
   GetAtomTypeCategories() {
     return getAtomTypeCategories();
   },
@@ -79,7 +81,7 @@ export const DesignService = {
     return {atoms, schema, connections};
   },
   async DesignDragDrop(host, {eventlet}) {
-    const types = DesignService.GetAtomTypes();
+    const types = getAtomTypes();
     const dropType = types.find(({name}) => name === eventlet.value);
     if (dropType) {
       log.debug('Dropping type', eventlet, dropType);
@@ -154,16 +156,20 @@ export const getDesignLayer = controller => {
   return Controller.findLayer(controller, designLayerId);
 };
 
-export const addDesignedAtom = async (controller, layer, {name, type, container, isContainer, state}) => {
-  const host = await Controller.reifyAtom(controller, layer, {name, type, container, isContainer, state});
-  layer.graph[name] = {type, container, isContainer, state}; 
+export const addDesignedAtom = async (controller, layer, {name, type, container, containers, state}) => {
+  const host = await Controller.reifyAtom(controller, layer, {name, type, container, containers, state});
+  layer.graph[name] = {type, container, containers, state}; 
   designUpdate(controller);
   designSelect(controller, host.id);
   Project.saveProject(Project.currentProject);
 };
 
+const getAtomTypes = () => {
+  return Object.entries(Library.atomInfo).map(([key, info]) => ({name: key, displayName: key, ...info}));
+};
+
 const getAtomTypeCategories = filter => {
-  const rawTypes = DesignService.GetAtomTypes();
+  const rawTypes = getAtomTypes();
   const categorized = {};
   filter = filter?.toLowerCase();
   const types = filter ? rawTypes.filter(a => a.displayName.toLowerCase().includes(filter)) : rawTypes;
@@ -195,8 +201,8 @@ const designObserver = (controller, inputs) => {
       const parts = qualifiedId.split('$');
       const key = parts.pop();
       const id = parts.join('$');
-      log.debug('updating property text for', id, key);
-      updateProperty(controller, id, key,  inputs.build$CodeEditor$text);
+      log.debug('designObserver: updating property text for', id, key);
+      updateProperty(controller, id, key, inputs.build$CodeEditor$text);
     }
   }
   if ('build$Catalog$Filter$query' in inputs) {
@@ -292,7 +298,7 @@ const getDesignTargetId = () => {
   return designLayerId + 'Target';
 };
 
-export const designUpdateTarget = (controller, host) => {
+export const designUpdateTarget = controller => {
   Controller.writeInputsToHost(controller, getDesignTargetId(), {refresh: Math.random()});
 };
 
@@ -313,7 +319,7 @@ const getAtomInfo = (controller, layerId) => {
       id,
       type: atom.type.split('/').pop(),
       container: atom.meta.container,
-      isContainer: atom.meta.isContainer
+      containers: atom.meta.containers
     }))
     .sort(orderCompareFactory(controller))
   ;
@@ -334,12 +340,12 @@ const dropAtomType = async (host, eventlet, dropType) => {
   const name = dropType.name + Math.floor(Math.random()*100);
   const type = dropType.type; 
   const state = dropType.state || {};
-  const isContainer = dropType.isContainer;
+  const containers = dropType.containers;
   log.debug({name, container, state});
   // TODO(sjmiles): layer prefix is added back in Controller.reifyAtom, which
   // expects `container` to be in local-scope
   container = container.slice(targetLayer.length + 1);
-  return addDesignedAtom(controller, layer, {name, type, container, isContainer, state});
+  return addDesignedAtom(controller, layer, {name, type, container, containers, state});
 };
 
 const dropAtom = async (controller, eventlet) => {
@@ -407,7 +413,8 @@ const updateConnection = (controller, hostId, propName, connection) => {
   } else {
     delete atomConnections[propId];
   }
-  designUpdateTarget(controller, host);
+  // forces design target to invalidate
+  designUpdateTarget(controller);
   designUpdate(controller);
   Project.saveProject(Project.currentProject);
 };
@@ -420,14 +427,11 @@ const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   Controller.writeValue(controller, hostId, propName, value);
   // update graph state
   if (!nopersist) {
-    const host = controller.atoms[designHostId];
-    const hostSplit = designHostId.split('$');
-    const atomName = hostSplit.pop();
-    host.layer.graph[atomName].state[propId.replace(/\./g, '$')] = value;
-    log.debug(host.layer.graph[atomName]);
-    designUpdateTarget(controller, host);
+    Graph.updateProperty(controller, designHostId, propId, value);
     Project.saveProject(Project.currentProject);
   }
+  // forces design target to invalidate
+  designUpdateTarget(controller);
 };
 
 const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'] ??= {};
@@ -466,26 +470,39 @@ const renameAtom = async (host, id, value) => {
   const {graph} = layer;
   graph[graphNewId] = graph[graphAtomId];
   delete graph[graphAtomId];
-  //
   log.debug('atom controller rekey from', id, 'to', newKey);
-  delete controller.atoms[id];
+  // capture originals
+  const {name: origName, id: origiId} = atom;
+  // replace credentials
   atom.name = value;
   atom.id = newKey;
+  // replace in controller
+  delete controller.atoms[id];
   controller.atoms[newKey] = atom;
-  //
+  // update controller connections
+  const old = controller.connections.inputs;
+  const connections = controller.connections.inputs = {};
+  Object.entries(old).forEach(([name, value]) => {
+    name = name.replace('$' + origName + '$', '$' + value + '$');
+    value = value.map(name => name.replace('$' + origName + '$', '$' + value + '$'));
+    connections[name] = value;
+  });
+  // update graph connections
   log.debug('connection search');
-  // update sibling connections
+  // update connection target ids
   Object.values(layer.graph).forEach(atom => {
     if (atom.connections) {
       Object.values(atom.connections).forEach(connects => {
-        for (let c$ of connects) {
-          if (c$.startsWith(id)) {
-            log.debug(c$);
+        connects.forEach((c$, i) => {
+          if (c$.startsWith(origName + '$')) {
+            connects[i] = value + '$' + c$.slice(origName.length+1);
+            log.debug(c$, connects[i]);
           }
-        }
+        });
       });
     }
   });
+  //
   // update live state
   log.debug('state search');
   const k0 = Object.entries(controller.state).forEach(([sid, svalue]) => {
@@ -499,10 +516,19 @@ const renameAtom = async (host, id, value) => {
       log.debug('state controller rekey from', sid, 'to', newKey);
     }
   });
+  //
   //update bindings
   const k1 = Object.keys(controller.connections).filter(key => key.includes(atom.id));
   log.debug(k1);
   //
+  // maybe update designer's selected atom name
+  designSelect(controller, null);
+  // slot rename
+  const slot = controller.composer.slots[id];
+  controller.composer.slots[newKey] = slot;
+  delete controller.composer.slots[id];
+  // redundant?
   designUpdate(controller);
+  // save changes
   Project.saveProject(Project.currentProject);
 };

@@ -15,7 +15,7 @@ async update({key, storeValue}, state, {service}) {
   if (cached !== undefined && (state.value === undefined || state.key !== key)) {
     state.key = key;
     state.value = cached;
-  } else if (!deepEqual(state.value, storeValue)) {
+  } else if (storeValue !== undefined && !deepEqual(state.value, storeValue)) {
     log('about to persist', key, storeValue);
     state.value = storeValue;
     await persist({storeId: key, data: storeValue});

@@ -25,8 +25,8 @@ const xenon = {...core};
 // set up for global Atom context
 const isolationScope = globalThis;
 // instructions to prepare Atom industry
-xenon.industrialize = async () => {
-  await industrialize();
+xenon.industrialize = async atoms => {
+  await industrialize(atoms);
   Object.assign(isolationScope, injections);
 };
 // Atom production line (once industrialized)
