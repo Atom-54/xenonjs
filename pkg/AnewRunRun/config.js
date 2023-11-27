@@ -3,33 +3,42 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const xenonPath = new URL('../../../..', import.meta.url).href.slice(0, -1);
+// let xenonPath = 'https://xenon-js.web.app/0.7/';
+// if (import.meta.url.startsWith('http://localhost')) {
+//   xenonPath = new URL('../', import.meta.url).href;
+// }
+const xenonPath = new URL('../', import.meta.url).href.slice(0, -1);
 
 globalThis.config = {
-  // as needed
   xenonPath,
   // storage prefix
-  aeon: 'xenon/0.3.0',
+  aeon: 'a54.00',
   paths: {
     // as needed
+    $anewLibrary: `${xenonPath}/AnewLibrary`,
     $library: `${xenonPath}/Library`,
     // next two paths only needed if using workers
     $xenon: xenonPath,
-    $boot: `${xenonPath}/Apps/Poetry/web/xenon.js`,
+    $boot: `${xenonPath}/Build/xenon.js`
   },
   logFlags: {
-    //App: true,
-    Atom: true,
-    //Binder: true,
+    //Atom: true,
     //BusTerminal: true,
     //Composer: true,
-    Graphs: true,
+    //Controller: true,
+    //Design: true,
+    //DOM: true,
+    //Graphs: true,
     //Host: true,
     //Industry: true,
-    //MessageBus: true,
+    //Layers: true,
+    //Library: true,
     Main: true,
-    Persist: true,
+    //MessageBus: true,
+    //Nodes: true,
+    //Persist: true,
     //Reactor: true,
+    //Services: true,
     //Worker: true,
     //WorkerTransit: true
   },

@@ -10,11 +10,31 @@ export class LocalStorageService {
     }
   }
   static async restore(atom, {storeId}) {
-    try {
-      const item = localStorage.getItem(storeId);
-      return item ? JSON.parse(item) : null;
-    } catch(x) {
-      return null;
+    if (storeId.includes('*')) {
+      return restoreAll(storeId);
+    } else {
+      return getItem(storeId);
     }
   }
 }
+
+const getItem = key => {
+  const item = localStorage.getItem(key);
+  try {
+    return item ? JSON.parse(item) : null;
+  } catch(x) {
+    return item;
+  }
+};
+
+const restoreAll = prefix => {
+  const data = {};
+  prefix = prefix.replace('*', '');
+  for (let i=0; i<localStorage.length;i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith(prefix)) {
+      data[key] = getItem(key);
+    }
+  }
+  return data;
+};

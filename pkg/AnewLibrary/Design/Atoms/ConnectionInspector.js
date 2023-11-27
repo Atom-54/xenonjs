@@ -50,7 +50,7 @@ getTypeMatch(propA, propB) {
   const objectTypes = ['Pojo', 'Json'];
   const basicTypes = ['String', 'Text', 'Number'];
   const booleanTypes = ['Nonce', 'Boolean'];
-  const [A, B] = [propA.type, propB.type];
+  const [A, B] = [propA.type || '', propB.type || ''];
   if (A === B || (intersect(A.split('|'), B.split('|')))) {
     match += 3;
   } else if (basicTypes.includes(A) && basicTypes.includes(B)) {

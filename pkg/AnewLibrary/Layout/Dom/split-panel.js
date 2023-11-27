@@ -70,7 +70,7 @@ const template = Xen.Template.html`
   <slot name="one"></slot>
 </div>
 
-<div resizer vertical$="{{vertical}}" dragging$="{{dragging}}" on-pointerdown="onDown">
+<div resizer vertical$="{{vertical}}" dragging$="{{dragging}}" on-pointerdown="onDown" on-dblclick="onDblClick">
   <div handle vertical$="{{vertical}}"></div>
 </div>
 
@@ -106,21 +106,20 @@ export class SplitPanel extends DragDrop {
       if (collapsed !== Boolean(state.collapsed)) {
         state.collapsed = collapsed;
         if (collapsed) {
-          state.holdDivider = divider;
-          divider = 0;
+          state.open = false;
         } else {
-          divider = state.holdDivider;
+          state.open = true;
         }
-        //this.value = divider;
-        //this.fire('divider-change');
       }
       divider = Number(divider);
       state.divider = isNaN(divider) ? null : divider;
-      //console.log('update', state.divider);
     }
   }
-  render(_, {vertical, divider, endflex}) {
+  render(_, {open, vertical, divider, endflex}) {
     let dividerOrd;
+    if (open === false) {
+      divider = 0;      
+    }
     // if we've never messed with it manually, just do half
     if (divider !== 0 && !divider) {
       //log('defaulting divider to 50%');
@@ -182,5 +181,13 @@ export class SplitPanel extends DragDrop {
     this.value = this.state.divider;
     this.fire('divider-change');
   }
+  onDblClick(e) {
+    this.state.open = this.state.open === false ? true : false;
+    this.invalidate();
+    //this.toggle(inputs, state)
+  }
+  // toggle(_, state) {
+  //   state.open != state.open;
+  // }
 }
 customElements.define('split-panel', SplitPanel);

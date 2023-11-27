@@ -10,9 +10,9 @@ export const create = (meta, graphs) => ({
 });
 
 export const addGraph = (project, graph) => {
-  project.graphs.push(graph);
+  project?.graphs.push(graph);
 };
 
 export const getGraph = (project, id) => {
-  return project.graphs.find(({meta}) => meta.id === id);
+  return project?.graphs.find(({meta}) => meta.id === id);
 };

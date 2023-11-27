@@ -10,11 +10,9 @@ async initialize({}, state, {service}) {
 async update({selected}, state, {service}) {
   state.selected = selected;
   state.atoms = await service('DesignService', 'GetAtomInfo', {});
+  state.root = this.buildTree(state.atoms, selected);
 },
-shouldRender({}, {atoms}) {
-  return atoms;
-},
-render({}, {atoms, selected}) {
+buildTree(atoms, selected) {
   atoms.forEach(atom => atom.name = atom.id.replace(atoms.designLayerId + '$', '').replace(/\$/g, '.'));
   const rootAtoms = this.atomsInContainer(atoms, atoms.designLayerId + '#Container')
   const root = {
@@ -23,6 +21,12 @@ render({}, {atoms, selected}) {
     disabled: true
   };
   this.stratify(atoms, root, selected);
+  return root;
+},
+shouldRender({}, {root}) {
+  return root;
+},
+render({}, {root}) {
   return {
     tree: [root]
   };
@@ -33,10 +37,10 @@ stratify(allAtoms, root, selected) {
       atom.selected = atom.id === selected;
       if (!atom.type.endsWith('Graph')) {
         const atoms = this.atomsInParent(allAtoms, atom.id)
-        const foundContainers = new Set(atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')));
-        if (atom.isContainer) {
-          foundContainers.add('Container');
-        }
+        const foundContainers = new Set([
+          ...atom.containers || [],
+          ...atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')) || []
+        ]);
         const containers = [...foundContainers];
         atom.containers = containers.map(name => {
           const contained = this.atomsInContainer(atoms, `${atom.id}#${name}`);

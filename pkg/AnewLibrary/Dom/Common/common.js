@@ -16,8 +16,8 @@ import './image-upload.js';
 import './file-upload.js';
 //
 import '../../../third-party/weightless/weightless.min.js';
-import '../Weightless/weightless-pages.js';
-import '../Weightless/weightless-accordion.js';
+import '../../Weightless/Dom/weightless-pages.js';
+import '../../Weightless/Dom/weightless-accordion.js';
 //
 import '../../Layout/Dom/split-panel.js';
 import '../../Layout/Dom/fly-out.js';

@@ -15,9 +15,6 @@ export class AtomGraph extends DragDrop {
   static get observedAttributes() {
     return ['atoms', 'edges', 'schema'];
   }
-  // get host() {
-  //   return this;
-  // }
   get template() {
     return template;
   }
@@ -30,201 +27,68 @@ export class AtomGraph extends DragDrop {
   _didMount() {
     this.canvas = this.host.querySelector('canvas');
     this.viewport = this.host.querySelector('[viewport]');
-    this._rects = {};
     this.state.zoom = this.style.zoom = 0.7;
+    this.state.offsets ??= {};
     this.addEventListener('pointerdown', e => this.onDown(e));
     this.addEventListener('pointermove', e => this.onMove(e));
     this.addEventListener('pointerup', e => this.onUp(e));
   }
-  update({atoms, selected}, state, {service}) {
-    this.key = selected;
+  update({selected}, state, {service}) {
+    //this.key = selected;
   }
   render({atoms, edges}, state) {
-    const graph = null;
-    //   // inputs.graph is ad hoc, not really a graph
-    //   // iterate graph atoms to find selection and ensure each rect exists
-    //   let selected = this.validateGraphRects(inputs);
-    //   //console.log(inputs.rects);
-    //   // compute selectedKeys
-    //const selectedKeys = null; //selected?.key ? [`${this.idPrefix}${selected.key}`] : null
-    //   // covert rects into render model objects
-    const rects = null; // [{id: 'Foo', position: {l:10, t:10, w:50, h: 50}}];
-    //this.renderRects(inputs);
-    //   //console.log(rects);
-    //   // compute array of graphAtoms to render
-    //this.renderGraph(inputs);
     // NB: connectors are drawn after, via Canvas. See _didRender.
-    state.didRender = {rects, graph, edges, atoms};
+    state.didRender = {edges, atoms};
     // complete render model
     return {atoms, zoom: state.zoom};
-  // }
-  // validateGraphRects(inputs) {
-  //   inputs.rects = inputs.rects ?? this._rects;
-  //   // ... not actually a 'Graph' graph, just a graph
-  //   const {rects, graph} = inputs;
-  //   // iterate graph atoms
-  //   let selected = null;
-  //   if (graph) {
-  //     const atoms = [...graph.graphAtoms].sort((a,b) => a.key?.localeCompare(b.key));
-  //     atoms.forEach((n, i) => {
-  //       // - calculate missing rect
-  //       if (!rects[n.key]) {
-  //         const {l, t, w, h} = this.geom(rects, n.key, i, n);
-  //         rects[n.key] = {l, t, w, h};
-  //       }
-  //       // - calc a height based on # of connection points
-  //       const autoHeight = (Math.max(n?.inputs.length, n?.outputs.length) || 2) * 20 + 36;
-  //       rects[n.key].h = autoHeight; //Math.max(autoHeight, rects[n.key].h);
-  //       // - memoize selected atom
-  //       if (n.selected) {
-  //         selected = n;
-  //       }
-  //     });
-  //   }
-  //   return selected;
-  // }
-  // // get the geometry information for rectangle `key` (with index i)
-  // geom(rects, key, i, atom) {
-  //   if (rects?.[key]) {
-  //     const {l, t, w, h} = rects[key];
-  //     const [w2, h2] = [w/2, h/2];
-  //     return {x: l+w2, y: t+h2, l, t, r: l+w, b: t+h, w, h, w2, h2};
-  //   } else {
-  //     // calculate a default landing spot
-  //     let [width, height] = defaultSize;
-  //     const [cols, margin, ox, oy] = [3, 50, 116, 116];
-  //     const p = i => ({
-  //       x: (i%cols)*(width+margin) + ox,
-  //       y: Math.floor(i/cols)*(128+margin) + 16*(i%2) + oy
-  //     });
-  //     const o = p(i); // % 3);
-  //     const [w, h, w2, h2] = [width, height, width/2, height/2];
-  //     return {x: o.x, y: o.y, l: o.x-w2, t: o.y-h2, r: o.x+w2, b: o.y+w2, w, h, w2, h2};
-  //   }
   }
-  // renderRects({rects}) {
-  //   return Object.entries(rects || []).map(([id, position]) => ({id, position}));
-  // }
-  // renderGraph({rects, graph}) {
-  //   // compute array of graphAtoms to render
-  //   const renderAtoms = (rects && graph?.graphAtoms) ?? [];
-  //   return renderAtoms.map(n => this.renderGraphAtom(n));
-  // }
-  // renderGraphAtom({key, selected, color, bgColor, inputs, outputs, textSelected, ...etc}) {
-  //   // color ??= 'var(--xcolor-three)';
-  //   // bgColor ??= 'var(--xcolor-two)';
-  //   // const selectedColor = 'var(--xcolor-brand)';
-  //   return {
-  //     //...etc,
-  //     key,
-  //     selected,
-  //     atomId: `${this.idPrefix}${key}`,
-  //     // inputs: inputs?.map(({name, type}) => ({name, type, title: `${name}: ${type}`})),
-  //     // outputs: outputs?.map(({name, type}) => ({name, type, title: `${name}: ${type}`})),
-  //     // nameStyle: {
-  //     //   borderRadius: '11px 11px 0 0',
-  //     //   //borderColor: selected ? color : 'var(--theme-color-bg-1)',
-  //     //   //background: selected ? color : bgColor,
-  //     // },
-  //     // style: {
-  //     //   borderColor: selected ? selectedColor: color,
-  //     //   //color, //: selected ? selectedColor : color,
-  //     //   background: bgColor
-  //     // },
-  //     // inputStyle: {
-  //     //   background: 'transparent',
-  //     //   border: '2px solid transparent',
-  //     //   borderRadius: '11px 11px 0 0',
-  //     //   color: selected, // ? selectedColor : color,
-  //     //   textAlign: 'center',
-  //     //   width: '100%'
-  //     // },
-  //     // disableRename: Boolean(true) //Boolean(!textSelected && (key !== this.state.textSelectedKey))
-  //   };
-  // }
-  _didRender({}, {x, y, didRender: {atoms, edges}}) {
+  _didRender({}, {x, y, offsets, didRender: {atoms, edges}}) {
     if (edges) {
-      this.renderCanvas({atoms, edges}, {x, y});
+      this.renderCanvas({atoms, edges}, {x, y, offsets});
     }
-    // if (rects) {
-    //   this.renderCanvas({graph, rects}, {x, y});
-    // }
   }
-  renderCanvas({atoms, edges}, {x, y}) {
+  renderCanvas({atoms, edges}, {x, y, offsets}) {
     const [ox, oy] = [3000, 3000 + 53];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
-      // ctx.fillStyle = 'red';
-      // ctx.fillRect(3000, 3000, 3000, 3000);
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       let i = 0;
       const srcEdgeCount = {}, trgEdgeCount = {};
       for (const edge of edges) {
         const source = edge.id.split('$');
-        const sourceId = source.slice(0, 3).join('-');
+        const sourceProp = source.pop();
+        const sourceId = source.join('-');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
         const elt = this.shadowRoot.querySelector(`#${sourceId}`);
-        const p0 = {
-          x: ox + elt.offsetLeft + elt.offsetWidth,
-          y: oy + elt.offsetTop + e*14,
-        };
-        for (const bound of edge.binding) {
-          const target = bound.split('$');
-          const targetId = target.slice(0, 3).join('-');
-          if (targetId !== sourceId) {
-            trgEdgeCount[targetId] ??= -1;
-            const b = ++trgEdgeCount[targetId];
-            const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
-            if (elt2) {
-              const p1 = {
-                x: ox + elt2.offsetLeft,
-                y: oy + elt2.offsetTop + b*14
-              };
-              const path = this.calcBezier(p0, p1);
-              const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
-              this.laserCurve(ctx, path, highlight);
+        if (elt) {
+          const [dx, dy] = offsets[source.join('$')] ?? [0, 0];
+          const p0 = {
+            x: dx + ox + elt.offsetLeft + elt.offsetWidth,
+            y: dy + oy + elt.offsetTop + e*14,
+          };
+          for (const bound of edge.binding) {
+            const target = bound.split('$');
+            //const targetProp = target.slice(3).join('.');
+            const targetId = target.slice(0, 3).join('-');
+            if (targetId !== sourceId) {
+              trgEdgeCount[targetId] ??= -1;
+              const b = ++trgEdgeCount[targetId];
+              const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
+              if (elt2) {
+                const [dx, dy] = offsets[target.join('$')] ?? [0, 0];
+                const p1 = {
+                  x: dx + ox + elt2.offsetLeft,
+                  y: dy + oy + elt2.offsetTop + b*14
+                };
+                const path = this.calcBezier(p0, p1);
+                const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+                this.laserCurve(ctx, path, highlight);
+              }
             }
           }
         }
       }
-    }
-  }
-  renderCanvas0({graph, rects}, {x, y}) {
-    const ctx = this.canvas?.getContext('2d');
-    if (ctx) {
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      //console.log('=');
-      rects && graph.graphEdges?.map((edge, i) => {
-        const spacing = 18;
-        const margin = 11;
-        //
-        // const i0 = graph.graphAtoms.findIndex(({key}) => key === edge.from.id);
-        // const i0outs = graph.graphAtoms[i0]?.outputs;
-        // const ii0 = i0outs?.findIndex(({name}) => name === edge.from.storeName);
-        // const ii0c =i0outs?.length / 2 - 0.5;
-        // //console.log('out', i0, ii0, ii0c, edge.from.storeName);
-        // const i0offset = spacing * (ii0-ii0c) + margin;
-        // const g0 = this.geom(rects, edge.from.id, i0);
-        // //
-        // const i1 = graph.graphAtoms.findIndex(({key}) => key === edge.to.id);
-        // const i1ins = graph.graphAtoms[i1]?.inputs;
-        // const ii1 = i1ins?.findIndex(({name}) => name === edge.to.storeName);
-        // const ii1c = i1ins?.length / 2 - 0.5;
-        // //console.log('in', i1, ii1, ii1c, edge.to.storeName);
-        // const i1offset = spacing * (ii1-ii1c) + margin;
-        // const g1 = this.geom(rects, edge.to.id, i1);
-        // //
-        // if (i0outs?.length && i1ins?.length) {
-        //   const p0 = {x: g0.r - 1, y: g0.y + i0offset};
-        //   const p1 = {x: g1.l + 1, y: g1.y + i1offset};
-        //   const path = this.calcBezier(p0, p1);
-        //   //this.curve(ctx, path);
-        //   //const highlight = [[210, 210, 255], [255, 210, 210], [210, 255, 210]][i%3];
-        //   const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][i%3];
-        //   this.laserCurve(ctx, path, highlight);
-        // }
-      });
     }
   }
   calcBezier({x:startX, y:startY}, {x:endX, y:endY}) {
@@ -289,43 +153,12 @@ export class AtomGraph extends DragDrop {
   onAtomSelect(event) {
     event.stopPropagation();
     this.key = event.currentTarget.key;
-    //this.state.selected = this.key;
-    // if (this.key !== this.state.textSelectedKey) {
-    //   delete this.state.textSelectedKey;
-    // }
     this.fire('atom-selected');
   }
   onAtomUnselect(event) {
     this.key = null;
-    //this.state.selected = this.key;
-    //delete this.state.textSelectedKey;
     this.fire('atom-selected');
   }
-  // called when user has changed a rectangle (high freq)
-  // onUpdateBox({currentTarget: {value: rect}}) {
-  //   this.value = rect;
-  //   this.rects[this.key] = rect;
-  //   this.invalidate();
-  // }
-  // // called when committed a change to a rectangle (low freq)
-  // onUpdatePosition({currentTarget: {target, value: rect}}) {
-  //   if (target?.key && rect) {
-  //     this.key = target.key;
-  //     this.value = rect;
-  //     this.fire('atom-moved');
-  //   }
-  // }
-  // onAtomDblClicked(event) {
-  //   this.state.textSelectedKey = this.key;
-  // }
-  // onRenameAtom(event){
-  //   const text = event.target.value.trim();
-  //   if (text?.length > 0) {
-  //     this.value = text;
-  //     this.fire('atom-renamed');
-  //   }
-  //   delete this.state.textSelectedKey;
-  // }
   onWheel(event) {
     event.preventDefault();
     let zoom = this.state.zoom ?? 1;
@@ -344,14 +177,33 @@ export class AtomGraph extends DragDrop {
   }
   doMove(dx, dy) {
     const {state} = this;
-    state.tx = Math.min(Math.max((state.x || 0) + dx, -viewport/2 + 1500), viewport/2);
-    state.ty = Math.min(Math.max((state.y || 0) + dy, -viewport/2 + 1500), viewport/2);
-    this.viewport.style.transform = `translate(${state.tx}px, ${state.ty}px)`;
+    if (!this.key) {
+      state.tx = Math.min(Math.max((state.x || 0) + dx, -viewport/2 + 1500), viewport/2);
+      state.ty = Math.min(Math.max((state.y || 0) + dy, -viewport/2 + 1500), viewport/2);
+      this.viewport.style.transform = `translate(${state.tx}px, ${state.ty}px)`;
+    } else {
+      const elt = this.shadowRoot.querySelector(`#${this.key.split('$').join('-')}`);
+      if (elt) {
+        const off = (state.offsets[this.key] ??= [0, 0]);
+        const [zdx, zdy] = [off[0] + dx/state.zoom, off[1] + dy/state.zoom];
+        elt.style.transform = `translate(${zdx}px, ${zdy}px)`;
+        state.tx = zdx;
+        state.ty = zdy;
+        //state.offsets[this.key] = [zdx, zdy];
+        //this._didRender(this.props, this.state);
+      }
+    }
   }
   doUp() {
     const {state} = this;
-    state.x = state.tx;
-    state.y = state.ty;
+    if (this.key) {
+      state.offsets[this.key] = [state.tx, state.ty];
+      this.key = null;
+    } else {
+      state.x = state.tx;
+      state.y = state.ty;
+    }
+    this._didRender(this.props, this.state);
   }
   onPointerMove({eventlet}) {
     //log(eventlet);
@@ -364,7 +216,6 @@ const template = Xen.Template.html`
     display: block;
     user-select: none;
     overflow: hidden !important;
-    /* position: relative; */
     --main-hue: 304; 
   }
   [viewport] {
@@ -381,29 +232,19 @@ const template = Xen.Template.html`
     position: absolute;
     min-width: 100px;
     min-height: 60px;
-    /**/
     border-radius: 8px;
     outline-offset: 4px;
     cursor: pointer;
-    /**/
     opacity: 0.95;
     background-color: hsl(var(--main-hue), 50%, 60%);
     color: white;
-    /**/
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* [atom]:hover {
-    outline: 3px solid green;
-    z-index: 10000;
-  } */
   [atom][selected] {
     outline: 3px solid purple;
     z-index: 10000;
   }
-  /* [atom]:not([selected]) {
-    box-shadow:  9px 9px 18px #cecece20, -9px -9px 18px #d2d2d220;
-  } */
   [type] {
     font-size: 65%;
     background-color: #5b20b7; 
@@ -440,34 +281,11 @@ const template = Xen.Template.html`
     position: absolute;
     pointer-events: none;
   }
-  /* [layer0] [repeat] {
-    color: var(--xcolor-three);
-  }
-  [layer0]:hover [repeat] {
-    color: var(--xcolor-four);
-  }
-  [repeat="socket_i_t"] {
-    margin-left: -10px;
-    overflow: hidden;
-  }
-  [repeat="socket_o_t"] {
-    margin-right: -10px;
-    overflow: hidden;
-  }
-  [layer0] [dot] {
-    transition: opacity 100ms ease-in-out;
-    opacity: 0;
-  }
-  [layer0]:hover [dot] {
-    opacity: 1;
-  }
-   */
   [dot] {
     display: inline-block;
     width: 6px;
     height: 6px;
     background: lightgreen;
-    /* border: 1px solid white; */
     border: 4px solid rgba(0, 96, 0, 0.8);
     border-radius: 50%;
     margin: 0 .5rem;
@@ -484,11 +302,9 @@ const template = Xen.Template.html`
     font-size: .6rem; 
   }
   [input] {
-    /* padding-left: 3px;  */
     text-align: left;
   }
   [output] {
-    /* padding-right: 3px;  */
     text-align: right;
   }
   [flex] {
@@ -502,13 +318,12 @@ const template = Xen.Template.html`
   }
   [bar] {
     align-items: center;
-    /* padding: 3px; */
   }
 </style>
 
 <div viewport on-wheel="onWheel">
   <canvas layer1 width="${viewport}" height="${viewport}"></canvas>
-  <div layer0 on-mousedown="onatomUnselect">
+  <div layer0 on-mousedown="onAtomUnselect">
     <div repeat="atom_t">{{atoms}}</div>
   </div>
 </div>

@@ -23,21 +23,21 @@ start(async xenon => {
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
   Library.importLibrary(env);
   Services.addServices(services);
-  // create project
-  await Project.initProject('FirstProject');
   // make a controller
   const main = await Env.createController(env, 'main');
   globalThis.main = main;
   // add layers
-  const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
+  const build = await Controller.reifyLayer(main, main.layers, 'runrun', Graphs.RunRun);
   // load project graph(s)
-  const {sublayers} = Project.currentProject;
-  if (sublayers) {
-    for (const id of sublayers) {
-      // waits for graph to exist, but does not wait for output
-      await Design.reifyGraph(build, id);
-    }
-  }
+  const subGraphia = 'Build';
+  await Design.reifyGraph(build, subGraphia);
+  // const {sublayers} = Project.currentProject;
+  // if (sublayers) {
+  //   for (const id of sublayers) {
+  //     // waits for graph to exist, but does not wait for output
+  //     await Design.reifyGraph(build, id);
+  //   }
+  // }
 });
 
 const onrender = async (host, packet) => {

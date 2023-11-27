@@ -45,7 +45,6 @@ export const Data = {
     ligature: 'source_notes',
     inputs: {
       index: 'Number',
-      count: 'Number',
       records: '[Pojo]',
       submittedRecord: 'Pojo'
     },

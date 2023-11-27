@@ -3,7 +3,7 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {Xen} from '../Xen/xen-async.js';
+import {Xen} from '../../Dom/Xen/xen-async.js';
 
 const template = Xen.Template.html`
 <style>

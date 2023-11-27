@@ -11,7 +11,7 @@ export const Layout = {
     description: 'A simple container',
     ligature: 'select_all',
     type: '$anewLibrary/Layout/Atoms/Panel',
-    isContainer: true,
+    containers: ['Container'],
     inputs: {
       layout: 'LayoutValues:String',
       center: 'Boolean',
@@ -32,6 +32,7 @@ export const Layout = {
     description: 'A panel divided into two resizable sections',
     ligature: 'bottom_sheets',
     type: '$anewLibrary/Layout/Atoms/SplitPanel',
+    containers: ['Container', 'Container2'],
     inputs: {
       endflex: 'Boolean',
       divider: 'Number',
@@ -67,7 +68,7 @@ export const Layout = {
     description: 'A modal panel',
     ligature: 'dialogs',
     type: '$anewLibrary/Layout/Atoms/FlyOut',
-    isContainer: true,
+    container: ['Container'],
     inputs: {
       show: 'Nonce',
       hide: 'Nonce',

@@ -7,10 +7,14 @@ export const atom = (log, resolve) => ({
 async update({schema}, state, {output}) {
   state.props = [];
   await output();
-  state.props = map(schema, 
-    (label, info) => {
+  state.props = map(schema, (label, info) => {
+    if (info?.type?.includes) {
       const $template = this.templateForType(info.type);
-      if ($template) {
+      const propId = label.split('.');
+      const propDepth = propId.length;
+      const propName = propId.pop();
+      const typeOk = propDepth < 2 || !['style', 'form', 'layout', 'center', 'action', 'value', 'options', 'storeValue', 'inputData', 'submittedRecord'].includes(propName);
+      if ($template && typeOk) {
         let {value} = info;
         const isObject = (value && (typeof value === 'object')) || info.type.includes('Pojo') || info.type.includes('Json');
         if (isObject) {
@@ -38,7 +42,9 @@ async update({schema}, state, {output}) {
         };
       }
     }
-  ).filter(i => i);
+  })
+  .filter(i => i)
+  ;
 },
 templateForType(type) {
   switch (true) {
