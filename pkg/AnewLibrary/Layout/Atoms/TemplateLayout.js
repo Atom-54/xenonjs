@@ -12,7 +12,7 @@ export const atom = (log, resolve) => ({
  */
 // Atom scope is in here; `log` and `resolve` are here
 update({items, template}, state, {isDirty, output}) {
-  // instance scope is in here ... tools are bound to our instance; `isDirty`, `output`, `service` are here
+  // instance scope is in here ... tools are bound to our instance: `isDirty`, `output`, `service` are here
   if (isDirty('template')) {
     this.updateTemplate({items, template}, state, {output});
   } else {
@@ -23,15 +23,15 @@ updateTemplate({items, template}, state, {output}) {
   // our new template
   state.template = template || '<div center flex column style="{{style}}" key="{{key}}" on-click="onItemClick"><h2>{{name}}</h2></div>';
   // Xen renderer will attempt to cache DOM, and does not expect template to change, 
-  // so we clear items for an first pass...
+  // so we clear items for a first pass...
   state.items = [];
   timeout(() => {
-    // ... and then render the real items as a second pass
+    // ... then render the real items as a second pass
     state.items = items;
     output();
   }, 0);
 },
-render({styleRules}, {items, template, selected}) {
+render({styleRules}, {items, template, selected, activated}) {
   const defaults = {
     name: 'Unnamed Item',
     ligature: 'settings_backup_restore'
@@ -44,7 +44,8 @@ render({styleRules}, {items, template, selected}) {
       item = {
         ...defaults,
         key: i,
-        selected: i === selected,
+        selected: [i, item.name].includes(selected),
+        activated: [i, item.name].includes(activated),
         ...item
       };
       for (let n of ['thumb', 'icon', 'image']) {
@@ -65,37 +66,12 @@ render({styleRules}, {items, template, selected}) {
     }
   }
 },
-imageToItemModel(item, i) {
-  const defaults = {
-    name: 'Unnamed Item',
-    ligature: 'settings_backup_restore'
-  };
-  if (typeof item === 'object') {
-    item = deepCopy(item);
-    map(item, (k, v) => item[k] = this.imageToItemModel(v, k) || v);
-    item = {
-      ...defaults,
-      key: i,
-      selected: i === selected,
-      ...item
-    };
-    for (let n of ['thumb', 'icon', 'image']) {
-      if (item[n]) {
-        item[n] = resolve(item[n]);
-      }
-    }
-  }
-  return item;
-},
 onItemDelete({eventlet: {key, value}}, state) {
   log('onItemDelete', key);
   return {delete: key, trigger: Math.random()};
 },
-onItemSelect({eventlet: {key, value}}, state) {
+onItemSelect({eventlet: {key}}, state) {
   log.debug('onItemSelect', key);
-  if (value) {
-    value.selected = true;
-  }
   state.selected = key;
   return {selected: key};
 },
@@ -104,11 +80,9 @@ onItemRename({eventlet: {key, value}}, state) {
   state.renamed = {key, value};
   return {renamed: {key, value}, trigger: Math.random()};
 },
-onItemActivate({eventlet: {key, value}}, state) {
-  log('onItemActivate', key);
-  if (value) {
-    value.closed = true;
-  }
+onItemActivate({eventlet: {key}}, state) {
+  log.debug('onItemActivate', key);
+  state.activated = key;
   state.selected = key;
   return {activated: key, trigger: Math.random()};
 },

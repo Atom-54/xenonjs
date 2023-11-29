@@ -1,27 +1,60 @@
 import {atomInfo} from '../../AnewLibrary/Xenon/Library.js';
+import * as Controller from '../Framework/Controller.js';
 import * as Graph from './Graph.js';
 
 const log = logf('Schema', '#953553');
 
 export const schemaForLayer = (controller, layerId) => {
+  // map input/output property names to meta data including
+  // value, connection, and type
   const schema = {
     inputs: {},
     outputs: {}
   };
+  // capture io, type, and value
   for (const host of Object.values(controller.atoms)) {
     if (host.id.startsWith(layerId + '$')) {
+      // fetch raw schema for host
       const hostSchema = schemaForHost(host);
-      const prefix = host.id.slice(layerId.length + 1);
-      rekeySchemaMode(prefix, hostSchema.inputs, schema.inputs);
-      rekeySchemaMode(prefix, hostSchema.outputs, schema.outputs);
+      // outer scope id for removal
+      const localId = host.id.slice(layerId.length + 1);
+      // adjust schema names for scope and dot format 
+      rekeySchemaMode(localId, hostSchema.inputs, schema.inputs);
+      rekeySchemaMode(localId, hostSchema.outputs, schema.outputs);
     }
   }
+  // capture connection settings
+  captureConnectionValues(controller, layerId, controller.connections.inputs, schema.inputs);
+  // here is schema
   return schema;
 };
 
-const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
+const captureConnectionValues = (controller, layerId, connections, inputs) => {
+  if (layerId) {
+    const layer = Controller.findLayer(controller, layerId);
+    if (layer) {
+      //log.debug(layer.graph, inputs);
+      Object.entries(inputs).forEach(([key, info]) => {
+        const [id, ...prop] = key.split('.');
+        const {connections} = layer.graph[id];
+        if (connections) {
+          const propName = prop.join('$');
+          const connection = connections[propName];
+          if (connection) {
+            info.connection = connection[0];
+          }
+        }
+      });
+    }
+  }
+};
+
+const rekeySchemaMode = (localId, modalHostSchema, modalSchema) => {
   for (const [prop, value] of Object.entries(modalHostSchema)) {
-    const ids = [...(idPrefix||'').split('$'), prop];
+    const ids = [
+      ...(localId ? localId.split('$') : []), 
+      ...prop.split('$')
+    ];
     const key = ids.join('.');
     if (ids[ids.length-1] !== 'name' || ids.length < 3) {
       modalSchema[key] = value;
@@ -30,6 +63,7 @@ const rekeySchemaMode = (idPrefix, modalHostSchema, modalSchema) => {
 };
 
 export const schemaForHost = host => {
+  // static state provided by atom
   const state = Graph.getAtomState(host);
   /*
   let graph = host.layer.graph;
@@ -87,14 +121,23 @@ export const schemaForHost = host => {
 const schemaFromHost = (schema, host, state, connections) => {
   const kind = host.type.split('/').pop();
   const info = atomInfo[kind];
+  // `info` is atom meta data
+  // inputs: maps prop-name to type
+  // outputs: maps prop-name to type
+  // connections: maps prop-name to connection value
   if (info) {
+    // all declared IO becomes schema IO
+    // state values are captured into schema
     schemaMode(schema.inputs, info.inputs, state);
     schemaMode(schema.outputs, info.outputs, state);
   }
-  entries(connections).forEach(([key, connection]) => {
-    const input = schema.inputs[key] ??= {};
-    input.connection = connection[0];
-  });
+  // for all provided connections
+  // entries(connections).forEach(([key, connection]) => {
+  //   // require input schema for the left-hand-side; the data receiver
+  //   const input = schema.inputs[key] ??= {};
+  //   // record this connection value in this input schema
+  //   input.connection = connection[0];
+  // });
 };
 
 const schemaMode = (modalSchema, modalInfo, state) => {

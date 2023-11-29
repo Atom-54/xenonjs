@@ -16,8 +16,6 @@ update({json}) {
       // gets here if json is a simple (unquoted) string
     }
   }
-  if (json) {
-    return {data: json};
-  }
+  return {value: json};
 }
 });

@@ -5,47 +5,47 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({schema}, state, {output}) {
+  // clear dom cache
   state.props = [];
+  // force output (render) cycle
   await output();
-  state.props = map(schema, (label, info) => {
-    if (info?.type?.includes) {
-      const $template = this.templateForType(info.type);
-      const propId = label.split('.');
-      const propDepth = propId.length;
-      const propName = propId.pop();
-      const typeOk = propDepth < 2 || !['style', 'form', 'layout', 'center', 'action', 'value', 'options', 'storeValue', 'inputData', 'submittedRecord'].includes(propName);
-      if ($template && typeOk) {
-        let {value} = info;
-        const isObject = (value && (typeof value === 'object')) || info.type.includes('Pojo') || info.type.includes('Json');
-        if (isObject) {
-          value = JSON.stringify(value, null, '  ');
-          if (value === 'null') {
-            value = '';
-          }
-        }
-        const isNumber = info.type.includes('Number');
-        const rows = value?.split?.('\n').length || 3;
-        const model = {
-          ...info,
-          label, 
-          value,
-          key: label,
-          rows,
-          isObject,
-          isNumber
-        };
-        return {
-          prop: {
-            $template,
-            models: [model]
-          }
-        };
-      }
-    }
-  })
-  .filter(i => i)
+  // renew renderable state
+  state.props = 
+    // attempt to convert each schema entry into a property model
+    map(schema, (label, info) => this.propFromSchema(label, info))
+    // clear out the null results
+    .filter(i => i)
   ;
 },
+propFromSchema(label, info) {
+  // info must have a type with `includes` method
+  if (info?.type?.includes) {
+    // determine a template
+    const $template = this.templateForType(info.type);
+    // only inspectable labels are inspectable
+    const typeOk = this.inspectablePropertyLabel(label);
+    if ($template && typeOk) {
+      // if we have all the pieces, assemble the voltron
+      return this.composeModel(label, info, $template);
+    }
+  }
+},
+composeModel(label, info, $template) {
+  // render-model for property template
+  const model = {
+    label,
+    key: label,
+    ...this.renderPropertyInfo(info)
+  };
+  // wrapper so each record can select a template
+  return {
+    prop: {
+      $template,
+      models: [model]
+    }
+  };
+},
+// a selection of editors
 templateForType(type) {
   switch (true) {
     case type.includes('Nonce'):
@@ -57,6 +57,44 @@ templateForType(type) {
     default:
       return 'textarea_t';
   };
+},
+// filter out many sublayer properties
+inspectablePropertyLabel(label) {
+  const propId = label.split('.');
+  const propDepth = propId.length;
+  const propName = propId.pop();
+  const hiddenSubPropTypes = ['style', 'form', 'layout', 'center', 'action', 'value', 'options', 'storeValue', 'inputData', 'submittedRecord'];
+  const typeOk = (propDepth < 2) || !hiddenSubPropTypes.includes(propName);
+  return typeOk;
+},
+// generate render model from property `info`
+renderPropertyInfo(info) {
+  let {value, type} = info;
+  // flags, formatting, and calculated values
+  const isObject = this.isObject(value, type);
+  if (isObject) {
+    value = this.JSONify(value);
+  }
+  const isNumber = type.includes('Number');
+  const rows = value?.split?.('\n').length || 3;
+  // render model
+  return {
+    ...info,
+    value,
+    rows,
+    isObject,
+    isNumber
+  };
+},
+isObject(value, type) {
+  return (value && (typeof value === 'object')) || type.includes('Pojo') || type.includes('Json');
+},
+JSONify(value) {
+  let json = JSON.stringify(value, null, '  ');
+  if (json === 'null') {
+    json = '';
+  }
+  return json;
 },
 async onPropChange({eventlet: {key, value, nopersist}, id}, state, {service}) {
   const {prop} = state.props.find(({prop}) => prop.models[0].key === key);
@@ -121,6 +159,13 @@ template: html`
 
 <template prop_t>
   <div prop>{{prop}}</div>
+</template>
+
+<template object_t>
+  <label column>
+    <span label>{{label}}</span>
+    <div props repeat="prop_t">{{props}}</div>
+  </label>
 </template>
 
 <template string_t>

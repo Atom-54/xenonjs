@@ -45,16 +45,10 @@ export const DesignService = {
   async NewGraph(host) {
     return newGraph(host.layer);
   },
-  // async CreateLayer(host) {
-  //   return createLayer(host.layer);
-  // },
   async SetDesignLayerIndex(host, {index}) {
     setDesignLayerIndex(host.layer.controller, index);
     return designUpdate(host.layer.controller);
   },
-  // async SetDesignLayer(host, {layerId}) {
-  //   return setDesignLayer(host.layer.controller, layerId);
-  // },
   Select(host, {atomId}) {
     designSelect(host.layer.controller, atomId);
   },
@@ -64,9 +58,6 @@ export const DesignService = {
   async UpdateDesigner(host) {
     return designUpdate(host.layer.controller);
   },
-  // GetAtomTypes() {
-  //   return getAtomTypes();
-  // },
   GetAtomTypeCategories() {
     return getAtomTypeCategories();
   },
@@ -100,6 +91,9 @@ export const DesignService = {
     } else {
       updateProperty(host.layer.controller, id, key, value, nopersist);
     }
+  },
+  ToggleFlex(host) {
+    log.debug('ToggleFlex');
   }
 };
 
@@ -265,22 +259,24 @@ export const designUpdateDocuments = async controller => {
 
 export const designSelect = (controller, atomId) => {
   const host = controller.atoms[atomId];
-  designSelectedHost = host;
-  const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
-  Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
-  const layerSchema = Schema.schemaForLayer(controller, designLayerId);
-  const candidates = layerSchema.outputs;
-  const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
-  const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
-  Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
-  Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
-  Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
-  Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
-  Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
-  Controller.writeInputsToHost(controller, 'build$AtomGraph', {selected: host?.id});
-  Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
-  const state = !host ? {} : prefixedState(controller.state, host.id + '$');
-  Controller.writeInputsToHost(controller, 'build$State', {object: state});
+  if (designSelectedHost !== host) {
+    designSelectedHost = host;
+    const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
+    Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
+    const layerSchema = Schema.schemaForLayer(controller, designLayerId);
+    const candidates = layerSchema.outputs;
+    const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
+    const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
+    Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
+    Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
+    Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
+    Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
+    Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
+    Controller.writeInputsToHost(controller, 'build$AtomGraph', {selected: host?.id});
+    Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
+    const state = !host ? {} : prefixedState(controller.state, host.id + '$');
+    Controller.writeInputsToHost(controller, 'build$State', {object: state});
+  }
 };
 
 export const designDelete = (controller, atomId) => {

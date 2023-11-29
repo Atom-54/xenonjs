@@ -30,26 +30,41 @@ const onoutput = (controller, host, output) => {
   //log.debug(`onoutput [${host.id}][${Object.keys(output)}]`); //[${JSON.stringify(output)}]`);
   const outputState = {};
   keys(output).map(key => outputState[`${host.layer.id}$${host.name}$${key}`] = output[key]);
-  writeToState(controller, outputState);
+  writeToState(controller, outputState, true);
 };
 
 // writes object to state, forwards to bindings, and notifies observer
-const writeToState = (controller, inputState) => {
+const writeToState = (controller, inputState, filtering) => {
   const e$ = entries(inputState);
   if (e$.length) {
     //log.debug('writeToState got:', inputState);
     let filteredState;
     e$.forEach(([key, value]) => {
-      if (!deepEqual(controller.state[key], value)) {
+      if (!filtering || !deepEqual(controller.state[key], value)) {
         (filteredState ??= {})[key] = value;
         bindamor(controller, key, value);
         controller.state[key] = value;
       }
     });
-    //log.debug('writeToState after filter:', filteredState);
+    //log.debug('writeToState processed these:', filteredState);
     if (filteredState) {
       controller.onwrite?.(filteredState);
     }
+    return filteredState;
+  }
+};
+
+// writes fully qualified data to host(s)
+const writeToHost = (controller, state) => {
+  for (const [propId, value] of Object.entries(state)) {
+    const parts = propId.split('$');
+    const name = parts.pop();
+    const atomId = parts.join('$');
+    const host = controller.atoms[atomId];
+    if (host) {
+      host.inputs = {[name]: value};
+    }
+    //log.debug(host.id, name, value);
   }
 };
 
@@ -116,45 +131,51 @@ export const reifyAtom = async (controller, layer, {name, type, containers, cont
   // create atom
   const host = await addAtom(controller, layer, {name, type, container, containers});
   if (host) {
-    // process connection information
+    // remap static state into live state format
+    const qualifiedState = {};
+    for (const [key, value] of Object.entries(state)) {
+      const qualifiedKey = `${layer.id}$${host.name}$${key}`;
+      qualifiedState[qualifiedKey] = value;
+    }
+    // bindings are inverted from connections; bindings = [source] => [...targets]
+    // bindings are fully qualified
+    const bindings = controller.connections.inputs;
+    // install connections from host into controller.connections (bindings)
     if (connections) {
-      const inputConnections = controller.connections.inputs;
-      for (let [key, targets] of Object.entries(connections)) {
-        if (!Array.isArray(targets)) {
-          targets = [targets];
+      // connections are [target] => [...sources]
+      // connections are locally qualified
+      // ["records", ["Thing$Bar$value"]]
+      for (let [property, sources] of Object.entries(connections)) {
+        sources = Array.isArray(sources) ? sources : [sources];
+        // painstakingly update binding records for inverted connection records
+        // e.g. "NibGraph$Bar$value" of ["NibGraph$Bar$value"]
+        for (const source of sources) {
+          // build$ThingGraph$NibGraph$Bar$value
+          const sourceId = [layer.id, source].join('$');
+          //const connects = bindings[sourceId] || [];
+          // build$ThingGraph$Fibler$records
+          const targetId = [layer.id, name, property].join('$');
+          // update bindings to match connection target
+          updateBindings(bindings, sourceId, targetId);
         }
-        for (const connection of targets) {
-          const source = `${layer.id}$${connection}`;
-          const targetName = `${layer.id}$${host.name}`;
-          const target = `${targetName}$${key}`;
-          (inputConnections[source] ??= []).push(target);
-          if (source in controller.state) {
-            (state ??= {})[key] = controller.state[source];
+      }
+    }
+    // data currently in live state has 'missed' these connections, 
+    // we need to recreate missed connection effects
+    for (const [sourceId, list] of Object.entries(bindings)) {
+      for (const targetId of list) {
+        if (targetId.startsWith(host.id + '$')) {
+          if (sourceId in controller.state) {
+            qualifiedState[targetId] = controller.state[sourceId];
           }
+          //log.debug('.^.');
+          //log.debug(targetId, host.id, qualifiedState[targetId], controller.state[sourceId]);
         }
       }
     }
-    // process state information
-    if (state) {
-      const qualifiedState = {};
-      for (const [key, value] of Object.entries(state)) {
-        const qualifiedKey = `${layer.id}$${host.name}$${key}`;
-        // use existing state first, then default to atom state
-        qualifiedState[qualifiedKey] = (qualifiedKey in controller.state) ? controller.state[qualifiedKey] : value;
-      }
-      writeToState(controller, qualifiedState);
-    }
-    // locate existing state for host
-    const hostState = {};
-    for (const [key, value] of Object.entries(controller.state)) {
-      const keyBits = key.split('$');
-      const propName = keyBits.pop();
-      const keyHost = keyBits.join('$');
-      if (keyHost === host.id) {
-        hostState[propName] = value;
-      }
-    }
-    host.inputs = hostState;
+    // pump live state data into reactor
+    writeToState(controller, qualifiedState);
+    writeToHost(controller, qualifiedState);
   }
   return host;
 };
@@ -216,6 +237,19 @@ const calculateContainer = (host, localContainer) => {
   return container;
 };
 
+const updateBindings = (bindings, sourceId, targetId) => {
+  // prefer existing binding 
+  for (const [key, targets] of Object.entries(bindings)) {
+    if (targets.includes(targetId)) {
+      log.debug('preserve newer binding', key);
+      return;
+    }
+  }
+  // set new binding
+  (bindings[sourceId] ??= []).push(targetId);
+  //log.debug('add to binding', sourceId, targetId);
+};
+
 // write name, value pair to hosts and state, forward to bindings
 export const writeValue = (controller, atomId, propName, value) => {
   set(controller, atomId, {[propName]: value});
@@ -230,7 +264,7 @@ const bindamor = (controller, key, value) => {
   bound?.forEach(connection => {
     // binding channel is active
     //log.debug(`[${connection}] receives data from [${key}]`); // the value`, String(value).slice(0, 30));
-    // conver data to local format
+    // convert data to local format
     const bits = connection.split('$');
     const prop = bits.pop();
     const atomId = bits.join('$');
@@ -241,15 +275,18 @@ const bindamor = (controller, key, value) => {
 
 // keys in `inputs` are local to main `key`
 export const set = (controller, key, inputs) => {
+  // writeToState(controller, outputState, true);
   writeInputsToState(controller, key, inputs);
   writeInputsToHost(controller, key, inputs);
 };
 
 // keys in `inputs` are local to main `key`
 const writeInputsToState = (controller, key, inputs) => {
+  const state = {};
   for (let [prop, value] of Object.entries(inputs)) {
-    controller.state[key + '$' + prop] = value;
+    state[key + '$' + prop] = value;
   }
+  writeToState(controller, state, true);
 };
 
 // keys in `inputs` are local to main `key`

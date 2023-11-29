@@ -15,35 +15,51 @@ shouldRender({layerId},{info}) {
   return Boolean(layerId && info);
 },
 render({layerId}, {info, selected, rects}) {
+  let edges = [];
+  let backEdges = [];
+  // for each atom we should make into an AtomGraph node
+  const nodables = this.getNodableAtoms(info.atoms);
+  // extract edge information from connections
+  const {inputs: bindings} = info.connections;
+  if (bindings) {
+    // search bindings for our key, these are our edges
+    nodables.forEach(atom => this.getEdges(bindings, edges, backEdges, atom));
+  };
+  // remove duplicates
+  edges = this.getCleanEdges(edges);
+  // atom render models
+  const atoms = nodables.map((atom, i) => this.renderAtom(atom, edges, selected, rects, layerId, i));
+  return {
+    atoms,
+    edges
+  };
+},
+getNodableAtoms(atoms) {
   const getDepth = id => id.split('$').length;
   const isNodableType = atom => !atom.id.includes('Panel');
-  const nodables = info.atoms
+  return atoms
     .filter(atom => getDepth(atom.id) < 4)
     .filter(atom => isNodableType(atom))
     ;
-  let edges = [];
-  let backEdges = [];
-  // extract edge information from connections
-  const {inputs} = info.connections;
-  if (inputs) {
-    // for each node
-    nodables.forEach((atom, i) => {
-      // search bindings for our key
-      for (let [id, binding] of Object.entries(inputs)) {
-        if (id.startsWith(atom.id + '$')) {
-          // we have edges from here
-          edges.push({id, binding});
-          // and edges end there
-          binding
-            .filter(bound => getDepth(bound) < 5)
-            .forEach(bound => backEdges.push({bound, id}))
-            ;
-        }
-      }
-    })
-  };
-  // map of atoms bound via connections (reverse of connections)
-  const listeners = {};
+},
+getEdges(bindings, edges, backEdges, atom) {
+  const getDepth = id => id.split('$').length;
+  // search bindings for our key
+  for (let [id, binding] of Object.entries(bindings)) {
+    if (id.startsWith(atom.id + '$')) {
+      // we have edges from here
+      edges.push({id, binding});
+      // and edges end there
+      binding
+        .filter(bound => getDepth(bound) < 5)
+        .forEach(bound => backEdges.push({bound, id}))
+        ;
+    }
+  }
+},
+getCleanEdges(edges) {
+  // map of atoms bound via connections (reverse of above)
+  //const listeners = {};
   // simplify edge list
   const edgeIdClipper = id => id.split('$').slice(0, 3).join('-'); 
   // make clean edges
@@ -54,50 +70,47 @@ render({layerId}, {info, selected, rects}) {
     const cleanBinding = edge.binding.filter(bound => {
       const targetId = edgeIdClipper(bound);
       if (sourceId !== targetId) {
-        ((listeners[bound])??=[]).push(sourceId);
+        //((listeners[bound])??=[]).push(sourceId);
         return true;
       };
     });
     if (cleanBinding.length) {
-      edge.binding = [...new Set(cleanBinding)];
+      edge.cleanBinding = [...new Set(cleanBinding)];
       return true;
     }
   });
-  edges = cleanEdges;
-  //log.debug(listeners, backEdges, edges);
-  //
-  const [w, h] = [260, 140];
-  const prefixId = id => id + '$';
+  //log.debug(listeners, cleanEdges);
+  return cleanEdges;
+},
+renderAtom(atom, edges, selected, rects, layerId, i) {
+  const modelify = id => ({name: nameFromId(id)});
   const nameFromId = id => id.split('$').slice(3).join('$');
-  const atoms = nodables.map((atom, i) => {
-    const stride = 4;
-    const inputs = cleanEdges
-      .flatMap(({id, binding}) => binding
-        .filter(id => id.startsWith(prefixId(atom.id)))
-        .map(id => ({name: nameFromId(id)}))
-      )
-      ;
-    const outputs = cleanEdges
-      .filter(({id}) => id.startsWith(prefixId(atom.id)))
-      .map(({id}) => ({name: nameFromId(id)}))
-      ;
-    return {
-      id: atom.id, 
-      atomId: atom.id.replace(/\$/g, '-'),
-      type: atom.type,
-      selected: atom.id === selected,
-      displayName: atom.id.slice(layerId.length + 1),
-      style: {
-        ...this.getAtomRect(w, h, stride, i, rects)
-      },
-      inputs,
-      outputs
-    };
-  })
-  ;
+  const hasPrefix = prefix => id => id.startsWith(prefix + '$');
+  //
+  const prefixFilter = hasPrefix(atom.id);
+  const inputs = edges
+    .flatMap(({id, cleanBinding}) => cleanBinding
+      .filter(prefixFilter)
+      .map(modelify)
+    )
+    ;
+  const outputs = edges
+    .filter(({id}) => prefixFilter(id))
+    .map(({id}) => modelify(id))
+    ;
+  //
+  const [w, h, stride] = [260, 140, 4];
   return {
-    atoms,
-    edges
+    id: atom.id, 
+    atomId: atom.id.replace(/\$/g, '-'),
+    type: atom.type,
+    selected: atom.id === selected,
+    displayName: atom.id.slice(layerId.length + 1),
+    style: {
+      ...this.getAtomRect(w, h, stride, i, rects)
+    },
+    inputs,
+    outputs
   };
 },
 getAtomRect(w, h, stride, i, rects) {
@@ -105,7 +118,7 @@ getAtomRect(w, h, stride, i, rects) {
   let [ox, oy] = [64 + rect.l, 32 + rect.t];
   return {
     left: ox + w*(i%stride) + 'px', 
-    top: oy + h*Math.floor(i/stride) + h/4*(Math.sin((i%stride)*Math.PI*.8/2)) + 'px', 
+    top: oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2)) + 'px', 
     width: '200px'
   };
 },

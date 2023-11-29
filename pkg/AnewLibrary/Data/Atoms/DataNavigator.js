@@ -16,28 +16,25 @@ async update({index, records, submittedRecord}, state, {isDirty}) {
   const dirtyRecords = isDirty('records') && !deepEqual(state.records, records);
   if (records && dirtyRecords) {
     log.debug('consume records');
-    if (records && !records.length) {
-      records = [{}];
-    }
-    state.records = records;
+    state.records = records.length ? [...records] : null;
   } else if (submittedRecord) {
     state.records ??= [];
     if (!deepEqual(submittedRecord, state.records[state.index - 1])) {
       state.records[state.index - 1] = deepCopy(submittedRecord);
-      log.debug('record submitted, record & records outputte', submittedRecord);
-      return {
-        record: submittedRecord,
-        records:[...state.records]
-      };
+      //log.debug('record submitted, record & records outputte', submittedRecord);
+      //return {
+        //record: submittedRecord,
+        //records: [...state.records]
+      //};
     }
   }
-  if (state.records && (dirtyRecords || indexDirty)) {
-    log.debug('output record & records');
+  //if (state.records && (dirtyRecords || indexDirty)) {
+    //log.debug('output record & records');
     return {
       ...this.returnRecord(state.index, state.records),
-      records: state.records
+      records: [...state.records]
     };
-  }
+  //}
 },
 render({}, state) {
   const count = state.records?.length || 1;
@@ -55,7 +52,7 @@ onNext({}, state) {
 onNew({}, state) {
   state.records = [...(state.records ?? [{}]), {}];
   state.index = state.records.length;
-  return {records: state.records, ...this.returnRecord(state.index, state.records)};
+  return {records: [...state.records], ...this.returnRecord(state.index, state.records)};
 },
 onInputChange({eventlet: {value}}) {
   log('on-inputchange:', value);

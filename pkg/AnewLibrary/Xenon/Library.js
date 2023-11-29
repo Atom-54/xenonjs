@@ -50,7 +50,7 @@ export const importLibrary = env => {
     try {
       const atomFactory = eval(code);
       atomFactories[name] = atomFactory;
-      console.log('atomFactory', name, atomFactories[name]);
+      //console.log('atomFactory', name, atomFactories[name]);
     } catch(x) {
       console.warn(x);
     }
