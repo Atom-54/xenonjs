@@ -56,8 +56,9 @@ export class AtomGraph extends DragDrop {
       const srcEdgeCount = {}, trgEdgeCount = {};
       for (const edge of edges) {
         const source = edge.id.split('$');
-        const sourceProp = source.pop();
-        const sourceId = source.join('-');
+        const sourceId = source.slice(0, 3).join('-');
+        //const sourceProp = source.pop();
+        //const sourceId = source.join('-');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
         const elt = this.shadowRoot.querySelector(`#${sourceId}`);

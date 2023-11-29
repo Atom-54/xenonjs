@@ -68,8 +68,9 @@ getTypeMatch(propA, propB) {
   return match;
 },
 onPropChange({eventlet, id}, state, {service}) {
+  const key = eventlet.key?.replace(/\./g, '$');
   const value = eventlet.value?.replace(/\./g, '$');
-  service('DesignService', 'ConnectionChange', {...eventlet, id, value});
+  service('DesignService', 'ConnectionChange', {...eventlet, id, key, value});
 },
 template: html`
 <style>

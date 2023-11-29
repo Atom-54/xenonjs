@@ -47,6 +47,7 @@ export const Layout = {
   },
   TemplateLayout: {
     categories: [category],
+    displayName: 'Template Layout',
     description: 'A container that renders items using a template',
     type: '$anewLibrary/Layout/Atoms/TemplateLayout',
     inputs: {

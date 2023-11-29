@@ -56,6 +56,15 @@ export const Build = {
         {
           "name": "spanner",
           "flex": 1
+        },
+        {
+          "name": "Flex",
+          "ligature": "handyman",
+          "action": "service",
+          "args": {
+            "kind": "DesignService",
+            "msg": "ToggleFlex"
+          }
         }
       ]
     }
