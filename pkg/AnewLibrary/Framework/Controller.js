@@ -42,8 +42,8 @@ const writeToState = (controller, inputState, filtering) => {
     e$.forEach(([key, value]) => {
       if (!filtering || !deepEqual(controller.state[key], value)) {
         (filteredState ??= {})[key] = value;
-        bindamor(controller, key, value);
         controller.state[key] = value;
+        bindamor(controller, key, value);
       }
     });
     //log.debug('writeToState processed these:', filteredState);
