@@ -13,7 +13,7 @@ const viewport = 6000;
 
 export class AtomGraph extends DragDrop {
   static get observedAttributes() {
-    return ['atoms', 'edges', 'schema'];
+    return ['atoms', 'edges', 'schema', 'offsets'];
   }
   get template() {
     return template;
@@ -28,27 +28,38 @@ export class AtomGraph extends DragDrop {
     this.canvas = this.host.querySelector('canvas');
     this.viewport = this.host.querySelector('[viewport]');
     this.state.zoom = this.style.zoom = 0.7;
-    this.state.offsets ??= {};
+    //this.state.offsets ??= {};
     this.addEventListener('pointerdown', e => this.onDown(e));
     this.addEventListener('pointermove', e => this.onMove(e));
     this.addEventListener('pointerup', e => this.onUp(e));
   }
-  update({selected}, state, {service}) {
+  update({selected, offsets}, state, {service}) {
+    state.offsets = offsets ?? {};
     //this.key = selected;
   }
   render({atoms, edges}, state) {
     // NB: connectors are drawn after, via Canvas. See _didRender.
-    state.didRender = {edges, atoms};
+    //state.didRender = {edges, atoms};
     // complete render model
     return {atoms, zoom: state.zoom};
   }
-  _didRender({}, {x, y, offsets, didRender: {atoms, edges}}) {
+  _didRender({atoms, edges}, {x, y, offsets/*, didRender: {atoms, edges}*/}) {
     if (edges) {
       this.renderCanvas({atoms, edges}, {x, y, offsets});
     }
+    entries(offsets).forEach(([name, [tx, ty]]) => {
+      const elt = this.shadowRoot.querySelector(`#${name.split('$').join('-')}`)
+      if (elt) {
+        elt.style.transform = `translate(${tx}px, ${ty}px)`;
+      }
+    });
+  }
+  clampus(v) {
+    const gridSize = 8;
+    return Math.floor(v/gridSize)*gridSize;
   }
   renderCanvas({atoms, edges}, {x, y, offsets}) {
-    const [ox, oy] = [3000, 3000 + 53];
+    const [ox, oy] = [3000, 3000 + 51];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -57,30 +68,27 @@ export class AtomGraph extends DragDrop {
       for (const edge of edges) {
         const source = edge.id.split('$');
         const sourceId = source.slice(0, 3).join('-');
-        //const sourceProp = source.pop();
-        //const sourceId = source.join('-');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
         const elt = this.shadowRoot.querySelector(`#${sourceId}`);
         if (elt) {
-          const [dx, dy] = offsets[source.join('$')] ?? [0, 0];
+          const [dx, dy] = offsets[source.slice(0,-1).join('$')] ?? [0, 0];
           const p0 = {
-            x: dx + ox + elt.offsetLeft + elt.offsetWidth,
-            y: dy + oy + elt.offsetTop + e*14,
+            x: ox + dx + elt.offsetLeft + elt.offsetWidth,
+            y: oy + dy + elt.offsetTop + e*14,
           };
           for (const bound of edge.binding) {
             const target = bound.split('$');
-            //const targetProp = target.slice(3).join('.');
             const targetId = target.slice(0, 3).join('-');
             if (targetId !== sourceId) {
               trgEdgeCount[targetId] ??= -1;
               const b = ++trgEdgeCount[targetId];
               const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
               if (elt2) {
-                const [dx, dy] = offsets[target.join('$')] ?? [0, 0];
+                const [dx, dy] = offsets[target.slice(0,-1).join('$')] ?? [0, 0];
                 const p1 = {
-                  x: dx + ox + elt2.offsetLeft,
-                  y: dy + oy + elt2.offsetTop + b*14
+                  x: ox + dx + elt2.offsetLeft,
+                  y: oy + dy + elt2.offsetTop + b*14
                 };
                 const path = this.calcBezier(p0, p1);
                 const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
@@ -177,34 +185,52 @@ export class AtomGraph extends DragDrop {
     this.state.zoom = this.style.zoom = zoom;
   }
   doMove(dx, dy) {
-    const {state} = this;
-    if (!this.key) {
-      state.tx = Math.min(Math.max((state.x || 0) + dx, -viewport/2 + 1500), viewport/2);
-      state.ty = Math.min(Math.max((state.y || 0) + dy, -viewport/2 + 1500), viewport/2);
-      this.viewport.style.transform = `translate(${state.tx}px, ${state.ty}px)`;
-    } else {
-      const elt = this.shadowRoot.querySelector(`#${this.key.split('$').join('-')}`);
-      if (elt) {
-        const off = (state.offsets[this.key] ??= [0, 0]);
-        const [zdx, zdy] = [off[0] + dx/state.zoom, off[1] + dy/state.zoom];
-        elt.style.transform = `translate(${zdx}px, ${zdy}px)`;
-        state.tx = zdx;
-        state.ty = zdy;
-        //state.offsets[this.key] = [zdx, zdy];
-        //this._didRender(this.props, this.state);
+    const {props, state} = this;
+    const [dxz, dyz, v2] = [dx/state.zoom, dy/state.zoom, viewport/2]
+    if (Math.abs(dxz) > 0.1 || Math.abs(dyz) > 0.1) {
+      if (!this.key) {
+        state.moved = true;
+        state.tx = Math.min(Math.max((state.x || 0) + dxz, -v2 + 1500), v2);
+        state.ty = Math.min(Math.max((state.y || 0) + dyz, -v2 + 1500), v2);
+        this.viewport.style.transform = `translate(${state.tx}px, ${state.ty}px)`;
+      } else {
+        const elt = this.shadowRoot.querySelector(`#${this.key.split('$').join('-')}`);
+        if (elt) {
+          const off = (state.offsets[this.key] ??= [0, 0]);
+          const [zdx, zdy] = [off[0] + dxz, off[1] + dyz];
+          const [gx, gy] = [Math.floor(zdx/8)*8, Math.floor(zdy/8)*8];
+          state.moved = true;
+          state.tx = gx;
+          state.ty = gy;
+          elt.style.transform = `translate(${gx}px, ${gy}px)`;
+          //if (Math.random() < 0.4) {
+            //state.offsets[this.key] = [gx, gy];
+            //this._didRender(props, state);
+            //state.offsets[this.key] = off;
+          //}
+        }
       }
     }
   }
   doUp() {
-    const {state} = this;
-    if (this.key) {
-      state.offsets[this.key] = [state.tx, state.ty];
-      this.key = null;
-    } else {
-      state.x = state.tx;
-      state.y = state.ty;
+    const {props, state} = this;
+    if (state.moved) {
+      if (this.key) {
+        //const offset = state.offsets[this.key];
+        //if (offset[0] !== state.tx && offset[1] !== state.ty) {
+          state.offsets[this.key] = [state.tx, state.ty];
+          this.value = state.offsets;
+          this.key = null;
+          this.fire('offset-change');
+          this._didRender(props, state);
+        //}
+      } else {
+        state.x = state.tx;
+        state.y = state.ty;
+        // this._didRender(props, state);
+      }
     }
-    this._didRender(this.props, this.state);
+    state.moved = false;
   }
   onPointerMove({eventlet}) {
     //log(eventlet);

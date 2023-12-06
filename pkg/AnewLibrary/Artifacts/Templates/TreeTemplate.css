@@ -1,0 +1,38 @@
+icon {
+  margin-right: 6px;
+}
+[entry] {
+  cursor: pointer;
+  padding: 3px 5px;
+  border-bottom: 1px dotted silver;
+}
+[label]:hover {
+  background: white;
+}
+[selected] {
+  outline: 1px solid magenta;
+}
+[subsection] {
+  font-size: 100%;
+  font-weight: normal;
+  color: black;
+  padding-left: 12px;
+  border-left: 1px dotted purple;
+}
+[showing] {
+  display: inline-block !important; 
+}
+[folder] {
+  font-weight: bold;
+  color: purple;
+}
+[closed] {
+  display: none;
+  background: red;
+}
+[label]:not(:hover) [menu] {
+  display: none;
+}
+[name] {
+overflow: hidden;
+}

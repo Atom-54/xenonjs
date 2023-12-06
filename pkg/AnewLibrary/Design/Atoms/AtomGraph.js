@@ -10,11 +10,12 @@ shouldUpdate({layerId}) {
 async update({layerId, selected}, state, {service}) {
   state.selected = selected;
   state.info = await service('DesignService', 'GetLayerInfo', {layerId});
+  state.offsets = await service('DesignService', 'GetAtomGraphInfo', {layerId});
 },
 shouldRender({layerId},{info}) {
   return Boolean(layerId && info);
 },
-render({layerId}, {info, selected, rects}) {
+render({layerId}, {info, selected, offsets}) {
   let edges = [];
   let backEdges = [];
   // for each atom we should make into an AtomGraph node
@@ -28,10 +29,11 @@ render({layerId}, {info, selected, rects}) {
   // remove duplicates
   edges = this.getCleanEdges(edges);
   // atom render models
-  const atoms = nodables.map((atom, i) => this.renderAtom(atom, edges, selected, rects, layerId, i));
+  const atoms = nodables.map((atom, i) => this.renderAtom(atom, edges, selected, layerId, i));
   return {
     atoms,
-    edges
+    edges,
+    offsets
   };
 },
 getNodableAtoms(atoms) {
@@ -82,7 +84,7 @@ getCleanEdges(edges) {
   //log.debug(listeners, cleanEdges);
   return cleanEdges;
 },
-renderAtom(atom, edges, selected, rects, layerId, i) {
+renderAtom(atom, edges, selected, layerId, i) {
   const modelify = id => ({name: nameFromId(id)});
   const nameFromId = id => id.split('$').slice(3).join('$');
   const hasPrefix = prefix => id => id.startsWith(prefix + '$');
@@ -107,18 +109,19 @@ renderAtom(atom, edges, selected, rects, layerId, i) {
     selected: atom.id === selected,
     displayName: atom.id.slice(layerId.length + 1),
     style: {
-      ...this.getAtomRect(w, h, stride, i, rects)
+      ...this.getAtomRect(w, h, stride, i)
     },
     inputs,
     outputs
   };
 },
-getAtomRect(w, h, stride, i, rects) {
-  const rect = rects?.[i] ?? {l: 0, t: 0};
+getAtomRect(w, h, stride, i) {
+  const clampus = v => Math.floor(v/8)*8;
+  const rect = {l: 0, t: 0};
   let [ox, oy] = [64 + rect.l, 32 + rect.t];
   return {
-    left: ox + w*(i%stride) + 'px', 
-    top: oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2)) + 'px', 
+    left: clampus(ox + w*(i%stride)) + 'px', 
+    top: clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2))) + 'px', 
     width: '200px'
   };
 },
@@ -129,6 +132,10 @@ onKeyDown({eventlet}, state, {service}) {
   if (['Delete', 'Backspace'].includes(eventlet.key) && state.selected) {
     service('DesignService', 'Delete', {atomId: state.selected});
   }
+},
+async onAtomMoved({layerId, eventlet}, state, {service}) {
+  log.debug('onAtomMoved', eventlet);
+  return service('DesignService', 'SetAtomGraphInfo', {layerId, info: eventlet.value});
 },
 template: html`
 <style>
@@ -161,7 +168,7 @@ template: html`
 </style>
 
 <drop-target flex scrolling row tabindex="-1" on-target-drop="onAtomTypeDropped" on-keydown="onKeyDown">
-  <atom-graph flex atoms="{{atoms}}" edges="{{edges}}" selected="{{selected}}" on-atom-moved="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
+  <atom-graph flex atoms="{{atoms}}" edges="{{edges}}" selected="{{selected}}" offsets="{{offsets}}" on-offset-change="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
 </drop-target>
 
 <!-- last, therefore on top -->

@@ -56,6 +56,42 @@ export const Build = {
         {
           "name": "spanner",
           "flex": 1
+        },
+        {
+          "name": "Flex",
+          "ligature": "handyman",
+          "action": "service",
+          "args": {
+            "kind": "StyleService",
+            "msg": "ToggleFlex"
+          }
+        },
+        {
+          "name": "Scrolling",
+          "ligature": "swap_vert",
+          "action": "service",
+          "args": {
+            "kind": "StyleService",
+            "msg": "ToggleScrolling"
+          }
+        },
+        {
+          "name": "Width",
+          "ligature": "width",
+          "action": "service",
+          "args": {
+            "kind": "StyleService",
+            "msg": "ToggleWidth"
+          }
+        },
+        {
+          "name": "FontSize",
+          "ligature": "format_size",
+          "action": "service",
+          "args": {
+            "kind": "StyleService",
+            "msg": "ToggleFontSize"
+          }
         }
       ]
     }
@@ -70,7 +106,7 @@ export const Build = {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$BodyLeft#Container',
     state: {
-      tabs: ['Atoms', 'Projects', 'Files'],
+      tabs: ['Atoms', 'Projects'],
       style: {
         overflow: 'auto',
         order: 1
@@ -118,19 +154,6 @@ export const Build = {
       }
     }
   },
-  FilesPanel: {
-    type: '$anewLibrary/Graph/Atoms/Graph',
-    container: 'GraphPanels#Container',
-    state: {
-      graphId: 'FilesGraph',
-      style: {
-        order: 3,
-        zoom: '75%',
-        overflow: 'auto'
-      }
-    }
-  },
-
   TabPanels: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$BodyMiddle#Container2',
@@ -178,9 +201,9 @@ export const Build = {
     container: 'InspectorPanel#Container',
     state: {
       style: {
-        order: 0,
+        order: 1,
         flex: '0 0 auto',
-        // borderBottom: '1px solid #cccccc',
+        borderBottom: '1px solid #cccccc',
         backgroundColor: '#e4e4e4'
       }
     }
@@ -196,66 +219,9 @@ export const Build = {
       }
     }
   },
-  InspectorPanelsOne: {
-    type: '$anewLibrary/Layout/Atoms/Panel',
-    container: 'InspectorPanels#Container'
-  },
-  StyleToolbar: {
-    type: '$anewLibrary/UX/Atoms/UXToolbar',
-    container: 'InspectorPanelsOne#Container',
-    connections: {
-      event: 'UXActionExecutor$event'
-    },
-    state: {
-      style: {
-        flex: '0 0 auto',
-        fontSize: '1.0rem',
-        order: 1,
-        padding: '10px 4px 0 0'
-      },
-      actions: [
-        {
-          "name": "Flex",
-          "ligature": "handyman",
-          "action": "service",
-          "args": {
-            "kind": "StyleService",
-            "msg": "ToggleFlex"
-          }
-        },
-        {
-          "name": "Scrolling",
-          "ligature": "swap_vert",
-          "action": "service",
-          "args": {
-            "kind": "StyleService",
-            "msg": "ToggleScrolling"
-          }
-        },
-        {
-          "name": "Width",
-          "ligature": "width",
-          "action": "service",
-          "args": {
-            "kind": "StyleService",
-            "msg": "ToggleWidth"
-          }
-        },
-        {
-          "name": "FontSize",
-          "ligature": "format_size",
-          "action": "service",
-          "args": {
-            "kind": "StyleService",
-            "msg": "ToggleFontSize"
-          }
-        }
-      ]
-    }
-  },
   PropertyInspector: {
     type: '$anewLibrary/Design/Atoms/PropertyInspector',
-    container: 'InspectorPanelsOne#Container',
+    container: 'InspectorPanels#Container',
     state: {
       style: {
         overflowY: 'visible'

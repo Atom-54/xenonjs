@@ -132,7 +132,7 @@ template: html`
     display: flex;
     flex-direction: column;
     align-content: start;
-    padding: .5em .3em;
+    padding: .1em;
   }
   [prop] {
     padding: .3em;

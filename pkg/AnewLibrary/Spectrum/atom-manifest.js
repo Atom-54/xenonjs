@@ -26,6 +26,27 @@ export const Spectrum = {
       }
     }
   },
+  SpectrumActionMenu: {
+    categories: [category, 'Common'],
+    displayName: 'Spectrum Action Menu',
+    ligature: 'menu',
+    type: '$anewLibrary/Spectrum/Atoms/SpectrumActionMenu',
+    inputs: {
+      items: 'Json',
+      selected: 'String',
+      label: 'String'
+    },
+    outputs: {
+      value: 'String'
+    },
+    state: {
+      label: 'Actions',
+      style: {
+        flex: '0 0 auto',
+        // padding: '0.5em'
+      }
+    }
+  },
   SpectrumCard: {
     categories: [category],
     displayName: 'Spectrum Card',

@@ -217,7 +217,7 @@ export const createAtom = async (controller, layer, {name, type, container, cont
 const calculateContainer = (host, localContainer) => {
   const {layer} = host;
   // if top-layer and no localContainer, we default to 'root'
-  if (!layer.host && !localContainer) {
+  if (!layer.host && (!localContainer || localContainer === 'Container')) {
     return 'root';
   } 
   // could be empty

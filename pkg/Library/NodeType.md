@@ -1,3 +1,0 @@
-# Node Types
-
-Coming soon...

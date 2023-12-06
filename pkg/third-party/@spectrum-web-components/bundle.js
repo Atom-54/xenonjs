@@ -5,8 +5,9 @@ import '@spectrum-web-components/button/sp-button.js';
 import '@spectrum-web-components/button-group/sp-button-group.js';
 
 import '@spectrum-web-components/card/sp-card.js';
-
 import '@spectrum-web-components/action-menu/sp-action-menu.js';
+
+// import '@spectrum-web-components/menu/sp-popover.js';
 
 import '@spectrum-web-components/menu/sp-menu.js';
 import '@spectrum-web-components/menu/sp-menu-divider.js';
