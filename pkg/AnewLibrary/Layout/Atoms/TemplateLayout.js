@@ -31,22 +31,25 @@ updateTemplate({items, template}, state, {output}) {
     output();
   }, 0);
 },
-render({styleRules}, {items, template, selected, activated}) {
+render({styleRules}, state) {
+  const {items, template, selected, activated, opened} = state;
   const defaults = {
     name: 'Unnamed Item',
     ligature: 'settings_backup_restore'
   };
   let i = 0;
-  const mapImages = items => items?.map?.(item => {
+  state.imap = [];
+  const mapItems = items => items?.map?.(item => {
     if (typeof item === 'object') {
       item = deepCopy(item);
-      map(item, (k, v) => item[k] = mapImages(v) || v);
+      map(item, (k, v) => item[k] = mapItems(v) || v);
       item = {
         ...defaults,
         key: i,
-        selected: [i, item.name].includes(selected),
-        activated: [i, item.name].includes(activated),
-        ...item
+        ...item,
+        closed: !opened?.[i],
+        selected: [String(i), item.name].includes(selected),
+        activated: [String(i), item.name].includes(activated),
       };
       for (let n of ['thumb', 'icon', 'image']) {
         if (item[n]) {
@@ -55,25 +58,31 @@ render({styleRules}, {items, template, selected, activated}) {
       }
     }
     i++;
+    state.imap.push(item);
     return item;
   });
-  const models = mapImages(items);
+  const models = mapItems(items);
   return {
     styleRules,
     items: {
       template,
       models
     }
-  }
+  };
 },
-onItemDelete({eventlet: {key, value}}, state) {
+onItemOpenClose({eventlet: {key}}, state) {
+  log('onItemOpenClose', key);
+  (state.opened ??= {})[key] = !state.opened[key];
+  return this.onItemSelect({eventlet: {key}}, state);
+},
+onItemDelete({eventlet: {key}}, state) {
   log('onItemDelete', key);
   return {delete: key, trigger: Math.random()};
 },
-onItemSelect({eventlet: {key}}, state) {
-  log.debug('onItemSelect', key);
-  state.selected = key;
-  return {selected: key};
+onItemSelect({eventlet}, state) {
+  log.debug('onItemSelect', eventlet);
+  const selected = state.selected = eventlet.key;
+  return {selected};
 },
 onItemRename({eventlet: {key, value}}, state) {
   log('onItemRename', key, value);
@@ -81,10 +90,10 @@ onItemRename({eventlet: {key, value}}, state) {
   return {renamed: {key, value}, trigger: Math.random()};
 },
 onItemActivate({eventlet: {key}}, state) {
-  log.debug('onItemActivate', key);
+  log.debug('onItemActivate', key, state.imap[key], state.imap);
   state.activated = key;
   state.selected = key;
-  return {activated: key, trigger: Math.random()};
+  return {activated: state.imap[key], trigger: Math.random()};
 },
 template: html`
 <style>${'{{styleRules}}'}</style>

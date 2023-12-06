@@ -40,8 +40,9 @@ export const ProjectService = {
       const graph = restoreLocalGraph(graphId);
       if (graph) {
         persistLocalGraph('Deleted', graph)
-        removeLocalGraph(graphId);
       }
+      removeLocalGraph(graphId);
+      rediscover(host.layer.controller);
     }
   },
   async RenameGraph(host, {key, value}) {
@@ -50,6 +51,7 @@ export const ProjectService = {
       log.debug('Design-time service intercept: ProjectSevice.RenameGraph:', key, value);
     } else {
       renameGraph({key, value});
+      rediscover(host.layer.controller);
     }
   },
   async SaveProject(host, data) {
@@ -58,8 +60,13 @@ export const ProjectService = {
       log.debug('Design-time service intercept: ProjectSevice.SaveProject');
     } else {
       saveProject(currentProject);
+      rediscover(host.layer.controller);
     }
-  },
+  }
+};
+
+const rediscover = controller => {
+  controller.atoms.build$ProjectListPanel$DiscoverService.invalidate(); //inputs = {kick: Math.random()}
 };
 
 export const initProject = async (projectName) => {
@@ -175,7 +182,7 @@ const restoreLocalGraphs = key => {
   return graphs;
 };
 
-const restoreLocalGraph = key => {
+export const restoreLocalGraph = key => {
   const qualifiedKey = `${globalThis.config.aeon}/${key}`;
   return getValue(qualifiedKey);
 };
@@ -220,5 +227,7 @@ const discoverLocalGraphs = () => {
       }
     }
   }
-  return Object.entries(projects).map(([name, {graphs}]) => ({name, graphs}));
+  return Object.entries(projects).map(([name, {graphs}]) => ({name, graphs: graphs.sort(
+    (a, b) => a.name.localeCompare(b.name)
+  )}));
 };

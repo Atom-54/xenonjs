@@ -11,7 +11,7 @@ import * as Project from './ProjectService.js';
 
 const log = logf('DesignService', '#512E5F', 'white');
 
-let designLayerId, designSelectedHost;
+export let designLayerId, designSelectedHost;
 export const sublayers = [];
 
 const DesignTarget = {
@@ -42,12 +42,12 @@ const categoryOrder = {
 };
 
 export const DesignService = {
-  async NewGraph(host) {
-    return newGraph(host.layer);
-  },
   async SetDesignLayerIndex(host, {index}) {
     setDesignLayerIndex(host.layer.controller, index);
     return designUpdate(host.layer.controller);
+  },
+  async NewGraph(host) {
+    return newGraph(host.layer);
   },
   Select(host, {atomId}) {
     designSelect(host.layer.controller, atomId);
@@ -63,6 +63,14 @@ export const DesignService = {
   },
   async GetAtomInfo(host, data) {
     return getAtomInfo(host.layer.controller, designLayerId);
+  },
+  async GetAtomGraphInfo(host, {layerId}) {
+    const layer = Controller.findLayer(host.layer.controller, layerId);
+    return getGraphMetaData(layer.graph, 'atomGraphInfo');
+  },
+  async SetAtomGraphInfo(host, {layerId, info}) {
+    const layer = Controller.findLayer(host.layer.controller, layerId);
+    return setGraphMetaData(layer.graph, 'atomGraphInfo', info);
   },
   async GetLayerInfo(host, {layerId}) {
     const {controller} = host.layer;
@@ -91,9 +99,6 @@ export const DesignService = {
     } else {
       updateProperty(host.layer.controller, id, key, value, nopersist);
     }
-  },
-  ToggleFlex(host) {
-    log.debug('ToggleFlex');
   }
 };
 
@@ -112,15 +117,24 @@ export const newGraph = async layer => {
 
 export const loadGraph = async (layer, name) => {
   await reifyGraph(layer, name);
+  validateAtomOrder(layer.controller);
+  designUpdate(layer.controller);
   Controller.writeValue(layer.controller, 'build$DesignPanels', 'selected', sublayers.length-1);
 };
 
 export const reifyGraph = async (layer, name) => {
   const sublayer = await createSublayer(layer, name);
   Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
-  validateAtomOrder(layer.controller);
-  designUpdate(layer.controller);
   return sublayer;
+};
+
+export const getGraphMetaData = (graph, property) => {
+  return graph.meta[property];
+};
+
+export const setGraphMetaData = async (graph, property, value) => {
+  graph.meta[property] = value;
+  return Project.saveProject(Project.currentProject);
 };
 
 const createSublayer = async (layer, name) => {
@@ -285,8 +299,9 @@ export const designDelete = (controller, atomId) => {
   Controller.removeAtom(controller, host);
   // update connection in graph data
   delete host.layer.graph[host.name];
-  designUpdate(controller);
+  //designUpdate(controller);
   designSelect(controller, null);
+  designUpdateDocuments(controller);
   Project.saveProject(Project.currentProject);
 };
 

@@ -32,7 +32,7 @@ async update({index, records, submittedRecord}, state, {isDirty}) {
     //log.debug('output record & records');
     return {
       ...this.returnRecord(state.index, state.records),
-      records: [...state.records]
+      records: [...(state.records || [])]
     };
   //}
 },

@@ -1,0 +1,18 @@
+<div entry>
+  <div subsection repeat="moar_t">{{entries}}</div>	
+  <template moar_t>
+    <div entry key$="{{key}}" selected$="{{selected}}" active$="{{activated}}">
+	  <div label bar key$="{{key}}" on-click="onItemOpenClose">
+        <div bar hidden showing$="{{hasEntries}}">
+          <icon folder hidden showing$="{{closed}}">folder</icon>
+          <icon folder hidden="{{closed}}">folder_open</icon>
+        </div>
+    	<icon hidden="{{hasEntries}}">scatter_plot</icon>
+		<span name folder$="{{hasEntries}}">{{name}}</span>
+        <span flex></span>
+     	<icon menu>more_horiz</icon>
+ 	  </div>
+	  <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>	
+    </div>
+  </template>
+</div>
