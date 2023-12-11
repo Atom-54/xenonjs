@@ -1,0 +1,34 @@
+<!doctype html>
+
+<style>
+  body {
+    font-family: sans-serif;
+  }
+  pop-up {
+    font-size: 85%;
+  }
+</style>
+
+<script type="module" src="./pop-up.js"></script>
+<script type="module" src="./pop-anchor.js"></script>
+
+<pop-anchor>...</pop-anchor>
+<br><br></hr><br>
+
+<pop-anchor>...</pop-anchor>
+<br><br></hr><br><br>
+
+<pop-anchor>...</pop-anchor>
+
+<pop-up id="pop"></pop-up>
+
+<script type="module">
+  const a$ = document.querySelectorAll('pop-anchor');
+  a$.forEach(a => a.addEventListener('anchor', e => {
+    pop.show = true;
+    const p = e.target.value;
+    pop.x = p.x;
+    pop.y = p.y;
+    console.log(p);
+  }));
+</script>

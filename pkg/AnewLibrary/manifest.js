@@ -9,6 +9,7 @@ const manifests = [
   'Data',
   'Design',
   'DevTools',
+  'Documents',
   'Graph',
   'Fields',
   'HuggingFace',

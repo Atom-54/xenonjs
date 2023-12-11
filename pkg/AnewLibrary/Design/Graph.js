@@ -9,7 +9,7 @@ export const getAtomState = host => {
   const {layer} = host;
   let {graph} = layer;
   // deepest state
-  const hostState = graph[host.name].state || {};
+  const hostState = graph[host.name]?.state || {};
   const state = {...hostState};
   // ascend layers
   while (graph) {

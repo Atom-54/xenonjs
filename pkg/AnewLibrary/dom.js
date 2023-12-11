@@ -11,6 +11,7 @@ import './DevTools/dom.js';
 import './Spectrum/Dom/spectrum-tab-panels.js';
 import './Data/dom.js';
 import './Calendar/dom.js';
+import './UX/dom.js';
 
 // import './Fields/FieldsDom.js';
 // import './PixiJs/PixiJsDom.js';

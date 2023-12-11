@@ -56,8 +56,11 @@ export const Layout = {
       styleRules: 'CSSRules|Text'
     },
     outputs: {
+      context: 'Pojo',
+      target: 'Pojo',
       selected: 'Pojo',
       activated: 'Pojo',
+      opened: 'Pojo',
       renamed: 'Pojo',
       delete: 'Pojo',
       trigger: 'Nonce'

@@ -91,6 +91,7 @@ export const Spectrum = {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     inputs: {
       tabs: 'Pojo',
+      closeable: 'Boolean'
     },
     outputs: {
       tabs: 'Pojo'

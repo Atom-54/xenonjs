@@ -33,6 +33,10 @@ const onoutput = (controller, host, output) => {
   writeToState(controller, outputState, true);
 };
 
+export const onevent = (controller, pid, eventlet) => {
+  controller.atoms[pid]?.handleEvent(eventlet);
+};
+
 // writes object to state, forwards to bindings, and notifies observer
 const writeToState = (controller, inputState, filtering) => {
   const e$ = entries(inputState);
@@ -66,10 +70,6 @@ const writeToHost = (controller, state) => {
     }
     //log.debug(host.id, name, value);
   }
-};
-
-const onevent = (controller, pid, eventlet) => {
-  controller.atoms[pid]?.handleEvent(eventlet);
 };
 
 export const reifySublayer = async (controller, layer, id, graph, host) => {

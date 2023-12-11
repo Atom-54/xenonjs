@@ -72,7 +72,7 @@ export class AtomGraph extends DragDrop {
         const e = ++srcEdgeCount[sourceId];
         const elt = this.shadowRoot.querySelector(`#${sourceId}`);
         if (elt) {
-          const [dx, dy] = offsets[source.slice(0,-1).join('$')] ?? [0, 0];
+          const [dx, dy] = offsets[source.slice(0,3).join('$')] ?? [0, 0];
           const p0 = {
             x: ox + dx + elt.offsetLeft + elt.offsetWidth,
             y: oy + dy + elt.offsetTop + e*14,
@@ -85,7 +85,7 @@ export class AtomGraph extends DragDrop {
               const b = ++trgEdgeCount[targetId];
               const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
               if (elt2) {
-                const [dx, dy] = offsets[target.slice(0,-1).join('$')] ?? [0, 0];
+                const [dx, dy] = offsets[target.slice(0,3).join('$')] ?? [0, 0];
                 const p1 = {
                   x: ox + dx + elt2.offsetLeft,
                   y: oy + dy + elt2.offsetTop + b*14
@@ -263,8 +263,10 @@ const template = Xen.Template.html`
     outline-offset: 4px;
     cursor: pointer;
     opacity: 0.95;
-    background-color: hsl(var(--main-hue), 50%, 60%);
-    color: white;
+    /* background-color: hsl(var(--main-hue), 50%, 60%); */
+    background-color: hsl(var(--main-hue), 40%, 80%);
+    color: black;
+    /* color: white; */
     overflow: hidden;
     text-overflow: ellipsis;
   }
@@ -274,24 +276,23 @@ const template = Xen.Template.html`
   }
   [type] {
     font-size: 65%;
-    background-color: #5b20b7; 
-    background-color: hsl(var(--main-hue), 80%, 20%);
-    color: #9e7cd4; 
-    color: hsl(0, 0%, 80%);
+    /* background-color: #5b20b7;  */
+    background-color: hsl(var(--main-hue), 60%, 45%);
+    color: #f1f1f1;
     height: 1em; 
     padding: 0.3rem 0.1rem 0.3rem 0.5rem;
     font-weight: bold;
     text-transform: capitalize; 
   }
   [name] {
-    background-color: #6720cc; 
-    background-color: hsl(var(--main-hue), 80%, 25%);
+    /* background-color: #6720cc;  */
+    background-color: hsl(var(--main-hue), 30%, 85%);
     height 3em; 
     padding: 0.3rem 0.1rem 0.3rem 0.5rem;
   }
   [io] {
-    background-color: #8024f5;
-    background-color: hsl(var(--main-hue), 80%, 35%);
+    /* background-color: #8024f5; */
+    background-color: hsl(var(--main-hue), 40%, 80%);
     padding: 0.3rem 0; 
   }
   /**/

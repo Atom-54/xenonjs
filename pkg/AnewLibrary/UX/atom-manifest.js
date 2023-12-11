@@ -6,6 +6,21 @@
 const category = 'UX';
 
 export const UX = {
+  UXPopupMenu: {
+    categories: [category],
+    displayName: 'UX PopupMenu',
+    description: 'Displays a menu that pops up under the mouse',
+    type: '$anewLibrary/UX/Atoms/UXPopupMenu',
+    ligature: 'menu',
+    inputs: {
+      target: 'Json',
+      show: 'Nonce',
+      items: 'Json|MenuItems'
+    },
+    outputs: {
+      selected: 'String'
+    }
+  },
   UXToolbar: {
     categories: [category],
     displayName: 'UX Toolbar',
