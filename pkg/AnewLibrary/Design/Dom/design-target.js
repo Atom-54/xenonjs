@@ -7,7 +7,7 @@ import {Xen} from '../../Dom/Xen/xen-async.js';
 
 const log = logf("DOM:DesignTarget", 'orange', 'white');
 
-const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field', 'code-mirror', 'fancy-input'];
+const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field', 'code-mirror', 'fancy-input', 'list-item'];
 
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {

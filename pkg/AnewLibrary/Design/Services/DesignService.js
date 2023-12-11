@@ -203,14 +203,15 @@ const getAtomTypeCategories = filter => {
 };
 
 const designObserver = (controller, inputs) => {
-  if ('build$CodeEditor$text' in inputs) {
-    const qualifiedId = controller.state.build$CodeEditor$id;
-    if (qualifiedId) {
+  const text = inputs.build$CodeEditor$text;
+  const qualifiedId = controller.state.build$CodeEditor$id;
+  if (text && qualifiedId) {
+    if (text !== controller.state[qualifiedId]) {
       const parts = qualifiedId.split('$');
       const key = parts.pop();
       const id = parts.join('$');
       log.debug('designObserver: updating property text for', id, key);
-      updateProperty(controller, id, key, inputs.build$CodeEditor$text);
+      updateProperty(controller, id, key, text);
     }
   }
   if ('build$Catalog$Filter$query' in inputs) {

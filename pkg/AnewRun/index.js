@@ -21,11 +21,13 @@ start(async xenon => {
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
   Library.importLibrary(env);
   Services.addServices(services);
+  // create project
+  await Project.initProject('FirstProject');
   // make a controller
   const main = await Env.createController(env, 'main');
   globalThis.main = main;
   // add layers
-  const graph = Project.restoreLocalGraph('FirstProject.FilesGraph');
+  const graph = Project.restoreLocalGraph('FirstProject.KeyRecommendation');
   log.debug(graph);
   await Controller.reifyLayer(main, main.layers, 'run', graph);
 });

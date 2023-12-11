@@ -8,6 +8,7 @@ import '../dom.js';
 import './modal-view.js';
 import './fancy-image.js';
 import './fancy-input.js';
+import './list-item.js';
 import './drag-able.js';
 import './drop-target.js';
 import './draggable-item.js';

@@ -23,7 +23,7 @@ const defaultLibrary = 'a54.00/User/FirstLibrary';
 
 const lsLibrary = {
   root: 'ls:',
-  atoms: await readLsLibrary(defaultLibrary)
+  atoms: await readLsLibrary(defaultLibrary) || []
 };
 
 const allAtoms = [...lsLibrary.atoms];

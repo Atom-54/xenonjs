@@ -38,18 +38,20 @@ render({styleRules}, state) {
     ligature: 'settings_backup_restore'
   };
   let i = 0;
-  state.imap = [];
+  state.itemMap = {};
   const mapItems = items => items?.map?.(item => {
+    let key = null;
     if (typeof item === 'object') {
       item = deepCopy(item);
       map(item, (k, v) => item[k] = mapItems(v) || v);
+      key = this.getItemKey(item);
       item = {
         ...defaults,
-        key: i,
         ...item,
-        closed: !opened?.[i],
-        selected: [String(i), item.name].includes(selected),
-        activated: [String(i), item.name].includes(activated),
+        key,
+        closed: !opened?.[key],
+        selected: [key, String(i), item.name].includes(selected),
+        activated: [key, String(i), item.name].includes(activated),
       };
       for (let n of ['thumb', 'icon', 'image']) {
         if (item[n]) {
@@ -57,8 +59,10 @@ render({styleRules}, state) {
         }
       }
     }
-    i++;
-    state.imap.push(item);
+    if (key) {
+      i++;
+      state.itemMap[key] = item;
+    }
     return item;
   });
   const models = mapItems(items);
@@ -70,10 +74,26 @@ render({styleRules}, state) {
     }
   };
 },
+getItemKey(item) {
+  return item.key || item.id || item.name;
+},
+onItemContextMenu({eventlet: {key, value: {x, y}}}, state) {
+  log.debug('onItemContextMenu', key, x, y);
+  return {context: key, target: {x, y}};
+},
 onItemOpenClose({eventlet: {key}}, state) {
-  log('onItemOpenClose', key);
-  (state.opened ??= {})[key] = !state.opened[key];
-  return this.onItemSelect({eventlet: {key}}, state);
+  const output = this.onItemSelect({eventlet: {key}}, state);
+  const item = state.itemMap[key];
+  log.debug('onItemOpenClose', key, item);
+  if (key && item) {
+    if (item.hasEntries) {
+      (state.opened ??= {})[key] = !state.opened[key];
+    } else {
+      log.debug('file-opened', key);
+      output.openend = key;
+    }
+    return output;
+  }
 },
 onItemDelete({eventlet: {key}}, state) {
   log('onItemDelete', key);
@@ -85,15 +105,18 @@ onItemSelect({eventlet}, state) {
   return {selected};
 },
 onItemRename({eventlet: {key, value}}, state) {
-  log('onItemRename', key, value);
+  log.debug('onItemRename', key, value);
   state.renamed = {key, value};
   return {renamed: {key, value}, trigger: Math.random()};
 },
 onItemActivate({eventlet: {key}}, state) {
-  log.debug('onItemActivate', key, state.imap[key], state.imap);
-  state.activated = key;
-  state.selected = key;
-  return {activated: state.imap[key], trigger: Math.random()};
+  //log.debug('onItemActivate', key, state.imap[key], state.imap);
+  //const index = state.imap.findIndex(item => item.name === key);
+  //if (index >= 0) {
+    state.activated = key;
+    state.selected = key;
+    return {activated: key, trigger: Math.random()};
+  //}
 },
 template: html`
 <style>${'{{styleRules}}'}</style>
