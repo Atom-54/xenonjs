@@ -27,6 +27,12 @@ export const UX = {
     description: 'Displays a UX toolbar with text, icons and button',
     type: '$anewLibrary/UX/Atoms/UXToolbar',
     ligature: 'toolbar',
+    state: {
+      style: {
+        flex: '0 0 auto',
+        padding: '4px'
+      }
+    },
     inputs: {
       actions: '[Pojo]',
       controls: '[String]'

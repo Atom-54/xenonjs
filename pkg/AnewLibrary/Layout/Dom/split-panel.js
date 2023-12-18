@@ -70,7 +70,7 @@ const template = Xen.Template.html`
   <slot name="one"></slot>
 </div>
 
-<div resizer vertical$="{{vertical}}" dragging$="{{dragging}}" on-pointerdown="onDown" on-dblclick="onDblClick">
+<div resizer vertical$="{{vertical}}" dragging$="{{dragging}}" on-pointerdown="onDown" on-click="onToggleClick">
   <div handle vertical$="{{vertical}}"></div>
 </div>
 
@@ -176,14 +176,18 @@ export class SplitPanel extends DragDrop {
     this.state.divider = Math.max(Math.round(divider), 0);
     //console.log('doMove', this.state.divider);
     this.invalidate();
+    this.didDrag = true;
   }
   doUp() {
     this.value = this.state.divider;
     this.fire('divider-change');
   }
-  onDblClick(e) {
-    this.state.open = this.state.open === false ? true : false;
-    this.invalidate();
+  onToggleClick(e) {
+    if (!this.didDrag) {
+      this.state.open = this.state.open === false ? true : false;
+      this.invalidate();
+    }
+    this.didDrag = false;
     //this.toggle(inputs, state)
   }
   // toggle(_, state) {

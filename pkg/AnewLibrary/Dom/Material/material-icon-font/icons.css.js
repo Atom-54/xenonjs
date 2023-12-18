@@ -11,6 +11,7 @@ icon {
   font-family: var(--icon-font);
   font-weight: normal;
   font-style: normal;
+  max-width: 1em;
   /* font-size: 24px; */
   line-height: 1;
   letter-spacing: normal;

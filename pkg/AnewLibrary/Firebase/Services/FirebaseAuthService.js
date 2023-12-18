@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import {firebase} from '../firebase-auth.js';
-import {FirebaseGoogleLogin as Provider} from './firebase-google-login.js';
-//import {FirebaseGithubLogin as Provider} from './firebase-github-login.js';
+import {FirebaseGoogleLogin as Provider} from '../Auth/firebase-google-login.js';
+//import {FirebaseGithubLogin as Provider} from '../Auth/firebase-github-login.js';
 
 // const log = logFactory(logFactory.flags.services || logFactory.flags.AuthService, 'FirebaseAuthService', 'tomato');
 
@@ -18,7 +18,7 @@ if (firebaseConfig) {
 
 let user = {};
 
-export const AuthService = {
+export const FirebaseAuthService = {
   GetUser() {
     return user;
   },

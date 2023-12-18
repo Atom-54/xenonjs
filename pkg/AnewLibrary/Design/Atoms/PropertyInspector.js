@@ -4,18 +4,18 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({schema}, state, {output}) {
+async update({schema, selected}, state, {output, service}) {
   // clear dom cache
   state.props = [];
   // force output (render) cycle
   await output();
-  // renew renderable state
-  state.props = 
-    // attempt to convert each schema entry into a property model
-    map(schema, (label, info) => this.propFromSchema(label, info))
-    // clear out the null results
-    .filter(i => i)
-  ;
+  // maybe convert schema entries into property models
+  state.props = await this.propsFromSchema(selected, service);
+},
+async propsFromSchema(selected, service) {
+  const {schema} = await service('DesignService', 'GetHostSchema', {key: selected});
+  const propFromSchema = (label, info) => this.propFromSchema(label, info);
+  return map(schema, propFromSchema).filter(i => i);
 },
 propFromSchema(label, info) {
   // info must have a type with `includes` method

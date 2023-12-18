@@ -5,6 +5,7 @@
 import {makeCapName} from '../../CoreXenon/Reactor/Atomic/js/names.js';
 import * as Library from '../../Xenon/Library.js';
 import * as Controller from '../../Framework/Controller.js';
+import * as Documents from '../../Documents/Services/DocumentService.js';
 import * as Schema from '../Schema.js';
 import * as Graph from '../Graph.js';
 import * as Project from './ProjectService.js';
@@ -62,22 +63,35 @@ export const DesignService = {
     return getAtomTypeCategories();
   },
   async GetAtomInfo(host, data) {
+    designLayerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     return getAtomInfo(host.layer.controller, designLayerId);
   },
   async GetAtomGraphInfo(host, {layerId}) {
+    layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     const layer = Controller.findLayer(host.layer.controller, layerId);
-    return getGraphMetaData(layer.graph, 'atomGraphInfo');
+    return layer ? getGraphMetaData(layer.graph, 'atomGraphInfo') : {};
   },
   async SetAtomGraphInfo(host, {layerId, info}) {
+    layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     const layer = Controller.findLayer(host.layer.controller, layerId);
     return setGraphMetaData(layer.graph, 'atomGraphInfo', info);
   },
   async GetLayerInfo(host, {layerId}) {
+    layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     const {controller} = host.layer;
     const schema = Schema.schemaForLayer(controller, layerId);
     const atoms = getAtomInfo(controller, layerId);
     const connections = controller.connections;
     return {atoms, schema, connections};
+  },
+  async GetHostSchema(host, {key}) {
+    if (key) {
+      const layerId = host.id.split('$').slice(0, 2).join('$') + '$Graph';
+      const layerSchema = Schema.schemaForLayer(host.layer.controller, layerId);
+      const schema = Schema.deepSchemaForHost(layerSchema, key).inputs;
+      return {schema};
+    }
+    return {};
   },
   async DesignDragDrop(host, {eventlet}) {
     const types = getAtomTypes();
@@ -91,9 +105,11 @@ export const DesignService = {
     }
   },
   ConnectionChange(host, {id, key, value}) {
+    //designLayerId = id?.split('$').slice(0, -1).join('$');
     updateConnection(host.layer.controller, id, key, value);
   },
   PropertyChange(host, {id, key, value, nopersist}) {
+    //designLayerId = id?.split('$').slice(0, -1).join('$');
     if (key === 'name') {
       renameAtom(host, id, value)
     } else {
@@ -112,7 +128,8 @@ export const newGraph = async layer => {
   Project.Project.addGraph(Project.currentProject, graph);
   await reifyGraph(layer, name);
   Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
-  Project.saveProject(Project.currentProject);
+  //Project.saveProject(Project.currentProject);
+  saveDesignGraph(layer.controller);
 };
 
 export const loadGraph = async (layer, name) => {
@@ -134,7 +151,8 @@ export const getGraphMetaData = (graph, property) => {
 
 export const setGraphMetaData = async (graph, property, value) => {
   graph.meta[property] = value;
-  return Project.saveProject(Project.currentProject);
+  //return Project.saveProject(Project.currentProject);
+  //saveDesignGraph(controller);
 };
 
 const createSublayer = async (layer, name) => {
@@ -164,12 +182,21 @@ export const getDesignLayer = controller => {
   return Controller.findLayer(controller, designLayerId);
 };
 
+export const saveDesignGraph = controller => {
+  const layer = getDesignLayer(controller);
+  const graph = layer?.graph;
+  if (graph && graph.meta.path) {
+    return Documents.putDocument(controller, graph.meta.path, graph);
+  }
+};
+
 export const addDesignedAtom = async (controller, layer, {name, type, container, containers, state}) => {
   const host = await Controller.reifyAtom(controller, layer, {name, type, container, containers, state});
   layer.graph[name] = {type, container, containers, state}; 
   designUpdate(controller);
   designSelect(controller, host.id);
-  Project.saveProject(Project.currentProject);
+  //Project.saveProject(Project.currentProject);
+  saveDesignGraph(controller);
 };
 
 const getAtomTypes = () => {
@@ -214,7 +241,7 @@ const designObserver = (controller, inputs) => {
       updateProperty(controller, id, key, text);
     }
   }
-  if ('build$Catalog$Filter$query' in inputs) {
+  if ('build$PartsGraph$Catalog$Filter$query' in inputs) {
     designUpdate(controller);
   }
   if ('build$DesignPanels$tabs' in inputs) {
@@ -231,7 +258,8 @@ const designObserver = (controller, inputs) => {
         }
       }
       designUpdateDocuments(controller);
-      Project.saveProject(Project.currentProject);
+      //Project.saveProject(Project.currentProject);
+      //saveDesignGraph(controller);
     }
   }
   if (designSelectedHost) {
@@ -250,10 +278,10 @@ const removeAtom = (controller, atomId) => {
 };
 
 export const designUpdate = async controller => {
-  const categories = getAtomTypeCategories(controller.state.build$Catalog$Filter$query);
-  Controller.set(controller, 'build$Catalog$Catalog', {items: categories});
+  const categories = getAtomTypeCategories(controller.state.build$PartsGraph$Catalog$Filter$query);
+  Controller.set(controller, 'build$PartsGraph$Catalog$Catalog', {items: categories});
   Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
-  Controller.writeInputsToHost(controller, 'build$AtomGraph', {layerId: designLayerId, junk: Math.random()});
+  Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId, junk: Math.random()});
   designUpdateDocuments(controller);
 };
 
@@ -273,25 +301,33 @@ export const designUpdateDocuments = async controller => {
 };
 
 export const designSelect = (controller, atomId) => {
-  const host = controller.atoms[atomId];
-  if (designSelectedHost !== host) {
-    designSelectedHost = host;
-    const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
-    Controller.writeInputsToHost(controller, 'build$InspectorEcho', {html});
-    const layerSchema = Schema.schemaForLayer(controller, designLayerId);
-    const candidates = layerSchema.outputs;
-    const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host).inputs;
-    const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
-    Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
-    Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
-    Controller.writeInputsToHost(controller, 'build$PropertyInspector', {id: host?.id, schema, candidates});
-    Controller.writeInputsToHost(controller, 'build$ConnectionInspector', {id: host?.id, schema, candidates});
-    Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
-    Controller.writeInputsToHost(controller, 'build$AtomGraph', {selected: host?.id});
-    Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
-    const state = !host ? {} : prefixedState(controller.state, host.id + '$');
-    Controller.writeInputsToHost(controller, 'build$State', {object: state});
-  }
+  const bits = atomId?.split('$') || [];
+  const selection = [...bits.slice(0, -2), 'Selected'].join('$');
+  Controller.set(controller, selection, {value: atomId});
+
+  // const host = controller.atoms[atomId];
+  // if (designSelectedHost !== host) {
+  //   designSelectedHost = host;
+  //   if (atomId) {
+  //     designLayerId = atomId?.split('$').slice(0, -1).join('$');
+  //   }
+  //   Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId});
+  //   const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
+  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$InspectorEcho', {html});
+  //   const layerSchema = Schema.schemaForLayer(controller, designLayerId);
+  //   const candidates = layerSchema.outputs;
+  //   const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host.id).inputs;
+  //   const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
+  //   Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
+  //   Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
+  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$PropertyInspector', {id: host?.id, schema, candidates});
+  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$ConnectionInspector', {id: host?.id, schema, candidates});
+  //   Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
+  //   Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {selected: host?.id});
+  //   Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
+  //   const state = !host ? {} : prefixedState(controller.state, host.id + '$');
+  //   Controller.writeInputsToHost(controller, 'build$State', {object: state});
+  // }
 };
 
 export const designDelete = (controller, atomId) => {
@@ -303,7 +339,8 @@ export const designDelete = (controller, atomId) => {
   //designUpdate(controller);
   designSelect(controller, null);
   designUpdateDocuments(controller);
-  Project.saveProject(Project.currentProject);
+  saveDesignGraph(controller);
+  //Project.saveProject(Project.currentProject);
 };
 
 const getDesignTargetId = () => {
@@ -392,7 +429,8 @@ const dropAtom = async (controller, eventlet) => {
     await Controller.unrender(controller);
     await Controller.rerender(controller);
     designUpdate(controller);
-    Project.saveProject(Project.currentProject);
+    saveDesignGraph(controller);
+    //Project.saveProject(Project.currentProject);
   }
 };
 
@@ -440,7 +478,8 @@ const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   // update graph state
   if (!nopersist) {
     Graph.updateProperty(controller, designHostId, propId, value);
-    Project.saveProject(Project.currentProject);
+    saveDesignGraph(controller);
+    //Project.saveProject(Project.currentProject);
   }
   // forces design target to invalidate
   designUpdateTarget(controller);
@@ -470,35 +509,42 @@ const validateAtomOrder = async controller => {
 };
 
 const renameAtom = async (host, id, value) => {
-  // calculate keys
   const {controller} = host.layer;
   const atom = controller.atoms[id];
+  // calculate keys
   const newKey = [...atom.id.split('$').slice(0, -1), value].join('$');
-  log.debug('layer graph rekey from', id, 'to', newKey);
   const graphAtomId = id.split('$').slice(2).join('$');
   const graphNewId = newKey.split('$').slice(2).join('$')
-  // move atom from here to there
+  //
+  // move atom from here to there in graph
   const {layer} = atom;
   const {graph} = layer;
   graph[graphNewId] = graph[graphAtomId];
   delete graph[graphAtomId];
-  log.debug('atom controller rekey from', id, 'to', newKey);
-  // capture originals
+  log.debug('layer graph rekeyed from', graphAtomId, 'to', graphNewId);
+  //
+  // capture original credentials
   const {name: origName, id: origiId} = atom;
   // replace credentials
   atom.name = value;
   atom.id = newKey;
-  // replace in controller
+  //
+  // replace reference in controller
   delete controller.atoms[id];
   controller.atoms[newKey] = atom;
+  log.debug('atom controller rekey from', id, 'to', newKey);
+  //
   // update controller connections
   const old = controller.connections.inputs;
-  const connections = controller.connections.inputs = {};
-  Object.entries(old).forEach(([name, value]) => {
-    name = name.replace('$' + origName + '$', '$' + value + '$');
-    value = value.map(name => name.replace('$' + origName + '$', '$' + value + '$'));
-    connections[name] = value;
-  });
+  const newInputs = JSON.parse(JSON.stringify(old).replaceAll(id, newKey));
+  // const connections = controller.connections.inputs = {};
+  // Object.entries(old).forEach(([name, value]) => {
+  //   name = name.replace('$' + origName + '$', '$' + value + '$');
+  //   value = value.map(name => name.replace('$' + origName + '$', '$' + value + '$'));
+  //   connections[name] = value;
+  // });
+  controller.connections.inputs = newInputs;
+  //
   // update graph connections
   log.debug('connection search');
   // update connection target ids
@@ -529,18 +575,20 @@ const renameAtom = async (host, id, value) => {
     }
   });
   //
-  //update bindings
-  const k1 = Object.keys(controller.connections).filter(key => key.includes(atom.id));
-  log.debug(k1);
+  //update connections
+  // const k1 = Object.keys(controller.connections.inputs); //.filter(key => key.includes(atom.id));
+  log.debug('connections', controller.connections.inputs);
+  //
+  // slot rename
+  controller.composer.slots[atom.id] = controller.composer.slots[id];
+  delete controller.composer.slots[id];
   //
   // maybe update designer's selected atom name
   designSelect(controller, null);
-  // slot rename
-  const slot = controller.composer.slots[id];
-  controller.composer.slots[newKey] = slot;
-  delete controller.composer.slots[id];
   // redundant?
   designUpdate(controller);
+  //
   // save changes
-  Project.saveProject(Project.currentProject);
+  saveDesignGraph(controller);
+  //Project.saveProject(Project.currentProject);
 };

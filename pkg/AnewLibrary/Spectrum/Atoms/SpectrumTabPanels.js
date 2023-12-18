@@ -12,21 +12,22 @@ updateSelected(value, state) {
   const selected = Number(value) || 0;
   if (state.selected !== selected) {
     state.selected = selected;
-    return {selected};
+    return {selected, closed: ''};
   }
-  return {};
+  return {closed: ''};
 },
 onChange({eventlet: {value}}, state) {
   return this.updateSelected(value, state);
 },
 onClose({eventlet: {value}, tabs}, state) {
   const index = Number(value);
+  const closed = state.tabs[index];
   state.tabs.splice(index, 1);
   state.tabs?.forEach((t,i) => t.value = i);
   state.tabs = [...state.tabs];
   tabs.splice(index, 1);
   let selected = this.updateSelected(Math.max(index, state.selected-1), state);
-  return {...selected, tabs};
+  return {...selected, tabs, closed};
 },
 template: html`
 <style>

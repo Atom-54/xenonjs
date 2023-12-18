@@ -56,10 +56,10 @@ export class AtomGraph extends DragDrop {
   }
   clampus(v) {
     const gridSize = 8;
-    return Math.floor(v/gridSize)*gridSize;
+    return Math.floor(v/gridSize + 0.5)*gridSize;
   }
   renderCanvas({atoms, edges}, {x, y, offsets}) {
-    const [ox, oy] = [3000, 3000 + 51];
+    const [ox, oy] = [3000, 3000 + 38.5];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -67,31 +67,32 @@ export class AtomGraph extends DragDrop {
       const srcEdgeCount = {}, trgEdgeCount = {};
       for (const edge of edges) {
         const source = edge.id.split('$');
-        const sourceId = source.slice(0, 3).join('-');
+        const sourceId = source.slice(0, 4).join('-');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
         const elt = this.shadowRoot.querySelector(`#${sourceId}`);
         if (elt) {
-          const [dx, dy] = offsets[source.slice(0,3).join('$')] ?? [0, 0];
+          const [dx, dy] = offsets[source.slice(0, 4).join('$')] ?? [0, 0];
           const p0 = {
             x: ox + dx + elt.offsetLeft + elt.offsetWidth,
             y: oy + dy + elt.offsetTop + e*14,
           };
           for (const bound of edge.binding) {
             const target = bound.split('$');
-            const targetId = target.slice(0, 3).join('-');
+            const targetId = target.slice(0, 4).join('-');
             if (targetId !== sourceId) {
               trgEdgeCount[targetId] ??= -1;
               const b = ++trgEdgeCount[targetId];
               const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
               if (elt2) {
-                const [dx, dy] = offsets[target.slice(0,3).join('$')] ?? [0, 0];
+                const [dx, dy] = offsets[target.slice(0, 4).join('$')] ?? [0, 0];
                 const p1 = {
                   x: ox + dx + elt2.offsetLeft,
                   y: oy + dy + elt2.offsetTop + b*14
                 };
                 const path = this.calcBezier(p0, p1);
-                const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+                //const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
+                const highlight = [[0x03, 0x80, 0xf0],[0xff, 0xa5, 0x00]][(i++)%1];
                 this.laserCurve(ctx, path, highlight);
               }
             }
@@ -313,8 +314,10 @@ const template = Xen.Template.html`
     display: inline-block;
     width: 6px;
     height: 6px;
-    background: lightgreen;
-    border: 4px solid rgba(0, 96, 0, 0.8);
+    background: rgb(255, 165, 0);
+    /*background: #007FFF;*/
+    border: 4px solid rgba(40, 157, 255, .85);
+    /* border: 4px solid rgba(255, 165, 0, .75); */
     border-radius: 50%;
     margin: 0 .5rem;
   }
