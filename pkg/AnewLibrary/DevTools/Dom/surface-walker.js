@@ -26,6 +26,7 @@ export class SurfaceWalkerElement extends Xen.Async {
       const om = this.stratify(data);
       this.mergeState({om});
     }
+    else this.mergeState({om: data});
   }
   onRefreshClick() {
     this.refresh();
@@ -68,7 +69,7 @@ const getTree = () => {
     //
     return children.length ? node : label;
   };
-  return dump(document.body);
+  return dump(window.root/*document.body*/);
 }
 
 // const indent = '<span style="font-size: 50%; opacity:0.2">..</span>';

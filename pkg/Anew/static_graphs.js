@@ -130,7 +130,6 @@ export const Build = {
       }
     }
   },
-
   TabPanels: {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$BodyMiddle#Container2',

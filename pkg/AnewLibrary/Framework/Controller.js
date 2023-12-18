@@ -133,7 +133,7 @@ export const reifyAtom = async (controller, layer, {name, type, containers, cont
   if (host) {
     // remap static state into live state format
     const qualifiedState = {};
-    for (const [key, value] of Object.entries(state)) {
+    for (const [key, value] of Object.entries(state || {})) {
       const qualifiedKey = `${layer.id}$${host.name}$${key}`;
       qualifiedState[qualifiedKey] = value;
     }
@@ -160,15 +160,21 @@ export const reifyAtom = async (controller, layer, {name, type, containers, cont
         }
       }
     }
-    // data currently in live state has 'missed' these connections, 
-    // we need to recreate missed connection effects
+    const prefixId = host.id + '$';
+    // data currently in live state has 'missed' the atom
+    for (const key of Object.keys(controller.state)) {
+      if (key.startsWith(prefixId)) {
+        qualifiedState[key] = controller.state[key];
+      }
+    }
+    // data currently in live state has 'missed' new connections, 
+    // recreate missed connection effects
     for (const [sourceId, list] of Object.entries(bindings)) {
       for (const targetId of list) {
-        if (targetId.startsWith(host.id + '$')) {
+        if (targetId.startsWith(prefixId)) {
           if (sourceId in controller.state) {
             qualifiedState[targetId] = controller.state[sourceId];
           }
-          //log.debug('.^.');
           //log.debug(targetId, host.id, qualifiedState[targetId], controller.state[sourceId]);
         }
       }
@@ -239,12 +245,12 @@ const calculateContainer = (host, localContainer) => {
 
 const updateBindings = (bindings, sourceId, targetId) => {
   // prefer existing binding 
-  for (const [key, targets] of Object.entries(bindings)) {
-    if (targets.includes(targetId)) {
-      log.debug('preserve newer binding', key);
-      return;
-    }
-  }
+  // for (const [key, targets] of Object.entries(bindings)) {
+  //   if (targets.includes(targetId)) {
+  //     log.debug('preserve newer binding', key, bindings, targetId);
+  //     return;
+  //   }
+  // }
   // set new binding
   (bindings[sourceId] ??= []).push(targetId);
   //log.debug('add to binding', sourceId, targetId);
@@ -263,7 +269,7 @@ const bindamor = (controller, key, value) => {
   // for each bound connection
   bound?.forEach(connection => {
     // binding channel is active
-    //log.debug(`[${connection}] receives data from [${key}]`); // the value`, String(value).slice(0, 30));
+    log(`[${connection}] receives data from [${key}]`); // the value`, String(value).slice(0, 30));
     // convert data to local format
     const bits = connection.split('$');
     const prop = bits.pop();
@@ -275,9 +281,8 @@ const bindamor = (controller, key, value) => {
 
 // keys in `inputs` are local to main `key`
 export const set = (controller, key, inputs) => {
-  // writeToState(controller, outputState, true);
-  writeInputsToState(controller, key, inputs);
   writeInputsToHost(controller, key, inputs);
+  writeInputsToState(controller, key, inputs);
 };
 
 // keys in `inputs` are local to main `key`

@@ -36,12 +36,17 @@ const captureConnectionValues = (controller, layerId, connections, inputs) => {
       //log.debug(layer.graph, inputs);
       Object.entries(inputs).forEach(([key, info]) => {
         const [id, ...prop] = key.split('.');
-        const {connections} = layer.graph[id];
-        if (connections) {
-          const propName = prop.join('$');
-          const connection = connections[propName];
-          if (connection) {
-            info.connection = connection[0];
+        const atomInfo = layer.graph[id];
+        if (!atomInfo) {
+          log.warn(`[${key}] is connected to graph [${id}] which does not exist`);
+        } else {
+          const {connections} = atomInfo;
+          if (connections) {
+            const propName = prop.join('$');
+            const connection = connections[propName];
+            if (connection) {
+              info.connection = connection[0];
+            }
           }
         }
       });
@@ -150,12 +155,12 @@ const schemaMode = (modalSchema, modalInfo, state) => {
   }
 };
 
-export const deepSchemaForHost = (layerSchema, host) => {
+export const deepSchemaForHost = (layerSchema, hostId) => {
   const schema = {
     inputs: {},
     outputs: {}
   };
-  const prefix = host.id.split('$').slice(2).join('.') + '.';
+  const prefix = hostId.split('$').slice(3).join('.') + '.';
   for (const [propName, value] of Object.entries(layerSchema.inputs)) {
     if (propName.startsWith(prefix)) {
       const shortName = propName.slice(prefix).split('.').slice(1).join('.');

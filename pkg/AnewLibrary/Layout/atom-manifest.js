@@ -83,6 +83,16 @@ export const Layout = {
       FlyOutSide: ['','top','right','bottom','left'],
     }
   },
+  PopOver: {
+    categories: [category],
+    description: 'A flying panel',
+    ligature: 'dialogs',
+    type: '$anewLibrary/Layout/Atoms/PopOver',
+    container: ['Container'],
+    inputs: {
+      show: 'Nonce'
+    }
+  },
   TabPages: {
     categories: [category],
     displayName: 'Tag Pages',

@@ -94,7 +94,8 @@ export const Spectrum = {
       closeable: 'Boolean'
     },
     outputs: {
-      tabs: 'Pojo'
+      tabs: 'Pojo',
+      closed: 'String'
     },
     state: {
       tabs: ['Tab']

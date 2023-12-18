@@ -19,6 +19,7 @@ async refresh(state, service) {
   state.kick = Math.random();
 },
 render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ selectedTab}) {
+  const dom = this.simpleDom();
   const contextModel = context?.layers;
   const graphJson = JSON.stringify(contextModel?.base?.GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
@@ -34,6 +35,7 @@ render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ select
     });
   });
   return {
+    dom,
     kick,
     showTools,
     context: formattedModel,
@@ -66,6 +68,17 @@ async onCreateTest(inputs, state, {service}) {
   state.capturedState = {[name]: capturedState};
   const put = (url, body) => fetch(url, {method: 'PUT', headers: {'Content-Type': 'application/json'}, body});
   put(`https://xenonjs-apps.firebaseio.com/test/specs/${name}.json`, JSON.stringify(capturedState));
+},
+simpleDom() {
+  const root = {};
+  const walk = (dom, root) => {
+    [...dom.children || []].forEach(child => {
+      let branch = child.id ? root[child.id] = {} : root;
+      walk(child, branch);
+    });
+  };
+  walk(document.body, root);
+  return root;
 },
 // onSelectGraph({eventlet: {value}, graphs}, state) {
 //   state.selectedGraph = graphs?.find(({$meta}) => $meta?.name === value);
@@ -107,7 +120,7 @@ template: html`
     width: 50%;
     min-width: min(320px, 100vw);
     max-width: min(100vw, 800px);
-    z-index: 10100;
+    z-index: 110100;
     transform: translateX(120%);
     transition: transform 200ms ease-in;
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
@@ -179,7 +192,8 @@ template: html`
       <resource-view version="{{version}}"></resource-view>
     </div>
     <!-- DOM -->
-    <surface-walker flex scrolling kick="{{kick}}"></surface-walker>
+    <data-explorer flex scrolling object="{{dom}}" expand="20"></data-explorer>
+    <!-- <surface-walker flex scrolling kick="{{kick}}"></surface-walker> -->
     <!-- Graph -->
     <div flex scrolling>
       <pre>{{graphJson}}</pre>

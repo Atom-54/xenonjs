@@ -5,9 +5,11 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({graphId}, state, {isDirty, service}) {
-  if (isDirty('graphId')) {
+  const id = graphId?.meta?.id || graphId;
+  if (state.graphId !== id) {
+    state.graphId = id;
     await service('LayerService', 'CreateLayer', {id: graphId});
-    log('LayerService::CreateLayer completed for', graphId);
+    log('LayerService::CreateLayer', id);
   }
 },
 template: html`

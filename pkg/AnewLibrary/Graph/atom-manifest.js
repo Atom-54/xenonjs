@@ -15,6 +15,9 @@ export const Graph = {
     ligature: 'schema',
     inputs: {
       graphId: 'String'
+    },
+    outputs: {
+      selected: 'String'
     }
   }
 };

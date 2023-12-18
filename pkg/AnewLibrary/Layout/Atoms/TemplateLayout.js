@@ -90,7 +90,7 @@ onItemOpenClose({eventlet: {key}}, state) {
       (state.opened ??= {})[key] = !state.opened[key];
     } else {
       log.debug('file-opened', key);
-      output.openend = key;
+      output.opened = key;
     }
     return output;
   }

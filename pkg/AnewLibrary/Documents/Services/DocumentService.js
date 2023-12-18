@@ -23,10 +23,8 @@ export const DocumentService = class {
   }
   static async Close(atom, data) {
     log.debug('Close', data);
+    closeDocument(data.label);
   }
-  // static async Cut(atom, data) {
-  //   log.debug('Cut', data);
-  // }
   static async Copy(atom, data) {
     log.debug('Copy', data);
     clipboard = data;
@@ -46,6 +44,9 @@ export const DocumentService = class {
     if (ok) {
       return deleteData(atom, id);
     }
+  }
+  static async makeDocumentPanel(typed, layer, name, container, index, id, content) {
+    makeDocumentPanel(typed, layer, name, container, index, id, content);
   }
 };
 
@@ -86,6 +87,11 @@ export const fetchDocument = async key => {
     content = Storage.getItem(altKey);
   }
   return content;
+};
+
+export const putDocument = async (controller, key, content) => {
+  Storage.setItem(key, content);
+  Storage.notifyFolderObservers(controller);
 };
 
 export const newDocument = async (atom, key) => {
@@ -134,21 +140,29 @@ const openDocument = async (atom, key) => {
   const name = key.split('/').pop();
   // new index = how many open documents there are now
   const index = Object.keys(documents).length;
-  // open another document
-  documents[key] = {
+  // create document item
+  const document = documents[key] = {
     index,
     key,
     name,
     content
   };
   // create document ux
-  return createDocumentPanel(atom, name, index, content);
+  document.panel = await createDocumentPanel(atom, name, index, key, content);
 };
 
-const createDocumentPanel = async (atom, name, index, content) => {
+const closeDocument = async name => {
+  const [key, document] = Object.entries(documents).find(([key, document]) => document.name === name) || [];
+  if (key && document) {
+    delete documents[key];
+    Controller.removeAtom(document.panel.layer.controller, document.panel);
+  }
+};
+
+const createDocumentPanel = async (atom, name, index, id, content) => {
   const {layer} = atom.layer.host;
   const {controller} = layer;
-  const panelsId = atom.id.split('$').slice(0, -2).join('$') + '$DocumentPanels';
+  const panelsId = atom.id.split('$').slice(0, -2).join('$') + '$DocumentTabs';
   const panels = controller.atoms[panelsId];
   //log.debug(panelsId, panels);
   if (panels) {
@@ -157,13 +171,19 @@ const createDocumentPanel = async (atom, name, index, content) => {
     panels.inputs = {selected: index};
     // try to put something there
     const container = panelsId.split('$').slice(1).join('$') + '#Container';
-    // construct a suitable graph for `content`
+    // construct a suitable panel for `content`
     const typed = getTypedContent(content);
-    if (typed.type === 'graph') {
-      await makeGraphPanel(layer, name + 'Graph', container, index, content);
-    } else {
-      await makeCodeMirror(layer, name, container, index, content);
-    }
+    return DocumentService.makeDocumentPanel(typed, layer, name, container, index, id, content);
+  }
+};
+
+const makeDocumentPanel = async (typed, layer, name, container, index, id, content) => {
+  const state = {style: {order: index}};
+  if (typed.type === 'graph') {
+    return makeBuildPanel(layer, name + 'Graph', container, content, state);
+    //return makeGraphPanel(layer, name + 'Graph', container, index, content);
+  } else {
+    return makeCodeMirror(layer, name, container, content, state);
   }
 };
 
@@ -184,25 +204,58 @@ const getTypedContent = content => {
   return {type: typeof doc, content: doc};
 };
 
-const makeCodeMirror = async (layer, name, container, index, content) => {
-  await Controller.reifyAtom(layer.controller, layer, {
-    name, container,
+const makeCodeMirror = async (layer, name, container, content, state) => {
+  return Controller.reifyAtom(layer.controller, layer, {
+    name, 
+    container,
     type: '$anewLibrary/CodeMirror/Atoms/CodeMirror', 
     state: {
-      style: {order: index},
+      ...state,
       text: content
     }
   });
 };
 
-const makeGraphPanel = async (layer, name, container, index, content) => {
-  await Controller.reifyAtom(layer.controller, layer, {
-    name, container,
+const makeGraphPanel = async (layer, name, container, content, state) => {
+  return Controller.reifyAtom(layer.controller, layer, {
+    name, 
+    container,
     type: '$anewLibrary/Graph/Atoms/Graph', 
     state: {
-      graphId: content.meta.id,
-      style: {order: index}
+      ...state,
+      graphId: content, 
     }
   });
 };
 
+const makeBuildPanel = async (layer, name, container, content, state) => {
+  return Controller.reifyAtom(layer.controller, layer, {
+    name, 
+    container,
+    type: '$anewLibrary/Graph/Atoms/Graph', 
+    state: {
+      ...state,
+      graphId: 'Design',
+      Graph$graphId: content
+    }
+  });
+  // const {controller} = layer;
+  // // create a design-target wrapper for ux interaction
+  // const target = await Controller.reifyAtom(controller, layer, {
+  //   type: '$anewLibrary/Design/Atoms/DesignTarget',
+  //   name: name + 'Target', 
+  //   container
+  // });
+  // // load a Graph host for the actual graph
+  // await Controller.reifyAtom(controller, layer, {
+  //   type: '$anewLibrary/Graph/Atoms/Graph', 
+  //   name, 
+  //   container: name + 'Target#Container', 
+  //   state: {
+  //     graphId: content, //.meta.id,
+  //     style: {order: index}
+  //   }
+  // });
+  // target.inputs = {};
+  // return target;
+};

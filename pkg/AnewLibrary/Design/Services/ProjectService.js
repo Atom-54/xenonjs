@@ -113,7 +113,9 @@ export const newGraph = async layer => {
 };
 
 export const getGraph = id => {
-  return Project.getGraph(currentProject, id);
+  return Project.getGraph('', id)
+    || Project.getGraph(currentProject, id)
+    ;
 };
 
 const renameGraph = ({key, value}) => {
