@@ -4,13 +4,13 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({show}, state, {service}) {
-  if (show === true) {
+async update({show, hide}, state, {isDirty}) {
+  //if (show === true) {
+  if (isDirty('show') && show) {
     state.show = true;
-    this.refresh(state, service);
+  } else if (isDirty('hide') && hide) {
+    state.show = false;
   }
-},
-async refresh(state, service) {
 },
 render({}, {show, kick}) {
   return {
@@ -58,7 +58,7 @@ template: html`
 
 <!-- popover flyout -->
 <div poptover flex rows show$="{{show}}" on-click="onTogglePopoverClick">
-  <div style="padding: 12px 8px;">PopOver</div>
+  <div style="padding: 12px 8px;">X</div>
   <slot name="Container"></slot>
 </div>
 `

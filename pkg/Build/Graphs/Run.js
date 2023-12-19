@@ -28,7 +28,10 @@ export const Run = {
     }
   },
   "PopOver": {
-    "type": "$anewLibrary/Layout/Atoms/PopOver"
+    "type": "$anewLibrary/Layout/Atoms/PopOver",
+    "connections": {
+      "hide": ["FileGraph$FileListLayout$opened"]
+    }
   },
   "FileGraph": {
     "type": "$anewLibrary/Graph/Atoms/Graph",

@@ -4,9 +4,6 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-//shouldUpdate({layerId}) {
-  //return Boolean(layerId);
-//},
 async update({layerId, selected}, state, {service}) {
   state.selected = selected;
   state.info = await service('DesignService', 'GetLayerInfo', {layerId});
@@ -25,8 +22,6 @@ render({layerId}, {info, selected, offsets}) {
     // search bindings for our nodable keys, these are our edges
     nodables.forEach(atom => this.getEdges(bindings, edges, atom));
   };
-  // remove duplicates
-  //edges = this.getCleanEdges(edges);
   // atom render models
   const atoms = nodables.map((atom, i) => this.renderAtom(atom, edges, selected, layerId, i));
   return {
@@ -45,49 +40,16 @@ getNodableAtoms(atoms) {
 },
 getEdges(bindings, edges, atom) {
   const atomPrefix = atom.id + '$';
+  const filterInternalEdges = bound => bound.filter(binding => !binding.startsWith(atomPrefix));
   const atomEdges = Object.entries(bindings)
     .filter(([id]) => id.startsWith(atomPrefix))
     .map(([id, binding]) => ({id, binding}))
+    .filter(bound => {
+      bound.binding = filterInternalEdges(bound.binding);
+      return (bound.binding.length);
+    })
     ;
   edges.push(...atomEdges);
-  // //const getDepth = id => id.split('$').length;
-  // // search bindings for our key
-  // for (let [id, binding] of Object.entries(bindings)) {
-  //   if (id.startsWith(atom.id + '$')) {
-  //     // we have edge from here to there
-  //     edges.push({id, binding});
-  //     // // and edges that end there
-  //     // binding
-  //     //   .filter(bound => getDepth(bound) < 5)
-  //     //   .forEach(bound => backEdges.push({bound, id}))
-  //     //   ;
-  //   }
-  // }
-},
-getCleanEdges(edges) {
-  // map of atoms bound via connections (reverse of above)
-  //const listeners = {};
-  // simplify edge list
-  const edgeIdClipper = id => id.split('$').slice(0, 3).join('-'); 
-  // make clean edges
-  const cleanEdges = edges.filter(edge => {
-    // first clear the sourceId
-    const sourceId = edgeIdClipper(edge.id);
-    // then clean all the targetIds
-    const cleanBinding = edge.binding.filter(bound => {
-      const targetId = edgeIdClipper(bound);
-      if (sourceId !== targetId) {
-        //((listeners[bound])??=[]).push(sourceId);
-        return true;
-      };
-    });
-    if (cleanBinding.length) {
-      edge.cleanBinding = [...new Set(cleanBinding)];
-      return true;
-    }
-  });
-  //log.debug(listeners, cleanEdges);
-  return cleanEdges;
 },
 renderAtom(atom, edges, selected, layerId, i) {
   const nameFromId = id => id.split('$').slice(4).join('.');

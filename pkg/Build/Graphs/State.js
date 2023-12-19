@@ -18,7 +18,7 @@ export const State = {
         fontSize: '80%',
         overflow: 'auto'
       },
-      expandLevel: 2
+      expandLevel: 0
     }
   }
 };
