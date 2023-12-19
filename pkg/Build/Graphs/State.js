@@ -6,7 +6,7 @@ export const State = {
   StateService: {
     type: '$anewLibrary/Data/Atoms/ServiceAccess',
     state: {
-      serviceName: 'LayerService',
+      service: 'LayerService',
       task: 'ObserveState',
       data: 'State'
     }

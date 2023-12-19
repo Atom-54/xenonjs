@@ -73,8 +73,9 @@ export const DesignService = {
   },
   async SetAtomGraphInfo(host, {layerId, info}) {
     layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
-    const layer = Controller.findLayer(host.layer.controller, layerId);
-    return setGraphMetaData(layer.graph, 'atomGraphInfo', info);
+    const controller = host.layer.controller;
+    const layer = Controller.findLayer(controller, layerId);
+    return setGraphMetaData(layer, layer.graph, 'atomGraphInfo', info);
   },
   async GetLayerInfo(host, {layerId}) {
     layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
@@ -129,7 +130,7 @@ export const newGraph = async layer => {
   await reifyGraph(layer, name);
   Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
   //Project.saveProject(Project.currentProject);
-  saveDesignGraph(layer.controller);
+  //saveDesignGraph(layer.controller);
 };
 
 export const loadGraph = async (layer, name) => {
@@ -149,10 +150,11 @@ export const getGraphMetaData = (graph, property) => {
   return graph.meta[property];
 };
 
-export const setGraphMetaData = async (graph, property, value) => {
+export const setGraphMetaData = async (layer, graph, property, value) => {
   graph.meta[property] = value;
+  //(controller);
   //return Project.saveProject(Project.currentProject);
-  //saveDesignGraph(controller);
+  saveDesignGraph(layer);
 };
 
 const createSublayer = async (layer, name) => {
@@ -182,11 +184,13 @@ export const getDesignLayer = controller => {
   return Controller.findLayer(controller, designLayerId);
 };
 
-export const saveDesignGraph = controller => {
-  const layer = getDesignLayer(controller);
+export const saveDesignGraph = layer => {
+  // const layer = getDesignLayer(controller);
   const graph = layer?.graph;
   if (graph && graph.meta.path) {
-    return Documents.putDocument(controller, graph.meta.path, graph);
+    return Documents.putDocument(layer.controller, graph.meta.path, graph);
+  } else {
+    log.debug('saveDesignGraph: graph has no `meta.path`', graph);
   }
 };
 
@@ -196,7 +200,7 @@ export const addDesignedAtom = async (controller, layer, {name, type, container,
   designUpdate(controller);
   designSelect(controller, host.id);
   //Project.saveProject(Project.currentProject);
-  saveDesignGraph(controller);
+  saveDesignGraph(layer);
 };
 
 const getAtomTypes = () => {
@@ -339,7 +343,7 @@ export const designDelete = (controller, atomId) => {
   //designUpdate(controller);
   designSelect(controller, null);
   designUpdateDocuments(controller);
-  saveDesignGraph(controller);
+  saveDesignGraph(host.layer);
   //Project.saveProject(Project.currentProject);
 };
 
@@ -429,7 +433,7 @@ const dropAtom = async (controller, eventlet) => {
     await Controller.unrender(controller);
     await Controller.rerender(controller);
     designUpdate(controller);
-    saveDesignGraph(controller);
+    saveDesignGraph(containable.layer);
     //Project.saveProject(Project.currentProject);
   }
 };
@@ -478,7 +482,9 @@ const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   // update graph state
   if (!nopersist) {
     Graph.updateProperty(controller, designHostId, propId, value);
-    saveDesignGraph(controller);
+    const designLayerId = designHostId.split('$').slice(0, -1).join('$');
+    const layer = Controller.findLayer(controller, designLayerId);
+    saveDesignGraph(layer);
     //Project.saveProject(Project.currentProject);
   }
   // forces design target to invalidate
@@ -589,6 +595,6 @@ const renameAtom = async (host, id, value) => {
   designUpdate(controller);
   //
   // save changes
-  saveDesignGraph(controller);
+  saveDesignGraph(layer);
   //Project.saveProject(Project.currentProject);
 };

@@ -4,7 +4,7 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({schema, selected}, state, {output, service}) {
+async update({selected}, state, {output, service}) {
   // clear dom cache
   state.props = [];
   // force output (render) cycle
@@ -96,7 +96,7 @@ JSONify(value) {
   }
   return json;
 },
-async onPropChange({eventlet: {key, value, nopersist}, id}, state, {service}) {
+async onPropChange({eventlet: {key, value, nopersist}, selected}, state, {service}) {
   const {prop} = state.props.find(({prop}) => prop.models[0].key === key);
   const model = prop.models[0];
   if (model.isObject) {
@@ -117,13 +117,13 @@ async onPropChange({eventlet: {key, value, nopersist}, id}, state, {service}) {
   if (model.isNumber) {
     value = Number(value) || 0;
   }
-  service('DesignService', 'PropertyChange', {key, value, nopersist, id});
+  service('DesignService', 'PropertyChange', {key, value, nopersist, id: selected});
 },
-onNonceClick({eventlet: {key}, id}, state, tools) {
-  return this.onPropChange({eventlet: {key, value: Math.random(), nopersist: true}, id}, state, tools);
+onNonceClick({eventlet: {key}, selected}, state, tools) {
+  return this.onPropChange({eventlet: {key, value: Math.random(), nopersist: true}, id: selected}, state, tools);
 },
-onNonceOffClick({eventlet: {key}, id}, state, tools) {
-  return this.onPropChange({eventlet: {key, value: null}, id}, state, tools);
+onNonceOffClick({eventlet: {key}, selected}, state, tools) {
+  return this.onPropChange({eventlet: {key, value: null}, id: selected}, state, tools);
 },
 template: html`
 <style>

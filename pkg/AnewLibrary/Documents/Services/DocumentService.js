@@ -180,7 +180,14 @@ const createDocumentPanel = async (atom, name, index, id, content) => {
 const makeDocumentPanel = async (typed, layer, name, container, index, id, content) => {
   const state = {style: {order: index}};
   if (typed.type === 'graph') {
-    return makeBuildPanel(layer, name + 'Graph', container, content, state);
+    const graph = {
+      ...content,
+      meta: {
+        ...content.meta ?? {},
+        path: id
+      }
+    };
+    return makeBuildPanel(layer, name + 'Graph', container, graph, state);
     //return makeGraphPanel(layer, name + 'Graph', container, index, content);
   } else {
     return makeCodeMirror(layer, name, container, content, state);
@@ -228,7 +235,7 @@ const makeGraphPanel = async (layer, name, container, content, state) => {
   });
 };
 
-const makeBuildPanel = async (layer, name, container, content, state) => {
+const makeBuildPanel = async (layer, name, container, graph, state) => {
   return Controller.reifyAtom(layer.controller, layer, {
     name, 
     container,
@@ -236,7 +243,7 @@ const makeBuildPanel = async (layer, name, container, content, state) => {
     state: {
       ...state,
       graphId: 'Design',
-      Graph$graphId: content
+      Graph$graphId: graph
     }
   });
   // const {controller} = layer;

@@ -33,7 +33,7 @@ export const Design = {
     type: '$anewLibrary/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$ToolsBody#Container',
     state: {
-      tabs: ['Parts', 'Tree', 'Modify']
+      tabs: ['Modify', 'Tree', 'Parts']
     }
   },
   ModifyPanel: {
@@ -41,7 +41,7 @@ export const Design = {
     container: 'ToolsTabs#Container',
     state: {
       style: {
-        order: 2
+        order: 0
       },
       divider: 120
     }
@@ -53,7 +53,8 @@ export const Design = {
       graphId: 'Inspector',
     },
     connections: {
-      PropertyInspector$selected: ['Selected$value']
+      PropertyInspector$selected: ['Selected$value'],
+      ConnectionInspector$selected: ['Selected$value']
     }
   },
   StateGraph: {
@@ -83,7 +84,7 @@ export const Design = {
     container: 'ToolsTabs#Container',
     state: {
       style: {
-        order: 0
+        order: 2
       },
       graphId: 'Parts'
     }
