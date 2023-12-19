@@ -9,13 +9,13 @@ import * as Library from '../Library/Xenon/Library.js';
 import * as Env from '../Library/Framework/Env.js';
 import * as Controller from '../Library/Framework/Controller.js';
 import * as Services from '../Library/Framework/Services.js';
-import * as Layer from '../Library/Graph/Services/LayerService.js';
-// import * as Documents from '../Library/Documents/Services/DocumentService.js';
-import './graphs.js';
-import {createComposer} from './composer.js';
+import {Graphs} from './graphs.js';
+import {createComposer} from './dom.js';
 import * as services from './services.js';
+import * as Project from '../Library/Design/Services/ProjectService.js';
+import * as Design from '../Library/Design/Services/DesignService.js';
 import {start} from '../Library/Common/start.js';
-//import * as Project from '../Library/Design/Services/ProjectService.js';
+
 const log = logf('Index', 'magenta');
 
 start(async xenon => {
@@ -23,17 +23,21 @@ start(async xenon => {
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
   Library.importLibrary(env);
   Services.addServices(services);
+  // create project
+  await Project.initProject('FirstProject');
   // make a controller
   const main = await Env.createController(env, 'main');
   globalThis.main = main;
-  // add graph
-  //const graphId = `FirstProject/KeyRecommendation`;
-  const graphId = 'Run';
-  //const graph = await Documents.fetchDocument(graphId);
-  const graph = await Layer.getGraphContent(graphId);
-  log.debug(graph);
-  await Controller.reifyLayer(main, main.layers, 'run', graph);
-  //Controller.set(main, 'run$PopOver', {show: true});
+  // add layers
+  const build = await Controller.reifyLayer(main, main.layers, 'build', Graphs.Build);
+  // load project graph(s)
+  const {sublayers} = Project.currentProject;
+  if (sublayers) {
+    for (const id of sublayers) {
+      // waits for graph to exist, but does not wait for output
+      await Design.reifyGraph(build, id);
+    }
+  }
 });
 
 const onrender = async (host, packet) => {

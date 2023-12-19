@@ -9,13 +9,11 @@ import * as Library from '../Library/Xenon/Library.js';
 import * as Env from '../Library/Framework/Env.js';
 import * as Controller from '../Library/Framework/Controller.js';
 import * as Services from '../Library/Framework/Services.js';
-import * as Layer from '../Library/Graph/Services/LayerService.js';
-// import * as Documents from '../Library/Documents/Services/DocumentService.js';
-import './graphs.js';
+//import {Graphs} from './graphs.js';
 import {createComposer} from './composer.js';
 import * as services from './services.js';
 import {start} from '../Library/Common/start.js';
-//import * as Project from '../Library/Design/Services/ProjectService.js';
+import * as Project from '../Library/Design/Services/ProjectService.js';
 const log = logf('Index', 'magenta');
 
 start(async xenon => {
@@ -23,17 +21,15 @@ start(async xenon => {
   const env = globalThis.env = Env.createEnv(xenon, Services.onservice, onrender);
   Library.importLibrary(env);
   Services.addServices(services);
+  // create project
+  await Project.initProject('FirstProject');
   // make a controller
   const main = await Env.createController(env, 'main');
   globalThis.main = main;
-  // add graph
-  //const graphId = `FirstProject/KeyRecommendation`;
-  const graphId = 'Run';
-  //const graph = await Documents.fetchDocument(graphId);
-  const graph = await Layer.getGraphContent(graphId);
+  // add layers
+  const graph = Project.restoreLocalGraph('FirstProject.KeyRecommendation');
   log.debug(graph);
   await Controller.reifyLayer(main, main.layers, 'run', graph);
-  //Controller.set(main, 'run$PopOver', {show: true});
 });
 
 const onrender = async (host, packet) => {
