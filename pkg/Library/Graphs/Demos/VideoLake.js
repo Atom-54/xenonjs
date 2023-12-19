@@ -90,7 +90,7 @@ const graph = {
     "type":"$library/Graph/Atoms/Graph",
     "container":"Panel#Container",
     "state":{
-      "graphId":"DeviceVideo",
+      "graphId":"FirstProject/DeviceVideo",
       "style":{
         "flex":"0 0 auto",
         "padding":"5px 0 0 5px",

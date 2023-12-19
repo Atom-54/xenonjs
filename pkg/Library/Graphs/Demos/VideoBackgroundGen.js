@@ -6,7 +6,8 @@
 
 const graph = {
   "meta":{
-    "id":"VideoBackgroundGen"
+    "id":"VideoBackgroundGen",
+    "path":"a54.00/FirstProject/VideoBackgroundGen"
   },
   "SelfieSegmentation":{
     "type":"$library/Mediapipe/Atoms/SelfieSegmentation",
@@ -14,12 +15,13 @@ const graph = {
     "state":{
       "style":{
         "borderWidth":"0",
-        "borderStyle":"solid"
+        "borderStyle":"solid",
+        "order":1
       }
     },
     "connections":{
       "image":[
-        "FrameCapture$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
@@ -30,11 +32,14 @@ const graph = {
       "opA":"source-over",
       "opB":"source-over",
       "opC":"destination-out",
-      "opD":"destination-atop"
+      "opD":"destination-atop",
+      "style":{
+        "order":2
+      }
     },
     "connections":{
       "imageA":[
-        "FrameCapture$frame"
+        "DeviceVideo$FrameCapture$frame"
       ],
       "imageB":[
         "OpenAIImage$image"
@@ -43,7 +48,7 @@ const graph = {
         "SelfieSegmentation$mask"
       ],
       "imageD":[
-        "FrameCapture$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
@@ -127,6 +132,7 @@ const graph = {
       "interval":100,
       "style":{
         "order":"3",
+        "flex":"0 0 auto",
         "padding":"var(--size-2)"
       }
     },
@@ -143,7 +149,8 @@ const graph = {
       "layout":"row",
       "style":{
         "borderWidth":"0",
-        "order":"2"
+        "order":"2",
+        "flex":"0 0 auto"
       }
     }
   },
@@ -155,7 +162,22 @@ const graph = {
       "label":"Generate",
       "inverted":false,
       "style":{
-        "order":"2"
+        "order":1,
+        "flex":"0 0 auto",
+        "padding-top":"12px"
+      }
+    }
+  },
+  "DeviceVideo":{
+    "type":"$library/Graph/Atoms/Graph",
+    "container":"Panel#Container",
+    "state":{
+      "graphId":"FirstProject/DeviceVideo",
+      "style":{
+        "order":0,
+        "flex":"0 0 auto",
+        "align-items":"center",
+        "color":"var(--xcolor-four)"
       }
     }
   }

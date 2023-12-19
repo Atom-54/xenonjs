@@ -9,10 +9,6 @@ const graph = {
       "label":"From",
       "value":"en",
       "style":{
-        "l":64,
-        "t":32,
-        "w":203,
-        "h":48,
         "borderWidth":"0",
         "borderStyle":"solid",
         "width":"auto",
@@ -33,10 +29,6 @@ const graph = {
       "label":"To",
       "value":"es",
       "style":{
-        "l":263,
-        "t":8,
-        "w":255,
-        "h":112,
         "borderWidth":"0",
         "borderStyle":"solid",
         "width":"auto",
@@ -57,15 +49,12 @@ const graph = {
     "state": {
       "layout":"row",
       "style":{
-        "l":0,
-        "t":0,
-        "w":530,
-        "h":58,
+        "flex":"0 0 auto",
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"1",
+        "order":"2",
         "height":"auto",
-        "padding":"var(--size-3)",
+        "padding":"var(--size-2)",
         "color":"var(--xcolor-four)",
         "width":"auto"
       }
@@ -79,15 +68,14 @@ const graph = {
       "style":{
         "borderWidth":"0",
         "borderStyle":"solid",
-        "order":"5",
+        "order":"6",
         "flex":"1",
         "width":"auto",
-        "color":"var(--xcolor-four)",
-        "padding":""
+        "color":"var(--xcolor-four)"
       }
     },
     "connections": {
-      "text":["Translate$translate$translation"]
+      "text":["Translate$translation"]
     }
   },
   "Languages":{
@@ -141,10 +129,10 @@ const graph = {
       "enabled":true
     },
     "connections":{
-      "inLang":["fromLang$field$value"],
-      "outLang":["toLang$field$value"],
-      "text":["Text$field$text"],
-      "trigger":["Button$button$value"]
+      "inLang":["fromLang$value"],
+      "outLang":["toLang$value"],
+      "text":["Text$text"],
+      "trigger":["Button$value"]
     }  
   },
   "Panel2":{
@@ -160,7 +148,8 @@ const graph = {
         "color":"violet",
         "padding":"",
         "borderRadius":"var(--radius-4)",
-        "width":"auto"
+        "width":"auto",
+        "height":"auto"
       }
     }
   },
@@ -171,15 +160,16 @@ const graph = {
       "height":2,
       "interval":200,
       "style":{
-        "borderWidth":"",
+        "flex":"0 0 auto",
+        "borderWidth":"0px",
         "borderStyle":"solid",
         "height":"auto",
-        "order":"4",
+        "order":"5",
         "width":"auto"
       }
     },
     "connections":{
-      "inProgress":["Translate$translate$working"]
+      "inProgress":["Translate$working"]
     }  
   },
   "Button":{
@@ -189,9 +179,10 @@ const graph = {
       "action":"toggle",
       "label":"Translate",
       "style":{
+        "flex":"0 0 auto",
         "width":"auto",
         "height":"auto",
-        "order":"3",
+        "order":"4",
         "alignItems":"center",
         "padding":"var(--size-2)"
       }
@@ -203,11 +194,15 @@ const graph = {
     "state": {
       "label":"Text",
       "style":{
-        "width":"auto",
-        "order":"2",
-        "color":"var(--xcolor-four)",
+        "borderWidth":"0",
+        "borderStyle":"solid",
+        "order":"3",
+        "flex":"1",
+        "height":"auto",
         "padding":"",
-        "flex":"1"
+        "fontSize":"",
+        "color":"var(--xcolor-four)",
+        "width":"auto"
       }
     }
   }
