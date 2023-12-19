@@ -90,7 +90,7 @@ getCleanEdges(edges) {
   return cleanEdges;
 },
 renderAtom(atom, edges, selected, layerId, i) {
-  const nameFromId = id => id.split('$').slice(3).join('.');
+  const nameFromId = id => id.split('$').slice(4).join('.');
   const modelify = id => ({name: nameFromId(id)});
   const hasPrefix = prefix => id => id.startsWith(prefix + '$');
   //
@@ -112,7 +112,7 @@ renderAtom(atom, edges, selected, layerId, i) {
     atomId: atom.id.replace(/\$/g, '-'),
     type: atom.type,
     selected: atom.id === selected,
-    displayName: atom.id.split('$').slice(4).join('.'),
+    displayName: atom.id.split('$').slice(3).join('.'),
     style: {
       ...this.getAtomRect(w, h, stride, i)
     },
@@ -140,7 +140,7 @@ onKeyDown({eventlet}, state, {service}) {
   }
 },
 async onAtomMoved({layerId, eventlet}, state, {service}) {
-  log.debug('onAtomMoved', eventlet);
+  //log.debug('onAtomMoved', eventlet);
   return service('DesignService', 'SetAtomGraphInfo', {layerId, info: eventlet.value});
 },
 template: html`

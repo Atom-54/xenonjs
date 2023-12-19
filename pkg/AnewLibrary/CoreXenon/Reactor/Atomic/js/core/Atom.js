@@ -51,6 +51,7 @@ export class Atom {
     this.internal.beStateful = true;
     this.internal.state = nob();
     this.internal.clean = nob();
+    this.internal.inputs = {};
     //}
   }
   get log() {

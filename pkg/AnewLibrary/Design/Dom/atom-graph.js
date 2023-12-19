@@ -59,7 +59,7 @@ export class AtomGraph extends DragDrop {
     return Math.floor(v/gridSize + 0.5)*gridSize;
   }
   renderCanvas({atoms, edges}, {x, y, offsets}) {
-    const [ox, oy] = [3000, 3000 + 38.5];
+    const [ox, oy] = [3000, 3000 + 53];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
       ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

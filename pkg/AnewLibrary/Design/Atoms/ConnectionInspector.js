@@ -4,20 +4,34 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-shouldUpdate({id, schema, candidates}) {
-  return id && schema && candidates;
+shouldUpdate({selected}) {
+  return selected;
 },
-update({id, schema, candidates}, state) {
+async update({selected, candidates}, state, {service}) {
+  const prefixId = selected.split('$').slice(2).join('$');
+  const inspectors = await this.inspectorsFromSchema(prefixId, candidates || {}, selected, service);
+  //const inspectors = map(schema, 
+  //   (label, {type, connection}) => ({
+  //     label, 
+  //     key: label,
+  //     choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
+  //   }))
   const skipProperties = ['name'];
-  const prefixId = id.split('$').slice(2).join('$');
-  state.inspectors = map(schema, 
-    (label, {type, connection}) => ({
-      label, 
-      key: label,
-      choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
-    }))
-    .filter(({label}) => !skipProperties.includes(label.split('.').pop()))
-    ;
+  state.inspectors = inspectors.filter(
+    ({label}) => !skipProperties.includes(label.split('.').pop())
+  );
+},
+async inspectorsFromSchema(prefixId, candidates, selected, service) {
+  const {schema} = await service('DesignService', 'GetHostSchema', {key: selected});
+  const inspectorFromSchema = (label, info) => this.inspectorFromSchema(prefixId, candidates, label, info);
+  return map(schema, inspectorFromSchema).filter(i => i);
+},
+inspectorFromSchema(prefixId, candidates, label, {type, connection}) {
+  return {
+    label, 
+    key: label,
+    choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
+  };
 },
 stratifyTypes(prefixId, propName, type, candidates, connection) {
   connection = connection?.replace(/\$/g, '.');

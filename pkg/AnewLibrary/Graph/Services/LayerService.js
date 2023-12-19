@@ -22,7 +22,7 @@ export const LayerService = {
   },
   async ObserveState(host, data) {
     requireStateObserver(host.layer.controller);
-    observers.add(atom.id);
+    observers.add(host.id.split('$').slice(0, -1).join('$') + '$' + data);
   }
 };
 
@@ -31,8 +31,8 @@ let observers = new Set();
 const requireStateObserver = controller => {
   if (!controller._stateOnwriteCache) {
     const writer = controller._stateOnwriteCache = controller.onwrite;
-    controller.onwrite = (controller, inputs) => {
-      writer(controller, inputs);
+    controller.onwrite = inputs => {
+      writer?.(inputs);
       notifyStateObservers(controller);
     };
   }
@@ -40,7 +40,7 @@ const requireStateObserver = controller => {
 
 export const notifyStateObservers = controller => {
   for (const observer of observers) {
-    controller.onevent(observer, {handler: 'onStateChange'});
+    controller.onevent(observer, {handler: 'onStateChange', data: controller.state});
   }
 };
 
