@@ -33,7 +33,7 @@ const graph = {
     "type":"$library/Graph/Atoms/Graph",
     "container":"Panel#Container",
     "state":{
-      "graphId":"DeviceAudio",
+      "graphId":"FirstProject/DeviceAudio",
       "style":{
         "flex":"0 0 auto",
         "order": "0",

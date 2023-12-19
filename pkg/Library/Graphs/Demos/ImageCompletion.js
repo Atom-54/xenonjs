@@ -10,7 +10,7 @@ const graph = {
         "url":"../Apps/EinsteinHat/einstein.png"
       },
       "style":{
-        "order":"1",
+        "order":0,
         "display":"none"
       }
     }
@@ -53,6 +53,11 @@ const graph = {
       "image":[
         "OpenAIImageCompletion$result"
       ]
+    },
+    "state":{
+      "style":{
+        "order":3
+      }
     }
   },
   "TextField":{
@@ -68,7 +73,7 @@ const graph = {
         "headphones"
       ],
       "style":{
-        "order":"1",
+        "order":0,
         "flex":"1 0 auto"
       }
     }
@@ -80,7 +85,7 @@ const graph = {
       "height":2,
       "interval":200,
       "style":{
-        "order":"2",
+        "order":2,
         "backgroundColor":"var(--xcolor-one)",
         "padding":"5px 0",
         "flex":"0 0 auto"
@@ -99,7 +104,7 @@ const graph = {
       "action":"toggle",
       "label":"complete",
       "style":{
-        "order":"2",
+        "order":1,
         "padding":"var(--size-3)",
         "padding-top":"var(--size-7)",
         "flex":"0 0 auto"
@@ -113,8 +118,9 @@ const graph = {
       "layout":"row",
       "style":{
         "backgroundColor":"var(--xcolor-one)",
-        "order":"1",
-        "flex":"0 0 auto"
+        "order":1,
+        "flex":"0 0 auto",
+        "padding":"20px 10px 0px 10px"
       }
     }
   }

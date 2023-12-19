@@ -36,7 +36,7 @@ const graph = {
     "container":"Panel#Container",
     "state":{
       "value":"en",
-      "label":"from",
+      "label":"From",
       "style":{
         "borderWidth":"0",
         "borderStyle":"solid",
@@ -49,7 +49,7 @@ const graph = {
     },
     "connections":{
       "options":[
-        "Languages$data"
+        "Languages$value"
       ]
     }
   },
@@ -58,7 +58,7 @@ const graph = {
     "container":"Panel#Container",
     "state":{
       "value":"es",
-      "label":"to",
+      "label":"To",
       "style":{
         "borderWidth":"0",
         "borderStyle":"solid",
@@ -72,7 +72,7 @@ const graph = {
     },
     "connections":{
       "options":[
-        "Languages$data"
+        "Languages$value"
       ]
     }
   },
@@ -154,16 +154,7 @@ const graph = {
           "key":"zh",
           "name":"Chinese"
         }
-      ],
-      "style":{
-        "l":32,
-        "t":32,
-        "w":132,
-        "h":132,
-        "borderWidth":"var(--border-size-2)",
-        "borderStyle":"solid",
-        "order":6
-      }
+      ]
     }
   },
   "Translate":{
@@ -251,7 +242,7 @@ const graph = {
     "type":"$library/Graph/Atoms/Graph",
     "container":"Panel2#Container",
     "state":{
-      "graphId":"DeviceAudio",
+      "graphId":"FirstProject/DeviceAudio",
       "style":{
         "flex":"0 0 auto",
         "order": "0",

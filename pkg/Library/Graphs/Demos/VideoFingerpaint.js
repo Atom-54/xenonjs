@@ -13,7 +13,7 @@ const graph = {
     "container":"Container",
     "connections":{
       "image":[
-        "Graph23$FrameCapture$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
@@ -36,7 +36,7 @@ const graph = {
         "PointerPoms$image"
       ],
       "imageA":[
-        "Graph23$FrameCapture$frame"
+        "DeviceVideo$FrameCapture$frame"
       ]
     }
   },
@@ -68,7 +68,7 @@ const graph = {
         {
           "name":"red",
           "ligature":"palette",
-          "style":"background-color: red; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: red; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"red"
@@ -76,7 +76,7 @@ const graph = {
         {
           "name":"orange",
           "ligature":"palette",
-          "style":"background-color: orange; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: orange; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"orange"
@@ -84,7 +84,7 @@ const graph = {
         {
           "name":"yellow",
           "ligature":"palette",
-          "style":"background-color: yellow; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: yellow; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"yellow"
@@ -92,7 +92,7 @@ const graph = {
         {
           "name":"green",
           "ligature":"palette",
-          "style":"background-color: green; border-radius: 25px",
+          "style":"background-color: green; border-radius: 25px; margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"green"
@@ -100,7 +100,7 @@ const graph = {
         {
           "name":"lightblue",
           "ligature":"palette",
-          "style":"background-color: lightblue; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: lightblue; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"lightblue"
@@ -108,7 +108,7 @@ const graph = {
         {
           "name":"blue",
           "ligature":"palette",
-          "style":"background-color: blue; border-radius: 25px",
+          "style":"background-color: blue; border-radius: 25px; margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"blue"
@@ -116,7 +116,7 @@ const graph = {
         {
           "name":"purple",
           "ligature":"palette",
-          "style":"background-color: purple; border-radius: 25px",
+          "style":"background-color: purple; border-radius: 25px; margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"purple"
@@ -124,7 +124,7 @@ const graph = {
         {
           "name":"grey",
           "ligature":"palette",
-          "style":"background-color: grey; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: grey; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"grey"
@@ -132,7 +132,7 @@ const graph = {
         {
           "name":"white",
           "ligature":"palette",
-          "style":"background-color: white; border-radius: 25px; color: hsla(292, 3%, 20%, 1)",
+          "style":"background-color: white; border-radius: 25px; color: hsla(292, 3%, 20%, 1); margin; 6px",
           "action":"set",
           "stateKey":"PointerPoms$color",
           "value":"white"
@@ -215,11 +215,11 @@ const graph = {
       ]
     }
   },
-  "Graph23":{
+  "DeviceVideo":{
     "type":"$library/Graph/Atoms/Graph",
     "container":"Panel#Container",
     "state":{
-      "graphId":"DeviceVideo",
+      "graphId":"FirstProject/DeviceVideo",
       "style":{
         "order":"1",
         "flex":"0 0 auto",

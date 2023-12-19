@@ -18,7 +18,7 @@ export const graph = {
     "type":"$library/Graph/Atoms/Graph",
     "container":"Container",
     "state":{
-      "graphId":"DeviceVideo",
+      "graphId":"FirstProject/DeviceVideo",
       "FrameCapture$fps":5,
       "style":{
         "order":"1",
