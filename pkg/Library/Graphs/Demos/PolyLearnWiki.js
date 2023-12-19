@@ -1,0 +1,156 @@
+/**
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+const graph = {
+  "meta":{
+    "id":"PolyLearnWiki"
+  },
+  "PolymathLearner":{
+    "type":"$library/Polymath/Atoms/PolymathLearner",
+    "container":"Container",
+    "connections":{
+      "source":[
+        "WikipediaContent$title"
+      ],
+      "content":[
+        "WikipediaContent$markup"
+      ],
+      "trigger":[
+        "LearnButton$value"
+      ],
+      "library":[
+        "PolymathLibrary$library"
+      ]
+    }
+  },
+  "PolymathLibrary":{
+    "type":"$library/Polymath/Atoms/PolymathLibrary",
+    "container":"Container",
+    "state":{
+      "name":"NewDemo",
+      "style":{
+        "order":2
+      }
+    }
+  },
+  "WikipediaContent":{
+    "type":"$library/Polymath/Atoms/WikipediaContent",
+    "container":"Container",
+    "connections":{
+      "query":[
+        "TextField$value"
+      ],
+      "trigger":[
+        "SearchButton$value"
+      ]
+    }
+  },
+  "WebPage":{
+    "type":"$library/UX/Atoms/WebPage",
+    "container":"Container",
+    "state":{
+      "style":{
+        "order":4,
+        "borderWidth":"var(--border-size-1)",
+        "flex":"1 1 auto",
+        "backgroundColor":"white"
+      }
+    },
+    "connections":{
+      "html":[
+        "WikipediaContent$markup"
+      ]
+    }
+  },
+  "TextField":{
+    "type":"$library/Fields/Atoms/TextField",
+    "container":"Panel97#Container",
+    "state":{
+      "label":"Topic:",
+      "style":{
+        "padding":"var(--size-2)",
+        "backgroundColor":"var(--xcolor-one)",
+        "order":1,
+        "flex":"1 0 auto"
+      }
+    }
+  },
+  "LearnButton":{
+    "type":"$library/Fields/Atoms/Button",
+    "container":"Container",
+    "state":{
+      "action":"toggle",
+      "label":"Learn",
+      "style":{
+        "padding":"var(--size-2)",
+        "order":6,
+        "alignItems":"center",
+        "flex":"0 0 auto"
+      }
+    }
+  },
+  "ProgressBar":{
+    "type":"$library/UX/Atoms/ProgressBar",
+    "container":"Container",
+    "state":{
+      "height":2,
+      "interval":10,
+      "style":{
+        "order":5,
+        "flex":"0 0 auto"
+      }
+    },
+    "connections":{
+      "inProgress":[
+        "PolymathLearner$learning"
+      ]
+    }
+  },
+  "UXSnackBar":{
+    "type":"$library/UX/Atoms/UXSnackBar",
+    "container":"Container",
+    "state":{
+      "message":"Learning complete",
+      "icon":"school",
+      "style":{
+        "order":7,
+        "flex":"0 0 auto"
+      }
+    },
+    "connections":{
+      "open":[
+        "PolymathLearner$ok"
+      ]
+    }
+  },
+  "Panel97":{
+    "type":"$library/Layout/Atoms/Panel",
+    "container":"Container",
+    "isContainer":true,
+    "state":{
+      "layout":"row",
+      "style":{
+        "overflow":"auto",
+        "order":1,
+        "flex":"0 0 auto"
+      }
+    }
+  },
+  "SearchButton":{
+    "type":"$library/Fields/Atoms/Button",
+    "container":"Panel97#Container",
+    "state":{
+      "label":"Search",
+      "style":{
+        "flex":"0 0 auto",
+        "padding":"0.5em",
+        "padding-top":"1.3em",
+        "order":2
+      },
+      "inverted":true
+    }
+  }
+};

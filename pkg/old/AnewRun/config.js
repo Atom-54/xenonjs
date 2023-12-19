@@ -16,13 +16,13 @@ globalThis.config = {
   paths: {
     // as needed
     $library: `${xenonPath}/Library`,
-    $anewLibrary: `${xenonPath}/Library`,
+    $library: `${xenonPath}/Library`,
     // next two paths only needed if using workers
     $xenon: xenonPath,
     $boot: `${xenonPath}/Build/xenon.js`
   },
   logFlags: {
-    Atom: true,
+    //Atom: true,
     //BusTerminal: true,
     //Composer: true,
     //Controller: true,

@@ -1,0 +1,103 @@
+/**
+ * @license
+ * Copyright 2023 Atom54 LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+const graph = {
+  "meta":{
+    "id":"PolyAsk"
+  },
+  "TextArea":{
+    "type":"$library/Fields/Atoms/TextArea",
+    "container":"Container",
+    "state":{
+      "label":"Ask me:",
+      "style":{
+        "order":"1",
+        "fontSize":"var(--font-size-4)"
+      }
+    }
+  },
+  "AskPolymath":{
+    "type":"$library/Polymath/Atoms/AskPolymath",
+    "container":"Container",
+    "state":{
+      "enabled":true,
+      "style":{
+        "order":2
+      }
+    },
+    "connections":{
+      "library":[
+        "PolymathLibrary$library"
+      ],
+      "query":[
+        "TextArea$text"
+      ],
+      "trigger":[
+        "Button$value"
+      ]
+    }
+  },
+  "StaticText":{
+    "type":"$library/Fields/Atoms/StaticText",
+    "container":"Container",
+    "state":{
+      "style":{
+        "order":"4",
+        "borderWidth":"var(--border-size-1)",
+        "flex":"1 1 auto",
+        "fontSize":"var(--font-size-4)",
+        "backgroundColor":"white",
+        "padding":"var(--size-4)"
+      }
+    },
+    "connections":{
+      "text":[
+        "AskPolymath$completion"
+      ]
+    }
+  },
+  "PolymathLibrary":{
+    "type":"$library/Polymath/Atoms/PolymathLibrary",
+    "container":"Container",
+    "state":{
+      "name":"NewDemo",
+      "style":{
+        "order":4
+      }
+    }
+  },
+  "ProgressBar":{
+    "type":"$library/UX/Atoms/ProgressBar",
+    "container":"Container",
+    "state":{
+      "height":3,
+      "interval":10,
+      "style":{
+        "order":"2",
+        "flex":"0 0 auto"
+      }
+    },
+    "connections":{
+      "inProgress":[
+        "AskPolymath$working"
+      ]
+    }
+  },
+  "Button":{
+    "type":"$library/Fields/Atoms/Button",
+    "container":"Container",
+    "state":{
+      "action":"toggle",
+      "label":"Answer",
+      "style":{
+        "order":"2",
+        "alignItems":"center",
+        "padding":"var(--size-2)",
+        "flex":"0 0 auto"
+      }
+    }
+  }
+};

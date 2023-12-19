@@ -27,3 +27,5 @@ export {LocalStorageService} from '../Library/LocalStorage/Services/LocalStorage
 export {PolymathService} from '../Library/Polymath/Services/PolymathService.js';
 export {CocoSsdService} from '../Library/TensorFlow/Services/CocoSsdService.js';
 export {DocumentService} from '../Library/Documents/Services/DocumentService.js';
+export {FirebaseRealtimeService} from '../Library/Firebase/Services/FirebaseRealtimeService.js';
+export {FirebaseAuthService} from '../Library/Firebase/Services/FirebaseAuthService.js';
