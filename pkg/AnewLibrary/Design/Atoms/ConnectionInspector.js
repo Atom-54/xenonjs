@@ -8,15 +8,9 @@ shouldUpdate({selected}) {
   return selected;
 },
 async update({selected, candidates}, state, {service}) {
+  const skipProperties = ['name'];
   const prefixId = selected.split('$').slice(2).join('$');
   const inspectors = await this.inspectorsFromSchema(prefixId, candidates || {}, selected, service);
-  //const inspectors = map(schema, 
-  //   (label, {type, connection}) => ({
-  //     label, 
-  //     key: label,
-  //     choices: this.stratifyTypes(prefixId, label, type, candidates, connection)
-  //   }))
-  const skipProperties = ['name'];
   state.inspectors = inspectors.filter(
     ({label}) => !skipProperties.includes(label.split('.').pop())
   );
