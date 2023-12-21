@@ -7,11 +7,16 @@ export const atom = (log, resolve) => ({
 shouldUpdate({csv, url}) {
   return url || (typeof csv === 'string');
 },
-async update({csv, url}) {
-  if (url) {
-    csv = await (await fetch(url)).text();
+async update({csv, url}, state, {isDirty}) {
+  let csvText = null;
+  if (url && isDirty('url')) {
+    csvText = await (await fetch(url)).text();
+  } else if (isDirty('csv')) {
+    csvText = csv;
   }
-  return {lines: this.parseCsv(csv)};
+  if (csvText) {
+    return {lines: this.parseCsv(csvText)};
+  }
 },
 parseCsv(csvText) {
   csvText.replace('\r', '');

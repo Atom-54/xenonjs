@@ -244,6 +244,8 @@ export const Fields= {
     inputs: {
       label: 'String',
       value: 'String',
+      placeholder: 'String',
+      disabled: 'Boolean',
       options: '[String]',
       form: 'FormId'
     },

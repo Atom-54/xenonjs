@@ -33,7 +33,7 @@ export const Design = {
     type: '$library/Spectrum/Atoms/SpectrumTabPanels',
     container: 'Layout$ToolsBody#Container',
     state: {
-      tabs: ['Modify', 'Tree', 'Parts']
+      tabs: ['Inspect', 'Tree', 'Parts']
     }
   },
   ModifyPanel: {

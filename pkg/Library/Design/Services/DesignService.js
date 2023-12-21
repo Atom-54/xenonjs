@@ -468,11 +468,13 @@ const updateConnection = (controller, hostId, propName, connection) => {
   const atomName = hostSplit.pop();
   const host = controller.atoms[hostId];
   const {graph} = host.layer;
+  // delete previous connection values
+  const connections = controller.connections.inputs;
+  clearConnections(connections, target);
   // may be a clearing operation (connection == null)
   if (connection) {
     // update connection in live controller
     const source = `${designLayerId}$${connection}`;
-    const connections = controller.connections.inputs;
     connections[source] = [...new Set(connections[source]).add(target)];
     // update atom state
     Controller.writeInputsToHost(controller, propHostId, {[propSimple]: controller.state[source]});
@@ -490,7 +492,21 @@ const updateConnection = (controller, hostId, propName, connection) => {
   // forces design target to invalidate
   designUpdateTarget(controller);
   designUpdate(controller);
-  Project.saveProject(Project.currentProject);
+  // Project.saveProject(Project.currentProject);
+  const layer = Controller.findLayer(controller, designLayerId);
+  saveDesignGraph(layer);
+};
+
+const clearConnections = (connections, target) => {
+  Object.entries(connections).forEach(([source, targets]) => {
+    const index = targets.indexOf(target);
+    if (index >= 0) {
+      targets.splice(index, 1);
+      if (!targets.length) {
+        delete connections[source];
+      }
+    }
+  });
 };
 
 const updateProperty = (controller, designHostId, propId, value, nopersist) => {

@@ -4,9 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-// TODO: This is WIP:
-// 1. Cannot load the .csv - 404: "/data.csv"
-// 2. Chart css is wrong
+// TODO: Fix "Chart" css.
+// Maybe deprecated by DataAnalyzer project?
 
 export const graph = {
   "meta":{
@@ -16,7 +15,7 @@ export const graph = {
     "type":"$library/Data/Atoms/CsvData",
     "container":"Container",
     "state":{
-      "url":"/data.csv",
+      "url":"$library/../../../data.csv",
       "style":{
         "order":0
       }
@@ -186,15 +185,7 @@ export const graph = {
       "arg0":"The JSON array below contains summaries of customer interaction.",
       "style":{
         "order":3
-      },
-      "arg1":[
-        "<html><head>",
-        "<title>404 Not Found</title>",
-        "</head><body>",
-        "<h1>Not Found</h1>",
-        "<p>The requested URL was not found on this server.</p>",
-        "</body></html>"
-      ]
+      }
     },
     "connections":{
       "arg1":[
@@ -227,7 +218,8 @@ export const graph = {
         "alignItems":"",
         "backgroundColor":"white",
         "padding":"none",
-        "width":"100%"
+        "flex":"1 1 0",
+        "aspectRatio":"1 / 1"
       },
       "data":null
     },
@@ -361,30 +353,7 @@ export const graph = {
       "expression":"$filter(\n  $map($, function($v, $i, $a) {\n    $v[0]\n  }), function($v, $i, $a) {\n    $i > 0 and $i <= 50\n})[]\n",
       "style":{
         "order":7
-      },
-      "json":[
-        [
-          "<!DOCTYPE HTML PUBLIC -//IETF//DTD HTML 2.0//EN>"
-        ],
-        [
-          "<html><head>"
-        ],
-        [
-          "<title>404 Not Found</title>"
-        ],
-        [
-          "</head><body>"
-        ],
-        [
-          "<h1>Not Found</h1>"
-        ],
-        [
-          "<p>The requested URL was not found on this server.</p>"
-        ],
-        [
-          "</body></html>"
-        ]
-      ]
+      }
     },
     "connections":{
       "json":[
@@ -429,7 +398,7 @@ export const graph = {
       "kTokens":"2",
       "temperature":"0.1",
       "style":{
-        "order":9
+        "order":8
       }
     },
     "connections":{
@@ -445,7 +414,7 @@ export const graph = {
       "format":"${arg0}\n${arg1}\n",
       "arg0":"The JSON array below contains summaries of customer interaction.",
       "style":{
-        "order":10
+        "order":9
       }
     },
     "connections":{

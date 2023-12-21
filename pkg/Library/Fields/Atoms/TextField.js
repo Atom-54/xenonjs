@@ -20,10 +20,12 @@ update({value, form, options}, state, {service, isDirty}) {
     return {value};
   }
 },
-render({label}, {value, options}) {
+render({label, placeholder, disabled}, {value, options}) {
   return {
     label,
     value: value??'',
+    placeholder: placeholder??'',
+    disabled: Boolean(disabled),
     options: options?.map(option => ({option}))
   }
 },
@@ -52,7 +54,7 @@ template: html`
 
 <div label>{{label}}</div>
 <div flex bar>
-  <input flex field value="{{value}}" on-input="onFieldChange" xon-change="onFieldChange" list="options">
+  <input flex field value="{{value}}" placeholder="{{placeholder}}" disabled="{{disabled}}" on-input="onFieldChange" xon-change="onFieldChange" list="options">
   <datalist id="options" repeat="option_t">{{options}}</datalist>
 </div>
 
