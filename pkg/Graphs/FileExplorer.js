@@ -263,13 +263,9 @@ icon {
 [closed] {
   display: none;
 }
-// [label]:not(:hover) [menu] {
-//   display: none;
-// }
 context-menu-anchor {
   display: block;
 }
-
 `
     },
     "connections": {

@@ -66,10 +66,6 @@ export const DesignService = {
     designLayerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     return getAtomTree(host.layer.controller, designLayerId, data);
   },
-  // async GetAtomInfo(host, data) {
-  //   designLayerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
-  //   return getAtomInfo(host.layer.controller, designLayerId);
-  // },
   async GetAtomGraphInfo(host, {layerId}) {
     layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     const layer = Controller.findLayer(host.layer.controller, layerId);
