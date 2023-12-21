@@ -8,12 +8,11 @@ shouldUpdate({service, task, data}) {
   return Boolean(service && task && data);
 },
 async update({service: serviceName, task, data, interval}, state, {service, invalidate}) {
-  //interval = Number(interval) || 1000;
-  // interval = interval ? 5000 : null;
-  // if (interval) {
-  //   timeout(invalidate, interval);
-  // }
-  return {result: await service(serviceName, task, data)};
+  const result = await service(serviceName, task, data);
+  return {result};
+},
+async onObservation({eventlet}, state, {output}) {
+  return {result: eventlet};
 }
 });
   

@@ -17,5 +17,8 @@ export const SystemService = {
     const propName = bits.pop();
     const atomId = [atom.layer.id, ...bits].join('$');
     return Controller.writeValue(atom.layer.controller, atomId, propName, data.value);
+  },
+  GetState(atom, data) {
+    return atom.layer.controller.state;
   }
 };

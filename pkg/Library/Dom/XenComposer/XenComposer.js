@@ -12,7 +12,7 @@ import {dom} from '../dom.js';
 
 //const log = logFactory(logFactory.flags.composer, 'composer', 'red');
 
-const sanitizeId = id => id.replace(/[$)(:]/g, '_');
+const sanitizeId = id => id.replace(/[ $)(:]/g, '_');
 
 export class XenComposer extends Composer {
   constructor(root, useShadowRoot, onevent) {

@@ -41,8 +41,8 @@ export class PopUp extends Xen.Async {
   _didRender({x, y, show}) {
     this.showOrHide(show);
     // offset menu from cursor a bit
-    y += 4;
-    x += 12;
+    y += 0;
+    x += 4;
     // screen center
     const cx = window.innerWidth/2;
     const cy = window.innerHeight/2;

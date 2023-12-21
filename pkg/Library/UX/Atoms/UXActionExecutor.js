@@ -54,10 +54,17 @@ async toggle_action({stateKey}, service) {
   //log('toggle_action::SystemService::GetStateValue', stateKey, value);
   value = !value;
   //log('toggle_action::SystemService::SetStateValue', stateKey, value);
-  return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
+  return this.setValue(service, stateKey, value);
 },
 async set_action({stateKey, value}, service) {
   //log('set_action::SystemService::SetStateValue', stateKey, value);
+  return this.setValue(service, stateKey, value);
+},
+async trigger_action({stateKey}, service) {
+  const nonce = Math.random();
+  return this.setValue(service, stateKey, nonce);
+},
+async setValue(service, stateKey, value) {
   return service({kind: 'SystemService', msg: 'SetStateValue', data: {stateKey, value}})
 }
 });

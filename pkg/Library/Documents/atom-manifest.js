@@ -18,5 +18,15 @@ export const Documents = {
     outputs: {
       folders: 'Json|Folders'
     }
+  },
+  TextDocument: {
+    categories: [category, 'Common'],
+    displayName: 'Text Document',
+    ligature: 'article',
+    type: '$library/Documents/Atoms/TextDocument',
+    inputs: {
+      content: 'String',
+      document: 'Json|Document'
+    }
   }
 };

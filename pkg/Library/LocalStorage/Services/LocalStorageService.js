@@ -73,16 +73,18 @@ export const removeFolder = key => {
   keys.forEach(key => localStorage.removeItem(key));
 };
 
-const getFolders = prefix => {
+export const getFolders = prefix => {
   const root = {entries: {}};
+  prefix = 'a54.00' + (prefix ? '/' + prefix : '');
   const keys = getKeys(prefix);
   keys.sort();
   keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
-  return [{
-    name: 'root',
+  return {
+    name: 'LocalStorage',
+    id: 'localstorage',
     hasEntries: true,
     entries: mapByName(prefix, root.entries)
-  }];
+  };
 };
 
 const mapByName = (prefix, list) => Object.entries(list)

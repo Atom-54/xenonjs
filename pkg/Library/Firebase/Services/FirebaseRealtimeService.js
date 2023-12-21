@@ -3,24 +3,33 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+const log = logf('FirebaseRealtimeService', 'red');
+
 let observers = new Set();
 
 const firebaseRealtimeDb = 'https://xenon-js-default-rtdb.firebaseio.com/v9/Guest/';
 
+// TODO(sjmiles): made this to parallel LocalStorage
 const firebaseRealtime = {
   async getItem(key) {
     const result = await fetch(`${firebaseRealtimeDb}${key}.json`);
     const pojo = await result?.json();
-    console.warn(key, pojo);
+    return pojo;
+    //console.warn(key, pojo);
   },
   async setItem(key, body) {
-    /*const result =*/ await fetch(`${firebaseRealtimeDb}${key}.json`, {
-      method: 'put',
-      body
-    });
+    /*const result await*/ 
+    return fetch(`${firebaseRealtimeDb}${key}.json`, {method: 'put', body});
   },
-  // async removeItem(key, body) {
-  // }
+  async removeItem(key, body) {
+    return fetch(`${firebaseRealtimeDb}${key}.json`, {method: 'delete'});
+  },
+  async getKeys(key) {
+    //log.debug('reading subtree', key);
+    const result = await fetch(`${firebaseRealtimeDb}${key}.json?shallow=true`);
+    const pojo = await result?.json();
+    return pojo && (typeof pojo === 'object') ? Object.keys(pojo) : [];
+  }
 };
 
 export class FirebaseRealtimeService {
@@ -49,8 +58,34 @@ export const notifyFolderObservers = controller => {
   }
 };
 
-export const getItem = key => {
-  const item = firebaseRealtime.getItem(key);
+export const newItem = async (key, name, data) => {
+  //key = getFolderKey(key);
+  const info = typeSlice(key);
+  if (!info.type === 'folder') {
+    info.path = getParentFolder(key);
+    info.type = 'folder';
+  }
+  //
+  //const uniqueKey = findUniqueKey(Storage, info.path + '/' + name);
+  // 'name' must have type info
+  const uniqueKey = info.path + '/' + name;
+  //
+  setItem(uniqueKey, data);
+}
+
+const typeSlice = key => {
+  const chunks = key.split('(');
+  const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
+  const path = chunks.join('(').trim();
+  return {path, type};
+};
+
+const getParentFolder = key => {
+  return key.split('/').slice(0, -1).join('/');
+};
+
+export const getItem = async key => {
+  const item = await firebaseRealtime.getItem(key);
   try {
     return item ? JSON.parse(item) : null;
   } catch(x) {
@@ -86,21 +121,77 @@ const restoreAll = prefix => {
   return data;
 };
 
-export const removeFolder = key => {
-  const keys = getKeys(key);
-  keys.forEach(key => firebaseRealtime.removeItem(key));
+export const removeFolder = async key => {
+  firebaseRealtime.removeItem(key);
+  // const keys = await firebaseRealtime.getKeys(key);
+  // keys.forEach(key => firebaseRealtime.removeItem(key));
 };
 
-const getFolders = prefix => {
-  const root = {entries: {}};
-  const keys = getKeys(prefix);
-  keys.sort();
-  keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
-  return [{
-    name: 'root',
+const iconsByType = {
+  'graph': 'hub',
+  'template': 'crossword',
+  'atom': 'motion_photos_on'
+};
+
+export const getFolders = async prefix => {
+  const makeEntries = async id => {
+    const entries = [];
+    const keys = await firebaseRealtime.getKeys(id);
+    if (keys) {
+      for (const key of keys) {
+        // get last text in parens
+        const chunks = key.split('(');
+        const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
+        const name = key; //chunks.join('(');
+        const localEntryId = id + '/' + key;
+        const entry = {
+          id: '(fb) ' + localEntryId,
+          name, 
+          type,
+          icon: iconsByType[type] || 'widgets' 
+        };
+        if (type == 'folder') {
+          entry.entries = await makeEntries(localEntryId);
+          entry.hasEntries = true;
+          //const subkeys = await firebaseRealtime.getKeys(prefix + '/' + key);
+          //log.debug(entry);
+        }
+        entries.push(entry);
+      }
+    }
+    return entries;
+  };
+  prefix = prefix.replaceAll('.', '/');
+  const entries = await makeEntries(prefix);
+  return {
+    name: 'Firebase',
+    id: 'firebase',
     hasEntries: true,
-    entries: mapByName(prefix, root.entries)
-  }];
+    entries
+  };
+  //return entries;
+  // return {
+  //   name: 'root',
+  //   entries
+  // };
+  // const root = {
+  //   entries: {
+  //     Graphs: {
+  //       entries: {
+  //         empty: {}
+  //       }
+  //     }
+  //   }
+  // };
+  // const keys = getKeys(prefix);
+  // keys.sort();
+  // keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
+  // const entries = mapByName(prefix, root.entries);
+  // return [{
+  //   name: 'root',
+  //   //hasEntries: true,
+  //   entries
+  // }];
 };
 
 const mapByName = (prefix, list) => Object.entries(list)
@@ -125,40 +216,6 @@ const makeFolderEntry = (prefix, key, {props, entries}) => {
 };
 
 const twoStageSort = (compareOne, compareTwo) => (a, b) => compareOne(a, b) || compareTwo(a, b);
-
-const getKeys = prefix => {
-  const keys = [];
-  prefix = (prefix ?? '').replace('*', '');
-  for (let i=0; i<firebaseRealtime.length;i++) {
-    const key = firebaseRealtime.key(i);
-    if (key.startsWith(prefix) || key.replace(/\./g, '/').startsWith(prefix.replace(/\./g, '/'))) {
-      keys.push(key);
-    }
-  }
-  return keys;
-};
-
-const eatKey = (root, key) => {
-  let entries = root.entries;
-  const path = key
-    .split('/') 
-    .flatMap(part => part.split('.'))
-    .flatMap(part => part.split('$'))
-    ;
-  const file = path.pop();
-  if (file.includes('-bak')) {
-    return;
-  }
-  while (path.length) {
-    const name = path.shift();
-    if (name) {
-      const folder = entries[name] ??= {};
-      entries = (folder.entries ??= {});
-    }
-  }
-  entries[file] = {};
-};
-
 const isEmpty = dictionary => Boolean(!dictionary || typeof dictionary !== 'object' || !Object.keys(dictionary).length);
 const byName = (a, b) => (a.name === 'Deleted') ? 1 : (b.name === 'Deleted') ? -1 : a.name.localeCompare(b.name);
 const byEntries = (a,b) => (a.hasEntries && !b.hasEntries) ? -1 : (!a.hasEntries && b.hasEntries) ? 1 : 0;

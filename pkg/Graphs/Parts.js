@@ -10,12 +10,15 @@ export const Parts = {
       icon: 'search',
       placeholder: 'Filter',
       style: {
-        ['min-height']: '40px',
+        minHeight: '40px',
       }
     }
   },
   Catalog: {
     type: '$library/Layout/Atoms/TemplateLayout',
+    connections: {
+      items: ['CatalogData$result']
+    },
     state: {
       style: {
         padding: '0 0.6rem',
@@ -38,6 +41,15 @@ export const Parts = {
     </template>
   </div>
       `
+    }
+  },
+  CatalogData: {
+    "type": "$library/Data/Atoms/ServiceAccess",
+    "container": "Container",
+    "state": {
+      "service": "DesignService",
+      "task": "ObserveCatalog",
+      "data": {}
     }
   }
 };

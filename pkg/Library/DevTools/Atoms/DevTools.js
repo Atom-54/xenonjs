@@ -15,25 +15,31 @@ async update({graphs, show}, state, {service}) {
   }
 },
 async refresh(state, service) {
-  state.context = await service('SystemService', 'request-context');
+  state.context = await service('SystemService', 'GetState');
   state.kick = Math.random();
 },
 render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ selectedTab}) {
   const dom = this.simpleDom();
+  //
   const contextModel = context?.layers;
+  //
   const graphJson = JSON.stringify(contextModel?.base?.GraphList$graphAgent$graph || 'n/a', null, '  ');
   const graphOptions = !graphs ? [] : graphs.map(({$meta}) => $meta);
+  //
   // if (contextModel?.design) {
   //   delete contextModel.base;
   // }
-  const formattedModel = {};
-  map(contextModel, (key, value) => {
-    const layerModel = formattedModel[key] = {};
-    map(value, (key, value) => {
-      key = key.split('$')/*.slice(1)*/.join('∙');
-      layerModel[key] = value;
-    });
-  });
+  //
+  // const formattedModel = {};
+  // map(contextModel, (key, value) => {
+  //   const layerModel = formattedModel[key] = {};
+  //   map(value, (key, value) => {
+  //     key = key.split('$')/*.slice(1)*/.join('∙');
+  //     layerModel[key] = value;
+  //   });
+  // });
+  const formattedModel = this.renderState(context);
+  //
   return {
     dom,
     kick,
@@ -46,6 +52,20 @@ render({graphs}, {context, showTools, capturedState, kick, /*graphText,*/ select
     graphOptions,
     selectedTab: {state: 0, logs: 1, atoms: 2, resources: 3, dom: 4}[selectedTab]
   };
+},
+renderState(state) {
+  const context = {};
+  if (state) {
+    for (let [key, value] of Object.entries(state)) {
+      let strata = context;
+      const bits = key.split('$');
+      for (let i=0; i<bits.length-1; i++) {
+        strata = (strata[bits[i]] ??= {});
+      }
+      strata[bits.pop()] = value;
+    }
+  }
+  return context;
 },
 onPageSelected({eventlet}, state) {
   state.selectedTab = eventlet.value;

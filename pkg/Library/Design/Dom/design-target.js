@@ -8,6 +8,7 @@ import {Xen} from '../../Dom/Xen/xen-async.js';
 const log = logf("DOM:DesignTarget", 'orange', 'white');
 
 const focusables = ['input', 'textarea', 'select', 'multi-select', 'tag-field', 'code-mirror', 'fancy-input', 'list-item'];
+const sanitizeId = id => id?.replace?.(/[ $)(:]/g, '_');
 
 const DesignTarget = class extends Xen.DropTarget {
   static get observedAttributes() {
@@ -26,7 +27,7 @@ const DesignTarget = class extends Xen.DropTarget {
     this.observer.observe(this);
   }
   update({selected}, state) {
-    const id = '#' + selected?.replace(/\$/g, '_');
+    const id = '#' + sanitizeId(selected?.replace(/\$/g, '_'));
     const elt = selected && this.domParent.querySelector(id);
     this.doSelect(elt);
   }
@@ -134,6 +135,13 @@ const DesignTarget = class extends Xen.DropTarget {
 };
 
 const template = Xen.Template.html`
+<style>
+  :host {
+    background-image: radial-gradient(var(--xcolor-two, silver) 15%, transparent 15%);
+    background-position: -8px -8px, 0 0;
+    background-size: 16px 16px;
+  }
+</style>
 <slot></slot>
 `;
 

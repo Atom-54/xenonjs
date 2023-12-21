@@ -62,10 +62,14 @@ export const DesignService = {
   GetAtomTypeCategories() {
     return getAtomTypeCategories();
   },
-  async GetAtomInfo(host, data) {
+  async GetAtomTree(host, data) {
     designLayerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
-    return getAtomInfo(host.layer.controller, designLayerId);
+    return getAtomTree(host.layer.controller, designLayerId, data);
   },
+  // async GetAtomInfo(host, data) {
+  //   designLayerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
+  //   return getAtomInfo(host.layer.controller, designLayerId);
+  // },
   async GetAtomGraphInfo(host, {layerId}) {
     layerId ||= host.id.split('$').slice(0, 2).join('$') + '$Graph';
     const layer = Controller.findLayer(host.layer.controller, layerId);
@@ -116,7 +120,23 @@ export const DesignService = {
     } else {
       updateProperty(host.layer.controller, id, key, value, nopersist);
     }
+  },
+  async ObserveCatalog(host) {
+    (DesignService.catalogObservers ??= []).push(host.id);
+    DesignService.catalog ??= await initCatalogData(host.layer.controller);
+    return DesignService.catalog;
   }
+};
+
+const initCatalogData = async controller => {
+  return getAtomTypeCategories(controller.state.run$PartsGraph$Catalog$Filter$query);
+};
+
+const notifyCatalogObservers = (controller, catalog) => {
+  DesignService.catalog = catalog;
+  DesignService.catalogObservers.forEach(id => {
+    controller.onevent(id, {handler: 'onObservation', data: catalog});
+  });
 };
 
 export const newGraph = async layer => {
@@ -282,11 +302,11 @@ const removeAtom = (controller, atomId) => {
 };
 
 export const designUpdate = async controller => {
-  const categories = getAtomTypeCategories(controller.state.build$PartsGraph$Catalog$Filter$query);
-  Controller.set(controller, 'build$PartsGraph$Catalog$Catalog', {items: categories});
-  Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
-  Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId, junk: Math.random()});
-  designUpdateDocuments(controller);
+  // const categories = getAtomTypeCategories(controller.state.build$PartsGraph$Catalog$Filter$query);
+  // Controller.set(controller, 'run$PartsGraph$Catalog$Catalog', {items: categories});
+  // Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
+  // Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId, junk: Math.random()});
+  // designUpdateDocuments(controller);
 };
 
 export const designUpdateDocuments = async controller => {
@@ -597,4 +617,55 @@ const renameAtom = async (host, id, value) => {
   // save changes
   saveDesignGraph(layer);
   //Project.saveProject(Project.currentProject);
+};
+
+const getAtomTree = (controller, designLayerId, selected) => {
+  const atoms = getAtomInfo(controller, designLayerId);
+  atoms.forEach(atom => atom.name = atom.id.replace(designLayerId + '$', '').replace(/\$/g, '.'));
+  const rootAtoms = atomsInContainer(atoms, designLayerId + '#Container')
+  const root = {
+    name: 'root',
+    entries: rootAtoms,
+    hasEntries: true
+    //disabled: true
+  };
+  stratify(atoms, root, selected);
+  return [root];
+};
+
+const atomsInContainer = (allAtoms, containerName) => {
+  const atoms = allAtoms.filter(({container}) => container === containerName);
+  return atoms;
+};
+
+const stratify = (allAtoms, root, selected) => {
+  const _stratify = containerNode => {
+    containerNode.entries.forEach(atom => {
+      atom.selected = atom.id === selected;
+      if (!atom.type.endsWith('Graph')) {
+        const atoms = atomsInParent(allAtoms, atom.id)
+        const foundContainers = new Set([
+          ...atom.containers || [],
+          ...atoms.map(({container}) => container.split('#').pop().replace(allAtoms.designLayerId, '')) || []
+        ]);
+        const containers = [...foundContainers];
+        atom.containers = containers.map(name => {
+          const contained = atomsInContainer(atoms, `${atom.id}#${name}`);
+          const node = {
+            name, 
+            id: atom.id + '#' + name, 
+            entries: contained,
+            hasEntries: contained?.length
+          };
+          _stratify(node);
+          return node;
+        });
+      }
+    });
+  };
+  return _stratify(root);
+};
+
+const atomsInParent = (allAtoms, parentName) => {
+  return allAtoms.filter(({container}) => container.split('#').shift() === parentName);
 };
