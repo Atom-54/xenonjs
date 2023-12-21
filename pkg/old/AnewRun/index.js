@@ -14,6 +14,7 @@ import {createComposer} from './composer.js';
 import * as services from './services.js';
 import {start} from '../Library/Common/start.js';
 import * as Project from '../Library/Design/Services/ProjectService.js';
+
 const log = logf('Index', 'magenta');
 
 start(async xenon => {

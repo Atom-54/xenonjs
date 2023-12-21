@@ -5,14 +5,17 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({layerId, selected}, state, {service}) {
+  state.info = null;
   state.selected = selected;
-  state.info = await service('DesignService', 'GetLayerInfo', {layerId});
   state.offsets = await service('DesignService', 'GetAtomGraphInfo', {layerId});
+  state.info = await service('DesignService', 'GetLayerInfo', {layerId});
+  //log('done with update ...');
 },
 shouldRender({layerId},{info}) {
   return Boolean(/*layerId &&*/ info);
 },
 render({layerId}, {info, selected, offsets}) {
+  //log('... rendering atom graph');
   let edges = [];
   // render bindings (controller connections) as edges
   const bindings = info.connections.inputs;

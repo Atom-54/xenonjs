@@ -2,7 +2,10 @@ export const Run = {
   "meta": {
     "id": "Run"
   },
-  "Tool": {
+  "DevTools": {
+    "type": "$library/DevTools/Atoms/DevTools",
+  },
+  "Toolbar": {
     "type": "$library/UX/Atoms/UXToolbar",
     "state": {
       "style": {
@@ -10,7 +13,7 @@ export const Run = {
         "padding": "4px"
       },
       "actions": [{
-        "action": "toggle",
+        "action": "trigger",
         "stateKey": "PopOver$show",
         "ligature": "menu"
       },{
@@ -24,7 +27,7 @@ export const Run = {
   "Action": {
     "type": "$library/UX/Atoms/UXActionExecutor",
     "connections": {
-      "event": ["Tool$event"]
+      "event": ["Toolbar$event"]
     }
   },
   "PopOver": {

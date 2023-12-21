@@ -40,7 +40,11 @@ const requireStateObserver = controller => {
 
 export const notifyStateObservers = controller => {
   for (const observer of observers) {
-    controller.onevent(observer, {handler: 'onStateChange', data: controller.state});
+    const layerPrefix = observer.split('$').slice(0, -2).join('$') + '$Graph$';
+    const layerKeys = Object.keys(controller.state).filter(key => key.startsWith(layerPrefix));
+    const layerState = {};
+    layerKeys.forEach(key => layerState[key.slice(layerPrefix.length)] = controller.state[key]);
+    controller.onevent(observer, {handler: 'onStateChange', data: layerState});
   }
 };
 

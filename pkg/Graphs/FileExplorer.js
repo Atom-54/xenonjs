@@ -129,7 +129,7 @@ export const FileExplorer = {
     "type": "$library/Documents/Atoms/Folders",
     "container": "Container",
     "state": {
-      "storeId": "a54.00",
+      "storeId": "",
       "style": {
         "order": 3
       }
@@ -189,14 +189,88 @@ export const FileExplorer = {
     "type": "$library/Layout/Atoms/TemplateLayout",
     "container": "Container",
     "state": {
-      "template": "<div top entry>\n  <div subsection repeat=\"moar_t\">{{entries}}</div>\t\n  <template moar_t>\n    <context-menu-anchor entry key$=\"{{id}}\" selected$=\"{{selected}}\" active$=\"{{activated}}\" folder$=\"{{hasEntries}}\" on-anchor=\"onItemContextMenu\">\n\t  <div label bar key$=\"{{id}}\" on-click=\"onItemOpenClose\">\n        <div bar hidden showing$=\"{{hasEntries}}\">\n          <icon folder hidden showing$=\"{{closed}}\">folder</icon>\n          <icon folder hidden=\"{{closed}}\">folder_open</icon>\n        </div>\n    \t<icon hidden=\"{{hasEntries}}\">scatter_plot</icon>\n\t\t<list-item jit name key$=\"{{id}}\" folder$=\"{{hasEntries}}\" value=\"{{name}}\" on-change=\"onItemRename\">{{name}}</list-item>\n        <span flex></span>\n \t  </div>\n\t  <div subsection closed$=\"{{closed}}\" repeat=\"moar_t\">{{entries}}</div>\t\n    </context-menu-anchor>\n  </template>\n</div>",
+      "template": html`
+<div top entry>
+  <div subsection repeat="moar_t">{{entries}}</div>
+  <template moar_t>
+    <context-menu-anchor entry key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
+      <div label bar key$="{{id}}" on-click="onItemOpenClose">
+          <div bar hidden showing$="{{hasEntries}}">
+            <icon folder hidden showing$="{{closed}}">folder</icon>
+            <icon folder hidden="{{closed}}">folder_open</icon>
+          </div>
+        <icon hidden="{{hasEntries}}">{{icon}}</icon>
+      <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
+          <span flex></span>
+      </div>
+      <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>
+    </context-menu-anchor>
+  </template>
+</div>
+      `,
       "style": {
         "order": 0,
         "overflow": "auto",
         "flex": "1 1 0",
         "width": "auto"
       },
-      "styleRules": "icon {\n  margin-right: 6px;\n}\n[top][entry] {\n  padding: 2px;\n}\n[entry] {\n  cursor: pointer;\n  padding: 2px 0 2px 4px;\n  border: 1px solid transparent;\n  border-radius: 4px;\n}\n[entry][folder] {\n  border-bottom: 1px dotted rgba(192, 192, 192, 0.3);\n}\n[entry][selected] {\n  border: 1px solid purple;\n}\n[label] {\n  align-items: center;\n  padding: 2px 0;\n}\n[label]:hover {\n  background: white;\n}\n[subsection] {\n  font-size: 100%;\n  font-weight: normal;\n  color: black;\n  padding-left: 12px;\n  border-left: 1px dotted purple;\n}\n[showing] {\n  display: inline-flex !important; \n}\n[name] {\n  padding-bottom: 1px;\n}\n[folder] {\n  font-weight: bold;\n  color: purple;\n}\n[closed] {\n  display: none;\n  background: red;\n}\n[label]:not(:hover) [menu] {\n  display: none;\n}\ncontext-menu-anchor {\n  display: block;\n}\n"
+      "styleRules": `
+icon {
+  margin-right: 6px;
+}
+[top][entry] {
+  padding: 2px;
+}
+[entry] {
+  cursor: pointer;
+  padding: 2px 0 2px 4px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+[entry][folder] {
+  border-bottom: 1px dotted rgba(192, 192, 192, 0.3);
+}
+[entry][selected] {
+  border: 1px solid purple;
+}
+[label] {
+  align-items: center;
+  padding: 2px 0;
+}
+[label]:hover {
+  border-radius: 4px;
+  background: rgba(192, 0, 192, 0.3);
+}
+[subsection] {
+  font-size: 100%;
+  font-weight: normal;
+  color: black;
+  padding-left: 12px;
+  Xborder-left: 1px dotted purple;
+}
+[showing] {
+  display: inline-flex !important; 
+}
+[name] {
+  padding-bottom: 1px;
+  color: #50007B;
+  font-weight: bold;
+}
+[folder] {
+  color: purple;
+  font-weight: normal;
+}
+[closed] {
+  display: none;
+}
+// [label]:not(:hover) [menu] {
+//   display: none;
+// }
+context-menu-anchor {
+  display: block;
+}
+
+`
     },
     "connections": {
       "items": [

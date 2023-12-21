@@ -1,11 +1,10 @@
 export const atom = (log, resolve) => ({
-  /**
+/**
  * @license
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({show, hide}, state, {isDirty}) {
-  //if (show === true) {
   if (isDirty('show') && show) {
     state.show = true;
   } else if (isDirty('hide') && hide) {
@@ -28,17 +27,13 @@ template: html`
   :host {
     position: absolute;
     flex: 0 !important;
-    /* --xcolor-hi-one: hsl(292deg 83% 31%);
-    --xcolor-hi-two: hsl(292deg 83% 71%);
-    font-family: 'Google Sans', sans-serif;
-    font-size: 12px; */
   }
-  [poptover] {
+  [popnover] {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 50%;
+    width: 35%;
     min-width: min(320px, 100vw);
     max-width: min(100vw, 800px);
     z-index: 110100;
@@ -46,19 +41,14 @@ template: html`
     transition: transform 200ms ease-in;
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
     background: white;
-    /* 
-    color: lightblue;
-    background: #333; 
-    */
   }
-  [poptover][show] {
+  [popnover][show] {
     transform: translateX(0);
   }
 </style>
 
-<!-- popover flyout -->
-<div poptover flex rows show$="{{show}}" on-click="onTogglePopoverClick">
-  <div style="padding: 12px 8px;">X</div>
+<div popnover flex rows show$="{{show}}" on-click="onTogglePopoverClick">
+  <div style="cursor: pointer; padding: 12px 8px;">X</div>
   <slot name="Container"></slot>
 </div>
 `

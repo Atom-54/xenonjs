@@ -139,7 +139,7 @@ export const reifyAtom = async (controller, layer, {name, type, containers, cont
     }
     // bindings are inverted from connections; bindings = [source] => [...targets]
     // bindings are fully qualified
-    const bindings = controller.connections.inputs;
+    const bindings = controller.bindings = controller.connections.inputs;
     // install connections from host into controller.connections (bindings)
     if (connections) {
       // connections are [target] => [...sources]
@@ -243,7 +243,7 @@ const calculateContainer = (host, localContainer) => {
   return container;
 };
 
-const updateBindings = (bindings, sourceId, targetId) => {
+export const updateBindings = (bindings, sourceId, targetId) => {
   // prefer existing binding 
   // for (const [key, targets] of Object.entries(bindings)) {
   //   if (targets.includes(targetId)) {

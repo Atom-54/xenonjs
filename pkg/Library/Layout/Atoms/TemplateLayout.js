@@ -78,13 +78,13 @@ getItemKey(item) {
   return item.key || item.id || item.name;
 },
 onItemContextMenu({eventlet: {key, value: {x, y}}}, state) {
-  log.debug('onItemContextMenu', key, x, y);
+ // log('onItemContextMenu', key, x, y);
   return {context: key, target: {x, y}};
 },
 onItemOpenClose({eventlet: {key}}, state) {
   const output = this.onItemSelect({eventlet: {key}}, state);
   const item = state.itemMap[key];
-  log.debug('onItemOpenClose', key, item);
+  //log('onItemOpenClose', key, item);
   if (key && item) {
     if (item.hasEntries) {
       (state.opened ??= {})[key] = !state.opened[key];
@@ -96,16 +96,16 @@ onItemOpenClose({eventlet: {key}}, state) {
   }
 },
 onItemDelete({eventlet: {key}}, state) {
-  log('onItemDelete', key);
+  //log('onItemDelete', key);
   return {delete: key, trigger: Math.random()};
 },
 onItemSelect({eventlet}, state) {
-  log.debug('onItemSelect', eventlet);
+  //log('onItemSelect', eventlet);
   const selected = state.selected = eventlet.key;
   return {selected};
 },
 onItemRename({eventlet: {key, value}}, state) {
-  log.debug('onItemRename', key, value);
+  //log('onItemRename', key, value);
   state.renamed = {key, value};
   return {renamed: {key, value}, trigger: Math.random()};
 },
