@@ -172,8 +172,6 @@ export const getGraphMetaData = (graph, property) => {
 
 export const setGraphMetaData = async (layer, graph, property, value) => {
   graph.meta[property] = value;
-  //(controller);
-  //return Project.saveProject(Project.currentProject);
   saveDesignGraph(layer);
 };
 
@@ -185,7 +183,7 @@ const createSublayer = async (layer, name) => {
   const targetContainer = 'DesignPanels#Container';
   const state = {style: {order: sublayers.length}};
   delete controller.state['build$' + targetName + '$style'];
-  const target = await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
+  /*const target =*/ await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
   const sublayerContainer = targetName + '#Container';
   const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
   sublayers.push(layer.name + '$' + sublayerName);
@@ -219,7 +217,6 @@ export const addDesignedAtom = async (controller, layer, {name, type, container,
   layer.graph[name] = {type, container, containers, state}; 
   designUpdate(controller);
   designSelect(controller, host.id);
-  //Project.saveProject(Project.currentProject);
   saveDesignGraph(layer);
 };
 
@@ -282,8 +279,6 @@ const designObserver = (controller, inputs) => {
         }
       }
       designUpdateDocuments(controller);
-      //Project.saveProject(Project.currentProject);
-      //saveDesignGraph(controller);
     }
   }
   if (designSelectedHost) {
@@ -310,18 +305,18 @@ export const designUpdate = async controller => {
 };
 
 export const designUpdateDocuments = async controller => {
-  if (sublayers.length) {
-    let selected = controller.state.build$DesignPanels$selected;
-    if (designLayerId === undefined || selected === undefined || selected === null || selected < 0 || selected >= sublayers.length) {
-      selected = sublayers.length - 1;
-      setDesignLayerIndex(controller, selected);
-    }
-    const documentPanels = {
-      tabs: sublayers.map(d => d.split('$').slice(1).join('$')), 
-      selected
-    };
-    Controller.set(controller, 'build$DesignPanels', documentPanels);
-  }
+  // if (sublayers.length) {
+  //   let selected = controller.state.build$DesignPanels$selected;
+  //   if (designLayerId === undefined || selected === undefined || selected === null || selected < 0 || selected >= sublayers.length) {
+  //     selected = sublayers.length - 1;
+  //     setDesignLayerIndex(controller, selected);
+  //   }
+  //   const documentPanels = {
+  //     tabs: sublayers.map(d => d.split('$').slice(1).join('$')), 
+  //     selected
+  //   };
+  //   Controller.set(controller, 'build$DesignPanels', documentPanels);
+  // }
 };
 
 export const designSelect = (controller, atomId) => {
