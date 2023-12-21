@@ -15,10 +15,9 @@ const firebaseRealtime = {
     const result = await fetch(`${firebaseRealtimeDb}${key}.json`);
     const pojo = await result?.json();
     return pojo;
-    //console.warn(key, pojo);
+    //log.warn(key, pojo);
   },
   async setItem(key, body) {
-    /*const result await*/ 
     return fetch(`${firebaseRealtimeDb}${key}.json`, {method: 'put', body});
   },
   async removeItem(key, body) {
@@ -123,8 +122,6 @@ const restoreAll = prefix => {
 
 export const removeFolder = async key => {
   firebaseRealtime.removeItem(key);
-  // const keys = await firebaseRealtime.getKeys(key);
-  // keys.forEach(key => firebaseRealtime.removeItem(key));
 };
 
 const iconsByType = {
@@ -142,7 +139,7 @@ export const getFolders = async prefix => {
         // get last text in parens
         const chunks = key.split('(');
         const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
-        const name = key; //chunks.join('(');
+        const name = key; 
         const localEntryId = id + '/' + key;
         const entry = {
           id: '(fb) ' + localEntryId,
@@ -153,8 +150,6 @@ export const getFolders = async prefix => {
         if (type == 'folder') {
           entry.entries = await makeEntries(localEntryId);
           entry.hasEntries = true;
-          //const subkeys = await firebaseRealtime.getKeys(prefix + '/' + key);
-          //log.debug(entry);
         }
         entries.push(entry);
       }
@@ -169,29 +164,6 @@ export const getFolders = async prefix => {
     hasEntries: true,
     entries
   };
-  //return entries;
-  // return {
-  //   name: 'root',
-  //   entries
-  // };
-  // const root = {
-  //   entries: {
-  //     Graphs: {
-  //       entries: {
-  //         empty: {}
-  //       }
-  //     }
-  //   }
-  // };
-  // const keys = getKeys(prefix);
-  // keys.sort();
-  // keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
-  // const entries = mapByName(prefix, root.entries);
-  // return [{
-  //   name: 'root',
-  //   //hasEntries: true,
-  //   entries
-  // }];
 };
 
 const mapByName = (prefix, list) => Object.entries(list)
@@ -209,7 +181,6 @@ const makeFolderEntry = (prefix, key, {props, entries}) => {
     hasEntries
   };
   if (hasEntries) {
-    //entry.closed = Math.random() < 0.25;
     entry.entries = mapByName(id, entries);
   }
   return entry;
