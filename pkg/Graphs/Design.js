@@ -80,18 +80,6 @@ export const Design = {
       Atoms$data: ['Selected$value']
     }
   },
-  // AtomTree: {
-  //   type: '$library/Design/Atoms/AtomTree',
-  //   container: 'ToolsTabs#Container',
-  //   state: {
-  //     style: {
-  //       order: 1
-  //     }
-  //   },
-  //   connections: {
-  //     selected: ['Selected$value']
-  //   }
-  // },
   PartsGraph: {
     type: '$library/Graph/Atoms/Graph',
     container: 'ToolsTabs#Container',
