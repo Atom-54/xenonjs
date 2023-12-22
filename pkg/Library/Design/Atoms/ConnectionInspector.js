@@ -7,16 +7,16 @@ export const atom = (log, resolve) => ({
 shouldUpdate({selected}) {
   return selected;
 },
-async update({selected, candidates}, state, {service}) {
+async update({selected}, state, {service}) {
   const skipProperties = ['name'];
   const prefixId = selected.split('$').slice(2).join('$');
-  const inspectors = await this.inspectorsFromSchema(prefixId, candidates || {}, selected, service);
+  const inspectors = await this.inspectorsFromSchema(prefixId, selected, service);
   state.inspectors = inspectors.filter(
     ({label}) => !skipProperties.includes(label.split('.').pop())
   );
 },
-async inspectorsFromSchema(prefixId, candidates, selected, service) {
-  const {schema} = await service('DesignService', 'GetHostSchema', {key: selected});
+async inspectorsFromSchema(prefixId, selected, service) {
+  const {schema, candidates} = await service('DesignService', 'GetHostSchema', {key: selected});
   const inspectorFromSchema = (label, info) => this.inspectorFromSchema(prefixId, candidates, label, info);
   return map(schema, inspectorFromSchema).filter(i => i);
 },
