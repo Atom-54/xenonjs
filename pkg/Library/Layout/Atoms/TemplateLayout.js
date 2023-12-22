@@ -13,6 +13,7 @@ export const atom = (log, resolve) => ({
 // Atom scope is in here; `log` and `resolve` are here
 update({items, template}, state, {isDirty, output}) {
   // instance scope is in here ... tools are bound to our instance: `isDirty`, `output`, `service` are here
+  state.opened ??= {};
   if (isDirty('template')) {
     this.updateTemplate({items, template}, state, {output});
   } else {
@@ -41,6 +42,7 @@ render({styleRules}, state) {
   state.itemMap = {};
   const mapItems = items => items?.map?.(item => {
     let key = null;
+    
     if (typeof item === 'object') {
       item = deepCopy(item);
       map(item, (k, v) => item[k] = mapItems(v) || v);
@@ -49,7 +51,7 @@ render({styleRules}, state) {
         ...defaults,
         ...item,
         key,
-        closed: !opened?.[key],
+        closed: (key in opened) ? !opened[key] : !item.opened,
         selected: [key, String(i), item.name].includes(selected),
         activated: [key, String(i), item.name].includes(activated),
       };
@@ -87,7 +89,8 @@ onItemOpenClose({eventlet: {key}}, state) {
   //log('onItemOpenClose', key, item);
   if (key && item) {
     if (item.hasEntries) {
-      (state.opened ??= {})[key] = !state.opened[key];
+      const opened = (key in state.opened) ? state.opened[key] : item.opened;
+      state.opened[key] = !opened;
     } else {
       log.debug('file-opened', key);
       output.opened = key;

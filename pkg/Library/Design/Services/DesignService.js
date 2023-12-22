@@ -90,7 +90,8 @@ export const DesignService = {
       const layerId = host.id.split('$').slice(0, 2).join('$') + '$Graph';
       const layerSchema = Schema.schemaForLayer(host.layer.controller, layerId);
       const schema = Schema.deepSchemaForHost(layerSchema, key).inputs;
-      return {schema};
+      const candidates = layerSchema.outputs;
+      return {schema, candidates};
     }
     return {};
   },
@@ -381,7 +382,7 @@ const getAtomInfo = (controller, layerId) => {
     .filter(([id]) => id.startsWith(layerId + '$'))
     .map(([id, atom]) => ({
       id,
-      type: atom.type.split('/').pop(),
+      ...getTypeInfo(atom),
       container: atom.meta.container,
       containers: atom.meta.containers
     }))
@@ -389,6 +390,14 @@ const getAtomInfo = (controller, layerId) => {
   ;
   result.designLayerId = layerId;
   return result;
+};
+
+const getTypeInfo = atom => {
+  const type = atom.type.split('/').pop().toLowerCase();
+  if (type.includes('field')) {
+    return {type, icon: 'match_word', color: 'green'};
+  }
+  return {type, icon: 'build'};
 };
 
 const dropAtomType = async (host, eventlet, dropType) => {
@@ -617,7 +626,8 @@ const getAtomTree = (controller, designLayerId, selected) => {
   const root = {
     name: 'root',
     entries: rootAtoms,
-    hasEntries: true
+    hasEntries: true,
+    opened: true
     //disabled: true
   };
   stratify(atoms, root, selected);
@@ -625,7 +635,14 @@ const getAtomTree = (controller, designLayerId, selected) => {
 };
 
 const atomsInContainer = (allAtoms, containerName) => {
-  const atoms = allAtoms.filter(({container}) => container === containerName);
+  const atoms = allAtoms
+    .filter(({container}) => container === containerName)
+    .map(atom => ({
+      ...atom, 
+      hasEntries: atom.containers?.length,
+      opened: true
+    }))
+    ;
   return atoms;
 };
 
@@ -642,14 +659,15 @@ const stratify = (allAtoms, root, selected) => {
         const containers = [...foundContainers];
         atom.containers = containers.map(name => {
           const contained = atomsInContainer(atoms, `${atom.id}#${name}`);
-          const node = {
+          const container = {
             name, 
             id: atom.id + '#' + name, 
             entries: contained,
-            hasEntries: contained?.length
+            hasEntries: contained?.length,
+            opened: true
           };
-          _stratify(node);
-          return node;
+          _stratify(container);
+          return container;
         });
       }
     });

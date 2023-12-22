@@ -131,6 +131,20 @@ export const Tree = {
 <div top entry>
   <div subsection repeat="moar_t">{{entries}}</div>
   <template moar_t>
+    <context-menu-anchor entry color$="{{color}}" key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
+      <div label bar key$="{{id}}" on-click="onItemOpenClose">
+          <div bar hidden showing$="{{hasEntries}}">
+            <icon folder hidden showing$="{{closed}}">folder</icon>
+            <icon folder hidden="{{closed}}">folder_open</icon>
+          </div>
+        <icon hidden="{{hasEntries}}">{{icon}}</icon>
+      <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
+          <span flex></span>
+      </div>
+      <div subsection closed$="{{closed}}" repeat="moarmoar_t">{{containers}}</div>
+    </context-menu-anchor>
+  </template>
+  <template moarmoar_t>
     <context-menu-anchor entry key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
       <div label bar key$="{{id}}" on-click="onItemOpenClose">
           <div bar hidden showing$="{{hasEntries}}">
@@ -190,14 +204,18 @@ icon {
   display: inline-flex !important; 
 }
 [name] {
+  font-weight: bold;
   padding-bottom: 1px;
 }
 [folder] {
-  font-weight: bold;
+  font-weight: normal;
   color: purple;
 }
 [closed] {
   display: none;
+}
+[color=green] {
+  color: green;
 }
 context-menu-anchor {
   display: block;

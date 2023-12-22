@@ -26,8 +26,9 @@ export const Storage = {
     if (isFbKey(key)) {
       return FirebaseRealtime.newItem(getSimpleKey(key), name, data);
     }
-    const {layer} = atom.layer.host;
-    Storage.notifyFolderObservers(layer.controller);
+    //const {layer} = atom.layer.host;
+    //Storage.notifyFolderObservers(layer.controller);
+    Storage.notifyFolderObservers(globalThis.main);
   },
   hasItem(key) {
     if (isFbKey(key)) {
