@@ -9,14 +9,18 @@ shouldUpdate({storeId}) {
 },
 async update({storeId}, state, {service}) {
   service('LocalStorageService', 'ObserveFolders');
+  service('FirebaseRealtimeService', 'ObserveFolders');
   return this.updateFolders({storeId}, state, {service});
 },
 async updateFolders({storeId}, state, {service}) {
   const folders = await service('DocumentService', 'GetFolders', {storeId});
   return {folders};
 },
-async onFoldersChange({storeId}, state, {service}) {
-  return this.updateFolders({storeId}, state, {service});
+async onFoldersChange({storeId}, state, {service, output}) {
+  const result = await this.updateFolders({storeId}, state, {service});
+  output(result);
+  //output(this.updateFolders({storeId}, state, {service}));
+  //return this.updateFolders({storeId}, state, {service});
 },
 });
     

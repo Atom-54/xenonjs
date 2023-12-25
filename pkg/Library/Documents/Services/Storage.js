@@ -7,7 +7,7 @@ import * as LocalStorage from '../../LocalStorage/Services/LocalStorageService.j
 import * as FirebaseRealtime from '../../Firebase/Services/FirebaseRealtimeService.js';
 
 const isFbKey = key => key.startsWith('(fb) ');
-const getSimpleKey = key => key.slice(5);
+const getSimpleKey = key => isFbKey(key) ? key.slice(5) : key;
 
 export const Storage = {
   getItem(key) {
@@ -41,6 +41,12 @@ export const Storage = {
       return FirebaseRealtime.removeItem(getSimpleKey(key));
     }
     return LocalStorage.removeItem(key);
+  },
+  renameItem(from, to) {
+    if (isFbKey(from)) {
+      return FirebaseRealtime.renameItem(getSimpleKey(from), getSimpleKey(to));
+    }
+    return LocalStorage.renameItem(from, to);
   },
   removeFolder(key) {
     if (isFbKey(key)) {

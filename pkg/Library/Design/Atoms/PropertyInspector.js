@@ -120,10 +120,10 @@ async onPropChange({eventlet: {key, value, nopersist}, selected}, state, {servic
   service('DesignService', 'PropertyChange', {key, value, nopersist, id: selected});
 },
 onNonceClick({eventlet: {key}, selected}, state, tools) {
-  return this.onPropChange({eventlet: {key, value: Math.random(), nopersist: true}, id: selected}, state, tools);
+  return this.onPropChange({eventlet: {key, value: Math.random(), nopersist: true}, selected}, state, tools);
 },
 onNonceOffClick({eventlet: {key}, selected}, state, tools) {
-  return this.onPropChange({eventlet: {key, value: null}, id: selected}, state, tools);
+  return this.onPropChange({eventlet: {key, value: null}, selected}, state, tools);
 },
 template: html`
 <style>

@@ -84,11 +84,9 @@ export const pasteData = async (atom, key) => {
 
 export const renameData = async (atom, key, name) => {
   const storage = acquireStorage(key);
-  const content = await fetchDocument(key);
   const keys = key.split('/').slice(0, -1);
   const newKey = [...keys, name].join('/');
-  storage.setItem(newKey, content);
-  storage.removeItem(key);
+  storage.renameItem(key, newKey);
   storage.notifyFolderObservers(atom.layer.controller);
 };
 
@@ -107,7 +105,6 @@ export const fetchDocument = async key => {
 export const putDocument = async (controller, key, content) => {
   const storage = acquireStorage(key);
   storage.setItem(key, content);
-  storage.notifyFolderObservers(controller);
 };
 
 export const newDocument = async (atom, key) => {
@@ -248,17 +245,17 @@ const makeCodeMirror = async (layer, name, container, content, state) => {
   });
 };
 
-const makeRunPanel = async (layer, name, container, content, state) => {
-  return Controller.reifyAtom(layer.controller, layer, {
-    name, 
-    container,
-    type: '$library/Graph/Atoms/Graph', 
-    state: {
-      ...state,
-      graphId: content, 
-    }
-  });
-};
+// const makeRunPanel = async (layer, name, container, content, state) => {
+//   return Controller.reifyAtom(layer.controller, layer, {
+//     name, 
+//     container,
+//     type: '$library/Graph/Atoms/Graph', 
+//     state: {
+//       ...state,
+//       graphId: content, 
+//     }
+//   });
+// };
 
 const makeBuildPanel = async (layer, name, container, graph, state) => {
   return Controller.reifyAtom(layer.controller, layer, {

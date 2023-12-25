@@ -10,7 +10,7 @@ update({form, image, value}, state, {isDirty, service}) {
     return {image: {url: value}, value};
   }
   if (image && isDirty('image')) {
-    return {image, value};
+    return {image, value: image.url};
   }
 },
 

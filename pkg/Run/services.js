@@ -24,6 +24,7 @@ export {SelfieSegmentationService} from '../Library/Mediapipe/Services/SelfieSeg
 export {VisionTasksService} from '../Library/Mediapipe/Services/VisionTasksService.js';
 export {ShaderService} from '../Library/Shader/Services/ShaderService.js';
 export {LocalStorageService} from '../Library/LocalStorage/Services/LocalStorageService.js';
+export {FirebaseRealtimeService} from '../Library/Firebase/Services/FirebaseRealtimeService.js';
 export {PolymathService} from '../Library/Polymath/Services/PolymathService.js';
 export {CocoSsdService} from '../Library/TensorFlow/Services/CocoSsdService.js';
 export {DocumentService} from '../Library/Documents/Services/DocumentService.js';
