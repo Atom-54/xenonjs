@@ -103,7 +103,7 @@ export const DesignService = {
       await dropAtomType(host, eventlet, dropType);
     } else {
       log.debug('Dropping atom', eventlet);
-      await dropAtom(host.layer.controller, eventlet);
+      await dropAtom(host, eventlet);
     }
   },
   ConnectionChange(host, {id, key, value}) {
@@ -143,7 +143,7 @@ export const newGraph = async layer => {
       id: name
     }
   };
-  Project.Project.addGraph(Project.currentProject, graph);
+  //Project.Project.addGraph(Project.currentProject, graph);
   await reifyGraph(layer, name);
   Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
   //Project.saveProject(Project.currentProject);
@@ -159,6 +159,7 @@ export const loadGraph = async (layer, name) => {
 
 export const reifyGraph = async (layer, name) => {
   const sublayer = await createSublayer(layer, name);
+  log.debug('reifyGraph: created sublayer', name, sublayer);
   Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
   return sublayer;
 };
@@ -408,8 +409,10 @@ const dropAtomType = async (host, eventlet, dropType) => {
     const targetHost = controller.atoms[key];
     container = targetHost.container;
   }
-  const targetLayer = designLayerId;
-  const layer = Controller.findLayer(controller, targetLayer);
+  const designLayer = host.layer;
+  const layer = designLayer.layers[designLayer.id + '$Graph'];
+  //const targetLayer = designLayerId;
+  //const layer = Controller.findLayer(controller, targetLayer);
   const name = dropType.name + Math.floor(Math.random()*100);
   const type = dropType.type; 
   const state = dropType.state || {};
@@ -417,20 +420,20 @@ const dropAtomType = async (host, eventlet, dropType) => {
   log.debug({name, container, state});
   // TODO(sjmiles): layer prefix is added back in Controller.reifyAtom, which
   // expects `container` to be in local-scope
-  container = container.slice(targetLayer.length + 1);
+  container = container.slice(layer.id.length + 1);
   return addDesignedAtom(controller, layer, {name, type, container, containers, state});
 };
 
-const dropAtom = async (controller, eventlet) => {
+const dropAtom = async (host, eventlet) => {
+  const {controller} = host.layer;
   let container, order = 99;
+  const containerHost = controller.atoms[eventlet.key];
+  container = containerHost.container;
+  order = getAtomStateStyle(controller, containerHost).order;
   if (eventlet.before) {
-    const containerHost = controller.atoms[eventlet.key];
-    container = containerHost.container;
-    order = getAtomStateStyle(controller, containerHost).order - 0.5;
+    order -= 0.5;
   } else if (eventlet.after) {
-    const containerHost = controller.atoms[eventlet.key];
-    container = containerHost.container;
-    order = getAtomStateStyle(controller, containerHost).order + 0.5;
+    order += 0.5;
   } else if (eventlet.key?.includes('#')) {
     container = eventlet.key;
   }
@@ -551,13 +554,14 @@ const validateAtomOrder = async controller => {
 };
 
 const renameAtom = async (host, id, value) => {
+  // tree root controller
   const {controller} = host.layer;
+  // atom to rename
   const atom = controller.atoms[id];
   // calculate keys
   const newKey = [...atom.id.split('$').slice(0, -1), value].join('$');
-  const graphAtomId = id.split('$').slice(2).join('$');
-  const graphNewId = newKey.split('$').slice(2).join('$')
-  //
+  const graphAtomId = id.split('$').slice(3).join('$');
+  const graphNewId = newKey.split('$').slice(3).join('$')
   // move atom from here to there in graph
   const {layer} = atom;
   const {graph} = layer;

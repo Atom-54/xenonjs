@@ -117,6 +117,7 @@ const DesignTarget = class extends Xen.DropTarget {
   doDragDrop(e) {
     const elt = this.findValidTarget(e.target);
     if (elt) {
+      this.targetkey = elt.atomId;
       elt.style.outline = null;
       this.fireTargetEvent(e, elt, 'target-drop');
     }

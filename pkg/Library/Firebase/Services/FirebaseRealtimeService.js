@@ -3,46 +3,23 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const log = logf('FirebaseRealtimeService', 'red');
+
+const log = logf('FirebaseRealtimeService', 'pink');
 
 let observers = new Set();
 
-const firebaseRealtimeDb = 'https://xenon-js-default-rtdb.firebaseio.com/v9/Guest/';
-
-// TODO(sjmiles): made this to parallel LocalStorage
-const firebaseRealtime = {
-  async getItem(key) {
-    const result = await fetch(`${firebaseRealtimeDb}${key}.json`);
-    const pojo = await result?.json();
-    return pojo;
-    //log.warn(key, pojo);
-  },
-  async setItem(key, body) {
-    return fetch(`${firebaseRealtimeDb}${key}.json`, {method: 'put', body});
-  },
-  async removeItem(key, body) {
-    return fetch(`${firebaseRealtimeDb}${key}.json`, {method: 'delete'});
-  },
-  async getKeys(key) {
-    //log.debug('reading subtree', key);
-    const result = await fetch(`${firebaseRealtimeDb}${key}.json?shallow=true`);
-    const pojo = await result?.json();
-    return pojo && (typeof pojo === 'object') ? Object.keys(pojo) : [];
-  }
-};
-
 export class FirebaseRealtimeService {
-  static async persist(atom, {storeId, data}) {
-    if (storeId) {
-      setItem(storeId, data);
-    }
-  }
-  static async restore(atom, {storeId}) {
-    if (!storeId.endsWith('*')) {
-      return getItem(storeId);
-    }
-    return restoreAll(storeId);
-  }
+  // static async persist(atom, {storeId, data}) {
+  //   if (storeId) {
+  //     setItem(storeId, data);
+  //   }
+  // }
+  // static async restore(atom, {storeId}) {
+  //   if (!storeId.endsWith('*')) {
+  //     return getItem(storeId);
+  //   }
+  //   return restoreAll(storeId);
+  // }
   static async GetFolders(atom, {storeId}) {
     return getFolders(storeId);
   }
@@ -51,36 +28,25 @@ export class FirebaseRealtimeService {
   }
 }
 
-export const notifyFolderObservers = controller => {
-  for (const observer of observers) {
-    controller.onevent(observer, {handler: 'onFoldersChange'});
-  }
+export const notifyFolderObservers = async controller => {
+  setTimeout(async () => {
+    await firebaseRealtime.init();
+    for (const observer of observers) {
+      controller.onevent(observer, {handler: 'onFoldersChange'});
+    }
+  }, 1000);
 };
 
 export const newItem = async (key, name, data) => {
-  //key = getFolderKey(key);
-  const info = typeSlice(key);
-  if (!info.type === 'folder') {
-    info.path = getParentFolder(key);
-    info.type = 'folder';
-  }
-  //
-  //const uniqueKey = findUniqueKey(Storage, info.path + '/' + name);
   // 'name' must have type info
-  const uniqueKey = info.path + '/' + name;
-  //
+  const typeInfo = typeSlice(name);
+  const type = typeInfo.type === 'folder' ? '' : ' (' + typeInfo.type + ')';
+  let fullKey = (key ? key + '/' : '') + typeInfo.path;
+  let uniqueKey = fullKey + type;
+  for (let i=0; hasItem(uniqueKey); i++) {
+    uniqueKey = fullKey + ` ${i+1}` + type;
+  }
   setItem(uniqueKey, data);
-}
-
-const typeSlice = key => {
-  const chunks = key.split('(');
-  const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
-  const path = chunks.join('(').trim();
-  return {path, type};
-};
-
-const getParentFolder = key => {
-  return key.split('/').slice(0, -1).join('/');
 };
 
 export const getItem = async key => {
@@ -108,6 +74,11 @@ export const hasItem = key => {
   }
 };
 
+export const renameItem = async (from, to) => {
+  const keys = await getKeys(from);
+  keys.forEach(key => firebaseRealtime.renameItem(key, to + key.slice(from.length)));
+};
+
 const restoreAll = prefix => {
   const data = {};
   prefix = prefix.replace('*', '');
@@ -121,59 +92,35 @@ const restoreAll = prefix => {
 };
 
 export const removeFolder = async key => {
-  firebaseRealtime.removeItem(key);
-};
-
-const iconsByType = {
-  'graph': 'hub',
-  'template': 'crossword',
-  'atom': 'motion_photos_on'
+  const keys = await getKeys(key);
+  keys.forEach(key => firebaseRealtime.removeItem(key));
 };
 
 export const getFolders = async prefix => {
-  const makeEntries = async id => {
-    const entries = [];
-    const keys = await firebaseRealtime.getKeys(id);
-    if (keys) {
-      for (const key of keys) {
-        // get last text in parens
-        const chunks = key.split('(');
-        const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
-        const name = key; 
-        const localEntryId = id + '/' + key;
-        const entry = {
-          id: '(fb) ' + localEntryId,
-          name, 
-          type,
-          icon: iconsByType[type] || 'widgets' 
-        };
-        if (type == 'folder') {
-          entry.entries = await makeEntries(localEntryId);
-          entry.hasEntries = true;
-        }
-        entries.push(entry);
-      }
-    }
-    return entries;
-  };
-  prefix = prefix.replaceAll('.', '/');
-  const entries = await makeEntries(prefix);
+  const root = {entries: {}};
+  //prefix = '(fb) ' + (prefix || '');
+  prefix = (prefix ? '/' + prefix : '');
+  const keys = await getKeys(prefix);
+  keys.sort();
+  keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
   return {
-    name: 'Firebase',
-    id: 'firebase',
+    name: 'FirebaseRealtime',
+    id: '(fb) ',
     hasEntries: true,
-    entries
+    entries: mapByName(prefix, root.entries)
   };
 };
 
-const mapByName = (prefix, list) => Object.entries(list)
+const mapByName = (prefix, list) => Object.entries(list ?? 0)
   .map(([key, value]) => makeFolderEntry(prefix, key, value))
   .sort(twoStageSort(byEntries, byName))
+  .map(entry => ({...entry, id: '(fb) ' + entry.id}))
   ;
 
 const makeFolderEntry = (prefix, key, {props, entries}) => {
-  const hasEntries = !isEmpty(entries);
-  const id = prefix + '/' + key;
+  const typeInfo = typeSlice(key);
+  const hasEntries = !isEmpty(entries) || typeInfo.type === 'folder';
+  const id = (prefix ? prefix + '/' : '') + key;
   const entry = { 
     ...props,
     name: key, 
@@ -181,12 +128,105 @@ const makeFolderEntry = (prefix, key, {props, entries}) => {
     hasEntries
   };
   if (hasEntries) {
+    //entry.closed = Math.random() < 0.25;
     entry.entries = mapByName(id, entries);
   }
   return entry;
 };
 
+const typeSlice = key => {
+  const chunks = key.split('(');
+  const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
+  const path = chunks.join('(').trim();
+  return {path, type};
+};
+
 const twoStageSort = (compareOne, compareTwo) => (a, b) => compareOne(a, b) || compareTwo(a, b);
+
+const getKeys = async prefix => {
+  const keys = [];
+  await firebaseReady;
+  const nodots = key => key.replace(/\./g, '/');
+  prefix = (prefix ?? '').replace('*', '');
+  prefix = nodots(prefix);
+  for (let i=0; i<firebaseRealtime.length;i++) {
+    const key = firebaseRealtime.key(i);
+    if (nodots(key).startsWith(prefix)) {
+      keys.push(key);
+    }
+  }
+  return keys;
+};
+
+const eatKey = (root, key) => {
+  let entries = root.entries;
+  const path = key
+    .split('/') 
+    .flatMap(part => part.split('.'))
+    .flatMap(part => part.split('$'))
+    ;
+  const file = path.pop();
+  if (file.includes('-bak')) {
+    return;
+  }
+  while (path.length) {
+    const name = path.shift();
+    if (name) {
+      const folder = entries[name] ??= {};
+      entries = (folder.entries ??= {});
+    }
+  }
+  entries[file] = {};
+};
+
 const isEmpty = dictionary => Boolean(!dictionary || typeof dictionary !== 'object' || !Object.keys(dictionary).length);
 const byName = (a, b) => (a.name === 'Deleted') ? 1 : (b.name === 'Deleted') ? -1 : a.name.localeCompare(b.name);
 const byEntries = (a,b) => (a.hasEntries && !b.hasEntries) ? -1 : (!a.hasEntries && b.hasEntries) ? 1 : 0;
+
+const firebaseRealtimeDb = 'https://xenon-js-default-rtdb.firebaseio.com/v9/Guest/';
+
+let fileSystem = {};
+let fsKeys;
+
+let ready;
+const firebaseReady = new Promise(_ready => ready = _ready);
+
+const firebaseRealtime = {
+  length: 0,
+  async init() {
+    const result = await fetch(`${firebaseRealtimeDb}.json?shallow=true`);
+    fileSystem = await result?.json();
+    fsKeys = Object.keys(fileSystem).map(key => unbasinateKey(key));
+    firebaseRealtime.length = fsKeys.length;
+    console.log(fsKeys, fileSystem);
+    ready();
+  },
+  key(index) {
+    return fsKeys[index];
+  },
+  async getItem(key) {
+    await firebaseReady;
+    const result = await fetch(`${firebaseRealtimeDb}${basinateKey(key)}.json`);
+    return result.json();
+  },
+  async setItem(key, value) {
+    await firebaseReady;
+    const body = JSON.stringify(value);
+    return fetch(`${firebaseRealtimeDb}${basinateKey(key)}.json`, {method: 'put', body});
+  },
+  async removeItem(key) {
+    await firebaseReady;
+    return fetch(`${firebaseRealtimeDb}${basinateKey(key)}.json`, {method: 'delete'});
+  },
+  async renameItem(from, to) {
+    const item = await firebaseRealtime.getItem(from);
+    await firebaseRealtime.setItem(to, item);
+    await firebaseRealtime.removeItem(from);
+    log.debug('rename', from, ' => ', to);
+  }
+};
+
+const basinateKey = key => key.replaceAll('/', '*');
+const unbasinateKey = key => key.replaceAll('*', '/');
+
+firebaseRealtime.init();

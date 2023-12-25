@@ -10,6 +10,7 @@ const log = logf('DOM:atom-graph', 'forestgreen');
 
 const viewport = 6000;
 // const defaultSize = [200, 56];
+const sanitizeId = id => id?.replace?.(/[ $)(:]/g, '_');
 
 export class AtomGraph extends DragDrop {
   static get observedAttributes() {
@@ -38,17 +39,21 @@ export class AtomGraph extends DragDrop {
     //this.key = selected;
   }
   render({atoms, edges}, state) {
+    atoms.forEach(atom => atom.atomId = sanitizeId(atom.atomId));
     // NB: connectors are drawn after, via Canvas. See _didRender.
     //state.didRender = {edges, atoms};
     // complete render model
-    return {atoms, zoom: state.zoom};
+    return {
+      atoms, 
+      zoom: state.zoom
+    };
   }
   _didRender({atoms, edges}, {x, y, offsets/*, didRender: {atoms, edges}*/}) {
     if (edges) {
       this.renderCanvas({atoms, edges}, {x, y, offsets});
     }
     entries(offsets).forEach(([name, [tx, ty]]) => {
-      const elt = this.shadowRoot.querySelector(`#${name.split('$').join('-')}`)
+      const elt = this.shadowRoot.querySelector(sanitizeId(`#${name.split('$').join('-')}`))
       if (elt) {
         elt.style.transform = `translate(${tx}px, ${ty}px)`;
       }
@@ -70,7 +75,7 @@ export class AtomGraph extends DragDrop {
         const sourceId = source.slice(0, 4).join('-');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
-        const elt = this.shadowRoot.querySelector(`#${sourceId}`);
+        const elt = this.shadowRoot.querySelector(`#${sanitizeId(sourceId)}`);
         if (elt) {
           const [dx, dy] = offsets[source.slice(0, 4).join('$')] ?? [0, 0];
           const p0 = {
@@ -83,7 +88,7 @@ export class AtomGraph extends DragDrop {
             if (targetId !== sourceId) {
               trgEdgeCount[targetId] ??= -1;
               const b = ++trgEdgeCount[targetId];
-              const elt2 = this.shadowRoot.querySelector(`#${targetId}`);
+              const elt2 = this.shadowRoot.querySelector(`#${sanitizeId(targetId)}`);
               if (elt2) {
                 const [dx, dy] = offsets[target.slice(0, 4).join('$')] ?? [0, 0];
                 const p1 = {
@@ -195,7 +200,7 @@ export class AtomGraph extends DragDrop {
         state.ty = Math.min(Math.max((state.y || 0) + dyz, -v2 + 1500), v2);
         this.viewport.style.transform = `translate(${state.tx}px, ${state.ty}px)`;
       } else {
-        const elt = this.shadowRoot.querySelector(`#${this.key.split('$').join('-')}`);
+        const elt = this.shadowRoot.querySelector(sanitizeId(`#${this.key.split('$').join('-')}`));
         if (elt) {
           const off = (state.offsets[this.key] ??= [0, 0]);
           const [zdx, zdy] = [off[0] + dxz, off[1] + dyz];

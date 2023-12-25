@@ -9,7 +9,7 @@ async update({graphId}, state, {isDirty, service}) {
   if (state.graphId !== id) {
     state.graphId = id;
     await service('LayerService', 'CreateLayer', {id: graphId});
-    log('LayerService::CreateLayer', id);
+    log('LayerService::CreateLayer(', id, ')');
   }
 },
 template: html`
