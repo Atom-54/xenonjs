@@ -6,60 +6,6 @@ export const Tree = {
   "meta": {
     "id": "Tree"
   },
-  // "UXPopupMenu31": {
-  //   "type": "$library/UX/Atoms/UXPopupMenu",
-  //   "container": "Container",
-  //   "state": {
-  //     "template": "",
-  //     "show": null,
-  //     "style": {
-  //       "order": 1
-  //     },
-  //     "items": [
-  //       {
-  //         "label": "Open"
-  //       },
-  //       {
-  //         "label": "-"
-  //       },
-  //       {
-  //         "label": "NewFolder"
-  //       },
-  //       {
-  //         "label": "NewDocument"
-  //       },
-  //       {
-  //         "label": "-"
-  //       },
-  //       {
-  //         "label": "Copy"
-  //       },
-  //       {
-  //         "label": "Paste"
-  //       },
-  //       {
-  //         "label": "Delete"
-  //       }
-  //     ]
-  //   },
-  //   "connections": {
-  //     "target": [
-  //       "FileListLayout$target"
-  //     ],
-  //     "show": [
-  //       "FileListLayout$context"
-  //     ]
-  //   }
-  // },
-  // "Folders44": {
-  //   "type": "$library/Documents/Atoms/Folders",
-  //   "state": {
-  //     "storeId": "",
-  //     "style": {
-  //       "order": 3
-  //     }
-  //   }
-  // },
   "Atoms": {
     "type": "$library/Data/Atoms/ServiceAccess",
     "state": {
@@ -67,63 +13,11 @@ export const Tree = {
       "task": "GetAtomTree"
     } 
   },
-  // "MenuService": {
-  //   "type": "$library/Data/Atoms/ServiceAccess",
-  //   "container": "Container",
-  //   "state": {
-  //     "service": "DocumentService",
-  //     "style": {
-  //       "order": 2
-  //     }
-  //   },
-  //   "connections": {
-  //     "data": [
-  //       "FileListLayout$context"
-  //     ],
-  //     "task": [
-  //       "UXPopupMenu31$selected"
-  //     ]
-  //   }
-  // },
-  // "OpenService": {
-  //   "type": "$library/Data/Atoms/ServiceAccess",
-  //   "container": "Container",
-  //   "state": {
-  //     "service": "DocumentService",
-  //     "task": "Open",
-  //     "style": {
-  //       "order": 4
-  //     }
-  //   },
-  //   "connections": {
-  //     "data": [
-  //       "FileListLayout$opened"
-  //     ]
-  //   }
-  // },
-  // "RenameService": {
-  //   "type": "$library/Data/Atoms/ServiceAccess",
-  //   "container": "Container",
-  //   "state": {
-  //     "service": "DocumentService",
-  //     "task": "Rename",
-  //     "style": {
-  //       "order": 5
-  //     }
-  //   },
-  //   "connections": {
-  //     "data": [
-  //       "FileListLayout$renamed"
-  //     ]
-  //   }
-  // },
   "AtomListLayout": {
     "type": "$library/Layout/Atoms/TemplateLayout",
-    //"container": "Container",
     "connections": {
       "items": [
         "Atoms$result"
-        //"Folders44$folders"
       ]
     },
     "state": {
