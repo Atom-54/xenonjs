@@ -3,23 +3,22 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-
 const log = logf('FirebaseRealtimeService', 'pink');
 
 let observers = new Set();
 
 export class FirebaseRealtimeService {
-  // static async persist(atom, {storeId, data}) {
-  //   if (storeId) {
-  //     setItem(storeId, data);
-  //   }
-  // }
-  // static async restore(atom, {storeId}) {
-  //   if (!storeId.endsWith('*')) {
-  //     return getItem(storeId);
-  //   }
-  //   return restoreAll(storeId);
-  // }
+  static async persist(atom, {storeId, data}) {
+    if (storeId) {
+      setItem(storeId, data);
+    }
+  }
+  static async restore(atom, {storeId}) {
+    if (!storeId.endsWith('*')) {
+      return getItem(storeId);
+    }
+    return restoreAll(storeId);
+  }
   static async GetFolders(atom, {storeId}) {
     return getFolders(storeId);
   }
@@ -38,7 +37,7 @@ export const notifyFolderObservers = async controller => {
 };
 
 export const newItem = async (key, name, data) => {
-  // 'name' must have type info
+  // this is all for potential renaming
   const typeInfo = typeSlice(name);
   const type = typeInfo.type === 'folder' ? '' : ' (' + typeInfo.type + ')';
   let fullKey = (key ? key + '/' : '') + typeInfo.path;
@@ -46,6 +45,7 @@ export const newItem = async (key, name, data) => {
   for (let i=0; hasItem(uniqueKey); i++) {
     uniqueKey = fullKey + ` ${i+1}` + type;
   }
+  // set the actual data
   setItem(uniqueKey, data);
 };
 
@@ -98,7 +98,6 @@ export const removeFolder = async key => {
 
 export const getFolders = async prefix => {
   const root = {entries: {}};
-  //prefix = '(fb) ' + (prefix || '');
   prefix = (prefix ? '/' + prefix : '');
   const keys = await getKeys(prefix);
   keys.sort();
@@ -128,7 +127,6 @@ const makeFolderEntry = (prefix, key, {props, entries}) => {
     hasEntries
   };
   if (hasEntries) {
-    //entry.closed = Math.random() < 0.25;
     entry.entries = mapByName(id, entries);
   }
   return entry;
