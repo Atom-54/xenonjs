@@ -75,7 +75,7 @@ export const Storage = {
     return root;
   },
   makeEntry(name, id, entries) {
-    const lsEntries = LocalStorage.getFolders(storeId);
+    //const entries = LocalStorage.getFolders(storeId);
     return {name, id, entries, hasEntries: true};
   }
 };

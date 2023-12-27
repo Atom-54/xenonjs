@@ -31,6 +31,19 @@ export const notifyFolderObservers = controller => {
   }
 };
 
+export const newItem = async (key, name, data) => {
+  // this is all for potential renaming
+  const typeInfo = typeSlice(name);
+  const type = typeInfo.type === 'folder' ? '' : ' (' + typeInfo.type + ')';
+  let fullKey = (key ? key + '/' : '') + typeInfo.path;
+  let uniqueKey = fullKey + type;
+  for (let i=0; hasItem(uniqueKey); i++) {
+    uniqueKey = fullKey + ` ${i+1}` + type;
+  }
+  // set the actual data
+  setItem(uniqueKey, data);
+};
+
 export const getItem = key => {
   const item = localStorage.getItem(key);
   try {
@@ -41,7 +54,10 @@ export const getItem = key => {
 };
 
 export const setItem = (key, value) => {
-  localStorage.setItem(key, JSON.stringify(value));
+  if (typeof value === 'object') {
+    value = JSON.stringify(value);
+  }
+  localStorage.setItem(key, value);
 };
 
 export const removeItem = key => {
@@ -54,6 +70,11 @@ export const hasItem = key => {
       return true;
     }
   }
+};
+
+export const renameItem = (from, to) => {
+  const keys = getKeys(from);
+  keys.forEach(key => firebaseRealtime.renameItem(key, to + key.slice(from.length)));
 };
 
 const restoreAll = prefix => {
@@ -75,13 +96,13 @@ export const removeFolder = key => {
 
 export const getFolders = prefix => {
   const root = {entries: {}};
-  prefix = 'a54.00' + (prefix ? '/' + prefix : '');
+  prefix = globalThis.config.aeon + (prefix ? '/' + prefix : '');
   const keys = getKeys(prefix);
   keys.sort();
   keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
   return {
     name: 'LocalStorage',
-    id: 'localstorage',
+    id: '/',
     hasEntries: true,
     entries: mapByName(prefix, root.entries)
   };
@@ -93,8 +114,9 @@ const mapByName = (prefix, list) => Object.entries(list)
   ;
 
 const makeFolderEntry = (prefix, key, {props, entries}) => {
-  const hasEntries = !isEmpty(entries);
-  const id = prefix + '/' + key;
+  const typeInfo = typeSlice(key);
+  const hasEntries = !isEmpty(entries) || typeInfo.type === 'folder';
+  const id = (prefix ? prefix + '/' : '') + key;
   const entry = { 
     ...props,
     name: key, 
@@ -102,10 +124,16 @@ const makeFolderEntry = (prefix, key, {props, entries}) => {
     hasEntries
   };
   if (hasEntries) {
-    //entry.closed = Math.random() < 0.25;
-    entry.entries = mapByName(id, entries);
+    entry.entries = mapByName(id, entries || {});
   }
   return entry;
+};
+
+const typeSlice = key => {
+  const chunks = key.split('(');
+  const type = chunks.length > 1 ? chunks.pop().slice(0, -1) : 'folder';
+  const path = chunks.join('(').trim();
+  return {path, type};
 };
 
 const twoStageSort = (compareOne, compareTwo) => (a, b) => compareOne(a, b) || compareTwo(a, b);
