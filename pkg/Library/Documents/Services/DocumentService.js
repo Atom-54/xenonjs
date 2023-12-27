@@ -208,6 +208,9 @@ const getTypedContent = content => {
 const makeDocumentPanel = async (typed, layer, name, container, index, id, content) => {
   const state = {style: {order: index}};
   if (typed.type === 'graph') {
+    if (typeof content === 'string') {
+      content = JSON.parse(content);
+    }
     const graph = {
       ...content,
       meta: {
