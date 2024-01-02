@@ -10,12 +10,11 @@ import * as Env from '../Library/Framework/Env.js';
 import * as Controller from '../Library/Framework/Controller.js';
 import * as Services from '../Library/Framework/Services.js';
 import * as Layer from '../Library/Graph/Services/LayerService.js';
-// import * as Documents from '../Library/Documents/Services/DocumentService.js';
-import './graphs.js';
-import {createComposer} from './composer.js';
 import * as services from './services.js';
+import * as Dom from './dom.js';
 import {start} from '../Library/Common/start.js';
-//import * as Project from '../Library/Design/Services/ProjectService.js';
+import './graphs.js';
+
 const log = logf('Index', 'magenta');
 
 start(async xenon => {
@@ -41,7 +40,7 @@ const onrender = async (host, packet) => {
   const {controller} = layer;
   if (!controller.composer) {
     const root = window[layer.root || layer.id.replace(/\$/g, '_')] || window.root;
-    controller.composer = createComposer(controller.onevent, root);
+    controller.composer = Dom.createComposer(controller.onevent, root);
   }
   if (controller.composer) {
     // TODO(sjmiles): doing this to avoid walking each sublayer to set all the 'root' containers; which way is simpler?

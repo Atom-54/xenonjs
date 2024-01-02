@@ -51,7 +51,7 @@ export class XenComposer extends Composer {
     //const tag = sanitizeId(id.split(':').pop().match(/[\D]*/).pop().split('$').pop().toLowerCase());
     const tag = sanitizeId(id.split('$').pop().toLowerCase());
     //const container = dom(`${tag}-atom`, {
-    const container = dom(`fag-atom`, {
+    const container = dom(`atom-tag`, {
         atomId: id,
       id: sid,
       slot: containerName?.split('#').pop()

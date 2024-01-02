@@ -25,7 +25,7 @@ globalThis.config = {
     Atom: true,
     //BusTerminal: true,
     //Composer: true,
-    Controller: true,
+    //Controller: true,
     //Design: true,
     //DOM: true,
     //Graphs: true,

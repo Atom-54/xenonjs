@@ -31,11 +31,11 @@ export const notifyFolderObservers = controller => {
   }
 };
 
-export const newItem = async (key, name, data) => {
+export const newItem = (path, name, data) => {
   // this is all for potential renaming
   const typeInfo = typeSlice(name);
   const type = typeInfo.type === 'folder' ? '' : ' (' + typeInfo.type + ')';
-  let fullKey = (key ? key + '/' : '') + typeInfo.path;
+  let fullKey = (path ? path + '/' : '') + typeInfo.path;
   let uniqueKey = fullKey + type;
   for (let i=0; hasItem(uniqueKey); i++) {
     uniqueKey = fullKey + ` ${i+1}` + type;
@@ -72,9 +72,18 @@ export const hasItem = key => {
   }
 };
 
-export const renameItem = (from, to) => {
+export const renameData = (from, to) => {
   const keys = getKeys(from);
-  keys.forEach(key => firebaseRealtime.renameItem(key, to + key.slice(from.length)));
+  keys.forEach(key => 
+    renameItem(key, to + key.slice(from.length))
+  );
+};
+
+export const renameItem = (from, to) => {
+  const item = localStorage.getItem(from);
+  localStorage.setItem(to, item);
+  localStorage.removeItem(from);
+  log.debug('rename', from, ' => ', to);
 };
 
 const restoreAll = prefix => {
@@ -94,17 +103,17 @@ export const removeFolder = key => {
   keys.forEach(key => localStorage.removeItem(key));
 };
 
-export const getFolders = prefix => {
+export const getFolders = (name, path) => {
   const root = {entries: {}};
-  prefix = globalThis.config.aeon + (prefix ? '/' + prefix : '');
-  const keys = getKeys(prefix);
+  path = globalThis.config.aeon + (path ? '/' + path : '');
+  const keys = getKeys(path);
   keys.sort();
-  keys.forEach(key => eatKey(root, key.slice(prefix?.length || 0)));
+  keys.forEach(key => eatKey(root, key.slice(path?.length || 0)));
   return {
-    name: 'LocalStorage',
     id: '/',
+    name,
     hasEntries: true,
-    entries: mapByName(prefix, root.entries)
+    entries: mapByName(path, root.entries)
   };
 };
 
