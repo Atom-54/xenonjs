@@ -175,6 +175,23 @@ export const Data = {
     },
     outputs: {
       result: 'String'
+    }
+  },
+  PathCombiner: {
+    categories: [category],
+    displayName: 'Path Combiner',
+    description: 'Formats given arguments into a path',
+    type: '$library/Data/Atoms/PathCombiner',
+    ligature: 'regular_expression',
+    inputs: {
+      arg0: 'String',
+      arg1: 'String',
+      arg2: 'String',
+      arg3: 'String',
+      arg4: 'String'
     },
+    outputs: {
+      result: 'String'
+    }
   }
 };

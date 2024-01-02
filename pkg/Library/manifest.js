@@ -4,14 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 const manifests = [
+  'Auth',
   'Calendar',
   'CodeMirror',
   'Data',
   'Design',
   'DevTools',
   'Documents',
-  'Graph',
   'Fields',
+  'Firebase',
+  'Graph',
   'HuggingFace',
   'Json',
   'Layout',

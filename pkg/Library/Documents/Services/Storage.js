@@ -24,11 +24,10 @@ export const Storage = {
   },
   newItem(key, name, data) {
     if (isFbKey(key)) {
-      return FirebaseRealtime.newItem(getSimpleKey(key), name, data);
+      FirebaseRealtime.newItem(getSimpleKey(key), name, data);
+    } else {
+      LocalStorage.newItem(key, name, data);
     }
-    //const {layer} = atom.layer.host;
-    //Storage.notifyFolderObservers(layer.controller);
-    Storage.notifyFolderObservers(globalThis.main);
   },
   hasItem(key) {
     if (isFbKey(key)) {
@@ -42,11 +41,11 @@ export const Storage = {
     }
     return LocalStorage.removeItem(key);
   },
-  renameItem(from, to) {
+  renameData(from, to) {
     if (isFbKey(from)) {
-      return FirebaseRealtime.renameItem(getSimpleKey(from), getSimpleKey(to));
+      return FirebaseRealtime.renameData(getSimpleKey(from), getSimpleKey(to));
     }
-    return LocalStorage.renameItem(from, to);
+    return LocalStorage.renameData(from, to);
   },
   removeFolder(key) {
     if (isFbKey(key)) {
@@ -63,8 +62,9 @@ export const Storage = {
   },
   async getFolders(storeId) {
     const entries = [
-      await FirebaseRealtime.getFolders(storeId),
-      LocalStorage.getFolders(storeId)
+      await FirebaseRealtime.getFolders('FirebasePublic', 'Guest'),
+      //await FirebaseRealtime.getFolders('FirebasePublic', storeId),
+      LocalStorage.getFolders('LocalStorage', storeId)
     ];
     const root = [{
       name: 'root',

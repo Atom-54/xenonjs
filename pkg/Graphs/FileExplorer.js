@@ -125,6 +125,9 @@ export const FileExplorer = {
       ]
     }
   },
+  "Auth": {
+    "type": "$library/Auth/Atoms/Auth"
+  },
   "Folders44": {
     "type": "$library/Documents/Atoms/Folders",
     "container": "Container",
@@ -133,6 +136,9 @@ export const FileExplorer = {
       "style": {
         "order": 3
       }
+    },
+    "connections": {
+      "userId": "Auth$uid"
     }
   },
   "MenuService": {
@@ -244,7 +250,7 @@ icon {
 [subsection] {
   font-size: 100%;
   font-weight: normal;
-  color: black;
+  color: #381138;
   padding-left: 12px;
   Xborder-left: 1px dotted purple;
 }
@@ -253,7 +259,6 @@ icon {
 }
 [name] {
   padding-bottom: 1px;
-  color: #50007B;
   font-weight: bold;
 }
 [folder] {
