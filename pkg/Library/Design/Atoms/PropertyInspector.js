@@ -76,7 +76,7 @@ renderPropertyInfo(info) {
     value = this.JSONify(value);
   }
   const isNumber = type.includes('Number');
-  const rows = value?.split?.('\n').length || 3;
+  const rows = (value?.split?.('\n').length || 2) + 1;
   // render model
   return {
     ...info,
@@ -148,7 +148,9 @@ template: html`
     padding: .4em;
   }
   textarea {
+    font-size: .8em;
     padding: .4em .2em;
+    white-space: nowrap;
   }
   [column][left] {
     align-items: start;
