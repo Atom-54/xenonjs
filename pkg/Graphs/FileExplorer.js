@@ -128,19 +128,44 @@ export const FileExplorer = {
   "Auth": {
     "type": "$library/Auth/Atoms/Auth"
   },
-  "Folders44": {
-    "type": "$library/Documents/Atoms/Folders",
+  "LocalStorageFiles": {
+    "type": "$library/Documents/Atoms/FileSystem",
     "container": "Container",
     "state": {
-      "storeId": "",
-      "style": {
-        "order": 3
-      }
-    },
-    "connections": {
-      "userId": "Auth$uid"
+      "providerId": "",
+      "storeId": "a54.00"
     }
   },
+  "FirebasePublicFiles": {
+    "type": "$library/Documents/Atoms/FileSystem",
+    "container": "Container",
+    "state": {
+      "providerId": "fb",
+      "storeId": "Guest"
+    }
+  },
+  "FileSystemFolders": {
+    "type": "$library/Documents/Atoms/FileSystemFolders",
+    "container": "Container",
+    "state": {
+      "style": {
+        "order": 11
+      }
+    }
+  },
+  // "Folders44": {
+  //   "type": "$library/Documents/Atoms/Folders",
+  //   "container": "Container",
+  //   "state": {
+  //     "storeId": "",
+  //     "style": {
+  //       "order": 3
+  //     }
+  //   },
+  //   "connections": {
+  //     "userId": "Auth$uid"
+  //   }
+  // },
   "MenuService": {
     "type": "$library/Data/Atoms/ServiceAccess",
     "container": "Container",
@@ -194,6 +219,12 @@ export const FileExplorer = {
   "FileListLayout": {
     "type": "$library/Layout/Atoms/TemplateLayout",
     "container": "Container",
+    "connections": {
+      "items": [
+        "FileSystemFolders$folders"
+        //"Folders44$folders"
+      ]
+    },
     "state": {
       "template": html`
 <div top entry>
@@ -272,11 +303,6 @@ context-menu-anchor {
   display: block;
 }
 `
-    },
-    "connections": {
-      "items": [
-        "Folders44$folders"
-      ]
     }
   }
 };

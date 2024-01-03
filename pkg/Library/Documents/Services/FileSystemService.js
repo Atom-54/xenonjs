@@ -97,20 +97,31 @@ const getFolders = (providerId, name, storeId, authToken) => {
   return provider?.getFolders(name, storeId, authToken);
 };
 
-export const newItem = async (atom, key, content) => {
+const parseFileInputs = (atom, key) => {
   const {controller} = atom.layer;
   const {providerId, path} = providerFromKey(key);
   const {root, filePath, fileName} = partsFromPath(path);
   const fs = Object.values(fileSystems).find(fs => fs.providerId === providerId && fs.name === root);
+  const provider = providers[fs?.providerId];
+  const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
+  const fullPath = [storePath, fileName].filter(i=>i).join('/');
+  return {controller, fs, provider, storePath, fullPath, filePath, fileName};
+}
+
+export const newItem = async (atom, key, content) => {
+  const {controller, fs, provider, storePath, fileName} = parseFileInputs(atom, key);
   if (fs) {
-    const provider = providers[fs?.providerId];
-    const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
-    //log.warn(provider, filePath, fileName, storePath);
+    //log.warn(provider, storePath, fileName, storePath);
     await provider?.newItem(storePath, fileName, content);
     provider?.notifyFolderObservers(controller);
   } else {
-    log.warn(providerId, key);
+    log.warn('found no filesystem for key', key);
   }
+};
+
+export const getItem = async (atom, key) => {
+  const {provider, fullPath} = parseFileInputs(atom, key);
+  return await provider?.getItem(fullPath);
 };
 
 export const providerFromKey = key => {
