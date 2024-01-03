@@ -10,16 +10,16 @@ import * as FileSystem from './FileSystemService.js';
 const log = globalThis.logf('DocumentService', '#555555', 'orange');
 
 export const DocumentService = class {
-  static async Open(atom, data) {
-    log.debug('Open', data, atom.id);
-    openDocument(atom, data);
-  }
   static async NewFolder(atom, data) {
     log.debug('NewFolder', data, atom.id);
     newFolder(atom, data);
   }
   static async NewDocument(atom, data) {
     newDocument(atom, data);
+  }
+  static async Open(atom, data) {
+    log.debug('Open', data, atom.id);
+    openDocument(atom, data);
   }
   static async Close(atom, data) {
     log.debug('Close', data);
@@ -60,42 +60,63 @@ export const DocumentService = class {
 const documents = {};
 let clipboard;
 
-const acquireStorage = key => {
-  return Storage;
+export const newDocument = async (atom, key) => {
+  newItem(atom, key, 'Untitled (text)', '');
+  //Storage.notifyFolderObservers(atom.layer.controller);
+};
+
+export const newFolder = async (atom, key) => {
+  newItem(atom, key, 'NewFolder', '');
+  //Storage.notifyFolderObservers(atom.layer.controller);
+};
+
+const newItem = async (atom, key, name, data) => {
+  FileSystem.newItem(atom, key + '/' + name, data);
+  // const {type, path} = typeSlice(key);
+  // const providerId = type;
+  // const p = path.split('/');
+  // const systemId = p.shift();
+  // const fileName = p.pop();
+  // const filePath = p.join('/');
+  // log.debug('newItem', {providerId, systemId, filePath, fileName});
+  // FileSystem.newItem(providerId, systemId, filePath, fileName, data);
+  //Storage.newItem(key, name, data);
+  //Storage.notifyFolderObservers(atom.layer.host.layer.controller);
 };
 
 const openDocument = async (atom, key) => {
   // punt if document is open
-  if (documents[key]) {
-    return;
+  if (!documents[key]) {
+    // get the document content 
+    const content = await FileSystem.getItem(atom, key); 
+    //const content = await fetchDocument(key);
+    // document name at end
+    const name = key.split('/').pop();
+    // new index = how many open documents there are now
+    const index = Object.keys(documents).length;
+    // create document item
+    const document = documents[key] = {
+      index,
+      key,
+      name,
+      content
+    };
+    // create document atom
+    document.atom = await makeDocumentAtom(atom.layer.host.layer, name + 'Document', document);
+    // create document panel
+    document.panel = await createDocumentPanel(document, atom, name, index, key, content);
+    // work out binding ids
+    const [src, trg] = [
+      document.panel.id + '$Editor$text', 
+      document.atom.id + '$content'
+    ];
+    // inject binding directly
+    Controller.updateBindings(atom.layer.controller.connections.inputs, src, trg);
   }
-  // get the document content 
-  const content = await fetchDocument(key);
-  // document name at end
-  const name = key.split('/').pop();
-  // new index = how many open documents there are now
-  const index = Object.keys(documents).length;
-  // create document item
-  const document = documents[key] = {
-    index,
-    key,
-    name,
-    content
-  };
-  // create document atom
-  document.atom = await makeDocumentAtom(atom.layer.host.layer, name + 'Document', document);
-  // create document panel
-  document.panel = await createDocumentPanel(document, atom, name, index, key, content);
-  // work out binding ids
-  const [src, trg] = [
-    document.panel.id + '$Editor$text', 
-    document.atom.id + '$content'
-  ];
-  // inject binding directly
-  Controller.updateBindings(atom.layer.controller.connections.inputs, src, trg);
 };
 
-export const fetchDocument = async key => {
+export const fetchDocument = async (key) => {
+  //return FileSystem.getItem(atom, key);
   const storage = acquireStorage(key);
   let content = storage.getItem(key);
   if (!content) {
@@ -105,6 +126,10 @@ export const fetchDocument = async key => {
     content = storage.getItem(altKey);
   }
   return content;
+};
+
+const acquireStorage = key => {
+  return Storage;
 };
 
 export const deleteData = async (atom, key) => {
@@ -135,30 +160,6 @@ export const renameData = async (atom, key, name) => {
   const newKey = [...keys, name].join('/');
   storage.renameData(key, newKey);
   storage.notifyFolderObservers(atom.layer.controller);
-};
-
-export const newDocument = async (atom, key) => {
-  newItem(atom, key, 'Untitled (text)', '');
-  //Storage.notifyFolderObservers(atom.layer.controller);
-};
-
-export const newFolder = async (atom, key) => {
-  newItem(atom, key, 'NewFolder', '');
-  //Storage.notifyFolderObservers(atom.layer.controller);
-};
-
-const newItem = async (atom, key, name, data) => {
-  FileSystem.newItem(atom, key + '/' + name, data);
-  // const {type, path} = typeSlice(key);
-  // const providerId = type;
-  // const p = path.split('/');
-  // const systemId = p.shift();
-  // const fileName = p.pop();
-  // const filePath = p.join('/');
-  // log.debug('newItem', {providerId, systemId, filePath, fileName});
-  // FileSystem.newItem(providerId, systemId, filePath, fileName, data);
-  //Storage.newItem(key, name, data);
-  //Storage.notifyFolderObservers(atom.layer.host.layer.controller);
 };
 
 const saveDocument = async (controller, document, content) => {

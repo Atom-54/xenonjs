@@ -105,7 +105,7 @@ export const removeFolder = key => {
 
 export const getFolders = (name, path) => {
   const root = {entries: {}};
-  path = globalThis.config.aeon + (path ? '/' + path : '');
+  //path = /*globalThis.config.aeon +*/ (path ? '/' + path : '');
   const keys = getKeys(path);
   keys.sort();
   keys.forEach(key => eatKey(root, key.slice(path?.length || 0)));
