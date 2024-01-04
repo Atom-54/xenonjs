@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as Controller from '../../Framework/Controller.js';
-import {Storage} from './Storage.js';
+//import {Storage} from './Storage.js';
 import * as FileSystem from './FileSystemService.js';
 
 const log = globalThis.logf('DocumentService', '#555555', 'orange');
@@ -26,8 +26,7 @@ export const DocumentService = class {
     closeDocument(data.label);
   }
   static async Save(atom, {document, content}) {
-    //log.debug('Save', {document, content});
-    saveDocument(atom.layer.controller, document, content);
+    saveDocument(atom, document, content);
   }
   static async Copy(atom, data) {
     log.debug('Copy', data);
@@ -39,7 +38,7 @@ export const DocumentService = class {
   }
   static async Rename(atom, {key, value}) {
     log.debug('Rename', key, value);
-    renameData(atom, key, value);
+    renameItem(atom, key, value);
   }
   static async Delete(atom, id) {
     log.debug('Delete', id);
@@ -49,12 +48,14 @@ export const DocumentService = class {
       return deleteData(atom, id);
     }
   }
-  static async makeDocumentPanel(typed, layer, name, container, index, id, content) {
-    return makeDocumentPanel(typed, layer, name, container, index, id, content);
+  static async makeDocumentPanel(typed, layer, name, container, index, id) {
+    return makeDocumentPanel(typed, layer, name, container, index, id);
   }
-  static async GetFolders(atom, {storeId}) {
-    return {folders: await Storage.getFolders(storeId)};
-  }
+  // static async GetFolders(atom, {storeId}) {
+  //   return {
+  //     folders: await Storage.getFolders(storeId)
+  //   };
+  // }
 };
 
 const documents = {};
@@ -62,26 +63,18 @@ let clipboard;
 
 export const newDocument = async (atom, key) => {
   newItem(atom, key, 'Untitled (text)', '');
-  //Storage.notifyFolderObservers(atom.layer.controller);
 };
 
 export const newFolder = async (atom, key) => {
   newItem(atom, key, 'NewFolder', '');
-  //Storage.notifyFolderObservers(atom.layer.controller);
 };
 
 const newItem = async (atom, key, name, data) => {
   FileSystem.newItem(atom, key + '/' + name, data);
-  // const {type, path} = typeSlice(key);
-  // const providerId = type;
-  // const p = path.split('/');
-  // const systemId = p.shift();
-  // const fileName = p.pop();
-  // const filePath = p.join('/');
-  // log.debug('newItem', {providerId, systemId, filePath, fileName});
-  // FileSystem.newItem(providerId, systemId, filePath, fileName, data);
-  //Storage.newItem(key, name, data);
-  //Storage.notifyFolderObservers(atom.layer.host.layer.controller);
+};
+
+export const renameItem = async (atom, key, name) => {
+  FileSystem.renameItem(atom, key, name);
 };
 
 const openDocument = async (atom, key) => {
@@ -115,27 +108,21 @@ const openDocument = async (atom, key) => {
   }
 };
 
-export const fetchDocument = async (key) => {
-  //return FileSystem.getItem(atom, key);
-  const storage = acquireStorage(key);
-  let content = storage.getItem(key);
-  if (!content) {
-    const sourceKeys = key.split('/');
-    const name = sourceKeys.pop();
-    const altKey = sourceKeys.join('/') + '.' + name;
-    content = storage.getItem(altKey);
-  }
+export const fetchDocument = async key => {
+  let content = await FileSystem.getItem(null, key);
   return content;
 };
 
-const acquireStorage = key => {
-  return Storage;
+const saveDocument = async (atom, document, content) => {
+  //return putDocument(atom, document.key, content);
+};
+
+export const putDocument = async (atom, key, content) => {
+  return FileSystem.setItem(atom, key, content);
 };
 
 export const deleteData = async (atom, key) => {
-  const storage = acquireStorage(key);
-  storage.removeFolder(key);
-  storage.notifyFolderObservers(atom.layer.controller);
+  FileSystem.removeFolder(atom, key);
 };
 
 const copyData = async (atom, data) => {
@@ -143,32 +130,13 @@ const copyData = async (atom, data) => {
 };
 
 const pasteData = async (atom, key) => {
-  const storage = acquireStorage(key);
   const name = clipboard.split('/').pop();
   const pasteKey = key + '/' + name;
-  if (clipboard && !storage.hasItem(pasteKey)) {
-    const content = await fetchDocument(clipboard);
-    storage.setItem(pasteKey, content);
-    storage.notifyFolderObservers(atom.layer.controller);
+  if (clipboard && !FileSystem.hasItem(pasteKey)) {
+    const content = await FileSystem.getItem(atom, clipboard);
+    await FileSystem.setItem(atom, pasteKey, content);
     log('pasted from', clipboard, 'to', key, ':', content);
   }
-};
-
-export const renameData = async (atom, key, name) => {
-  const storage = acquireStorage(key);
-  const keys = key.split('/').slice(0, -1);
-  const newKey = [...keys, name].join('/');
-  storage.renameData(key, newKey);
-  storage.notifyFolderObservers(atom.layer.controller);
-};
-
-const saveDocument = async (controller, document, content) => {
-  return putDocument(controller, document.key, content);
-};
-
-export const putDocument = async (controller, key, content) => {
-  const storage = acquireStorage(key);
-  storage.setItem(key, content);
 };
 
 const closeDocument = async name => {
@@ -194,16 +162,16 @@ const createDocumentPanel = async (document, atom, name, index, id, content) => 
     const container = panelsId.split('$').slice(1).join('$') + '#Container';
     // construct a suitable panel for `content`
     const typed = getTypedContent(name, content);
-    return DocumentService.makeDocumentPanel(typed, layer, name, container, index, id, content);
+    return DocumentService.makeDocumentPanel(typed, layer, name, container, index, id);
   }
 };
 
 const getTypedContent = (name, content) => {
-  let doc = safeParse(content);
-  if (doc && doc?.meta?.id) {
-    return {type: 'graph', content: doc};
-  }
   const typeInfo = typeSlice(name);
+  const doc = safeParse(content);
+  if (doc && doc?.meta?.id || typeInfo.type === 'graph') {
+    return {type: 'graph', content: doc ?? {}};
+  }
   log.debug(typeInfo.type);
   return {
     type: typeof doc, 
@@ -234,12 +202,10 @@ const typeSlice = key => {
 };
 
 // TODO(sjmiles): obvs different from `createDocumentPanel`
-const makeDocumentPanel = async (typed, layer, name, container, index, id, content) => {
+const makeDocumentPanel = async (typed, layer, name, container, index, id) => {
   const state = {style: {order: index}};
   if (typed.type === 'graph') {
-    if (typeof content === 'string') {
-      content = JSON.parse(content);
-    }
+    const content = /*typeof typed.content === 'string' ? JSON.parse(typed.content) :*/ typed.content;
     const graph = {
       ...content,
       meta: {

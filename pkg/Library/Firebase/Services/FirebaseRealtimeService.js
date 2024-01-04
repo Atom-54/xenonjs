@@ -63,7 +63,7 @@ const getPathEntries = async system => {
   return entries;
 };
 
-export const newItem = async (path, name, content, authToken) => {
+export const newItem = async (path, name, content) => {
   const systemId = Object.keys(systems).find(root => path.startsWith(root));
   if (systemId) {
     const localPath = path.slice(systemId.length);
@@ -76,15 +76,16 @@ export const newItem = async (path, name, content, authToken) => {
       uniqueKey = fullPath + ` ${i+1}` + typeName;
     }
     // set the actual data
-    setItem(systemId, uniqueKey, content, authToken);
+    setItem(systemId, uniqueKey, content);
   }
 };
 
-export const setItem = (systemId, key, value, authToken) => {
-  systems[systemId]?.setItem(key, JSON.stringify(value), authToken);
+export const setItem = (key, value) => {
+  const [systemId, ...path] = key.split('/');
+  systems[systemId]?.setItem(path.join('/'), JSON.stringify(value));
 };
 
-export const hasItem = (systemId, key) => {
+const hasItem = (systemId, key) => {
   const system = systems[systemId];
   for (let i=0; i<system?.length; i++) {
     if (system.key(i) === key) {
@@ -93,10 +94,9 @@ export const hasItem = (systemId, key) => {
   }
 };
 
-/* */
-
 export const getItem = async key => {
-  const item = await firebaseRealtime.getItem(key);
+  const [systemId, ...path] = key.split('/');
+  const item = await systems[systemId]?.getItem(path.join('/'));
   try {
     return item ? JSON.parse(item) : null;
   } catch(x) {
@@ -104,39 +104,33 @@ export const getItem = async key => {
   }
 };
 
-export const removeItem = key => {
-  firebaseRealtime.removeItem(key);
-};
-
-export const renameData = async (from, to) => {
-  const keys = await getKeys(from);
+export const renameItems = async (from, to) => {
+  const [systemId, ...path] = from.split('/');
+  const fromPath = path.join('/');
+  const system = systems[systemId];
+  const keys = await system?.getKeys(fromPath) || [];
   keys.forEach(key => 
-    renameItem(key, to + key.slice(from.length))
+    renameItem(system, key, to + key.slice(fromPath.length))
   );
 };
 
-export const renameItem = async (from, to) => {
-  const item = await firebaseRealtime.getItem(from);
-  firebaseRealtime.setItem(to, item);
-  firebaseRealtime.removeItem(from);
+export const renameItem = async (system, from, to) => {
+  const item = await system.getItem(from);
+  system.setItem(to, item);
+  system.removeItem(from);
   log.debug('rename', from, ' => ', to);
 };
 
-const restoreAll = prefix => {
-  const data = {};
-  prefix = prefix.replace('*', '');
-  for (let i=0; i<firebaseRealtime.length;i++) {
-    const key = firebaseRealtime.key(i);
-    if (key.startsWith(prefix)) {
-      data[key] = getItem(key);
-    }
-  }
-  return data;
+export const removeFolder = async key => {
+  const [systemId, ...path] = key.split('/'), systemKey = path.join('/'), system = systems[systemId];
+  const keys = await system?.getKeys(systemKey);
+  keys?.forEach(key => system?.removeItem(key));
 };
 
-export const removeFolder = async key => {
-  const keys = await getKeys(key);
-  keys.forEach(key => firebaseRealtime.removeItem(key));
+export const removeItem = async key => {
+  const [systemId, ...path] = key.split('/'), systemKey = path.join('/'), system = systems[systemId];
+  log('removeItem', systemId, systemKey);
+  //return system?.removeItem(systemKey);
 };
 
 const mapByName = (prefix, list) => Object.entries(list ?? 0)
@@ -170,21 +164,6 @@ const typeSlice = key => {
 
 const twoStageSort = (compareOne, compareTwo) => (a, b) => compareOne(a, b) || compareTwo(a, b);
 
-const getKeys = async prefix => {
-  const keys = [];
-  await firebaseReady;
-  const nodots = key => key.replace(/\./g, '/');
-  prefix = (prefix ?? '').replace('*', '');
-  prefix = nodots(prefix);
-  for (let i=0; i<firebaseRealtime.length;i++) {
-    const key = firebaseRealtime.key(i);
-    if (nodots(key).startsWith(prefix)) {
-      keys.push(key);
-    }
-  }
-  return keys;
-};
-
 const eatKey = (root, key) => {
   let entries = root.entries;
   const path = key
@@ -209,32 +188,35 @@ const eatKey = (root, key) => {
 const firebaseSystem = class {
   constructor(root, authToken) {
     this.root = root;
+    this.rootKey = firebaseRealtimeDb + (root ? '/' + root : '');
     this.authToken = authToken;
   }
+  getUrl(key, ...urlArgs) {
+    const _key = basinateKey(key).replaceAll('(', '%28').replaceAll(')', '%29');
+    const args = [this.authToken ? `auth=${this.authToken}` : '', ...(urlArgs||[])].filter(i=>i).join('&');
+    return `${this.rootKey}${_key}.json?${args}`;
+  }
   async getFolders() {
-    const url = this.getUrl(this.root, 'shallow=true');
-    const result = await fetch(url);
+    const result = this.root && await fetch(this.getUrl('', 'shallow=true'));
     this.fileSystem = (await result?.json()) || {};
-    //console.log(root, this.fileSystem);
     this.fsKeys = Object.keys(this.fileSystem).map(key => unbasinateKey(key));
-    //console.log(this.fsKeys);
     this.length = this.fsKeys.length;
     return this;
-  }
-  getUrl(key, ...urlArgs) {
-    const args = [this.authToken ? `auth=${this.authToken}` : '', ...(urlArgs||[])].filter(i=>i).join('&');
-    return `${firebaseRealtimeDb}/${key}.json?${args}`;
   }
   key(index) {
     return this.fsKeys[index];
   }
-  async getKeys() {
-    return this.fsKeys;
+  async getKeys(prefix) {
+    return !prefix ? this.fsKeys : this.fsKeys.filter(key => key.startsWith(prefix));
   }
   setItem(key, content) {
-    const body = JSON.stringify(content);
-    const url = this.getUrl(this.root + '/' + basinateKey(key), 'shallow=true');
-    return fetch(url, {method: 'put', body});
+    return fetch(this.getUrl(key), {method: 'put', body: JSON.stringify(content)});
+  }
+  async getItem(key) {
+    return (await fetch(this.getUrl(key), {method: 'get'})).json();
+  }
+  async removeItem(key) {
+    return (await fetch(this.getUrl(key), {method: 'delete'})).json();
   }
 };
 
@@ -244,48 +226,5 @@ const byEntries = (a,b) => (a.hasEntries && !b.hasEntries) ? -1 : (!a.hasEntries
 
 const firebaseRealtimeDb = 'https://xenon-js-default-rtdb.firebaseio.com/v9';
 
-let fileSystem = {};
-let fsKeys;
-
-let ready;
-const firebaseReady = new Promise(_ready => ready = _ready);
-
-const firebaseRealtime = {
-  length: 0,
-  async init() {
-    const result = await fetch(`${firebaseRealtimeDb}/Guest.json?shallow=true`);
-    fileSystem = await result?.json();
-    fsKeys = Object.keys(fileSystem).map(key => unbasinateKey(key));
-    firebaseRealtime.length = fsKeys.length;
-    //console.log(fsKeys, fileSystem);
-    ready();
-  },
-  key(index) {
-    return fsKeys[index];
-  },
-  async getItem(key) {
-    await firebaseReady;
-    const result = await fetch(`${firebaseRealtimeDb}/${basinateKey(key)}.json`);
-    return result.json();
-  },
-  async setItem(key, value) {
-    await firebaseReady;
-    const body = JSON.stringify(value);
-    return fetch(`${firebaseRealtimeDb}/${basinateKey(key)}.json`, {method: 'put', body});
-  },
-  async removeItem(key) {
-    await firebaseReady;
-    return fetch(`${firebaseRealtimeDb}/${basinateKey(key)}.json`, {method: 'delete'});
-  },
-  async renameItem(from, to) {
-    const item = await firebaseRealtime.getItem(from);
-    await firebaseRealtime.setItem(to, item);
-    await firebaseRealtime.removeItem(from);
-    log.debug('rename', from, ' => ', to);
-  }
-};
-
-const basinateKey = key => key.replaceAll('/', '*');
+const basinateKey = key => key ? '/' + key.replaceAll('/', '*') : '';
 const unbasinateKey = key => key.replaceAll('*', '/');
-
-firebaseRealtime.init();
