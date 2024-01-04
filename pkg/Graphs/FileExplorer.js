@@ -144,6 +144,17 @@ export const FileExplorer = {
       "storeId": "Guest"
     }
   },
+  "FirebaseUserFiles": {
+    "type": "$library/Documents/Atoms/FileSystem",
+    "container": "Container",
+    "state": {
+      "providerId": "fb"
+    },
+    "connections": {
+      "storeId": "Auth$uid",
+      "authToken": "Auth$authToken"
+    }
+  },
   "FileSystemFolders": {
     "type": "$library/Documents/Atoms/FileSystemFolders",
     "container": "Container",
@@ -153,19 +164,6 @@ export const FileExplorer = {
       }
     }
   },
-  // "Folders44": {
-  //   "type": "$library/Documents/Atoms/Folders",
-  //   "container": "Container",
-  //   "state": {
-  //     "storeId": "",
-  //     "style": {
-  //       "order": 3
-  //     }
-  //   },
-  //   "connections": {
-  //     "userId": "Auth$uid"
-  //   }
-  // },
   "MenuService": {
     "type": "$library/Data/Atoms/ServiceAccess",
     "container": "Container",
@@ -231,14 +229,14 @@ export const FileExplorer = {
   <div subsection repeat="moar_t">{{entries}}</div>
   <template moar_t>
     <context-menu-anchor entry key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
-      <div label bar key$="{{id}}" on-click="onItemOpenClose">
-          <div bar hidden showing$="{{hasEntries}}">
-            <icon folder hidden showing$="{{closed}}">folder</icon>
-            <icon folder hidden="{{closed}}">folder_open</icon>
-          </div>
+      <div label bar key$="{{id}}" on-click="onItemOpenClose" on-dblclick="onItemOpen">
+        <div bar hidden showing$="{{hasEntries}}">
+          <icon folder hidden showing$="{{closed}}">folder</icon>
+          <icon folder hidden="{{closed}}">folder_open</icon>
+        </div>
         <icon hidden="{{hasEntries}}">{{icon}}</icon>
-      <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
-          <span flex></span>
+        <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
+        <span flex></span>
       </div>
       <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>
     </context-menu-anchor>

@@ -35,7 +35,7 @@ render({layerId}, {info, selected, offsets}) {
 },
 getNodableAtoms(atoms) {
   const getDepth = id => id.split('$').length;
-  const isNodableType = atom => !atom.id.includes('Panel');
+  const isNodableType = atom => !['Panel', 'SplitPanel'].includes(atom.id);
   return atoms
     .filter(atom => getDepth(atom.id) < 5)
     .filter(atom => isNodableType(atom))
@@ -97,7 +97,6 @@ getAtomRect(w, h, stride, i) {
 },
 onAtomSelect({eventlet: {key}}, state, {service}) {
   return {selected: key};
-  //service('DesignService', 'Select', {atomId: key});
 },
 onKeyDown({eventlet}, state, {service}) {
   if (['Delete', 'Backspace'].includes(eventlet.key) && state.selected) {
@@ -105,7 +104,6 @@ onKeyDown({eventlet}, state, {service}) {
   }
 },
 async onAtomMoved({layerId, eventlet}, state, {service}) {
-  //log.debug('onAtomMoved', eventlet);
   return service('DesignService', 'SetAtomGraphInfo', {layerId, info: eventlet.value});
 },
 template: html`

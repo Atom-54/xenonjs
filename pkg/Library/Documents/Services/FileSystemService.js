@@ -3,8 +3,6 @@
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-// import * as Controller from '../../Framework/Controller.js';
-// import {Storage} from './Storage.js';
 import * as LocalStorage from '../../LocalStorage/Services/LocalStorageService.js';
 import * as FirebaseRealtime from '../../Firebase/Services/FirebaseRealtimeService.js';
 
@@ -17,52 +15,9 @@ export const FileSystemService = {
   async ObserveFolders(atom) {
     return observeFolders(atom)
   },
-  // async GetFolders(atom, {name, providerId, storeId, authToken}) {
-  //   return getFolders(providerId, name || storeId, storeId, authToken);
-  // },
   async GetFileSystemFolders(atom) {
     return {name: 'root', hasEntries: true, entries: await getAllFolders()};
   }
-//   static async Open(atom, data) {
-//     log.debug('Open', data, atom.id);
-//     openDocument(atom, data);
-//   }
-//   static async NewFolder(atom, data) {
-//     log.debug('NewFolder', data, atom.id);
-//     newFolder(atom, data);
-//   }
-//   static async NewDocument(atom, data) {
-//     log.debug('NewDocument', data, atom.id);
-//     newDocument(atom, data);
-//   }
-//   static async Close(atom, data) {
-//     log.debug('Close', data);
-//     closeDocument(data.label);
-//   }
-//   static async Save(atom, {document, content}) {
-//     //log.debug('Save', {document, content});
-//     saveDocument(atom.layer.controller, document, content);
-//   }
-//   static async Copy(atom, data) {
-//     log.debug('Copy', data);
-//     copyData(atom, data);
-//   }
-//   static async Paste(atom, data) {
-//     log.debug('Paste', data);
-//     pasteData(atom, data);
-//   }
-//   static async Rename(atom, {key, value}) {
-//     log.debug('Rename', key, value);
-//     renameData(atom, key, value);
-//   }
-//   static async Delete(atom, id) {
-//     log.debug('Delete', id);
-//     const name = id.split('/').pop();
-//     const ok = window.confirm(`Delete "${name}"?`);
-//     if (ok) {
-//       return deleteData(atom, id);
-//     }
-//   }
 };
 
 const providers = {};
@@ -74,14 +29,18 @@ const observeFolders = atom => {
   Object.values(providers).forEach(
     provider => provider.observeFolders?.(atom.id)
   );
-  // const provider = providers[providerId];
-  // provider?.observeFolders(atom.id);
 };
 
 const fileSystems = {};
 
 const registerFileSystem = (atom, providerId, name, storeId, authToken) => {
-  fileSystems[atom.id] = {id: atom.id, name, providerId, storeId, authToken};
+  fileSystems[atom.id] = {
+    id: atom.id, 
+    name, 
+    providerId, 
+    storeId, 
+    authToken
+  };
   FirebaseRealtime.notifyFolderObservers(atom.layer.controller);
 };
 
@@ -92,27 +51,24 @@ const getAllFolders = async () => {
   return maps;
 };
 
-const getFolders = (providerId, name, storeId, authToken) => {
+const getFolders = async (providerId, name, storeId, authToken) => {
   const provider = providers[providerId];
-  return provider?.getFolders(name, storeId, authToken);
+  const folders = await provider?.getFolders(name, storeId, authToken);
+  // observer-visitor pattern
+  const pokeEntries = (folders, task) => folders.entries?.forEach(e => { 
+    task(e);
+    pokeEntries(e, task);
+  });
+  // assign file badges
+  pokeEntries(folders, item => item.icon = 'app_badging');
+  //log.warn(folders);
+  return folders;
 };
 
-const parseFileInputs = (atom, key) => {
-  const {controller} = atom.layer;
-  const {providerId, path} = providerFromKey(key);
-  const {root, filePath, fileName} = partsFromPath(path);
-  const fs = Object.values(fileSystems).find(fs => fs.providerId === providerId && fs.name === root);
-  const provider = providers[fs?.providerId];
-  const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
-  const fullPath = [storePath, fileName].filter(i=>i).join('/');
-  return {controller, fs, provider, storePath, fullPath, filePath, fileName};
-}
-
 export const newItem = async (atom, key, content) => {
-  const {controller, fs, provider, storePath, fileName} = parseFileInputs(atom, key);
+  const {fs, controller, provider, filePath, fileName} = parseFileInputs(atom, key);
   if (fs) {
-    //log.warn(provider, storePath, fileName, storePath);
-    await provider?.newItem(storePath, fileName, content);
+    await provider?.newItem(filePath, fileName, content);
     provider?.notifyFolderObservers(controller);
   } else {
     log.warn('found no filesystem for key', key);
@@ -123,6 +79,38 @@ export const getItem = async (atom, key) => {
   const {provider, fullPath} = parseFileInputs(atom, key);
   return await provider?.getItem(fullPath);
 };
+
+export const setItem = async (atom, key, content) => {
+  const {controller, provider, fullPath} = parseFileInputs(atom, key);
+  await provider?.setItem(fullPath, content);
+  provider?.notifyFolderObservers(controller);
+};
+
+export const removeFolder = async (atom, key) => {
+  const {controller, provider, fullPath} = parseFileInputs(atom, key);
+  await provider?.removeFolder(fullPath);
+  provider?.notifyFolderObservers(controller);
+};
+
+export const renameItem = async (atom, key, name) => {
+  const {controller, provider, fullPath} = parseFileInputs(atom, key);
+  await provider?.renameItems(fullPath, name);
+  provider?.notifyFolderObservers(controller);
+  // const newKey = [...key.split('/').slice(0, -1), name].join('/');
+  // storage.renameData(key, newKey);
+  // storage.notifyFolderObservers(atom.layer.controller);
+}
+
+const parseFileInputs = (atom, key) => {
+  const {controller} = atom?.layer || 0;
+  const {providerId, path} = providerFromKey(key);
+  const {root, filePath, fileName} = partsFromPath(path);
+  const fs = Object.values(fileSystems).find(fs => fs.providerId === providerId && fs.name === root);
+  const provider = providers[fs?.providerId];
+  const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
+  const fullPath = [storePath, fileName].filter(i=>i).join('/');
+  return {controller, fs, provider, storePath, fullPath, filePath, fileName};
+}
 
 export const providerFromKey = key => {
   let [providerId, path] = ['', key];

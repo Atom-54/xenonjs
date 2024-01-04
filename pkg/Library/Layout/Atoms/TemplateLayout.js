@@ -92,6 +92,18 @@ onItemOpenClose({eventlet: {key}}, state) {
       const opened = (key in state.opened) ? state.opened[key] : item.opened;
       state.opened[key] = !opened;
     } else {
+      //log.debug('file-opened', key);
+      //output.opened = key;
+    }
+    return output;
+  }
+},
+onItemOpen({eventlet: {key}}, state) {
+  const output = this.onItemSelect({eventlet: {key}}, state);
+  const item = state.itemMap[key];
+  //log('onItemOpenClose', key, item);
+  if (key && item) {
+    if (!item.hasEntries) {
       log.debug('file-opened', key);
       output.opened = key;
     }

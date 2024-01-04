@@ -7,19 +7,19 @@
 const category = 'Documents';
 
 export const Documents = {
-  Folders: {
-    categories: [category, 'Common'],
-    displayName: 'Folders',
-    ligature: 'folder',
-    type: '$library/Documents/Atoms/Folders',
-    inputs: {
-      storeId: 'String',
-      userId: 'String'
-    },
-    outputs: {
-      folders: 'Json|Folders'
-    }
-  },
+  // Folders: {
+  //   categories: [category, 'Common'],
+  //   displayName: 'Folders',
+  //   ligature: 'folder',
+  //   type: '$library/Documents/Atoms/Folders',
+  //   inputs: {
+  //     storeId: 'String',
+  //     userId: 'String'
+  //   },
+  //   outputs: {
+  //     folders: 'Json|Folders'
+  //   }
+  // },
   FileSystem: {
     categories: [category, 'Data'],
     displayName: 'FileSystem',
