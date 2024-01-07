@@ -65,9 +65,9 @@ export const OpenAI = {
     // icon: '$library/Assets/nodes/openai-logomark.png',
     ligature: 'chat',
     inputs: {
-      system: 'String', 
-      assistant: 'String',
-      user: 'String',
+      system: 'Text', 
+      assistant: 'Text',
+      user: 'Text',
       go: 'Nonce',
       auto: 'Boolean',
       model: 'String',
@@ -75,7 +75,7 @@ export const OpenAI = {
       temperature: 'Number'
     },
     outputs: {
-      result: 'String',
+      result: 'Text',
       working: 'Boolean'
     }
   },

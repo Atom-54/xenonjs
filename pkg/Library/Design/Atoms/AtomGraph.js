@@ -35,7 +35,7 @@ render({layerId}, {info, selected, offsets}) {
 },
 getNodableAtoms(atoms) {
   const getDepth = id => id.split('$').length;
-  const isNodableType = atom => !['Panel', 'SplitPanel'].includes(atom.id);
+  const isNodableType = atom => !['panel', 'splitpanel'].includes(atom.type);
   return atoms
     .filter(atom => getDepth(atom.id) < 5)
     .filter(atom => isNodableType(atom))

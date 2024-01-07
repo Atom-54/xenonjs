@@ -222,11 +222,12 @@ export const Fields= {
     ligature: 'edit_note',
     inputs: {
       label: 'String',
-      text: 'Text',
+      value: 'Text',
       form: 'FormId'
     },
     outputs: {
-      text: 'Text'
+      text: 'Text',
+      value: 'Text'
     },
     state: {
       label: 'TextArea Field',

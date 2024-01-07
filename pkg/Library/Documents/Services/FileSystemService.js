@@ -88,7 +88,7 @@ export const getItem = async (atom, key) => {
 export const setItem = async (atom, key, content) => {
   const {controller, provider, fullPath} = parseFileInputs(atom, key);
   await provider?.setItem(fullPath, content);
-  provider?.notifyFolderObservers(controller);
+  //provider?.notifyFolderObservers(controller);
 };
 
 export const removeFolder = async (atom, key) => {

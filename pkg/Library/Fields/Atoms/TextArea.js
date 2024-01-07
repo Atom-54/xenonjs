@@ -4,11 +4,11 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({form, text}, state, {service}) {
+update({form, value}, state, {service}) {
   service('FormService', 'RegisterField', {form});
-  return this.textChange(text, state);
+  return this.textChange(value, state);
 },
-onTextChange({eventlet: {value}}, state) {
+onFieldChange({eventlet: {value}}, state) {
   return this.textChange(value, state);
 },
 textChange(value, state) {
@@ -51,7 +51,7 @@ template: html`
 <div flex column>
   <div label display$="{{showLabel}}">{{label}}</div>
   <div flex>
-    <textarea on-change="onTextChange" on-click="noop" value="{{text}}"></textarea>
+    <textarea on-change="onFieldChange" on-click="noop" value="{{text}}"></textarea>
   </div>
 </div>
 `

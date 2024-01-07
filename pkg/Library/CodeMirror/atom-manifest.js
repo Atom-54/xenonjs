@@ -12,7 +12,8 @@ export const CodeMirror = {
     description: 'Displays and edits source code',
     ligature: 'format_ink_highlighter',
     inputs: {
-      text: 'Text'
+      text: 'Text',
+      altSource: 'Text'
     },  
     outputs: {
       text: 'Text'

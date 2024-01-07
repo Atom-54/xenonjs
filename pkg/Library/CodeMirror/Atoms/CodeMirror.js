@@ -4,7 +4,10 @@ export const atom = log => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-update({text}, state) {
+update({text, altSource}, state, {isDirty}) {
+  if (altSource && isDirty('altSource')) {
+    text = altSource;
+  }
   text = this.stringify(text);
   if (text !== state.text) {
     state.text = this.stringify(text);
