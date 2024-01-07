@@ -15,14 +15,17 @@ export const LayerService = {
     const graph = data?.id && await getGraphContent(data.id);
     if (graph) {
       const name = `${host.layer.name}$${host.name}`;
-      await createLayer(host, name, graph);
+      const graphLayer = await createLayer(host, name, graph);
+      host.addDetachment(() => destroyLayer(graphLayer));
       // TODO(sjmiles): Design may not exist, we need to do this another way
       Design.designUpdate(host.layer.controller);
     }
   },
   async ObserveState(host, data) {
     requireStateObserver(host.layer.controller);
-    observers.add(host.id.split('$').slice(0, -1).join('$') + '$' + data);
+    let id = host.id.split('$').slice(0, -1).join('$') + '$' + data;
+    observers.add(id);
+    host.addDetachment(() => observers.delete(id));
   }
 };
 
@@ -57,5 +60,9 @@ export const getGraphContent = async specifier => {
 };
 
 export const createLayer = async (host, name, graph) => {
-  await Controller.reifySublayer(host.layer.controller, host.layer, name, graph, host);
+  return Controller.reifySublayer(host.layer.controller, host.layer, name, graph, host);
+};
+
+const destroyLayer = async layer => {
+  return Controller.removeLayer(layer.controller, layer);
 };

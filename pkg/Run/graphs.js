@@ -8,7 +8,7 @@ import {Editors} from '../Graphs/Editors.js';
 import {Design} from '../Graphs/Design.js';
 import {Run} from '../Graphs/Run.js';
 import {GeneralEditor} from '../Graphs/GeneralEditor.js';
-import {Tree} from '../Graphs/Tree.js';
+import {AtomTree} from '../Graphs/AtomTree.js';
 
 export const Graphs = {
   Build, 
@@ -21,7 +21,7 @@ export const Graphs = {
   Editors,
   Run,
   GeneralEditor,
-  Tree
+  AtomTree
 };
 
 globalThis.Graphs = Graphs;

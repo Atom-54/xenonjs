@@ -21,7 +21,9 @@ export class Host /*extends EventEmitter*/ {
   lastRenderModel;
   //log;
   atom;
+  detachments;
   constructor(atom, props) {
+    this.detachments = [];
     Object.assign(this, props);
     this.installAtom(atom);
   }
@@ -43,15 +45,16 @@ export class Host /*extends EventEmitter*/ {
       });
     }
   }
-  // get container() {
-  //   return this.meta?.container || 'root';
-  // }
+  addDetachment(task) {
+    this.detachments.push(task);
+  }
   detachAtom() {
+    const detachments = this.detachments;
+    this.detachments = null;
+    detachments.forEach(task => task());
     if (this.atom) {
       this.unrender();
-      //this.atom.unlistenAll();
       this.atom = null;
-      //this.meta = null;
     }
   }
   unrender() {

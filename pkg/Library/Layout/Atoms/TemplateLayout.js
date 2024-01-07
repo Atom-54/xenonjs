@@ -133,6 +133,10 @@ onItemActivate({eventlet: {key}}, state) {
     return {activated: key, trigger: Math.random()};
   //}
 },
+onItemDrop({eventlet: {key, value}}, state) {
+  log.debug('onItemDrop', key, value);
+  return {dropped: {eventlet: {key, value}, version: Math.random()}};
+},
 template: html`
 <style>${'{{styleRules}}'}</style>
 <div>{{items}}</div>

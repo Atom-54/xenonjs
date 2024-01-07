@@ -63,7 +63,8 @@ export const Layout = {
       opened: 'Pojo',
       renamed: 'Pojo',
       delete: 'Pojo',
-      trigger: 'Nonce'
+      trigger: 'Nonce',
+      dropped: 'Pojo'
     },
     ligature: 'grid_guides'
   },

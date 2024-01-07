@@ -76,12 +76,12 @@ export const newItem = async (path, name, content) => {
       uniqueKey = fullPath + ` ${i+1}` + typeName;
     }
     // set the actual data
-    setItem(systemId, uniqueKey, content);
+    setItem(systemId + '/' + uniqueKey, content);
   }
 };
 
 export const setItem = (key, value) => {
-  const [systemId, ...path] = key.split('/');
+  const [systemId, ...path] = key.split('/').filter(i=>i);
   systems[systemId]?.setItem(path.join('/'), JSON.stringify(value));
 };
 
@@ -108,13 +108,17 @@ export const renameItems = async (from, to) => {
   const [systemId, ...path] = from.split('/');
   const fromPath = path.join('/');
   const system = systems[systemId];
+  //
+  const [_, ..._path] = to.split('/');
+  const toPath = _path.join('/');
+  //
   const keys = await system?.getKeys(fromPath) || [];
   keys.forEach(key => 
-    renameItem(system, key, to + key.slice(fromPath.length))
+    renameItem(system, key, toPath + key.slice(fromPath.length))
   );
 };
 
-export const renameItem = async (system, from, to) => {
+/*export*/ const renameItem = async (system, from, to) => {
   const item = await system.getItem(from);
   system.setItem(to, item);
   system.removeItem(from);

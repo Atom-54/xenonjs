@@ -72,6 +72,29 @@ const writeToHost = (controller, state) => {
   }
 };
 
+export const removeLayer = async (controller, layer) => {
+  const id = layer.id;
+  delete (layer.host.layer || controller).layers[id];
+  delete controller.allLayers[id];
+  //
+  const keys = Object.keys(controller.atoms).filter(atomId => atomId.startsWith(id));
+  log.debug(keys);
+  keys.forEach(key => {
+    const atom = controller.atoms[key];
+    delete controller.atoms[key];
+    atom?.dispose();
+  });
+  //
+  const skeys = Object.keys(controller.state).filter(stateId => stateId.startsWith(id));
+  log.debug(skeys);
+  skeys.forEach(key => delete controller.state[key]);
+  //
+  // layer.host = host;
+  // layer.graph = graph;
+  // await reifyAtoms(controller, layer, graph);
+  // return layer;
+};
+
 export const reifySublayer = async (controller, layer, id, graph, host) => {
   return reifyLayer(controller, layer.layers, id, graph, host);
 };
@@ -198,8 +221,11 @@ export const addAtom = async (controller, layer, {name, type, container, contain
 };
 
 export const removeAtom = async (controller, atom) => {
-  atom.dispose();
+  await atom.dispose();
   delete controller.atoms[atom.id];
+  const keys = Object.keys(controller.state).filter(stateId => stateId.startsWith(atom.id));
+  log.debug(keys);
+  keys.forEach(key => delete controller.state[key]);
   return atom;
 };
 

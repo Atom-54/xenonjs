@@ -2,9 +2,9 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-export const Tree = {
+export const AtomTree = {
   "meta": {
-    "id": "Tree"
+    "id": "AtomTree"
   },
   "Atoms": {
     "type": "$library/Data/Atoms/ServiceAccess",
@@ -12,6 +12,16 @@ export const Tree = {
       "service": "DesignService",
       "task": "GetAtomTree"
     } 
+  },
+  "DropService": {
+    "type": "$library/Data/Atoms/ServiceAccess",
+    "state": {
+      "service": "DesignService",
+      "task": "DesignDragDrop"
+    },
+    "connections": {
+      "data": "AtomListLayout$dropped"
+    }
   },
   "AtomListLayout": {
     "type": "$library/Layout/Atoms/TemplateLayout",
@@ -24,32 +34,39 @@ export const Tree = {
       "template": html`
 <div top entry>
   <div subsection repeat="moar_t">{{entries}}</div>
+  <drop-target></drop-target>
   <template moar_t>
     <context-menu-anchor entry color$="{{color}}" key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
+      <drop-target targetkey="{{id}}"></drop-target>
       <div label bar key$="{{id}}" on-click="onItemOpenClose">
-          <div bar hidden showing$="{{hasEntries}}">
-            <icon folder hidden showing$="{{closed}}">folder</icon>
-            <icon folder hidden="{{closed}}">folder_open</icon>
-          </div>
+        <div bar hidden showing$="{{hasEntries}}">
+          <icon folder hidden showing$="{{closed}}">folder</icon>
+          <icon folder hidden="{{closed}}">folder_open</icon>
+        </div>
         <icon hidden="{{hasEntries}}">{{icon}}</icon>
-      <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
-          <span flex></span>
+        <drag-able key="{{id}}">
+          <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
+        </drag-able>
+        <span flex></span>
       </div>
       <div subsection closed$="{{closed}}" repeat="moarmoar_t">{{containers}}</div>
     </context-menu-anchor>
   </template>
   <template moarmoar_t>
     <context-menu-anchor entry key$="{{id}}" selected$="{{selected}}" active$="{{activated}}" folder$="{{hasEntries}}" on-anchor="onItemContextMenu">
-      <div label bar key$="{{id}}" on-click="onItemOpenClose">
+      <drop-target flex column targetkey="{{id}}" on-target-drop="onItemDrop">
+        <div label bar key$="{{id}}" on-click="onItemOpenClose">
           <div bar hidden showing$="{{hasEntries}}">
             <icon folder hidden showing$="{{closed}}">folder</icon>
             <icon folder hidden="{{closed}}">folder_open</icon>
           </div>
-        <icon hidden="{{hasEntries}}">{{icon}}</icon>
-      <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
+          <icon hidden="{{hasEntries}}">{{icon}}</icon>
+          <list-item disabled jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
           <span flex></span>
-      </div>
+        </div>
+      </drop-target>
       <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>
+      <drop-target targetkey="end"></drop-target>
     </context-menu-anchor>
   </template>
 </div>
@@ -69,7 +86,7 @@ icon {
 }
 [entry] {
   cursor: pointer;
-  padding: 2px 0 2px 4px;
+  padding: 0px 0 0px 4px;
   border: 1px solid transparent;
   border-radius: 4px;
 }
@@ -81,7 +98,7 @@ icon {
 }
 [label] {
   align-items: center;
-  padding: 2px 0;
+  Xpadding: 2px 0;
 }
 [label]:hover {
   border-radius: 4px;
@@ -113,6 +130,13 @@ icon {
 }
 context-menu-anchor {
   display: block;
+}
+drop-target {
+  display: block; 
+  min-height: 4px;
+}
+drop-target:hover {
+  background-color: rgba(192, 0, 192, 0.3);
 }
 `
     }
