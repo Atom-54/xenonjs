@@ -8,7 +8,7 @@ import * as Controller from '../../Framework/Controller.js';
 import * as Documents from '../../Documents/Services/DocumentService.js';
 import * as Schema from '../Schema.js';
 import * as Graph from '../Graph.js';
-import * as Project from './ProjectService.js';
+//import * as Project from './ProjectService.js';
 
 const log = logf('DesignService', '#512E5F', 'white');
 
@@ -45,7 +45,7 @@ const categoryOrder = {
 export const DesignService = {
   async SetDesignLayerIndex(host, {index}) {
     setDesignLayerIndex(host.layer.controller, index);
-    return designUpdate(host.layer.controller);
+    //return designUpdate(host.layer.controller);
   },
   async NewGraph(host) {
     return newGraph(host.layer);
@@ -57,7 +57,7 @@ export const DesignService = {
     designDelete(host.layer.controller, atomId);
   },
   async UpdateDesigner(host) {
-    return designUpdate(host.layer.controller);
+    //return designUpdate(host.layer.controller);
   },
   GetAtomTypeCategories() {
     return getAtomTypeCategories();
@@ -153,7 +153,7 @@ export const newGraph = async layer => {
 export const loadGraph = async (layer, name) => {
   await reifyGraph(layer, name);
   validateAtomOrder(layer.controller);
-  designUpdate(layer.controller);
+  //designUpdate(layer.controller);
   Controller.writeValue(layer.controller, 'build$DesignPanels', 'selected', sublayers.length-1);
 };
 
@@ -204,7 +204,7 @@ export const saveDesignGraph = layer => {
   // const layer = getDesignLayer(controller);
   const graph = layer?.graph;
   if (graph && graph.meta.path) {
-    return Documents.putDocument(layer.controller, graph.meta.path, graph);
+    return Documents.putDocument({layer}, graph.meta.path, graph);
   } else {
     log.debug('saveDesignGraph: graph has no `meta.path`', graph);
   }
@@ -213,7 +213,7 @@ export const saveDesignGraph = layer => {
 export const addDesignedAtom = async (controller, layer, {name, type, container, containers, state}) => {
   const host = await Controller.reifyAtom(controller, layer, {name, type, container, containers, state});
   layer.graph[name] = {type, container, containers, state}; 
-  designUpdate(controller);
+  //designUpdate(controller);
   designSelect(controller, host.id);
   saveDesignGraph(layer);
 };
@@ -261,7 +261,7 @@ const designObserver = (controller, inputs) => {
     }
   }
   if ('build$PartsGraph$Catalog$Filter$query' in inputs) {
-    designUpdate(controller);
+    //designUpdate(controller);
   }
   if ('build$DesignPanels$tabs' in inputs) {
     const tabs = inputs.build$DesignPanels$tabs;
@@ -427,16 +427,22 @@ const dropAtomType = async (host, eventlet, dropType) => {
 const dropAtom = async (host, eventlet) => {
   const {controller} = host.layer;
   let container, order = 99;
-  const containerHost = controller.atoms[eventlet.key];
-  container = containerHost.container;
+  //
+  let parentKey = eventlet.key || '';
+  if (parentKey.includes('#')) {
+    container = parentKey;
+    parentKey = parentKey.split('#')[0];
+  }
+  const containerHost = controller.atoms[parentKey];
+  container ??= containerHost.container;
+  //
   order = getAtomStateStyle(controller, containerHost).order;
   if (eventlet.before) {
     order -= 0.5;
   } else if (eventlet.after) {
     order += 0.5;
-  } else if (eventlet.key?.includes('#')) {
-    container = eventlet.key;
   }
+  //
   if (container) {
     const containable = controller.atoms[eventlet.value];
     // update graph
@@ -445,7 +451,7 @@ const dropAtom = async (host, eventlet) => {
       containerName = containerId;
       containerId = '';
     }
-    const localContainer = [containerId.split('$').slice(2).join('$'), containerName].filter(i=>i).join('#');
+    const localContainer = [containerId.split('$').slice(3).join('$'), containerName].filter(i=>i).join('#');
     containable.layer.graph[containable.name].container = localContainer;
     log.debug('localContainer', localContainer);
     // update live atom
@@ -455,7 +461,7 @@ const dropAtom = async (host, eventlet) => {
     validateAtomOrder(controller);
     await Controller.unrender(controller);
     await Controller.rerender(controller);
-    designUpdate(controller);
+    //designUpdate(controller);
     saveDesignGraph(containable.layer);
     //Project.saveProject(Project.currentProject);
   }
@@ -494,7 +500,7 @@ const updateConnection = (controller, hostId, propName, connection) => {
   }
   // forces design target to invalidate
   designUpdateTarget(controller);
-  designUpdate(controller);
+  //designUpdate(controller);
   // Project.saveProject(Project.currentProject);
   const layer = Controller.findLayer(controller, designLayerId);
   saveDesignGraph(layer);
@@ -632,7 +638,7 @@ const renameAtom = async (host, id, value) => {
   // maybe update designer's selected atom name
   designSelect(controller, null);
   // redundant?
-  designUpdate(controller);
+  //designUpdate(controller);
   //
   // save changes
   saveDesignGraph(layer);

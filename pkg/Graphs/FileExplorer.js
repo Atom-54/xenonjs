@@ -130,7 +130,6 @@ export const FileExplorer = {
   },
   "LocalStorageFiles": {
     "type": "$library/Documents/Atoms/FileSystem",
-    "container": "Container",
     "state": {
       "providerId": "",
       "storeId": "a54.00"
@@ -138,7 +137,6 @@ export const FileExplorer = {
   },
   "FirebasePublicFiles": {
     "type": "$library/Documents/Atoms/FileSystem",
-    "container": "Container",
     "state": {
       "providerId": "fb",
       "storeId": "Guest"
@@ -146,7 +144,6 @@ export const FileExplorer = {
   },
   "FirebaseUserFiles": {
     "type": "$library/Documents/Atoms/FileSystem",
-    "container": "Container",
     "state": {
       "providerId": "fb"
     },
@@ -271,6 +268,7 @@ icon {
 [label] {
   align-items: center;
   padding: 2px 0;
+  user-select: none;
 }
 [label]:hover {
   border-radius: 4px;

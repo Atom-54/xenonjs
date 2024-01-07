@@ -61,6 +61,8 @@ export const DocumentService = class {
 const documents = {};
 let clipboard;
 
+const pathJoin = (...args) => [...args].filter(i=>i).join('/').replaceAll('//', '/');
+
 export const newDocument = async (atom, key) => {
   newItem(atom, key, 'Untitled (text)', '');
 };
@@ -70,7 +72,7 @@ export const newFolder = async (atom, key) => {
 };
 
 const newItem = async (atom, key, name, data) => {
-  FileSystem.newItem(atom, key + '/' + name, data);
+  FileSystem.newItem(atom, pathJoin(key, name), data);
 };
 
 export const renameItem = async (atom, key, name) => {
@@ -143,7 +145,9 @@ const closeDocument = async name => {
   const [key, document] = Object.entries(documents).find(([key, document]) => document.name === name) || [];
   if (key && document) {
     delete documents[key];
-    Controller.removeAtom(document.panel.layer.controller, document.panel);
+    const {controller} = document.atom.layer;
+    Controller.removeAtom(controller, document.atom);
+    Controller.removeAtom(controller, document.panel);
   }
 };
 
@@ -204,17 +208,17 @@ const typeSlice = key => {
 // TODO(sjmiles): obvs different from `createDocumentPanel`
 const makeDocumentPanel = async (typed, layer, name, container, index, id) => {
   const state = {style: {order: index}};
+  const content = /*typeof typed.content === 'string' ? JSON.parse(typed.content) :*/ typed.content;
   if (typed.type === 'graph') {
-    const content = /*typeof typed.content === 'string' ? JSON.parse(typed.content) :*/ typed.content;
     const graph = {
       ...content,
       meta: {
-        ...content.meta ?? {},
+        ...(content?.meta ?? {}), 
+        id,
         path: id
       }
     };
     return makeBuildPanel(layer, name + 'Graph', container, graph, state);
-    //return makeGraphPanel(layer, name + 'Graph', container, index, content);
   } else {
     return makeCodeMirror(layer, name, container, content, state);
   }
@@ -232,7 +236,7 @@ const makeDocumentAtom = async (layer, name, document) => {
 
 const makeCodeMirror = async (layer, name, container, content, state) => {
   return Controller.reifyAtom(layer.controller, layer, {
-    name, 
+    name: name + 'GeneralEditor', 
     container,
     type: '$library/Graph/Atoms/Graph', 
     state: {

@@ -41,6 +41,7 @@ export class Host extends EventEmitter {
   atom;
   constructor(id) {
     super();
+    this.detachments = [];
     this.log = customLogFactory(id);
     this.id = id;
     this.name = id;
@@ -64,13 +65,19 @@ export class Host extends EventEmitter {
   get container() {
     return this.meta?.container || 'root';
   }
+  addDetachment(task) {
+    this.detachments.push(task);
+  }
   detach() {
+    const detachments = this.detachments;
+    this.detachments = null;
+    detachments.forEach(task => task());
     this.detachAtom();
   }
   detachAtom() {
     if (this.atom) {
       this.unrender();
-      this.atom.unlistenAll();
+      this.unlistenAll();
       this.atom = null;
       this.meta = null;
     }

@@ -71,7 +71,7 @@ export const Design = {
     type: '$library/Graph/Atoms/Graph',
     container: 'ToolsTabs#Container',
     state: {
-      graphId: 'Tree',
+      graphId: 'AtomTree',
       style: {
         order: 1
       }

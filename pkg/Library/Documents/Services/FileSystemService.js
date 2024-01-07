@@ -16,7 +16,11 @@ export const FileSystemService = {
     return observeFolders(atom)
   },
   async GetFileSystemFolders(atom) {
-    return {name: 'root', hasEntries: true, entries: await getAllFolders()};
+    return {
+      name: 'root', 
+      hasEntries: true, 
+      entries: await getAllFolders()
+    };
   }
 };
 
@@ -46,7 +50,8 @@ const registerFileSystem = (atom, providerId, name, storeId, authToken) => {
 
 const getAllFolders = async () => {
   const maps = await Promise.all(Object.values(fileSystems).map(
-    async ({providerId, name, storeId, authToken}) => getFolders(providerId, name, storeId, authToken)
+    async ({providerId, name, storeId, authToken}) => 
+      getFolders(providerId, name, storeId, authToken)
   ));
   return maps;
 };
@@ -66,9 +71,9 @@ const getFolders = async (providerId, name, storeId, authToken) => {
 };
 
 export const newItem = async (atom, key, content) => {
-  const {fs, controller, provider, filePath, fileName} = parseFileInputs(atom, key);
+  const {fs, controller, provider, storePath, fileName} = parseFileInputs(atom, key);
   if (fs) {
-    await provider?.newItem(filePath, fileName, content);
+    await provider?.newItem(storePath, fileName, content);
     provider?.notifyFolderObservers(controller);
   } else {
     log.warn('found no filesystem for key', key);
@@ -93,8 +98,8 @@ export const removeFolder = async (atom, key) => {
 };
 
 export const renameItem = async (atom, key, name) => {
-  const {controller, provider, fullPath} = parseFileInputs(atom, key);
-  await provider?.renameItems(fullPath, name);
+  const {controller, provider, fullPath, storePath} = parseFileInputs(atom, key);
+  await provider?.renameItems(fullPath, storePath + '/' + name);
   provider?.notifyFolderObservers(controller);
   // const newKey = [...key.split('/').slice(0, -1), name].join('/');
   // storage.renameData(key, newKey);

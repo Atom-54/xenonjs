@@ -20,10 +20,11 @@ export class LocalStorageService {
   static async GetFolders(atom, {storeId}) {
     return getFolders(storeId);
   }
-  static async ObserveFolders(atom) {
-    observers.add(atom.id);
-  }
 }
+
+export const observeFolders = atomId => {
+  observers.add(atomId);
+};
 
 export const notifyFolderObservers = controller => {
   for (const observer of observers) {
@@ -64,6 +65,11 @@ export const removeItem = key => {
   localStorage.removeItem(key);
 };
 
+export const removeFolder = key => {
+  const keys = getKeys(key);
+  keys.forEach(key => localStorage.removeItem(key));
+};
+
 export const hasItem = key => {
   for (let i=0; i<localStorage.length; i++) {
     if (localStorage.key(i) === key) {
@@ -72,14 +78,14 @@ export const hasItem = key => {
   }
 };
 
-export const renameData = (from, to) => {
+export const renameItems = (from, to) => {
   const keys = getKeys(from);
   keys.forEach(key => 
     renameItem(key, to + key.slice(from.length))
   );
 };
 
-export const renameItem = (from, to) => {
+/*export*/ const renameItem = (from, to) => {
   const item = localStorage.getItem(from);
   localStorage.setItem(to, item);
   localStorage.removeItem(from);
@@ -98,11 +104,6 @@ const restoreAll = prefix => {
   return data;
 };
 
-export const removeFolder = key => {
-  const keys = getKeys(key);
-  keys.forEach(key => localStorage.removeItem(key));
-};
-
 export const getFolders = (name, path) => {
   const root = {entries: {}};
   //path = /*globalThis.config.aeon +*/ (path ? '/' + path : '');
@@ -110,7 +111,7 @@ export const getFolders = (name, path) => {
   keys.sort();
   keys.forEach(key => eatKey(root, key.slice(path?.length || 0)));
   return {
-    id: '/',
+    id: path, //'/',
     name,
     hasEntries: true,
     entries: mapByName(path, root.entries)
