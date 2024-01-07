@@ -8,7 +8,8 @@ const category = 'PixiJs';
 export const PixiJs = {
   PixiApp: {
     categories: [category],
-    displayName: 'A surface for PixiJs rendering',
+    displayName: 'PixiJs surface',
+    description: 'A surface for PixiJs rendering',
     ligature: 'toys',
     type: '$library/PixiJs/Atoms/PixiApp',
     inputs: {
@@ -21,7 +22,8 @@ export const PixiJs = {
   },
   PixiSprite: {
     categories: [category],
-    displayName: 'A PixiJs sprite',
+    displayName: 'PixiJs sprite',
+    description: 'A PixiJs sprite',
     ligature: 'playing_cards',
     type: '$library/PixiJs/Atoms/PixiSprite',
     inputs: {

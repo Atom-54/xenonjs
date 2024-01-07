@@ -285,6 +285,7 @@ export const Fields= {
   QueryBar: {
     categories: [category],
     displayName: 'Query Bar',
+    description: 'Displays a text input field with icon and placeholder text',
     type: '$library/Fields/Atoms/QueryBar',
     ligature: 'match_word',
     inputs: {

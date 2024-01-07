@@ -10,6 +10,7 @@ export const Documents = {
   // Folders: {
   //   categories: [category, 'Common'],
   //   displayName: 'Folders',
+  //   description: 'Folders data management',
   //   ligature: 'folder',
   //   type: '$library/Documents/Atoms/Folders',
   //   inputs: {
@@ -46,6 +47,7 @@ export const Documents = {
   TextDocument: {
     categories: [category, 'Common'],
     displayName: 'Text Document',
+    description: 'Text document management',
     ligature: 'article',
     type: '$library/Documents/Atoms/TextDocument',
     inputs: {
