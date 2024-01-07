@@ -10,10 +10,11 @@ export const Data = {
   Data: {
     categories: [category, 'Common'],
     displayName: 'Data',
+    description: 'Passthrough the input, if JSON, or returns string parsed as JSON',
     ligature: 'scatter_plot',
     type: '$library/Data/Atoms/Data',
     inputs: {
-      json: 'Pojo',
+      json: 'Pojo|String',
     },
     outputs: {
       value: 'Pojo'
@@ -63,6 +64,7 @@ export const Data = {
   DataExplorer: {
     categories: [category],
     displayName: 'Data Explorer',
+    description: 'Renders expandable JSON data visualization',
     ligature: 'explore',
     type: '$library/Data/Atoms/DataExplorer',
     inputs: {
@@ -73,6 +75,7 @@ export const Data = {
   ServiceAccess: {
     categories: [category],
     displayName: 'Service Access',
+    description: 'Provides access to a Service call',
     ligature: 'joystick',
     type: '$library/Data/Atoms/ServiceAccess',
     inputs: {
@@ -87,7 +90,7 @@ export const Data = {
   },
   CsvData: {
     categories: [category],
-    description: 'Parse CSV text',
+    description: 'Parses CSV text',
     type: '$library/Data/Atoms/CsvData',
     ligature: 'data_table',
     inputs: {
@@ -147,6 +150,7 @@ export const Data = {
   },
   Iterator: {
     categories: [category],
+    description: 'JSON data iterator',
     type: '$library/Data/Atoms/Iterator',
     ligature: 'steppers',
     inputs: {

@@ -62,6 +62,7 @@ export const LocaleNodeTypes = {
     categories: [category],
     description: '',
     displayName: 'Body Pose Display',
+    description: 'Display the recognized body pose',
     type: '$library/Mediapipe/Atoms/BodyPoseDisplay',
     ligature: 'hand_bones',
     inputs: {
