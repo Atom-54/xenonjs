@@ -28,7 +28,6 @@ start(async xenon => {
   // add graph
   //const graphId = `FirstProject/KeyRecommendation`;
   const graphId = 'Run';
-  //const graph = await Documents.fetchDocument(graphId);
   const graph = await Layer.getGraphContent(graphId);
   log.debug(graph);
   await Controller.reifyLayer(main, main.layers, 'run', graph);
