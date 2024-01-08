@@ -5,7 +5,7 @@
 import * as Controller from '../../Framework/Controller.js';
 import * as Project from '../../Design/Services/ProjectService.js';
 import * as Design from '../../Design/Services/DesignService.js';
-import * as Document from '../../Documents/Services/DocumentService.js';
+import * as FileSystem from '../../Documents/Services/FileSystemService.js';
 
 const Graphs = globalThis.Graphs || {};
 
@@ -55,7 +55,7 @@ export const getGraphContent = async specifier => {
   return (specifier?.meta?.id && specifier) 
     || Graphs[specifier] 
     || Project.getGraph(specifier)
-    || Document.fetchDocument(globalThis.config.aeon + '/' + specifier)
+    || FileSystem.get(null, globalThis.config.aeon + '/' + specifier)
     ;
 };
 

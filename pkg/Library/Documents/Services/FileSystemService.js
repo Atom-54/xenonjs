@@ -80,6 +80,11 @@ export const newItem = async (atom, key, content) => {
   }
 };
 
+export const hasItem = async (atom, key) => {
+  const {provider, fullPath} = parseFileInputs(atom, key);
+  return await provider?.hasItem(fullPath);
+};
+
 export const getItem = async (atom, key) => {
   const {provider, fullPath} = parseFileInputs(atom, key);
   return await provider?.getItem(fullPath);
@@ -101,12 +106,15 @@ export const renameItem = async (atom, key, name) => {
   const {controller, provider, fullPath, storePath} = parseFileInputs(atom, key);
   await provider?.renameItems(fullPath, storePath + '/' + name);
   provider?.notifyFolderObservers(controller);
-  // const newKey = [...key.split('/').slice(0, -1), name].join('/');
-  // storage.renameData(key, newKey);
-  // storage.notifyFolderObservers(atom.layer.controller);
 }
 
+export const notifyObservers = async (atom, key) => {
+  const {controller, provider} = parseFileInputs(atom, key);
+  provider?.notifyFolderObservers(controller);
+};
+
 const parseFileInputs = (atom, key) => {
+  // TODO(sjmiles): remove dependency on `atom`
   const {controller} = atom?.layer || 0;
   const {providerId, path} = providerFromKey(key);
   const {root, filePath, fileName} = partsFromPath(path);
@@ -115,7 +123,7 @@ const parseFileInputs = (atom, key) => {
   const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
   const fullPath = [storePath, fileName].filter(i=>i).join('/');
   return {controller, fs, provider, storePath, fullPath, filePath, fileName};
-}
+};
 
 export const providerFromKey = key => {
   let [providerId, path] = ['', key];

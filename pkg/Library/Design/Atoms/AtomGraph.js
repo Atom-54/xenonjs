@@ -86,7 +86,8 @@ renderAtom(atom, edges, selected, layerId, i) {
   };
 },
 getAtomRect(w, h, stride, i) {
-  const clampus = v => Math.floor(v/8)*8;
+  const grid = 16;
+  const clampus = v => Math.round(v/grid)*grid;
   const rect = {l: 0, t: 0};
   let [ox, oy] = [64 + rect.l, 32 + rect.t];
   return {

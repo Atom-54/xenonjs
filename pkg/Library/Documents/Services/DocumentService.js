@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 import * as Controller from '../../Framework/Controller.js';
-//import {Storage} from './Storage.js';
 import * as FileSystem from './FileSystemService.js';
 
 const log = globalThis.logf('DocumentService', '#555555', 'orange');
@@ -51,11 +50,6 @@ export const DocumentService = class {
   static async makeDocumentPanel(typed, layer, name, container, index, id) {
     return makeDocumentPanel(typed, layer, name, container, index, id);
   }
-  // static async GetFolders(atom, {storeId}) {
-  //   return {
-  //     folders: await Storage.getFolders(storeId)
-  //   };
-  // }
 };
 
 const documents = {};
@@ -84,7 +78,6 @@ const openDocument = async (atom, key) => {
   if (!documents[key]) {
     // get the document content 
     const content = await FileSystem.getItem(atom, key); 
-    //const content = await fetchDocument(key);
     // document name at end
     const name = key.split('/').pop();
     // new index = how many open documents there are now
@@ -110,13 +103,13 @@ const openDocument = async (atom, key) => {
   }
 };
 
-export const fetchDocument = async key => {
-  let content = await FileSystem.getItem(null, key);
-  return content;
-};
+// export const fetchDocument = async key => {
+//   let content = await FileSystem.getItem(null, key);
+//   return content;
+// };
 
 const saveDocument = async (atom, document, content) => {
-  //return putDocument(atom, document.key, content);
+  return putDocument(atom, document.key, content);
 };
 
 export const putDocument = async (atom, key, content) => {
@@ -132,12 +125,16 @@ const copyData = async (atom, data) => {
 };
 
 const pasteData = async (atom, key) => {
-  const name = clipboard.split('/').pop();
-  const pasteKey = key + '/' + name;
-  if (clipboard && !FileSystem.hasItem(pasteKey)) {
-    const content = await FileSystem.getItem(atom, clipboard);
-    await FileSystem.setItem(atom, pasteKey, content);
-    log('pasted from', clipboard, 'to', key, ':', content);
+  if (clipboard?.split) {
+    const name = clipboard?.split('/').pop();
+    const pasteKey = key + '/' + name;
+    const hasItem = await FileSystem.hasItem(atom, pasteKey);
+    if (!hasItem) {
+      const content = await FileSystem.getItem(atom, clipboard);
+      await FileSystem.setItem(atom, pasteKey, content);
+      log('pasted from', clipboard, 'to', key, ':', content);
+      return FileSystem.notifyObservers(atom, pasteKey);
+    }
   }
 };
 
@@ -179,7 +176,7 @@ const getTypedContent = (name, content) => {
   log.debug(typeInfo.type);
   return {
     type: typeof doc, 
-    content: safeJson(doc)
+    content: doc //safeJson(doc)
   };
 };
 

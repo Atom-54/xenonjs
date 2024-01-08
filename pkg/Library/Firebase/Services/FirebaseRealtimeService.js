@@ -72,7 +72,7 @@ export const newItem = async (path, name, content) => {
     const fullPath = (localPath ? localPath + '/' : '') + typeInfo.path;
     const typeName = typeInfo.type === 'folder' ? '' : ' (' + typeInfo.type + ')';
     let uniqueKey = fullPath + typeName;
-    for (let i=0; hasItem(systemId, uniqueKey); i++) {
+    for (let i=0; systemHasItem(systemId, uniqueKey); i++) {
       uniqueKey = fullPath + ` ${i+1}` + typeName;
     }
     // set the actual data
@@ -85,13 +85,18 @@ export const setItem = (key, value) => {
   systems[systemId]?.setItem(path.join('/'), JSON.stringify(value));
 };
 
-const hasItem = (systemId, key) => {
+const systemHasItem = (systemId, key) => {
   const system = systems[systemId];
   for (let i=0; i<system?.length; i++) {
     if (system.key(i) === key) {
       return true;
     }
   }
+};
+
+export const hasItem = async key => {
+  const [systemId, ...path] = key.split('/');
+  return systemHasItem(systemId, path.join('/'));
 };
 
 export const getItem = async key => {
