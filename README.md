@@ -134,4 +134,4 @@ Computation ideally occurs locally, and data egress is constrained.
 ---
   
   
-This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom-54/xenonjs/issues/new), joining our [discord](https://discord.gg/PFsHCJHJdN) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
+This documentation is incomplete (yet!). If you have any questions, ideas or feedback, please, don't hesitate to reach out, either by filing an [issue](https://github.com/Atom-54/xenonjs/issues/new), joining our [discord](https://discord.gg/9KQS2EsvRX) or via email: [info@xenonjs.com](mailto:info@xenonjs.com).
