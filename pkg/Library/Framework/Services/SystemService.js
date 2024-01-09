@@ -18,7 +18,18 @@ export const SystemService = {
     const atomId = [atom.layer.id, ...bits].join('$');
     return Controller.writeValue(atom.layer.controller, atomId, propName, data.value);
   },
-  GetState(atom, data) {
-    return atom.layer.controller.state;
-  }
+  // GetState(atom, data) {
+  //   const state = {};
+  //   const raw = atom.layer.controller.state;
+  //   Object.entries(raw).forEach(([key, value]) => {
+  //     const keys = key.split('$');
+  //     const level = state;
+  //     const name = keys.pop();
+  //     for (const strata of keys) {
+  //       level = (level[strata] ??= {});
+  //     }
+  //     level[name] = value;
+  //   });
+  //   return state;
+  // }
 };
