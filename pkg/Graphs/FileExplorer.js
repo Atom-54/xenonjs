@@ -147,14 +147,16 @@ export const FileExplorer = {
     "type": "$library/Documents/Atoms/FileSystem",
     "state": {
       "providerId": "",
-      "storeId": "a54.00"
+      "storeId": "a54.00",
+      "storeName": "Root (Local Storage)"
     }
   },
   "FirebasePublicFiles": {
     "type": "$library/Documents/Atoms/FileSystem",
     "state": {
       "providerId": "fb",
-      "storeId": "Guest"
+      "storeId": "Guest",
+      "storeName": "Public (Firebase)"
     }
   },
   "FirebaseUserFiles": {
@@ -164,7 +166,8 @@ export const FileExplorer = {
     },
     "connections": {
       "storeId": "Auth$uid",
-      "authToken": "Auth$authToken"
+      "authToken": "Auth$authToken",
+      "storeName": "Auth$displayName"
     }
   },
   "FileSystemFolders": {

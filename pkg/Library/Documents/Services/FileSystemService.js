@@ -9,8 +9,8 @@ import * as FirebaseRealtime from '../../Firebase/Services/FirebaseRealtimeServi
 const log = globalThis.logf('FileSystemService', '#bbbbbb', 'darkorange');
 
 export const FileSystemService = {
-  async RegisterFileSystem(atom, {providerId, storeId, authToken}) {
-    return registerFileSystem(atom, providerId, storeId || '(root)', storeId, authToken)
+  async RegisterFileSystem(atom, {providerId, storeName, storeId, authToken}) {
+    return registerFileSystem(atom, providerId, storeName, storeId, authToken)
   },
   async ObserveFolders(atom) {
     return observeFolders(atom)
@@ -37,11 +37,11 @@ const observeFolders = atom => {
 
 const fileSystems = {};
 
-const registerFileSystem = (atom, providerId, name, storeId, authToken) => {
+const registerFileSystem = (atom, providerId, storeName, storeId, authToken) => {
   fileSystems[atom.id] = {
     id: atom.id, 
-    name, 
     providerId, 
+    storeName: storeName,
     storeId, 
     authToken
   };
@@ -50,7 +50,7 @@ const registerFileSystem = (atom, providerId, name, storeId, authToken) => {
 
 const getAllFolders = async () => {
   const maps = await Promise.all(Object.values(fileSystems).map(
-    async ({providerId, name, storeId, authToken}) => getFolders(providerId, name, storeId, authToken)
+    async ({providerId, storeName, storeId, authToken}) => getFolders(providerId, storeName, storeId, authToken)
   ));
   return maps;
 };

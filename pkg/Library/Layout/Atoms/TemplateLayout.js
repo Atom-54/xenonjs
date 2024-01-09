@@ -42,7 +42,6 @@ render({styleRules}, state) {
   state.itemMap = {};
   const mapItems = items => items?.map?.(item => {
     let key = null;
-    
     if (typeof item === 'object') {
       item = deepCopy(item);
       map(item, (k, v) => item[k] = mapItems(v) || v);
