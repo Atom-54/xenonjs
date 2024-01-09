@@ -5,6 +5,11 @@ import * as Graph from './Graph.js';
 const log = logf('Schema', '#953553');
 
 export const schemaForLayer = (controller, layerId) => {
+  // TODO(sjmiles): hacked cache for speed-up; track schema state properly instead 
+  const layer = Controller.findLayer(controller, layerId);
+  if (layer.schema && Math.random() > 0.10) {
+    return layer.schema;
+  }
   // map input/output property names to meta data including
   // value, connection, and type
   const schema = {
@@ -26,6 +31,7 @@ export const schemaForLayer = (controller, layerId) => {
   // capture connection settings
   captureConnectionValues(controller, layerId, controller.connections.inputs, schema.inputs);
   // here is schema
+  layer.schema = schema;
   return schema;
 };
 
@@ -70,46 +76,8 @@ const rekeySchemaMode = (localId, modalHostSchema, modalSchema) => {
 export const schemaForHost = host => {
   // static state provided by atom
   const state = Graph.getAtomState(host);
-  /*
-  let graph = host.layer.graph;
-  // accumulate host state
-  const hostState = graph[host.name].state;
-  const state = Object.assign({}, hostState || {});
-  while (graph) {
-    graph = null;
-    const parentHost = host.layer.host;
-    const qualifiedHostParts = parentHost.id.split('$');
-    if (qualifiedHostParts.length > 2) {
-      const parentLayer = parentHost.layer;
-      const qualifiedHostId = qualifiedHostParts.pop();
-      const graphState = parentLayer.graph[qualifiedHostId]?.state || {};
-      for (let [name, value] of Object.entries(graphState)) {
-        const nameParts = name.split('$');
-        const propName = nameParts.pop();
-        const hostName = nameParts.join('$');
-        if (hostName === host.name) {
-          state[propName] = value;
-        }
-      }
-      graph = qualifiedHostParts.length > 3 ? parentLayer.graph : null;
-      graph && log.debug(graph);
-    }
-  }
-  */
   // host has these connections
   let connections = host.layer.graph[host.name].connections;
-  // const parentLayer = host.layer;
-  // const parentHost = parentLayer.host;
-  // //const parentLayer = parentHost?.layer;
-  // if (parentLayer?.id.split('$')?.length > 1) {
-  //   connections = {};
-  //   const qualifedConnections = parentLayer.graph[parentHost.name]?.connections;
-  //   for (const [key, value] of entries(qualifedConnections)) {
-  //     if (key.startsWith(host.name + '$')) {
-  //       connections[key.slice(host.name.length + 1)] = value;
-  //     }
-  //   }
-  // }
   // build schema
   const schema = {
     inputs: {
@@ -136,13 +104,6 @@ const schemaFromHost = (schema, host, state, connections) => {
     schemaMode(schema.inputs, info.inputs, state);
     schemaMode(schema.outputs, info.outputs, state);
   }
-  // for all provided connections
-  // entries(connections).forEach(([key, connection]) => {
-  //   // require input schema for the left-hand-side; the data receiver
-  //   const input = schema.inputs[key] ??= {};
-  //   // record this connection value in this input schema
-  //   input.connection = connection[0];
-  // });
 };
 
 const schemaMode = (modalSchema, modalInfo, state) => {
