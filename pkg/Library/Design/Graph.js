@@ -6,7 +6,7 @@ const log = logf('Graph', '#9456ad', 'white');
 
 export const getAtomState = host => {
   // host's layer and graph
-  const {layer} = host;
+  let {layer} = host;
   let {graph} = layer;
   // deepest state
   const hostState = graph[host.name]?.state || {};
@@ -15,12 +15,12 @@ export const getAtomState = host => {
   while (graph) {
     graph = null;
     const parentHost = layer.host;
-    const parentLayer = parentHost.layer;
     const parentParts = parentHost.id.split('$');
+    layer = parentHost.layer;
     // TODO(sjmiles): .... explain
     if (parentParts.length > 2) {
       const nameInParent = parentParts.pop();
-      const graphState = parentLayer.graph[nameInParent]?.state || {};
+      const graphState = layer.graph[nameInParent]?.state || {};
       for (let [name, value] of Object.entries(graphState)) {
         const nameParts = name.split('$');
         const propName = nameParts.pop();
@@ -29,7 +29,7 @@ export const getAtomState = host => {
           state[propName] = value;
         }
       }
-      graph = parentParts.length > 3 ? parentLayer.graph : null;
+      graph = parentParts.length > 3 ? layer.graph : null;
       graph && log.debug(graph);
     }
   }
