@@ -50,8 +50,7 @@ const registerFileSystem = (atom, providerId, name, storeId, authToken) => {
 
 const getAllFolders = async () => {
   const maps = await Promise.all(Object.values(fileSystems).map(
-    async ({providerId, name, storeId, authToken}) => 
-      getFolders(providerId, name, storeId, authToken)
+    async ({providerId, name, storeId, authToken}) => getFolders(providerId, name, storeId, authToken)
   ));
   return maps;
 };
@@ -82,18 +81,17 @@ export const newItem = async (atom, key, content) => {
 
 export const hasItem = async (atom, key) => {
   const {provider, fullPath} = parseFileInputs(atom, key);
-  return await provider?.hasItem(fullPath);
+  return provider?.hasItem(fullPath);
 };
 
 export const getItem = async (atom, key) => {
   const {provider, fullPath} = parseFileInputs(atom, key);
-  return await provider?.getItem(fullPath);
+  return provider?.getItem(fullPath);
 };
 
 export const setItem = async (atom, key, content) => {
-  const {controller, provider, fullPath} = parseFileInputs(atom, key);
-  await provider?.setItem(fullPath, content);
-  //provider?.notifyFolderObservers(controller);
+  const {provider, fullPath} = parseFileInputs(atom, key);
+  return provider?.setItem(fullPath, content);
 };
 
 export const removeFolder = async (atom, key) => {

@@ -55,7 +55,7 @@ export const getGraphContent = async specifier => {
   return (specifier?.meta?.id && specifier) 
     || Graphs[specifier] 
     || Project.getGraph(specifier)
-    || FileSystem.get(null, globalThis.config.aeon + '/' + specifier)
+    || FileSystem.getItem(null, globalThis.config.aeon + '/' + specifier)
     ;
 };
 

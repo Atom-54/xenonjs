@@ -86,13 +86,7 @@ export const removeLayer = async (controller, layer) => {
   });
   //
   const skeys = Object.keys(controller.state).filter(stateId => stateId.startsWith(id));
-  log.debug(skeys);
   skeys.forEach(key => delete controller.state[key]);
-  //
-  // layer.host = host;
-  // layer.graph = graph;
-  // await reifyAtoms(controller, layer, graph);
-  // return layer;
 };
 
 export const reifySublayer = async (controller, layer, id, graph, host) => {

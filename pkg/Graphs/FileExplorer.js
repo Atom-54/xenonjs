@@ -94,6 +94,9 @@ export const FileExplorer = {
           "label": "Open"
         },
         {
+          "label": "Open As Text"
+        },
+        {
           "label": "-"
         },
         {
@@ -103,6 +106,9 @@ export const FileExplorer = {
           "label": "NewDocument"
         },
         {
+          "label": "New Graph"
+        },
+        {
           "label": "-"
         },
         {
@@ -110,6 +116,15 @@ export const FileExplorer = {
         },
         {
           "label": "Paste"
+        },
+        {
+          "label": "Duplicate"
+        },
+        {
+          "label": "Rename"
+        },
+        {
+          "label": "-"
         },
         {
           "label": "Delete"

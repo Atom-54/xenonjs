@@ -8,46 +8,55 @@ import * as FileSystem from './FileSystemService.js';
 
 const log = globalThis.logf('DocumentService', '#555555', 'orange');
 
-export const DocumentService = class {
-  static async NewFolder(atom, data) {
+export const DocumentService = {
+  async NewFolder(atom, data) {
     log.debug('NewFolder', data, atom.id);
     newFolder(atom, data);
-  }
-  static async NewDocument(atom, data) {
+  },
+  async NewDocument(atom, data) {
     newDocument(atom, data);
-  }
-  static async Open(atom, data) {
+  },
+  async NewGraph(atom, data) {
+    log.debug('NewGraph', data);
+  },
+  async Open(atom, data) {
     log.debug('Open', data, atom.id);
     openDocument(atom, data);
-  }
-  static async Close(atom, data) {
+  },
+  async OpenAsText(atom, data) {
+    log.debug('OpenAsText', data, atom.id);
+  },
+  async Close(atom, data) {
     log.debug('Close', data);
     closeDocument(data.label);
-  }
-  static async Save(atom, {document, content}) {
+  },
+  async Save(atom, {document, content}) {
     saveDocument(atom, document, content);
-  }
-  static async Copy(atom, data) {
+  },
+  async Copy(atom, data) {
     log.debug('Copy', data);
     copyData(atom, data);
-  }
-  static async Paste(atom, data) {
+  },
+  async Paste(atom, data) {
     log.debug('Paste', data);
     pasteData(atom, data);
-  }
-  static async Rename(atom, {key, value}) {
+  },
+  async Rename(atom, {key, value}) {
     log.debug('Rename', key, value);
     renameItem(atom, key, value);
-  }
-  static async Delete(atom, id) {
+  },
+  async Duplicate(atom, {key, value}) {
+    log.debug('Duplicate', key, value);
+  },
+  async Delete(atom, id) {
     log.debug('Delete', id);
     const name = id.split('/').pop();
     const ok = window.confirm(`Delete "${name}"?`);
     if (ok) {
       return deleteData(atom, id);
     }
-  }
-  static async makeDocumentPanel(typed, layer, name, container, index, id) {
+  },
+  async makeDocumentPanel(typed, layer, name, container, index, id) {
     return makeDocumentPanel(typed, layer, name, container, index, id);
   }
 };
