@@ -4,7 +4,7 @@
  */
 import * as Controller from '../../Framework/Controller.js';
 import * as Project from '../../Design/Services/ProjectService.js';
-import * as Design from '../../Design/Services/DesignService.js';
+//import * as Design from '../../Design/Services/DesignService.js';
 import * as FileSystem from '../../Documents/Services/FileSystemService.js';
 
 const Graphs = globalThis.Graphs || {};
@@ -18,7 +18,7 @@ export const LayerService = {
       const graphLayer = await createLayer(host, name, graph);
       host.addDetachment(() => destroyLayer(graphLayer));
       // TODO(sjmiles): Design may not exist, we need to do this another way
-      Design.designUpdate(host.layer.controller);
+      //Design.designUpdate(host.layer.controller);
     }
   },
   async ObserveState(host, data) {
@@ -26,28 +26,6 @@ export const LayerService = {
     let id = host.id.split('$').slice(0, -1).join('$') + '$' + data;
     observers.add(id);
     host.addDetachment(() => observers.delete(id));
-  }
-};
-
-let observers = new Set();
-
-const requireStateObserver = controller => {
-  if (!controller._stateOnwriteCache) {
-    const writer = controller._stateOnwriteCache = controller.onwrite;
-    controller.onwrite = inputs => {
-      writer?.(inputs);
-      notifyStateObservers(controller);
-    };
-  }
-};
-
-export const notifyStateObservers = controller => {
-  for (const observer of observers) {
-    const layerPrefix = observer.split('$').slice(0, -2).join('$') + '$Graph$';
-    const layerKeys = Object.keys(controller.state).filter(key => key.startsWith(layerPrefix));
-    const layerState = {};
-    layerKeys.forEach(key => layerState[key.slice(layerPrefix.length)] = controller.state[key]);
-    controller.onevent(observer, {handler: 'onStateChange', data: layerState});
   }
 };
 
@@ -65,4 +43,47 @@ export const createLayer = async (host, name, graph) => {
 
 const destroyLayer = async layer => {
   return Controller.removeLayer(layer.controller, layer);
+};
+
+
+let observers = new Set();
+
+const requireStateObserver = controller => {
+  if (!controller._stateOnwriteCache) {
+    const writer = controller._stateOnwriteCache = controller.onwrite;
+    controller.onwrite = inputs => {
+      writer?.(inputs);
+      notifyStateObservers(controller);
+    };
+  }
+};
+
+export const notifyStateObservers = controller => {
+  const handler = 'onStateChange';
+  for (const observer of observers) {
+    const data = stratifyState(getLayerState(controller, observer));
+    controller.onevent(observer, {handler, data});
+  }
+};
+
+const getLayerState = ({state}, layerId) => {
+  const layerPrefix = layerId.split('$').slice(0, -2).join('$') + '$Graph$';
+  const layerKeys = Object.keys(state).filter(key => key.startsWith(layerPrefix));
+  const layerState = {};
+  layerKeys.forEach(key => layerState[key.slice(layerPrefix.length)] = state[key]);
+  return layerState;
+};
+
+const stratifyState = raw => {
+  const state = {};
+  Object.entries(raw).forEach(([key, value]) => {
+    const keys = key.split('$');
+    const name = keys.pop();
+    let level = state;
+    for (const strata of keys) {
+      level = (level[strata] ??= {});
+    }
+    level[name] = value;
+  });
+  return state;
 };
