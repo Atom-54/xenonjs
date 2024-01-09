@@ -29,7 +29,9 @@ export const Documents = {
     inputs: {
       providerId: 'String',
       storeId: 'String',
-      authToken: 'String'
+      authToken: 'String',
+      storeName: 'String',
+      owner: 'String'
     },
     outputs: {
       folders: 'Json|Folders'
