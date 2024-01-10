@@ -8,7 +8,6 @@ import * as Controller from '../../Framework/Controller.js';
 import * as Documents from '../../Documents/Services/DocumentService.js';
 import * as Schema from '../Schema.js';
 import * as Graph from '../Graph.js';
-//import * as Project from './ProjectService.js';
 
 const log = logf('DesignService', '#512E5F', 'white');
 
@@ -129,12 +128,12 @@ const initCatalogData = async controller => {
   return getAtomTypeCategories(controller.state.run$PartsGraph$Catalog$Filter$query);
 };
 
-const notifyCatalogObservers = (controller, catalog) => {
-  DesignService.catalog = catalog;
-  DesignService.catalogObservers.forEach(id => {
-    controller.onevent(id, {handler: 'onObservation', data: catalog});
-  });
-};
+// const notifyCatalogObservers = (controller, catalog) => {
+//   DesignService.catalog = catalog;
+//   DesignService.catalogObservers.forEach(id => {
+//     controller.onevent(id, {handler: 'onObservation', data: catalog});
+//   });
+// };
 
 export const newGraph = async layer => {
   const name = makeCapName();

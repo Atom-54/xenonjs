@@ -7,14 +7,29 @@ export const atom = (log, resolve) => ({
 async update({layerId, selected}, state, {service}) {
   state.info = null;
   state.selected = selected;
-  state.offsets = await service('DesignService', 'GetAtomGraphInfo', {layerId});
+  state.positions = await service('DesignService', 'GetAtomGraphInfo', {layerId});
   state.info = await service('DesignService', 'GetLayerInfo', {layerId});
   //log('done with update ...');
+},
+getDefaultPosition(w, h, stride, i) {
+  const grid = 16;
+  const clampus = v => Math.round(v/grid)*grid;
+  const rect = {l: 0, t: 0};
+  let [ox, oy] = [64 + rect.l, 32 + rect.t];
+  let cx = clampus(ox + w*(i%stride));
+  i = i % stride;
+  let cy = clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2)));
+  return [cx, cy];
+  // return {
+  //   left: clampus(ox + w*(i%stride)) + 'px', 
+  //   top: clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2))) + 'px', 
+  //   width: '200px'
+  // };
 },
 shouldRender({layerId},{info}) {
   return Boolean(/*layerId &&*/ info);
 },
-render({layerId}, {info, selected, offsets}) {
+render({layerId}, {info, selected, positions}) {
   //log('... rendering atom graph');
   let edges = [];
   // render bindings (controller connections) as edges
@@ -30,7 +45,7 @@ render({layerId}, {info, selected, offsets}) {
   return {
     atoms,
     edges,
-    offsets
+    positions
   };
 },
 getNodableAtoms(atoms) {
@@ -72,6 +87,9 @@ renderAtom(atom, edges, selected, layerId, i) {
     ;
   //
   const [w, h, stride] = [260, 140, 4];
+  const [x,y] = this.getDefaultPosition(w, h, stride, i);
+  const rect = [x, y, 200];
+  //
   return {
     id: atom.id, 
     atomId: atom.id.replace(/\$/g, '-'),
@@ -79,21 +97,14 @@ renderAtom(atom, edges, selected, layerId, i) {
     selected: atom.id === selected,
     displayName: atom.id.split('$').slice(3).join('.'),
     style: {
-      ...this.getAtomRect(w, h, stride, i)
+      width: '200px'
     },
+    //rect,
+    // style: {
+    //   ...this.getAtomRect(w, h, stride, i)
+    // },
     inputs,
     outputs
-  };
-},
-getAtomRect(w, h, stride, i) {
-  const grid = 16;
-  const clampus = v => Math.round(v/grid)*grid;
-  const rect = {l: 0, t: 0};
-  let [ox, oy] = [64 + rect.l, 32 + rect.t];
-  return {
-    left: clampus(ox + w*(i%stride)) + 'px', 
-    top: clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2))) + 'px', 
-    width: '200px'
   };
 },
 onAtomSelect({eventlet: {key}}, state, {service}) {
@@ -138,7 +149,7 @@ template: html`
 </style>
 
 <drop-target flex scrolling row tabindex="-1" on-target-drop="onAtomTypeDropped" on-keydown="onKeyDown">
-  <atom-graph flex atoms="{{atoms}}" edges="{{edges}}" selected="{{selected}}" offsets="{{offsets}}" on-offset-change="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
+  <atom-graph flex atoms="{{atoms}}" edges="{{edges}}" selected="{{selected}}" positions="{{positions}}" on-offset-change="onAtomMoved" on-atom-selected="onAtomSelect"></atom-graph>
 </drop-target>
 
 <!-- last, therefore on top -->
