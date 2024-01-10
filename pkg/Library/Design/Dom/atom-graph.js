@@ -14,7 +14,7 @@ const sanitizeId = id => id?.replace?.(/[ $)(:]/g, '_');
 
 export class AtomGraph extends DragDrop {
   static get observedAttributes() {
-    return ['atoms', 'edges', 'schema', 'offsets'];
+    return ['atoms', 'edges', 'schema', 'positions'];
   }
   get template() {
     return template;
@@ -29,13 +29,12 @@ export class AtomGraph extends DragDrop {
     this.canvas = this.host.querySelector('canvas');
     this.viewport = this.host.querySelector('[viewport]');
     this.state.zoom = this.style.zoom = 0.7;
-    //this.state.offsets ??= {};
     this.addEventListener('pointerdown', e => this.onDown(e));
     this.addEventListener('pointermove', e => this.onMove(e));
     this.addEventListener('pointerup', e => this.onUp(e));
   }
-  update({selected, offsets}, state, {service}) {
-    state.offsets = offsets ?? {};
+  update({selected, positions}, state, {service}) {
+    state.positions = positions ?? {};
     //this.key = selected;
   }
   render({atoms, edges}, state) {
@@ -48,11 +47,11 @@ export class AtomGraph extends DragDrop {
       zoom: state.zoom
     };
   }
-  _didRender({atoms, edges}, {x, y, offsets/*, didRender: {atoms, edges}*/}) {
+  _didRender({atoms, edges}, {x, y, positions/*, didRender: {atoms, edges}*/}) {
     if (edges) {
-      this.renderCanvas({atoms, edges}, {x, y, offsets});
+      this.renderCanvas({atoms, edges}, {x, y, positions});
     }
-    entries(offsets).forEach(([name, [tx, ty]]) => {
+    entries(positions).forEach(([name, [tx, ty]]) => {
       const elt = this.shadowRoot.querySelector(sanitizeId(`#${name.split('$').join('-')}`))
       if (elt) {
         elt.style.transform = `translate(${tx}px, ${ty}px)`;
@@ -63,7 +62,7 @@ export class AtomGraph extends DragDrop {
     const gridSize = 8;
     return Math.floor(v/gridSize + 0.5)*gridSize;
   }
-  renderCanvas({atoms, edges}, {x, y, offsets}) {
+  renderCanvas({edges}, {positions}) {
     const [ox, oy] = [3000, 3000 + 53];
     const ctx = this.canvas?.getContext('2d');
     if (ctx) {
@@ -71,29 +70,31 @@ export class AtomGraph extends DragDrop {
       let i = 0;
       const srcEdgeCount = {}, trgEdgeCount = {};
       for (const edge of edges) {
-        const source = edge.id.split('$');
-        const sourceId = source.slice(0, 4).join('-');
+        const source = edge.id.split('$').slice(0, 4);
+        const sourceDomId = source.join('-');
+        const sourceId = source.join('$');
         srcEdgeCount[sourceId] ??= -1;
         const e = ++srcEdgeCount[sourceId];
-        const elt = this.shadowRoot.querySelector(`#${sanitizeId(sourceId)}`);
+        const elt = this.shadowRoot.querySelector(`#${sanitizeId(sourceDomId)}`);
         if (elt) {
-          const [dx, dy] = offsets[source.slice(0, 4).join('$')] ?? [0, 0];
+          const [dx, dy] = positions[sourceId] ?? [0, 0];
           const p0 = {
-            x: ox + dx + elt.offsetLeft + elt.offsetWidth,
-            y: oy + dy + elt.offsetTop + e*14,
+            x: ox + dx + elt.offsetWidth,
+            y: oy + dy + e*14,
           };
           for (const bound of edge.binding) {
-            const target = bound.split('$');
-            const targetId = target.slice(0, 4).join('-');
+            const target = bound.split('$').slice(0, 4);
+            const targetDomId = target.join('-');
+            const targetId = target.join('$');
             if (targetId !== sourceId) {
               trgEdgeCount[targetId] ??= -1;
               const b = ++trgEdgeCount[targetId];
-              const elt2 = this.shadowRoot.querySelector(`#${sanitizeId(targetId)}`);
+              const elt2 = this.shadowRoot.querySelector(`#${sanitizeId(targetDomId)}`);
               if (elt2) {
-                const [dx, dy] = offsets[target.slice(0, 4).join('$')] ?? [0, 0];
+                const [dx, dy] = positions[targetId] ?? [0, 0];
                 const p1 = {
-                  x: ox + dx + elt2.offsetLeft,
-                  y: oy + dy + elt2.offsetTop + b*14
+                  x: ox + dx /*+ elt2.offsetLeft*/,
+                  y: oy + dy /*+ elt2.offsetTop*/ + b*14
                 };
                 const path = this.calcBezier(p0, p1);
                 //const highlight = [[21, 100, 100], [100, 21, 21], [21, 100, 21]][(i++)%3];
@@ -191,7 +192,8 @@ export class AtomGraph extends DragDrop {
     this.state.zoom = this.style.zoom = zoom;
   }
   doMove(dx, dy) {
-    const {props, state} = this;
+    const grid = 16;
+    const {state} = this;
     const [dxz, dyz, v2] = [dx/state.zoom, dy/state.zoom, viewport/2]
     if (Math.abs(dxz) > 0.1 || Math.abs(dyz) > 0.1) {
       if (!this.key) {
@@ -202,18 +204,14 @@ export class AtomGraph extends DragDrop {
       } else {
         const elt = this.shadowRoot.querySelector(sanitizeId(`#${this.key.split('$').join('-')}`));
         if (elt) {
-          const off = (state.offsets[this.key] ??= [0, 0]);
+          const off = state.positions[this.key] || [0, 0];
           const [zdx, zdy] = [off[0] + dxz, off[1] + dyz];
-          const [gx, gy] = [Math.floor(zdx/8)*8, Math.floor(zdy/8)*8];
+          const [gx, gy] = [Math.round(zdx/grid)*grid, Math.round(zdy/grid)*grid];
+          state.positions[this.key] ??= [gx, gy];
           state.moved = true;
           state.tx = gx;
           state.ty = gy;
           elt.style.transform = `translate(${gx}px, ${gy}px)`;
-          //if (Math.random() < 0.4) {
-            //state.offsets[this.key] = [gx, gy];
-            //this._didRender(props, state);
-            //state.offsets[this.key] = off;
-          //}
         }
       }
     }
@@ -222,18 +220,14 @@ export class AtomGraph extends DragDrop {
     const {props, state} = this;
     if (state.moved) {
       if (this.key) {
-        //const offset = state.offsets[this.key];
-        //if (offset[0] !== state.tx && offset[1] !== state.ty) {
-          state.offsets[this.key] = [state.tx, state.ty];
-          this.value = state.offsets;
-          this.key = null;
-          this.fire('offset-change');
-          this._didRender(props, state);
-        //}
+        state.positions[this.key] = [state.tx, state.ty];
+        this.value = state.positions;
+        this.key = null;
+        this.fire('offset-change');
+        this._didRender(props, state);
       } else {
         state.x = state.tx;
         state.y = state.ty;
-        // this._didRender(props, state);
       }
     }
     state.moved = false;

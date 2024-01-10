@@ -218,7 +218,7 @@ export const removeAtom = async (controller, atom) => {
   await atom.dispose();
   delete controller.atoms[atom.id];
   const keys = Object.keys(controller.state).filter(stateId => stateId.startsWith(atom.id));
-  log.debug(keys);
+  //log.debug(keys);
   keys.forEach(key => delete controller.state[key]);
   return atom;
 };
