@@ -116,7 +116,7 @@ const parseFileInputs = (atom, key) => {
   const {controller} = atom?.layer || 0;
   const {providerId, path} = providerFromKey(key);
   const {root, filePath, fileName} = partsFromPath(path);
-  const fs = Object.values(fileSystems).find(fs => fs.providerId === providerId && fs.name === root);
+  const fs = Object.values(fileSystems).find(fs => fs.providerId === providerId && fs.storeId === root);
   const provider = providers[fs?.providerId];
   const storePath = [fs.storeId, filePath].filter(i=>i).join('/');
   const fullPath = [storePath, fileName].filter(i=>i).join('/');
