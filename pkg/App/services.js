@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 export {LayerService} from '../Library/Graph/Services/LayerService.js';
-export {ProjectService} from '../Library/Design/Services/ProjectService.js';
+//export {ProjectService} from '../Library/Design/Services/ProjectService.js';
 export {DesignService} from '../Library/Design/Services/DesignService.js';
 export {StyleService} from '../Library/Design/Services/StyleService.js';
 export {JsonRepairService} from '../Library/Json/Services/jsonrepairService.js';
