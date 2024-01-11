@@ -19,5 +19,16 @@ export const Graph = {
     outputs: {
       selected: 'String'
     }
+  },
+  AtomAtom: {
+    categories,
+    containers: [],
+    displayName: 'AtomAtom',
+    type: '$library/Graph/Atoms/AtomAtom',
+    ligature: 'app_badging',
+    inputs: {
+      atomType: 'String',
+      atomCode: 'Text'
+    }
   }
 };

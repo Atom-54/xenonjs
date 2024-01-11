@@ -11,16 +11,20 @@ const kinds = {};
 export const getFactory = kind => kinds[sanitize(kind)];
 export const setFactory = (kind, factory) => kinds[sanitize(kind)] = factory;
 
-const sanitize = kind => kind.replace(/\//g, '$');
+const sanitize = kind => kind?.replace(/\//g, '$');
 
 export const industrialize = async (atoms, log) => {
   Object.entries(atoms??0).forEach(
-    ([name, proto]) => kinds[name] = miniReactor(proto, log)
+    ([name, protoFactory]) => kinds[name] = miniReactor(protoFactory, log)
   );
 };
 
 export const miniReactor = (protoFactory, log) => {
   const atomProto = protoFactory(log, Paths.resolve.bind(Paths));
+  return atomIndustry(atomProto, log);
+};
+
+export const atomIndustry = (atomProto, log) => {
   const atomFactory = host => {
     const pipe = {
       log,

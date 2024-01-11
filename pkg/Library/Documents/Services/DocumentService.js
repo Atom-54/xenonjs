@@ -58,6 +58,9 @@ export const DocumentService = {
   },
   async makeDocumentPanel(typed, layer, name, container, index, id) {
     return makeDocumentPanel(typed, layer, name, container, index, id);
+  },
+  async CopyPath(atom, text) {
+    return navigator.clipboard.writeText(text);
   }
 };
 

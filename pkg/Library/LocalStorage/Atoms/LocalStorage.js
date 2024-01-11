@@ -5,8 +5,8 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 //
-shouldUpdate({key}) {
-  return key;
+shouldUpdate({key, storeValue}) {
+  return key && (storeValue !== undefined);
 },
 async update({key, storeValue}, state, {service}) {
   const bind = method => data => service('LocalStorageService', method, data);
@@ -15,8 +15,8 @@ async update({key, storeValue}, state, {service}) {
   if (cached !== undefined && (state.value === undefined || state.key !== key)) {
     state.key = key;
     state.value = cached;
-  } else if (storeValue !== undefined && !deepEqual(state.value, storeValue)) {
-    log('about to persist', key, storeValue);
+  } else if (storeValue !== undefined && !deepEqual(state.value, storeValue) && storeValue !== '') {
+    //log('about to persist', key);
     state.value = storeValue;
     await persist({storeId: key, data: storeValue});
     // stochastic backups

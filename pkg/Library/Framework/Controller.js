@@ -2,6 +2,8 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
+import * as Basic from '../CoreXenon/Reactor/Industries/basic-reactor.js';
+
 const log = logf('Controller', '#9F2B68');
 
 export const create = (name, {xenon, onservice, onrender}) => {
@@ -144,9 +146,9 @@ export const reifyAtoms = async (controller, layer, graph) => {
   }
 };
 
-export const reifyAtom = async (controller, layer, {name, type, containers, container, state, connections}) => {
+export const reifyAtom = async (controller, layer, {name, type, code, containers, container, state, connections}) => {
   // create atom
-  const host = await addAtom(controller, layer, {name, type, container, containers});
+  const host = await addAtom(controller, layer, {name, type, code, container, containers});
   if (host) {
     // remap static state into live state format
     const qualifiedState = {};
@@ -203,8 +205,8 @@ export const reifyAtom = async (controller, layer, {name, type, containers, cont
   return host;
 };
 
-export const addAtom = async (controller, layer, {name, type, container, containers}) => {
-  const atom = await createAtom(controller, layer, {name, type, container, containers});
+export const addAtom = async (controller, layer, {name, type, code, container, containers}) => {
+  const atom = await createAtom(controller, layer, {name, type, code, container, containers});
   if (atom) {
     atom.listen('service', request => controller.onservice?.(atom, request));
     atom.listen('output', output => controller.onoutput?.(atom, output));
@@ -223,9 +225,9 @@ export const removeAtom = async (controller, atom) => {
   return atom;
 };
 
-export const createAtom = async (controller, layer, {name, type, container, containers}) => {
+export const createAtom = async (controller, layer, {name, type, code, container, containers}) => {
   const id = `${layer.id}$${name}`;
-  const host = await controller.xenon.emitter(name, {type});
+  const host = await emitHost(controller, layer, name, type, code);
   if (host) {
     host.id = id;
     host.type = type;
@@ -238,6 +240,26 @@ export const createAtom = async (controller, layer, {name, type, container, cont
     };
   }
   return host;
+};
+
+const atomLog = globalThis.logf('DynamicAtom', 'darkred', 'white');
+
+const emitHost = async (controller, layer, name, type, code) => {
+  if (code) {
+    let factory = null;
+    try {
+      const protoFactory = eval(code);
+      factory = Basic.miniReactor(protoFactory, atomLog);
+    } catch(x) {
+      //log.debug(x);
+    }
+    Basic.setFactory(type, factory);
+    if (factory) {
+      return createAtom(controller, layer, {name, type});
+    }
+  } else if (type) {
+    return controller.xenon.emitter(name, {type});
+  }
 };
 
 const calculateContainer = (host, localContainer) => {

@@ -44,7 +44,9 @@ const captureConnectionValues = (controller, layerId, connections, inputs) => {
         const [id, ...prop] = key.split('.');
         const atomInfo = layer.graph[id];
         if (!atomInfo) {
-          log.warn(`[${key}] is connected to graph [${id}] which does not exist`);
+          if (!['style', 'name'].includes(key)) {
+            log.warn(`[${key}] is connected to graph [${id}] which does not exist`);
+          }
         } else {
           const {connections} = atomInfo;
           if (connections) {
@@ -77,7 +79,7 @@ export const schemaForHost = host => {
   // static state provided by atom
   const state = Graph.getAtomState(host);
   // host has these connections
-  let connections = host.layer.graph[host.name].connections;
+  let connections = host.layer.graph[host.name]?.connections;
   // build schema
   const schema = {
     inputs: {

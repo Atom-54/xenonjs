@@ -8,8 +8,10 @@ update({text, altSource}, state, {isDirty}) {
   if (altSource && isDirty('altSource')) {
     text = altSource;
   }
-  text = this.stringify(text);
-  if (text !== state.text) {
+  if (text && isDirty('text')) {
+    text = this.stringify(text);
+  }
+  if (text && text !== state.text) {
     state.text = this.stringify(text);
     return {text: state.text}; 
   }

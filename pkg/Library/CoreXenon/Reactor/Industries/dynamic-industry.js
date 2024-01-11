@@ -43,15 +43,18 @@ const load = async kind => {
       : Paths.resolve(kind)
       ;
     const {atom} = await import(`${path}.js`);
-    const atomLog = logf(`Atom: ${kind.split('/').pop()}`, 
-    // hsl(277 // purply
-    // hsl(97 // neon green
-    // hsl(57 // bright yellow
-    `hsl(${Math.random()<.5 ? 97 : 57}, ${Math.floor(Math.random()*20)+80}%, ${Math.floor(Math.random()*20)+40}%)`, '#111');
+    const atomLog = logf(
+      `Atom: ${kind.split('/').pop()}`, 
+      // hsl(277 // purply
+      // hsl(97 // neon green
+      // hsl(57 // bright yellow
+      `hsl(${Math.random()<.5 ? 97 : 57}, ${Math.floor(Math.random()*20)+80}%, ${Math.floor(Math.random()*20)+40}%)`, 
+      '#111'
+    );
     return Basic.miniReactor(atom, atomLog);
   } catch(x) {
     log.groupCollapsed('Reactor failed for', kind);
-    log.warn(x);
+    log.debug(x);
     log.groupEnd();
   }
 };
