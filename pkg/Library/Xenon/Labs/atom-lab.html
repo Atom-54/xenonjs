@@ -41,22 +41,24 @@ const result = \`\${name} ... \${winner ? 'wins a FLAN!' : 'gets no flan this ti
   tools.tags = ['output','service','invalidate'];
   window.go = () => {
     const f = eval(`
-    ({name}, state, {invalidate}) => {
-      ${code.value}\n
-      return {result};
-    }`);
+({name}, state, {invalidate}) => {
+  ${code.value}\n
+  return {result};
+}
+    `);
     const state = {};
     const input = {name: 'Alphonse'};
     const tools = {
-      invalidate: () => {
+      invalidate() {
         setTimeout(()=>{
           const output = f(input, state, tools);
           result.innerText += '\n' + JSON.stringify(output, null, '  ');
         });
       }
     };
-    const output = f(input, state, tools);
-    console.log(output);
-    result.innerText = JSON.stringify(output, null, '  ');
+    tools.invalidate();
+    // const output = f(input, state, tools);
+    // console.log(output);
+    // result.innerText = JSON.stringify(output, null, '  ');
   }
 </script>

@@ -12,12 +12,15 @@ export const SystemService = {
     const key = layer.id + '$' + data.stateKey;
     return layer.controller.state[key];
   },
-  SetStateValue(atom, data) {
+  async SetStateValue(atom, data) {
     const bits = data.stateKey.split('$');
     const propName = bits.pop();
     const atomId = [atom.layer.id, ...bits].join('$');
     return Controller.writeValue(atom.layer.controller, atomId, propName, data.value);
   },
+  async SetClipboardText(atom, text) {
+    return navigator.clipboard.writeText(text);
+  }
   // GetState(atom, data) {
   //   const state = {};
   //   const raw = atom.layer.controller.state;

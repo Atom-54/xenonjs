@@ -97,6 +97,9 @@ export const FileExplorer = {
           "label": "Open As Text"
         },
         {
+          "label": "Copy Path"
+        },
+        {
           "label": "-"
         },
         {
@@ -235,7 +238,6 @@ export const FileExplorer = {
     "connections": {
       "items": [
         "FileSystemFolders$folders"
-        //"Folders44$folders"
       ]
     },
     "state": {

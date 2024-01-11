@@ -3,11 +3,8 @@
  * Copyright 2023 Atom54 LLC
  */
 import * as Controller from '../../Framework/Controller.js';
-import * as Project from '../../Design/Services/ProjectService.js';
-//import * as Design from '../../Design/Services/DesignService.js';
 import * as FileSystem from '../../Documents/Services/FileSystemService.js';
-
-const Graphs = globalThis.Graphs || {};
+import {Resources} from '../../Resources/Resources.js';
 
 export const LayerService = {
   async CreateLayer(host, data) {
@@ -17,9 +14,22 @@ export const LayerService = {
       const name = `${host.layer.name}$${host.name}`;
       const graphLayer = await createLayer(host, name, graph);
       host.addDetachment(() => destroyLayer(graphLayer));
-      // TODO(sjmiles): Design may not exist, we need to do this another way
-      //Design.designUpdate(host.layer.controller);
     }
+  },
+  async CreateAtom(host, data) {
+    const lastAtom = Resources.get(host.id);
+    if (lastAtom) {
+      lastAtom.dispose();
+    }
+    const hostName = host.id.split('$').pop();
+    const container = hostName + '#Container';
+    const atomName = hostName + 'TrialAtom';
+    const simpleId = host.id.replaceAll('$', '_').replaceAll(' ', '');
+    const atomType = data.atomType || (simpleId + 'Type');
+    //log.warn('calling LayerService::CreateAtom(', {container, atomName, atomType, atomCode: data.atomCode}, ')');
+    const atom = await createAtom(host.layer, container, atomName, atomType, data.atomCode);
+    Resources.set(host.id, atom);
+    return atom;
   },
   async ObserveState(host, data) {
     requireStateObserver(host.layer.controller);
@@ -31,9 +41,8 @@ export const LayerService = {
 
 export const getGraphContent = async specifier => {
   return (specifier?.meta?.id && specifier) 
-    || Graphs[specifier] 
-    || Project.getGraph(specifier)
-    || FileSystem.getItem(null, globalThis.config.aeon + '/' + specifier)
+    || globalThis.Graphs?.[specifier] 
+    || FileSystem.getItem(null, specifier)
     ;
 };
 
@@ -44,7 +53,6 @@ export const createLayer = async (host, name, graph) => {
 const destroyLayer = async layer => {
   return Controller.removeLayer(layer.controller, layer);
 };
-
 
 let observers = new Set();
 
@@ -86,4 +94,8 @@ const stratifyState = raw => {
     level[name] = value;
   });
   return state;
+};
+
+const createAtom = async (layer, container, name, type, code) => {
+  return Controller.reifyAtom(layer.controller, layer, {name, type, code, container});
 };
