@@ -16,6 +16,7 @@ export const Pixabay = {
       query: 'String',
       image: 'Image',
       trigger: 'Nonce',
+      auto: 'Boolean',
       index: 'Number'
     },
     outputs: {

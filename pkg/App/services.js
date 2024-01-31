@@ -7,7 +7,7 @@ export {LayerService} from '../Library/Graph/Services/LayerService.js';
 //export {ProjectService} from '../Library/Design/Services/ProjectService.js';
 export {DesignService} from '../Library/Design/Services/DesignService.js';
 export {StyleService} from '../Library/Design/Services/StyleService.js';
-export {JsonRepairService} from '../Library/Json/Services/jsonrepairService.js';
+export {JsonRepairService} from '../Library/Json/Services/JsonRepairService.js';
 export {JSONataService} from '../Library/Json/Services/JSONataService.js';
 export {FormService} from '../Library/Fields/Services/FormService.js';
 export {OpenAIService} from '../Library/OpenAI/Services/OpenAIService.js';
