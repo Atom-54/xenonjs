@@ -22,7 +22,7 @@ export class Composer {
   }
   render(packet) {
     const {id, container, content: {model, template}} = packet;
-    log({id, container, model})
+    //log.debug({id, container, model})
     const cacheId = id;
     if (model?.$clear) {
       this._clearSlot(cacheId);

@@ -17,7 +17,7 @@ template: html`
 }
 </style>
 
-<weightless-accordion sections="{{sectionsNames}}" repeat="section_t">{{sections}}</weightless-accordion>
+<weightless-accordion sections="{{sectionsNames}}" repeat="section_t" on-change="onSquelch">{{sections}}</weightless-accordion>
 
 <template section_t>
   <slot name="{{container}}" slot="{{section}}"></slot>

@@ -4,15 +4,18 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
+initialize({selected}, state, {service}) {
+  setTimeout(() => this.doSelect(selected ?? '', state, {service}), 2000);
+},
 update(inputs, state, {service}) {
   // force design-target to update rectangles
   state.refresh = Math.random();
-  if (inputs.selected !== state.selected) {
+  //if (inputs.selected !== state.selected) {
     return this.doSelect(inputs.selected, state, {service});
-  }
+  //}
 },
 doSelect(id, state, {service}) {
-  service('DesignService', 'Select', {atomId: id});
+  //service('DesignService', 'Select', {atomId: id});
   state.selected = id;
   return {selected: id};
 },

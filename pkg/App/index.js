@@ -5,8 +5,8 @@
 import './config.js';
 import '../Library/Common/configKeys.js';
 import {logf} from '../Library/CoreXenon/Reactor/Atomic/js/logf.js';
-import * as Library from '../Library/Xenon/Library.js';
 import * as Env from '../Library/Framework/Env.js';
+import * as Library from '../Library/Xenon/Library.js';
 import * as Controller from '../Library/Framework/Controller.js';
 import * as Services from '../Library/Framework/Services.js';
 import * as Layer from '../Library/Graph/Services/LayerService.js';

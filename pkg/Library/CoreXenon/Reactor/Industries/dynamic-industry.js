@@ -53,8 +53,9 @@ const load = async kind => {
     );
     return Basic.miniReactor(atom, atomLog);
   } catch(x) {
-    log.groupCollapsed('Reactor failed for', kind);
-    log.debug(x);
-    log.groupEnd();
+    log.debug('Reactor failed for', kind);
+    // log.groupCollapsed('Reactor failed for', kind);
+    // log.warn(x);
+    // log.groupEnd();
   }
 };

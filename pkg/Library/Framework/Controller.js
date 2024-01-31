@@ -79,15 +79,15 @@ export const removeLayer = async (controller, layer) => {
   delete (layer.host.layer || controller).layers[id];
   delete controller.allLayers[id];
   //
-  const keys = Object.keys(controller.atoms).filter(atomId => atomId.startsWith(id));
-  log.debug(keys);
+  const keys = Object.keys(controller.atoms).filter(atomId => atomId.startsWith(id + '$'));
+  //log.debug(keys);
   keys.forEach(key => {
     const atom = controller.atoms[key];
     delete controller.atoms[key];
     atom?.dispose();
   });
   //
-  const skeys = Object.keys(controller.state).filter(stateId => stateId.startsWith(id));
+  const skeys = Object.keys(controller.state).filter(stateId => stateId.startsWith(id + '$'));
   skeys.forEach(key => delete controller.state[key]);
 };
 
@@ -151,58 +151,77 @@ export const reifyAtom = async (controller, layer, {name, type, code, containers
   const host = await addAtom(controller, layer, {name, type, code, container, containers});
   if (host) {
     // remap static state into live state format
-    const qualifiedState = {};
-    for (const [key, value] of Object.entries(state || {})) {
-      const qualifiedKey = `${layer.id}$${host.name}$${key}`;
-      qualifiedState[qualifiedKey] = value;
-    }
+    const qualifiedState = qualifyGraphState(layer, host, state);
     // bindings are inverted from connections; bindings = [source] => [...targets]
     // bindings are fully qualified
     const bindings = controller.bindings = controller.connections.inputs;
     // install connections from host into controller.connections (bindings)
-    if (connections) {
-      // connections are [target] => [...sources]
-      // connections are locally qualified
-      // ["records", ["Thing$Bar$value"]]
-      for (let [property, sources] of Object.entries(connections)) {
-        sources = Array.isArray(sources) ? sources : [sources];
-        // painstakingly update binding records for inverted connection records
-        // e.g. "NibGraph$Bar$value" of ["NibGraph$Bar$value"]
-        for (const source of sources) {
-          // build$ThingGraph$NibGraph$Bar$value
-          const sourceId = [layer.id, source].join('$');
-          //const connects = bindings[sourceId] || [];
-          // build$ThingGraph$Fibler$records
-          const targetId = [layer.id, name, property].join('$');
-          // update bindings to match connection target
-          updateBindings(bindings, sourceId, targetId);
-        }
-      }
-    }
-    const prefixId = host.id + '$';
+    bindingsFromConnections(bindings, layer, name, connections);
     // data currently in live state has 'missed' the atom
-    for (const key of Object.keys(controller.state)) {
-      if (key.startsWith(prefixId)) {
-        qualifiedState[key] = controller.state[key];
-      }
-    }
-    // data currently in live state has 'missed' new connections, 
-    // recreate missed connection effects
-    for (const [sourceId, list] of Object.entries(bindings)) {
-      for (const targetId of list) {
-        if (targetId.startsWith(prefixId)) {
-          if (sourceId in controller.state) {
-            qualifiedState[targetId] = controller.state[sourceId];
-          }
-          //log.debug(targetId, host.id, qualifiedState[targetId], controller.state[sourceId]);
-        }
-      }
-    }
+    computeMissedState(host, controller, bindings, qualifiedState);
     // pump live state data into reactor
     writeToState(controller, qualifiedState);
     writeToHost(controller, qualifiedState);
+    // schema needs rebuild
+    layer.schema = null;
   }
   return host;
+};
+
+const qualifyGraphState = (layer, host, state) => {
+  // remap static state into live state format
+  const id = `${layer.id}$${host.name}`
+  const qualifiedState = {
+    //[id + '$init']: true
+  };
+  for (const [key, value] of Object.entries(state || {})) {
+    qualifiedState[id + '$' + key] = value;
+  }
+  return qualifiedState;
+};
+
+const bindingsFromConnections = (bindings, layer, name, connections) => {
+  if (connections) {
+    // connections are [target] => [...sources]
+    // connections are locally qualified
+    // ["records", ["Thing$Bar$value"]]
+    for (let [property, sources] of Object.entries(connections)) {
+      sources = Array.isArray(sources) ? sources : [sources];
+      // painstakingly update binding records for inverted connection records
+      // e.g. "NibGraph$Bar$value" of ["NibGraph$Bar$value"]
+      for (const source of sources) {
+        // build$ThingGraph$NibGraph$Bar$value
+        const sourceId = [layer.id, source].join('$');
+        //const connects = bindings[sourceId] || [];
+        // build$ThingGraph$Fibler$records
+        const targetId = [layer.id, name, property].join('$');
+        // update bindings to match connection target
+        updateBindings(bindings, sourceId, targetId);
+      }
+    }
+  }
+};
+
+const computeMissedState = (host, controller, bindings, qualifiedState) => {
+  // data currently in live state has 'missed' the atom
+  const prefixId = host.id + '$';
+  for (const key of Object.keys(controller.state)) {
+    if (key.startsWith(prefixId)) {
+      qualifiedState[key] = controller.state[key];
+    }
+  }
+  // data currently in live state has 'missed' new connections, 
+  // recreate missed connection effects
+  for (const [sourceId, list] of Object.entries(bindings)) {
+    for (const targetId of list) {
+      if (targetId.startsWith(prefixId)) {
+        if (sourceId in controller.state) {
+          qualifiedState[targetId] = controller.state[sourceId];
+        }
+        //log.debug(targetId, host.id, qualifiedState[targetId], controller.state[sourceId]);
+      }
+    }
+  }
 };
 
 export const addAtom = async (controller, layer, {name, type, code, container, containers}) => {

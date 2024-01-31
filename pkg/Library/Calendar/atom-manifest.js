@@ -14,7 +14,9 @@ export const Calendar = {
     ligature: 'cast',
     type: '$library/Calendar/Atoms/Calendar',
     inputs: {
-      events: 'Pojo'
+      events: 'Json',
+      view: 'String'
+      // 'dayGridMonth', 'listDay', 'listWeek', 'listMonth', 'listYear', 'resourceTimeGridDay', 'resourceTimeGridWeek', 'timeGridDay' or 'timeGridWeek'.
     }
   }
 };

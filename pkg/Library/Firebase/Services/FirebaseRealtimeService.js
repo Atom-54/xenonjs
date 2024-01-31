@@ -206,10 +206,14 @@ const firebaseSystem = class {
     return `${this.rootKey}${_key}.json?${args}`;
   }
   async getFolders() {
-    const result = this.root && await fetch(this.getUrl('', 'shallow=true'));
-    this.fileSystem = (await result?.json()) || {};
-    this.fsKeys = Object.keys(this.fileSystem).map(key => unbasinateKey(key));
-    this.length = this.fsKeys.length;
+    try {
+      const result = this.root && await fetch(this.getUrl('', 'shallow=true'));
+      this.fileSystem = (await result?.json()) || {};
+      this.fsKeys = Object.keys(this.fileSystem).map(key => unbasinateKey(key));
+      this.length = this.fsKeys.length;
+    } catch(x) {
+      log.warn(x);
+    }
     return this;
   }
   key(index) {
@@ -219,14 +223,21 @@ const firebaseSystem = class {
     return !prefix ? this.fsKeys : this.fsKeys.filter(key => key.startsWith(prefix));
   }
   setItem(key, content) {
-    return fetch(this.getUrl(key), {method: 'put', body: JSON.stringify(content)});
+    return this.fetch(key, {method: 'put', body: JSON.stringify(content)});
   }
   async getItem(key) {
-    return (await fetch(this.getUrl(key), {method: 'get'})).json();
+    return (await this.fetch(key, {method: 'get'})).json();
   }
   async removeItem(key) {
-    return (await fetch(this.getUrl(key), {method: 'delete'})).json();
+    return (await this.fetch(key, {method: 'delete'})).json();
   }
+  async fetch(key, opts) {
+    try {
+      return fetch(this.getUrl(key), opts);
+    } catch(x) {
+      log.warn(x);
+    }
+  } 
 };
 
 const isEmpty = dictionary => Boolean(!dictionary || typeof dictionary !== 'object' || !Object.keys(dictionary).length);

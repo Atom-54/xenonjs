@@ -1,0 +1,13 @@
+{
+  "name": "foo",
+  "dependencies": {
+    "@nordhealth/ag-theme-nord": "^2.0.2",
+    "@nordhealth/color": "^2.0.12",
+    "@nordhealth/components": "^3.6.2",
+    "@nordhealth/css": "^3.1.1",
+    "@nordhealth/fonts": "^3.0.0",
+    "@nordhealth/icons": "^3.2.0",
+    "@nordhealth/themes": "^8.0.1",
+    "@nordhealth/tokens": "^7.0.1"
+  }
+}

@@ -155,8 +155,8 @@ class DataItem extends Xen.Base {
     }
     if (typeof value === 'string') {
       value = value./*replace(/</g, '&lt;').*/replace(/\n/g, '\\n');
-      if (value.length > 50) {
-        value = `${value.slice(0, 45)}...`;
+      if (value.length > 255) {
+        value = `${value.slice(0, 255)}...`;
       }
     }
     // else {

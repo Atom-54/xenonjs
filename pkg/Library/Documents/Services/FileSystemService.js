@@ -5,6 +5,7 @@
  */
 import * as LocalStorage from '../../LocalStorage/Services/LocalStorageService.js';
 import * as FirebaseRealtime from '../../Firebase/Services/FirebaseRealtimeService.js';
+import {debounce} from '../../CoreXenon/Reactor/Atomic/js/task.js';
 
 const log = globalThis.logf('FileSystemService', '#bbbbbb', 'darkorange');
 
@@ -45,7 +46,8 @@ const registerFileSystem = (atom, providerId, storeName, storeId, authToken) => 
     storeId, 
     authToken
   };
-  FirebaseRealtime.notifyFolderObservers(atom.layer.controller);
+  const task = () => FirebaseRealtime.notifyFolderObservers(atom.layer.controller);
+  debounce('FsDbnc', task, 500);
 };
 
 const getAllFolders = async () => {

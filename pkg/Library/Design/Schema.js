@@ -7,9 +7,15 @@ const log = logf('Schema', '#953553');
 export const schemaForLayer = (controller, layerId) => {
   // TODO(sjmiles): hacked cache for speed-up; track schema state properly instead 
   const layer = Controller.findLayer(controller, layerId);
-  if (layer.schema && Math.random() > 0.10) {
+  if (Date.now() < (layer.schemaTimeout??0)) {
     return layer.schema;
   }
+  layer.schemaTimeout = Date.now() + 500;
+  //
+  log.debug('schemaForLayer the hard way', layerId);
+  // if (layer.schema && Math.random() > 0.30) {
+  //   return layer.schema;
+  // }
   // map input/output property names to meta data including
   // value, connection, and type
   const schema = {
@@ -29,37 +35,51 @@ export const schemaForLayer = (controller, layerId) => {
     }
   }
   // capture connection settings
-  captureConnectionValues(controller, layerId, controller.connections.inputs, schema.inputs);
-  // here is schema
+  captureConnectionValues(layer.graph, schema.inputs);
+  // cache
   layer.schema = schema;
+  // here is schema
   return schema;
 };
 
-const captureConnectionValues = (controller, layerId, connections, inputs) => {
-  if (layerId) {
-    const layer = Controller.findLayer(controller, layerId);
-    if (layer) {
-      //log.debug(layer.graph, inputs);
-      Object.entries(inputs).forEach(([key, info]) => {
-        const [id, ...prop] = key.split('.');
-        const atomInfo = layer.graph[id];
-        if (!atomInfo) {
-          if (!['style', 'name'].includes(key)) {
-            log.warn(`[${key}] is connected to graph [${id}] which does not exist`);
-          }
-        } else {
-          const {connections} = atomInfo;
-          if (connections) {
-            const propName = prop.join('$');
-            const connection = connections[propName];
-            if (connection) {
-              info.connection = connection[0];
-            }
-          }
+const captureConnectionValues = (graph, inputs) => {
+  // const prefixId = layer.id + '$';
+  // const layerBindings = Object.entries(bindings || {})
+  //   .filter(([id]) => id.startsWith(prefixId))
+  //   .map(([id, bound]) => ({id, bound}))
+  //   ;
+  // Object.entries(inputs).forEach(([key, info]) => {
+  //   const localName = key.replaceAll('.', '$');
+  //   //const _key = key.split('.');
+  //   //const atomName = _key[0];
+  //   layerBindings.forEach(({id, bound}) => {
+  //     const inbound = bound.find(v => v.endsWith(localName));
+  //     if (inbound) {
+  //       info.connection = id.split('$').slice(-2).join('.');
+  //     } 
+  //   });
+  // });
+  Object.entries(inputs).forEach(([key, info]) => {
+    const _key = key.split('.');
+    const atomName = _key.shift();
+    const atomInfo = graph[atomName];
+    if (atomInfo) {
+      const {connections} = atomInfo;
+      if (connections) {
+        const propName = _key.join('$');
+        const connection = connections[propName];
+        if (connection) {
+          info.connection = connection[0];
         }
-      });
+      }
     }
-  }
+  // } else {
+  //   const propName = _key.pop();
+  //   if (!['style', 'name'].includes(propName)) {
+  //     log.warn(`[${key}] is connected to graph [${id}] which does not exist`);
+  //   }
+  // }
+  });
 };
 
 const rekeySchemaMode = (localId, modalHostSchema, modalSchema) => {

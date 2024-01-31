@@ -4,12 +4,18 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({layerId, selected}, state, {service}) {
+initialize(_, __, {service}) {
+  service('LayerService', 'ObserveState');
+},
+async update({selected}, state, {service}) {
   state.info = null;
   state.selected = selected;
-  state.positions = await service('DesignService', 'GetAtomGraphInfo', {layerId});
-  state.info = await service('DesignService', 'GetLayerInfo', {layerId});
-  //log('done with update ...');
+  state.positions = await service('DesignService', 'GetAtomGraphInfo', {});
+  state.info = await service('DesignService', 'GetLayerInfo', {});
+  //log(state.positions, state.info);
+},
+onStateChange(_, __, {invalidate}) {
+  invalidate();
 },
 getDefaultPosition(w, h, stride, i) {
   const grid = 16;
@@ -20,11 +26,6 @@ getDefaultPosition(w, h, stride, i) {
   i = i % stride;
   let cy = clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2)));
   return [cx, cy];
-  // return {
-  //   left: clampus(ox + w*(i%stride)) + 'px', 
-  //   top: clampus(oy + h*Math.floor(i/stride) + h/3*(Math.sin((i%stride)*Math.PI*.8/2))) + 'px', 
-  //   width: '200px'
-  // };
 },
 shouldRender({layerId},{info}) {
   return Boolean(/*layerId &&*/ info);
@@ -50,7 +51,7 @@ render({layerId}, {info, selected, positions}) {
 },
 getNodableAtoms(atoms) {
   const getDepth = id => id.split('$').length;
-  const isNodableType = atom => !['panel', 'splitpanel'].includes(atom.type);
+  const isNodableType = atom => !['Xpanel', 'Xsplitpanel'].includes(atom.type);
   return atoms
     .filter(atom => getDepth(atom.id) < 5)
     .filter(atom => isNodableType(atom))
