@@ -2,7 +2,7 @@
  * @license
  * Copyright 2023 Atom54 LLC
  */
-import {makeCapName} from '../../CoreXenon/Reactor/Atomic/js/names.js';
+//import {makeCapName} from '../../CoreXenon/Reactor/Atomic/js/names.js';
 import * as Library from '../../Xenon/Library.js';
 import * as Controller from '../../Framework/Controller.js';
 import * as Documents from '../../Documents/Services/DocumentService.js';
@@ -14,20 +14,20 @@ const log = logf('DesignService', '#512E5F', 'white');
 export let designLayerId, designSelectedHost;
 export const sublayers = [];
 
-const DesignTarget = {
-  type: '$library/Design/Atoms/DesignTarget',
-  container: 'DesignPanels#Container'
-};
+// const DesignTarget = {
+//   type: '$library/Design/Atoms/DesignTarget',
+//   container: 'DesignPanels#Container'
+// };
 
-const Sublayer = {
-  type: '$library/Graph/Atoms/Graph',
-  container: 'DesignTarget#Container',
-  state: {
-    style: {
-      overflow: 'auto'
-    }
-  }
-};
+// const Sublayer = {
+//   type: '$library/Graph/Atoms/Graph',
+//   container: 'DesignTarget#Container',
+//   state: {
+//     style: {
+//       overflow: 'auto'
+//     }
+//   }
+// };
 
 const categoryOrder = {
   Common: 1, 
@@ -42,13 +42,13 @@ const categoryOrder = {
 };
 
 export const DesignService = {
-  async SetDesignLayerIndex(host, {index}) {
-    setDesignLayerIndex(host.layer.controller, index);
-    //return designUpdate(host.layer.controller);
-  },
-  async NewGraph(host) {
-    return newGraph(host.layer);
-  },
+  // async SetDesignLayerIndex(host, {index}) {
+  //   setDesignLayerIndex(host.layer.controller, index);
+  //   //return designUpdate(host.layer.controller);
+  // },
+  // async NewGraph(host) {
+  //   return newGraph(host.layer);
+  // },
   Select(host, {atomId}) {
     designSelect(host.layer.controller, atomId);
   },
@@ -135,33 +135,25 @@ const initCatalogData = async controller => {
 //   });
 // };
 
-export const newGraph = async layer => {
-  const name = makeCapName();
-  const graph = {      
-    meta: {
-      id: name
-    }
-  };
-  //Project.Project.addGraph(Project.currentProject, graph);
-  await reifyGraph(layer, name);
-  Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
-  //Project.saveProject(Project.currentProject);
-  //saveDesignGraph(layer.controller);
-};
+// export const newGraph = async layer => {
+//   const name = makeCapName();
+//   await reifyGraph(layer, name);
+//   //Controller.writeInputsToHost(layer.controller, 'build$DesignPanels', {selected: sublayers.length-1});
+// };
 
-export const loadGraph = async (layer, name) => {
-  await reifyGraph(layer, name);
-  validateAtomOrder(layer.controller);
-  //designUpdate(layer.controller);
-  Controller.writeValue(layer.controller, 'build$DesignPanels', 'selected', sublayers.length-1);
-};
+// export const loadGraph = async (layer, name) => {
+//   await reifyGraph(layer, name);
+//   validateAtomOrder(layer.controller);
+//   //Controller.writeValue(layer.controller, 'build$DesignPanels', 'selected', sublayers.length-1);
+// };
 
-export const reifyGraph = async (layer, name) => {
-  const sublayer = await createSublayer(layer, name);
-  log.debug('reifyGraph: created sublayer', name, sublayer);
-  Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
-  return sublayer;
-};
+// export const reifyGraph = async (layer, name) => {
+//   const sublayer = await createSublayer(layer, name);
+//   log.debug('reifyGraph: created sublayer', name, sublayer);
+//   Controller.writeInputsToHost(layer.controller, sublayer.id, {graphId: name});
+//   designSelect(layer.controller, null);
+//   return sublayer;
+// };
 
 export const getGraphMetaData = (graph, property) => {
   return graph.meta[property];
@@ -172,32 +164,32 @@ export const setGraphMetaData = async (layer, graph, property, value) => {
   saveDesignGraph(layer);
 };
 
-const createSublayer = async (layer, name) => {
-  const {controller} = layer;
-  controller.onwrite = designObserver.bind(this, controller);
-  const sublayerName = name;
-  const targetName = name + 'Target'
-  const targetContainer = 'DesignPanels#Container';
-  const state = {style: {order: sublayers.length}};
-  delete controller.state['build$' + targetName + '$style'];
-  /*const target =*/ await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
-  const sublayerContainer = targetName + '#Container';
-  const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
-  sublayers.push(layer.name + '$' + sublayerName);
-  return sublayer;
-};
+// const createSublayer = async (layer, name) => {
+//   const {controller} = layer;
+//   controller.onwrite = designObserver.bind(this, controller);
+//   const sublayerName = name;
+//   const targetName = name + 'Target'
+//   const targetContainer = 'DesignPanels#Container';
+//   const state = {style: {order: sublayers.length}};
+//   delete controller.state['build$' + targetName + '$style'];
+//   /*const target =*/ await Controller.reifyAtom(controller, layer, {...DesignTarget, name: targetName, container: targetContainer, state});
+//   const sublayerContainer = targetName + '#Container';
+//   const sublayer = await Controller.reifyAtom(controller, layer, {...Sublayer, name: sublayerName, container: sublayerContainer});
+//   sublayers.push(layer.name + '$' + sublayerName);
+//   return sublayer;
+// };
 
-const setDesignLayerIndex = async (controller, index) => {
-  const layerId = sublayers[index];
-  if (layerId) {
-    designLayerId = layerId;
-    designSelect(controller, '');
-  }
-};
+// const setDesignLayerIndex = async (controller, index) => {
+//   const layerId = sublayers[index];
+//   if (layerId) {
+//     designLayerId = layerId;
+//     designSelect(controller, '');
+//   }
+// };
 
-export const getDesignLayer = controller => {
-  return Controller.findLayer(controller, designLayerId);
-};
+// export const getDesignLayer = controller => {
+//   return Controller.findLayer(controller, designLayerId);
+// };
 
 export const saveDesignGraph = layer => {
   // const layer = getDesignLayer(controller);
@@ -207,14 +199,6 @@ export const saveDesignGraph = layer => {
   } else {
     log.debug('saveDesignGraph: graph has no `meta.path`', graph);
   }
-};
-
-export const addDesignedAtom = async (controller, layer, {name, type, container, containers, state}) => {
-  const host = await Controller.reifyAtom(controller, layer, {name, type, container, containers, state});
-  layer.graph[name] = {type, container, containers, state}; 
-  //designUpdate(controller);
-  designSelect(controller, host.id);
-  saveDesignGraph(layer);
 };
 
 const getAtomTypes = () => {
@@ -247,61 +231,62 @@ const getAtomTypeCategories = filter => {
   return list;
 };
 
-const designObserver = (controller, inputs) => {
-  const text = inputs.build$CodeEditor$text;
-  const qualifiedId = controller.state.build$CodeEditor$id;
-  if (text && qualifiedId) {
-    if (text !== controller.state[qualifiedId]) {
-      const parts = qualifiedId.split('$');
-      const key = parts.pop();
-      const id = parts.join('$');
-      log.debug('designObserver: updating property text for', id, key);
-      updateProperty(controller, id, key, text);
-    }
-  }
-  if ('build$PartsGraph$Catalog$Filter$query' in inputs) {
-    //designUpdate(controller);
-  }
-  if ('build$DesignPanels$tabs' in inputs) {
-    const tabs = inputs.build$DesignPanels$tabs;
-    if (tabs.length < sublayers.length) {
-      for (let i=0; i<sublayers.length; i++) {
-        const suffix = tabs[i];
-        if (!sublayers[i].endsWith(suffix)) {
-          const sublayerId = sublayers[i];
-          log.debug('remove layer #', i, sublayerId);
-          sublayers.splice(i--, 1);
-          removeAtom(controller, sublayerId);
-          removeAtom(controller, sublayerId + 'Target');
-        }
-      }
-      designUpdateDocuments(controller);
-    }
-  }
-  if (designSelectedHost) {
-    const state = prefixedState(controller.state, designSelectedHost.id + '$');
-    Controller.writeInputsToHost(controller, 'build$State', {object: state}); 
-  }
-};
+// const designObserver = (controller, inputs) => {
+//   const text = inputs.build$CodeEditor$text;
+//   const qualifiedId = controller.state.build$CodeEditor$id;
+//   if (text && qualifiedId) {
+//     if (text !== controller.state[qualifiedId]) {
+//       const parts = qualifiedId.split('$');
+//       const key = parts.pop();
+//       const id = parts.join('$');
+//       log.debug('designObserver: updating property text for', id, key);
+//       updateProperty(controller, id, key, text);
+//     }
+//   }
+//   if ('build$PartsGraph$Catalog$Filter$query' in inputs) {
+//     //designUpdate(controller);
+//   }
+//   if ('build$DesignPanels$tabs' in inputs) {
+//     const tabs = inputs.build$DesignPanels$tabs;
+//     if (tabs.length < sublayers.length) {
+//       for (let i=0; i<sublayers.length; i++) {
+//         const suffix = tabs[i];
+//         if (!sublayers[i].endsWith(suffix)) {
+//           const sublayerId = sublayers[i];
+//           log.debug('remove layer #', i, sublayerId);
+//           sublayers.splice(i--, 1);
+//           removeAtom(controller, sublayerId);
+//           removeAtom(controller, sublayerId + 'Target');
+//         }
+//       }
+//       designUpdateDocuments(controller);
+//     }
+//   }
+//   if (designSelectedHost) {
+//     const state = prefixedState(controller.state, designSelectedHost.id + '$');
+//     Controller.writeInputsToHost(controller, 'build$State', {object: state}); 
+//   }
+// };
 
-const removeAtom = (controller, atomId) => {
-  const targetAtom = controller.atoms[atomId];
-  if (!targetAtom) {
-    log.warn('removeAtom:', atomId, 'does not exist in controller');
-  } else {
-    Controller.removeAtom(controller, targetAtom);
-  }
-};
+// const removeAtom = (controller, atomId) => {
+//   const targetAtom = controller.atoms[atomId];
+//   if (!targetAtom) {
+//     log.warn('removeAtom:', atomId, 'does not exist in controller');
+//   } else {
+//     Controller.removeAtom(controller, targetAtom);
+//   }
+// };
 
-export const designUpdate = async controller => {
+/*export const designUpdate = async controller => {
   // const categories = getAtomTypeCategories(controller.state.build$PartsGraph$Catalog$Filter$query);
   // Controller.set(controller, 'run$PartsGraph$Catalog$Catalog', {items: categories});
   // Controller.writeInputsToHost(controller, 'build$AtomTree', {junk: Math.random()});
   // Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId, junk: Math.random()});
   // designUpdateDocuments(controller);
 };
+*/
 
-export const designUpdateDocuments = async controller => {
+/*export const designUpdateDocuments = async controller => {
   // if (sublayers.length) {
   //   let selected = controller.state.build$DesignPanels$selected;
   //   if (designLayerId === undefined || selected === undefined || selected === null || selected < 0 || selected >= sublayers.length) {
@@ -315,35 +300,12 @@ export const designUpdateDocuments = async controller => {
   //   Controller.set(controller, 'build$DesignPanels', documentPanels);
   // }
 };
+*/
 
 export const designSelect = (controller, atomId) => {
   const bits = atomId?.split('$') || [];
-  const selection = [...bits.slice(0, -2), 'Selected'].join('$');
+  const selection = atomId ? [...bits.slice(0, -2), 'Selected'].join('$') : null;
   Controller.set(controller, selection, {value: atomId});
-
-  // const host = controller.atoms[atomId];
-  // if (designSelectedHost !== host) {
-  //   designSelectedHost = host;
-  //   if (atomId) {
-  //     designLayerId = atomId?.split('$').slice(0, -1).join('$');
-  //   }
-  //   Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {layerId: designLayerId});
-  //   const html = !host ? '<h4 style="text-align: center; color: gray;">No selection</h4>' : `<h4 style="padding-left: .5em;">${host.id.replace(designLayerId + '$', '').replace(/\$/g, '.')}</h4>`;
-  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$InspectorEcho', {html});
-  //   const layerSchema = Schema.schemaForLayer(controller, designLayerId);
-  //   const candidates = layerSchema.outputs;
-  //   const schema = !host ? {} : Schema.deepSchemaForHost(layerSchema, host.id).inputs;
-  //   const editorValue = schema.template?.value || schema.defaultShaders?.value || '';
-  //   Controller.set(controller, 'build$CodeEditor', {id: host?.id ? host?.id + '$template' : null});
-  //   Controller.writeInputsToHost(controller, 'build$CodeEditor', {text: editorValue});
-  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$PropertyInspector', {id: host?.id, schema, candidates});
-  //   Controller.writeInputsToHost(controller, 'build$InspectorGraph$ConnectionInspector', {id: host?.id, schema, candidates});
-  //   Controller.writeInputsToHost(controller, 'build$AtomTree', {selected: host?.id});
-  //   Controller.writeInputsToHost(controller, 'build$EditorsGraph$AtomGraph', {selected: host?.id});
-  //   Controller.writeInputsToHost(controller, getDesignTargetId(), {selected: host?.id});
-  //   const state = !host ? {} : prefixedState(controller.state, host.id + '$');
-  //   Controller.writeInputsToHost(controller, 'build$State', {object: state});
-  // }
 };
 
 export const designDelete = (controller, atomId) => {
@@ -354,28 +316,28 @@ export const designDelete = (controller, atomId) => {
   delete host.layer.graph[host.name];
   //designUpdate(controller);
   designSelect(controller, null);
-  designUpdateDocuments(controller);
+  //designUpdateDocuments(controller);
   saveDesignGraph(host.layer);
   //Project.saveProject(Project.currentProject);
 };
 
-const getDesignTargetId = () => {
-  return designLayerId + 'Target';
-};
+// const getDesignTargetId = () => {
+//   return designLayerId + 'Target';
+// };
 
-export const designUpdateTarget = controller => {
-  Controller.writeInputsToHost(controller, getDesignTargetId(), {refresh: Math.random()});
-};
+// export const designUpdateTarget = controller => {
+//   Controller.writeInputsToHost(controller, getDesignTargetId(), {refresh: Math.random()});
+// };
 
-const prefixedState = (state, prefix)=> {
-  const prefixedState = {};
-  entries(state).forEach(([id, value]) => {
-    if (id.startsWith(prefix)) {
-      prefixedState[id.slice(prefix.length).replace(/\$/g, '.')] = value;
-    }
-  });
-  return prefixedState;
-};
+// const prefixedState = (state, prefix)=> {
+//   const prefixedState = {};
+//   entries(state).forEach(([id, value]) => {
+//     if (id.startsWith(prefix)) {
+//       prefixedState[id.slice(prefix.length).replace(/\$/g, '.')] = value;
+//     }
+//   });
+//   return prefixedState;
+// };
 
 const getAtomInfo = (controller, layerId) => {
   const result = Object.entries(controller.atoms)
@@ -421,6 +383,13 @@ const dropAtomType = async (host, eventlet, dropType) => {
   // expects `container` to be in local-scope
   container = container.slice(layer.id.length + 1);
   return addDesignedAtom(controller, layer, {name, type, container, containers, state});
+};
+
+export const addDesignedAtom = async (controller, layer, {name, type, container, containers, state}) => {
+  layer.graph[name] = {type, container, containers, state}; 
+  const host = await Controller.reifyAtom(controller, layer, {name, type, container, containers, state});
+  designSelect(controller, host.id);
+  saveDesignGraph(layer);
 };
 
 const dropAtom = async (host, eventlet) => {
@@ -498,11 +467,11 @@ const updateConnection = (controller, hostId, propName, connection) => {
     delete atomConnections[propId];
   }
   // forces design target to invalidate
-  designUpdateTarget(controller);
+  //designUpdateTarget(controller);
   //designUpdate(controller);
   // Project.saveProject(Project.currentProject);
-  const layer = Controller.findLayer(controller, designLayerId);
-  saveDesignGraph(layer);
+  //const layer = Controller.findLayer(controller, designLayerId);
+  saveDesignGraph(host.layer);
 };
 
 const clearConnections = (connections, target) => {
@@ -526,13 +495,13 @@ const updateProperty = (controller, designHostId, propId, value, nopersist) => {
   // update graph state
   if (!nopersist) {
     Graph.updateProperty(controller, designHostId, propId, value);
-    const designLayerId = designHostId.split('$').slice(0, -1).join('$');
-    const layer = Controller.findLayer(controller, designLayerId);
-    saveDesignGraph(layer);
+    //const designLayerId = designHostId.split('$').slice(0, -1).join('$');
+    //const layer = Controller.findLayer(controller, designLayerId);
+    saveDesignGraph(controller.atoms[hostId].layer);
     //Project.saveProject(Project.currentProject);
   }
   // forces design target to invalidate
-  designUpdateTarget(controller);
+  //designUpdateTarget(controller);
 };
 
 const getAtomStateStyle = (controller, atom) => controller.state[atom.id + '$style'] ??= {};

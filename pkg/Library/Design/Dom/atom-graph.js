@@ -38,7 +38,7 @@ export class AtomGraph extends DragDrop {
     //this.key = selected;
   }
   render({atoms, edges}, state) {
-    atoms.forEach(atom => atom.atomId = sanitizeId(atom.atomId));
+    atoms?.forEach(atom => atom.atomId = sanitizeId(atom.atomId));
     // NB: connectors are drawn after, via Canvas. See _didRender.
     //state.didRender = {edges, atoms};
     // complete render model

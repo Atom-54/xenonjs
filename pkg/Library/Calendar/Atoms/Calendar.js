@@ -7,6 +7,6 @@ export const atom = (log, resolve) => ({
 update({events}, state) {
 },
 template: html`
-<event-calendar flex events="{{events}}"></event-calendar>
+<event-calendar flex view="{{view}}" events="{{events}}"></event-calendar>
 `
 });

@@ -19,7 +19,8 @@ export const Pixabay = {
       index: 'Number'
     },
     outputs: {
-      image: 'Image'
+      image: 'Image',
+      images: 'Images'
     }
   }
 };

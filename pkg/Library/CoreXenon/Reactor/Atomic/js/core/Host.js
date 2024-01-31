@@ -70,7 +70,7 @@ export class Host extends EventEmitter {
   }
   detach() {
     const detachments = this.detachments;
-    this.detachments = null;
+    this.detachments = [];
     detachments.forEach(task => task());
     this.detachAtom();
   }

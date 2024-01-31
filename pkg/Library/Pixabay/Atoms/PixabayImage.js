@@ -5,65 +5,55 @@ export const atom = (log, resolve) => ({
  * SPDX-License-Identifier: BSD-3-Clause
  */
 async update({query, index}, state, {isDirty}) {
-  if (query && isDirty('trigger')) {
-    state.image = await this.requestImage(query, index);
-    return {image: state.image};
+  if (isDirty('index')) {
+    state.current = Number(index);
   }
+  if (query && isDirty('trigger')) {
+    state.images = await this.queryImages(query);
+  }
+  state.image = this.getImage(state.images, index);
+  return {images: state.images, image: state.image};
 },
-async requestImage(query, index) {
-  const server = `https://openai.iamthearchitect.workers.dev/pixabay/?query=`;
-  const response = await fetch(`${server}${query}`, {method: 'GET'});
-  const json = await response.json();
-  log(json);
-  const hits = json?.hits;
-  const hit = hits?.[index > 0 ? index : 0];
-  return {...this.hitToImage(hit, {}), hits};
+async queryImages(query) {
+  const server = `https://openai.iamthearchitect.workers.dev/pixabay/?q=${query}&per_page=100&image_type=photo`;
+  const response = await fetch(server, {method: 'GET'});
+  const images = await response.json();
+  return images?.hits;
 },
-hitToImage(hit, image) {
-  const url = hit?.webformatURL;
-  const name = hit?.previewURL?.split('/').pop();
+getImage(images, index) {
+  const hit = images?.[index > 0 ? index : 0];
   return {
-    ...image,
     version: Math.random(),
     canvas: null,
-    name,
-    url
+    name: hit?.previewURL?.split('/').pop(),
+    url: hit?.webformatURL
   };
 },
 onCanvas({eventlet: {value}}, state) {
   if (state.image?.url === value?.url) {
-    const image = state.image = {...state.image, canvas: value.canvas, version: Math.random()};
+    const image = state.image = {
+      ...state.image, 
+      canvas: value.canvas, 
+      version: Math.random()
+    };
     return {image};
   }
 },
-onPrevClick(inputs, state) {
-  const image = state.image = this.walkImage(-1, state);
-  return {image};
-},
 onNextClick(inputs, state) {
-  const image = state.image = this.walkImage(1, state);
-  return {image};
+  return this.deltaClick(state, 1);
 },
-walkImage(delta, {image}) {
-  if (image) {
-    const hit = this.walkHits(image, delta);
-    const url = hit?.webformatURL;
-    const name = hit?.previewURL.split('/').pop();
-    return {
-      ...image,
-      version: Math.random(),
-      canvas: null,
-      name,
-      url
-    };
+onPrevClick(inputs, state) {
+  return this.deltaClick(state, -1);
+},
+deltaClick(state, delta) {
+  if (state.images) {
+    state.current = this.walkHits(state.images, state.current, delta);
+    state.image = this.getImage(state.images, state.current);
+    return {image: state.image};
   }
 },
-walkHits({hits, url}, delta) {
-  if (hits) {
-    const current = hits.findIndex(({webformatURL}) => webformatURL === url);
-    const index = ((current ?? 0) + delta + hits.length) % hits.length;
-    return hits[index];
-  }
+walkHits(images, current, delta) {
+  return ((current ?? 0) + delta + images?.length) % images?.length;
 },
 template: html`
 <style>

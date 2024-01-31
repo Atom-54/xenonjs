@@ -294,7 +294,9 @@ var Host = class extends EventEmitter {
     this.detachments.push(task);
   }
   detach() {
-    this.detachments.forEach((task) => task());
+    const detachments = this.detachments;
+    this.detachments = [];
+    detachments.forEach((task) => task());
     this.detachAtom();
   }
   detachAtom() {

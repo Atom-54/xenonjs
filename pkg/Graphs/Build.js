@@ -53,7 +53,7 @@ export const Build = {
       graphId: 'State'
     }
   },
-  AtomTree: {
+  AtomTreeGraph: {
     type: '$library/Graph/Atoms/Graph',
     container: 'ToolsTabs#Container',
     state: {
@@ -63,15 +63,6 @@ export const Build = {
       }
     }
   },
-  // AtomTree: {
-  //   type: '$library/Design/Atoms/AtomTree',
-  //   container: 'ToolsTabs#Container',
-  //   state: {
-  //     style: {
-  //       order: 2
-  //     }
-  //   }
-  // },
   PartsGraph: {
     type: '$library/Graph/Atoms/Graph',
     container: 'ToolsTabs#Container',

@@ -252,8 +252,7 @@ export const FileExplorer = {
           <icon folder hidden="{{closed}}">folder_open</icon>
         </div>
         <icon hidden="{{hasEntries}}">{{icon}}</icon>
-        <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
-        <span flex></span>
+        <list-item flex jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
       </div>
       <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>
     </context-menu-anchor>

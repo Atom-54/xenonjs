@@ -47,7 +47,6 @@ export const updateProperty = (controller, designHostId, propId, value) => {
     const atom = host.layer.graph[atomName];
     if (atom) {
       (atom.state ??= {})[atomPropId] = value;
-      log.debug(atom);
     }
   }
 };

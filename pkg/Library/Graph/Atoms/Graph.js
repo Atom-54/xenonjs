@@ -4,12 +4,15 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({graphId}, state, {isDirty, service}) {
-  const id = graphId?.meta?.id || graphId;
-  if (state.graphId !== id) {
-    state.graphId = id;
-    await service('LayerService', 'CreateLayer', {id: graphId});
-    log('LayerService::CreateLayer(', id, ')');
+async update({graph, graphId}, state, {service}) {
+  const createLayer = graph => service('LayerService', 'CreateLayer', {id: graph});
+  graph = graph ?? ((typeof graphId === 'object') && graphId);
+  if (graph) {
+    log('CreateLayer("<from code>")');
+    await createLayer(graph);
+  } else if (graphId) {
+    log('CreateLayer("' + graphId + '")');
+    await createLayer(graphId);
   }
 },
 template: html`

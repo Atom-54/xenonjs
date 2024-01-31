@@ -36,6 +36,9 @@ var EventEmitter = class {
       console.warn("failed to unlisten from", eventName);
     }
   }
+  unlistenAll() {
+    this.listeners = {};
+  }
 };
 
 // js/utils/object.js
@@ -291,10 +294,14 @@ var Host = class extends EventEmitter {
   }
   detachAtom() {
     if (this.atom) {
-      this.render({ $clear: true });
+      this.unrender();
+      this.atom.unlistenAll();
       this.atom = null;
       this.meta = null;
     }
+  }
+  unrender() {
+    this.render({ $clear: true });
   }
   async service(request) {
     if (request?.decorate) {

@@ -50,7 +50,7 @@ export class Host /*extends EventEmitter*/ {
   }
   detachAtom() {
     const detachments = this.detachments;
-    this.detachments = null;
+    this.detachments = [];
     detachments.forEach(task => task());
     if (this.atom) {
       this.unrender();

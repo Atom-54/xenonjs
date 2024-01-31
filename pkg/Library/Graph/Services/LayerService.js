@@ -8,12 +8,20 @@ import {Resources} from '../../Resources/Resources.js';
 
 export const LayerService = {
   async CreateLayer(host, data) {
+    const detach = () => {
+      if (host.graphLayer) {
+        destroyLayer(host.graphLayer);
+        host.graphLayer = null;
+      }
+    };
+    detach();
     // locating graph data is non-trivial
     const graph = data?.id && await getGraphContent(data.id);
     if (graph) {
       const name = `${host.layer.name}$${host.name}`;
-      const graphLayer = await createLayer(host, name, graph);
-      host.addDetachment(() => destroyLayer(graphLayer));
+      host.graphLayer = await createLayer(host, name, graph);
+      // may end up with more than one (harmless) copy of this detachment
+      host.addDetachment(detach);
     }
   },
   async CreateAtom(host, data) {
@@ -33,16 +41,18 @@ export const LayerService = {
   },
   async ObserveState(host, data) {
     requireStateObserver(host.layer.controller);
-    let id = host.id.split('$').slice(0, -1).join('$') + '$' + data;
+    let id = host.id;
+    if (data) {
+      id = [...id.split('$').slice(0, -1), data].join('$')
+    }
     observers.add(id);
     host.addDetachment(() => observers.delete(id));
   }
 };
 
 export const getGraphContent = async specifier => {
-  return (specifier?.meta?.id && specifier) 
-    || globalThis.Graphs?.[specifier] 
-    || FileSystem.getItem(null, specifier)
+  return (specifier && typeof specifier === 'object') ? specifier : 
+    globalThis.Graphs?.[specifier] || FileSystem.getItem(null, specifier)
     ;
 };
 

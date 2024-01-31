@@ -14,7 +14,6 @@ const template = Xen.Template.html`
   }
 </style>
 
-
 <div repeat="section_t">{{sections}}</div>
 
 <template section_t>

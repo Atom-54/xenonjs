@@ -102,7 +102,7 @@ const openDocument = async (atom, key) => {
       content
     };
     // create document atom
-    document.atom = await makeDocumentAtom(atom.layer.host.layer, name + 'Document', document);
+    document.atom = await makeDocumentAtom(atom.layer.host.layer, name + ' Document', document);
     // create document panel
     document.panel = await createDocumentPanel(document, atom, name, index, key, content);
     // work out binding ids
@@ -227,7 +227,7 @@ const makeDocumentPanel = async (typed, layer, name, container, index, id) => {
         path: id
       }
     };
-    return makeBuildPanel(layer, name + 'Graph', container, graph, state);
+    return makeBuildPanel(layer, name + ' Designer', container, graph, state);
   } else {
     return makeCodeMirror(layer, name, container, content, state);
   }
@@ -276,7 +276,7 @@ const makeBuildPanel = async (layer, name, container, graph, state) => {
     state: {
       ...state,
       graphId: 'Design',
-      Graph$graphId: graph
+      Graph$graph: graph
     }
   });
 };

@@ -14,6 +14,7 @@ export const Graph = {
     type: '$library/Graph/Atoms/Graph',
     ligature: 'schema',
     inputs: {
+      graph: 'Json',
       graphId: 'String'
     },
     outputs: {

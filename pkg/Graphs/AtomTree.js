@@ -44,10 +44,9 @@ export const AtomTree = {
           <icon folder hidden="{{closed}}">folder_open</icon>
         </div>
         <icon hidden="{{hasEntries}}">{{icon}}</icon>
-        <drag-able key="{{id}}">
+        <drag-able flex key="{{id}}">
           <list-item jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
         </drag-able>
-        <span flex></span>
       </div>
       <div subsection closed$="{{closed}}" repeat="moarmoar_t">{{containers}}</div>
     </context-menu-anchor>
@@ -61,8 +60,7 @@ export const AtomTree = {
             <icon folder hidden="{{closed}}">folder_open</icon>
           </div>
           <icon hidden="{{hasEntries}}">{{icon}}</icon>
-          <list-item disabled jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
-          <span flex></span>
+          <list-item flex disabled jit name key$="{{id}}" folder$="{{hasEntries}}" value="{{name}}" on-change="onItemRename">{{name}}</list-item>
         </div>
       </drop-target>
       <div subsection closed$="{{closed}}" repeat="moar_t">{{entries}}</div>

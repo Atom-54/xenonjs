@@ -20,19 +20,19 @@ export const SystemService = {
   },
   async SetClipboardText(atom, text) {
     return navigator.clipboard.writeText(text);
+  },
+  GetState(atom, data) {
+    const state = {};
+    const raw = atom.layer.controller.state;
+    Object.entries(raw).forEach(([key, value]) => {
+      const keys = key.split('$');
+      const name = keys.pop();
+      let level = state;
+      for (const strata of keys) {
+        level = (level[strata] ??= {});
+      }
+      level[name] = value;
+    });
+    return state;
   }
-  // GetState(atom, data) {
-  //   const state = {};
-  //   const raw = atom.layer.controller.state;
-  //   Object.entries(raw).forEach(([key, value]) => {
-  //     const keys = key.split('$');
-  //     const level = state;
-  //     const name = keys.pop();
-  //     for (const strata of keys) {
-  //       level = (level[strata] ??= {});
-  //     }
-  //     level[name] = value;
-  //   });
-  //   return state;
-  // }
 };

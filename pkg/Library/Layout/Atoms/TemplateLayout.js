@@ -80,7 +80,7 @@ getItemKey(item) {
 },
 onItemContextMenu({eventlet: {key, value: {x, y}}}, state) {
  // log('onItemContextMenu', key, x, y);
-  return {context: key, target: {x, y}};
+  return {context: key, target: {x, y}, opened: null};
 },
 onItemOpenClose({eventlet: {key}}, state) {
   const output = this.onItemSelect({eventlet: {key}}, state);
@@ -97,16 +97,18 @@ onItemOpenClose({eventlet: {key}}, state) {
     return output;
   }
 },
-onItemOpen({eventlet: {key}}, state) {
-  const output = this.onItemSelect({eventlet: {key}}, state);
+onItemOpen({eventlet: {key}}, state, {output}) {
+  const result = this.onItemSelect({eventlet: {key}}, state);
   const item = state.itemMap[key];
   //log('onItemOpenClose', key, item);
   if (key && item) {
     if (!item.hasEntries) {
       log.debug('file-opened', key);
-      output.opened = key;
+      result.opened = key;
+      // TODO(sjmiles): non-awesome
+      setTimeout(() => output({opened: null}), 250);
     }
-    return output;
+    return result;
   }
 },
 onItemDelete({eventlet: {key}}, state) {

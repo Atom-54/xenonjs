@@ -15,13 +15,13 @@ async update({index, records, submittedRecord}, state, {isDirty}) {
   state.index = this.validateIndex(state.index, state.records?.length);
   const dirtyRecords = isDirty('records') && !deepEqual(state.records, records);
   if (records && dirtyRecords) {
-    log.debug('consume records');
+    log('consume records');
     state.records = records.length ? [...records] : null;
   } else if (submittedRecord) {
     state.records ??= [];
     if (!deepEqual(submittedRecord, state.records[state.index - 1])) {
       state.records[state.index - 1] = deepCopy(submittedRecord);
-      //log.debug('record submitted, record & records outputte', submittedRecord);
+      //log('record submitted, record & records outputted', submittedRecord);
       //return {
         //record: submittedRecord,
         //records: [...state.records]
