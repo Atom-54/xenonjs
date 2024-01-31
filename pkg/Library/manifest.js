@@ -20,7 +20,7 @@ const manifests = [
   'LocalStorage',
   'Locale',
   'Media',
-  'MediaPipe',
+  'Mediapipe',
   'OpenAI',
   'Pixabay',
   'PixiJs',
