@@ -345,8 +345,8 @@ const getAtomInfo = (controller, layerId) => {
     .map(([id, atom]) => ({
       id,
       ...getTypeInfo(atom),
-      container: atom.meta.container,
-      containers: atom.meta.containers
+      container: atom.meta?.container,
+      containers: atom.meta?.containers
     }))
     .sort(orderCompareFactory(controller))
   ;
@@ -670,5 +670,5 @@ const stratify = (allAtoms, root, selected) => {
 };
 
 const atomsInParent = (allAtoms, parentName) => {
-  return allAtoms.filter(({container}) => container.split('#').shift() === parentName);
+  return allAtoms.filter(({container}) => container?.split('#').shift() === parentName);
 };

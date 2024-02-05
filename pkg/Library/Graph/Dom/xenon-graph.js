@@ -8,7 +8,7 @@ import {Xen} from '../../Dom/Xen/xen-async.js';
 import '../../../App/config.js';
 import '../../Common/configKeys.js';
 import {logf} from '../../CoreXenon/Reactor/Atomic/js/logf.js';
-import {loadCss} from '../../Dom/dom.js';
+//import {loadCss} from '../../Dom/dom.js';
 import * as Env from '../../Framework/Env.js';
 import * as Library from '../../Xenon/Library.js';
 import * as Controller from '../../Framework/Controller.js';
@@ -21,12 +21,27 @@ import '../../../App/graphs.js';
 
 const log = logf('Index', 'magenta');
 
-loadCss('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+// loadCss('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
 //loadCss(globalThis.config.xenonPath + 'Library/Dom/Material/material-xen/xen.css');
+
+globalThis.Graphs.Files = {
+  "FirebasePublicFiles": {
+    "type": "$library/Documents/Atoms/FileSystem",
+    "state": {
+      "providerId": "fb",
+      "storeId": "Guest",
+      "storeName": "Public (Firebase)"
+    }
+  }
+};
 
 const template = Xen.Template.html`
 <style>
-  :host, [atom] {
+  xenon-graph {
+    display: flex;
+    flex-direction: column;
+  }
+  /* :host, [atom] {
     display: flex;
     flex-direction: column;
   }
@@ -37,10 +52,15 @@ const template = Xen.Template.html`
     border-style: solid;
     border-width: 0;
     overflow: hidden;
+  } */
+  @font-face {
+    font-family: 'Material Symbols Outlined';
+    src: url(${globalThis.config.xenonPath + '/Library/Assets/symbols.woff2'}) format('woff2');
+    font-display: block;
   }
 </style>
 
-<slot name="root" flex></slot>
+<!-- <slot name="root" flex></slot> -->
 `;
 
 //let xenon;
@@ -57,19 +77,9 @@ export class XenonGraph extends Xen.Async {
   }
   async update({name}, state) {
     state.graph ??= await this.gogoGraph(name);
-  //   if (state.name !== name) {
-  //     state.name = name;
-  //     xenon = xenon ?? (await this.initXenon());
-  //     const graph = await loadGraph(state.name);
-  //     if (graph) {
-  //       const library = await this.loadLibraries(graph.meta, await Persist.restoreValue('$UserSettings$settings$userSettings'));        
-  //       // create main flan
-  //       const flan = globalThis.flan = new Flan(xenon.emitter, Composer, library);
-  //       await this.reifyGraph(flan, graph);
-  //     } else {
-  //       console.log(`Graph not found.`);
-  //     }
-  //   }
+  }
+  async gogoLayer() {
+
   }
   async gogoGraph(name) {
     await requireXenon();
@@ -77,14 +87,21 @@ export class XenonGraph extends Xen.Async {
     log(main);
     if (!main.composer) {
       main.composer = Dom.createComposer(main.onevent, this);
+      // add helper graph
+      const graph = await Layer.getGraphContent('Files');
+      await Controller.reifyLayer(main, main.layers, 'Files', graph);
     }
     // add graph
     //const graphId = `FirstProject/KeyRecommendation`;
-    const graphId = name;
-    const graph = await Layer.getGraphContent(graphId);
-    log.debug(graph);
-    await Controller.reifyLayer(main, main.layers, name, graph);
-    //Controller.set(main, 'run$PopOver', {show: true});
+    setTimeout(async () => {
+      const graphId = name;
+      const graph = await Layer.getGraphContent(graphId);
+      log.debug(graph);
+      if (graph) {
+        await Controller.reifyLayer(main, main.layers, 'aGraph', graph);
+      }
+      //Controller.set(main, 'run$PopOver', {show: true});
+    }, 1000);
   }
 }
 

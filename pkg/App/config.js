@@ -24,7 +24,7 @@ globalThis.config = {
   logFlags: {
     Atom: true,
     //BusTerminal: true,
-    //Composer: true,
+    // Composer: true,
     //Controller: true,
     //Design: true,
     //DOM: true,

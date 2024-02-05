@@ -143,17 +143,19 @@ export const deepSchemaForHost = (layerSchema, hostId) => {
     inputs: {},
     outputs: {}
   };
-  const prefix = hostId.split('$').slice(3).join('.') + '.';
-  for (const [propName, value] of Object.entries(layerSchema.inputs)) {
-    if (propName.startsWith(prefix)) {
-      const shortName = propName.slice(prefix).split('.').slice(1).join('.');
-      schema.inputs[shortName] = value;
+  if (layerSchema) {
+    const prefix = hostId.split('$').slice(3).join('.') + '.';
+    for (const [propName, value] of Object.entries(layerSchema.inputs)) {
+      if (propName.startsWith(prefix)) {
+        const shortName = propName.slice(prefix).split('.').slice(1).join('.');
+        schema.inputs[shortName] = value;
+      }
     }
-  }
-  for (const [propName, value] of Object.entries(layerSchema.outputs)) {
-    if (propName.startsWith(prefix)) {
-      const shortName = propName.slice(prefix).split('.').slice(1).join('.');
-      schema.outputs[shortName] = value;
+    for (const [propName, value] of Object.entries(layerSchema.outputs)) {
+      if (propName.startsWith(prefix)) {
+        const shortName = propName.slice(prefix).split('.').slice(1).join('.');
+        schema.outputs[shortName] = value;
+      }
     }
   }
   return schema;

@@ -6,6 +6,7 @@
 import * as Basic from './basic-reactor.js';
 import {Paths} from '../atomic.js';
 
+const {logf} = globalThis;
 const log = logf('Industry: Dynamic', 'RebeccaPurple');
 //logf.flags.Industry = true;
 
@@ -37,11 +38,12 @@ const load = async kind => {
     Library: '../..'
   };
   try {
-    const path = 
-      paths[kind] 
-      ? `${paths.Library}/${paths[kind]}`
-      : Paths.resolve(kind)
-      ;
+    let path = '';
+    if (kind[0] === '.') {
+      path = document.URL + path.slice(1);
+    }
+    path ||= paths[kind] ? `${paths.Library}/${paths[kind]}` : Paths.resolve(kind);
+    //
     const {atom} = await import(`${path}.js`);
     const atomLog = logf(
       `Atom: ${kind.split('/').pop()}`, 

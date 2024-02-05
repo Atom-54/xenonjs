@@ -8,7 +8,7 @@ const category = 'UX';
 export const UX = {
   UXPopupMenu: {
     categories: [category],
-    displayName: 'UX PopupMenu',
+    displayName: 'UX Popup Menu',
     description: 'Displays a menu that pops up under the mouse',
     type: '$library/UX/Atoms/UXPopupMenu',
     ligature: 'menu',

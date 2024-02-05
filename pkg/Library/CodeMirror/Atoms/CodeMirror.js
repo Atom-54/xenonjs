@@ -16,10 +16,26 @@ update({text, altSource}, state, {isDirty}) {
     return {text: state.text}; 
   }
 },
-onCodeChanges({eventlet: {value}, text}) {
-  text = this.parseString(value, text);
-  if (text) {
-    return {text};
+onCodeChanges({eventlet: {value}, text}, state, {output}) {
+  state.text = this.parseString(value, text);
+  this.debounce(state, 2000, () => {
+    output({text: state.text});
+  });
+  // if (text) {
+  //   state.text = text;
+  //   return {text};
+  // }
+},
+debounce(state, delay, action, key='code') {
+  const timer = (state.keys ??= {})[key];
+  if (timer >= 0) {
+    clearTimeout(timer);
+  }
+  if (action && delay) {
+    state.keys[key] = setTimeout(() => {
+      delete state.keys[key];
+      action();
+    }, delay);
   }
 },
 stringify(text) {
