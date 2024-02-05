@@ -49,7 +49,7 @@ export const getFolders = async (name, path, authToken) => {
   // get keys at `path`
   const entries = await getPathEntries(system);
   return {
-    id: '(fb) ' + name,
+    id: '(fb) ' + path,
     name,
     hasEntries: true,
     entries: mapByName(path, entries)
@@ -99,9 +99,12 @@ export const hasItem = async key => {
   return systemHasItem(systemId, path.join('/'));
 };
 
-export const getItem = async key => {
-  const [systemId, ...path] = key.split('/');
-  const item = await systems[systemId]?.getItem(path.join('/'));
+export const getItem = async (key, authToken) => {
+  const [systemId, ..._path] = key.split('/');
+  const path = _path.join('/');
+  //const system = systems[systemId];
+  const system = (systems[systemId] ??= new firebaseSystem('Guest', authToken));
+  const item = await system?.getItem(path);
   try {
     return item ? JSON.parse(item) : null;
   } catch(x) {

@@ -78,6 +78,7 @@ export class Host extends EventEmitter {
     if (this.atom) {
       this.unrender();
       this.unlistenAll();
+      this.atom.disposed = true;
       this.atom = null;
       this.meta = null;
     }

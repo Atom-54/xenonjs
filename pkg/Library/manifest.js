@@ -28,6 +28,7 @@ const manifests = [
   'Shader',
   'Spectrum',
   'TensorFlow',
+  'TMDB',
   'UX',
   'Weightless'
 ];

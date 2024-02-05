@@ -29,9 +29,24 @@ render({label, placeholder, disabled}, {value, options}) {
     options: options?.map(option => ({option}))
   }
 },
-onFieldChange({eventlet: {value}}, state) {
+onFieldChange({eventlet: {value}}, state, {output}) {
   state.value = value;
-  return {value};
+  this.debounce(state, 1000, () => {
+    output({value: state.value});
+  });
+  //return {value};
+},
+debounce(state, delay, action, key="change") {
+  const timer = (state.keys ??= {})[key];
+  if (timer >= 0) {
+    clearTimeout(timer);
+  }
+  if (action && delay) {
+    state.keys[key] = setTimeout(() => {
+      delete state.keys[key];
+      action();
+    }, delay);
+  }
 },
 template: html`
 <style>

@@ -4,11 +4,11 @@ export const atom = (log, resolve) => ({
  * Copyright 2023 Atom54 LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-async update({query, index}, state, {isDirty}) {
+async update({auto, query, index}, state, {isDirty}) {
   if (isDirty('index')) {
     state.current = Number(index);
   }
-  if (query && isDirty('trigger')) {
+  if (query && (isDirty('trigger') || (isDirty('query') && auto))) {
     state.images = await this.queryImages(query);
   }
   state.image = this.getImage(state.images, index);
